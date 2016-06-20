@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="16dp"
+        android:paddingTop="8dp"
+        android:minHeight="88dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackground" >
+
+    <com.wefika.flowlayout.FlowLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/list_item_alert_route_icons_wrapper"
+        android:orientation="horizontal"
+        android:layout_marginBottom="4dp">
+    </com.wefika.flowlayout.FlowLayout>
+
+    <TextView
+        android:id="@+id/list_item_alert_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="@color/colorPrimaryText"
+        />
+
+    <TextView
+        android:id="@+id/list_item_alert_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        />
+
+
+
+
+</LinearLayout>
