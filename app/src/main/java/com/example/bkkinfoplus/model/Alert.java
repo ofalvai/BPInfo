@@ -1,6 +1,7 @@
-package com.example.bkkinfoplus;
+package com.example.bkkinfoplus.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,6 +44,8 @@ public class Alert implements Serializable {
         this.url = url;
         this.header = header;
         this.description = description;
+
+        this.affectedRoutes = new ArrayList<>();
     }
 
     public String getId() {

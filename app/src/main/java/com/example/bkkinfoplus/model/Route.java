@@ -1,4 +1,4 @@
-package com.example.bkkinfoplus;
+package com.example.bkkinfoplus.model;
 
 import java.io.Serializable;
 

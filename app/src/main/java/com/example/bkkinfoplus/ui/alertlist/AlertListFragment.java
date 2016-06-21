@@ -1,6 +1,5 @@
-package com.example.bkkinfoplus.ui;
+package com.example.bkkinfoplus.ui.alertlist;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -13,27 +12,18 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.example.bkkinfoplus.Alert;
-import com.example.bkkinfoplus.AlertLoader;
-import com.example.bkkinfoplus.BkkInfoApplication;
+import com.example.bkkinfoplus.model.Alert;
 import com.example.bkkinfoplus.R;
-import com.example.bkkinfoplus.Route;
+import com.example.bkkinfoplus.model.Route;
 import com.example.bkkinfoplus.Utils;
+import com.example.bkkinfoplus.ui.SimpleDividerItemDecoration;
+import com.example.bkkinfoplus.ui.UiUtils;
 import com.wefika.flowlayout.FlowLayout;
 
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
-import javax.inject.Inject;
-
-public class AlertListFragment extends Fragment implements Response.Listener<JSONObject>, Response.ErrorListener{
+public class AlertListFragment extends Fragment implements AlertListPresenter.AlertInteractionListener {
 
     private static final String TAG = "AlertListFragment";
 
@@ -41,17 +31,14 @@ public class AlertListFragment extends Fragment implements Response.Listener<JSO
     private AlertAdapter mAlertAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
-    @Inject AlertLoader mAlertLoader;
-
-    private long mLastUpdate;
-    private static final int REFRESH_THRESHOLD_SEC = 30;
+    private AlertListPresenter mAlertListPresenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        BkkInfoApplication.injector.inject(this);
-
+        // TODO: inject
+        mAlertListPresenter = new AlertListPresenter(this);
     }
 
     @Override
@@ -82,28 +69,24 @@ public class AlertListFragment extends Fragment implements Response.Listener<JSO
     public void onStart() {
         super.onStart();
 
-        long currentTime = new GregorianCalendar().getTimeInMillis();
-        long diff = currentTime - mLastUpdate;
-        TimeUnit secondUnit = TimeUnit.SECONDS;
-        long diffInSeconds = secondUnit.convert(diff, TimeUnit.MILLISECONDS);
-
-        if (diffInSeconds > REFRESH_THRESHOLD_SEC) {
-            mSwipeRefreshLayout.setRefreshing(true);
-            initRefresh();
-        }
+        mAlertListPresenter.checkIfUpdateNeeded();
     }
 
     private void initRefresh() {
-        Context applicationContext = this.getActivity().getApplicationContext();
+        mAlertListPresenter.getAlertList();
 
-        if (mAlertLoader != null) {
-            mAlertLoader.fetchAlertList(applicationContext, this, this);
-        }
-
-        mLastUpdate = new GregorianCalendar().getTimeInMillis();
+        mAlertListPresenter.setLastUpdate();
     }
 
-    private void updateUI(List<Alert> alerts) {
+    private void updateSubtitle(int count) {
+        String subtitle = getResources().getString(R.string.actionbar_subtitle_alert_count, count);
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        activity.getSupportActionBar().setSubtitle(subtitle);
+    }
+
+    @Override
+    public void displayAlerts(List<Alert> alerts) {
+        // Sort: descending by alert start time
         Collections.sort(alerts, new Utils.AlertStartTimestampComparator());
         Collections.reverse(alerts);
 
@@ -116,34 +99,26 @@ public class AlertListFragment extends Fragment implements Response.Listener<JSO
         }
 
         updateSubtitle(alerts.size());
-        mSwipeRefreshLayout.setRefreshing(false);
-    }
-
-
-    @Override
-    public void onErrorResponse(VolleyError error) {
-        mSwipeRefreshLayout.setRefreshing(false);
-        Toast.makeText(getActivity(), R.string.error_response, Toast.LENGTH_LONG).show();
+        setUpdating(false);
     }
 
     @Override
-    public void onResponse(JSONObject response) {
-        List<Alert> alerts = null;
-        try {
-           alerts = mAlertLoader.parseAlertList(response);
-            //TODO: refactor
-            mAlertLoader.updateRoutes(response);
-        } catch (Exception ex) {
-            Toast.makeText(getActivity(), R.string.error_list_display, Toast.LENGTH_LONG).show();
-        }
-
-        if (alerts == null || alerts.isEmpty()) {
-            // TODO
-        } else {
-            updateUI(alerts);
-        }
-
+    public void displayNetworkError() {
+        // TODO
     }
+
+    @Override
+    public void displayGeneralError() {
+        setUpdating(false);
+        Toast.makeText(getActivity(), R.string.error_list_display, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void setUpdating(boolean state) {
+        mSwipeRefreshLayout.setRefreshing(state);
+    }
+
+
 
     private class AlertHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
@@ -155,8 +130,6 @@ public class AlertListFragment extends Fragment implements Response.Listener<JSO
 
         private Alert mAlert;
 
-        private List<Route> mAffectedRoutes;
-
         public AlertHolder(View itemView) {
             super(itemView);
 
@@ -165,8 +138,6 @@ public class AlertListFragment extends Fragment implements Response.Listener<JSO
             mRouteIconsWrapper = (FlowLayout) itemView.findViewById(R.id.list_item_alert_route_icons_wrapper);
 
             itemView.setOnClickListener(this);
-
-            mAffectedRoutes = new ArrayList<>();
         }
 
         public void bindAlert(Alert alert) {
@@ -175,34 +146,21 @@ public class AlertListFragment extends Fragment implements Response.Listener<JSO
             // Title (header text)
             mTitleTextView.setText(alert.getHeader());
 
-            long timestampStart = mAlert.getStart();
-            long timestampEnd = mAlert.getEnd();
+            // Start - end dates
             String dateString = UiUtils.createAlertDateString(
-                    getActivity(), timestampStart, timestampEnd
+                    getActivity(), mAlert.getStart(), mAlert.getEnd()
             );
             mDateTextView.setText(dateString);
 
             // Route icons
-            // First, removing any dynamically added icon views from the LinearLayout
+            // First, removing any previously added icon views from the layout
             mRouteIconsWrapper.removeAllViews();
-            mAffectedRoutes.clear();
 
+            // There are alerts without affected routes, eg. announcements
             if (alert.getRouteIds() != null) {
-                for (String routeId : alert.getRouteIds()) {
-                    Route route = mAlertLoader.getRoute(routeId);
-
-                    if (route == null) {
-                        // Replacement routes are filtered out at the parse stage,
-                        // getting a route by the returned routeId might be null.
-                        continue;
-                    }
-
-                    // TODO: refactor
-                    mAffectedRoutes.add(route);
-
+                for (Route route : alert.getAffectedRoutes()) {
                     UiUtils.addRouteIcon(getActivity(), mRouteIconsWrapper, route);
                 }
-                mAlert.setAffectedRoutes(mAffectedRoutes);
             }
         }
 
@@ -233,7 +191,6 @@ public class AlertListFragment extends Fragment implements Response.Listener<JSO
             LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
             View view = layoutInflater.inflate(R.layout.list_item_alert, parent, false);
             return new AlertHolder(view);
-
         }
 
         @Override
@@ -246,12 +203,5 @@ public class AlertListFragment extends Fragment implements Response.Listener<JSO
         public int getItemCount() {
             return mAlerts.size();
         }
-
-    }
-
-    private void updateSubtitle(int count) {
-        String subtitle = getResources().getString(R.string.actionbar_subtitle_alert_count, count);
-        AppCompatActivity activity = (AppCompatActivity) getActivity();
-        activity.getSupportActionBar().setSubtitle(subtitle);
     }
 }

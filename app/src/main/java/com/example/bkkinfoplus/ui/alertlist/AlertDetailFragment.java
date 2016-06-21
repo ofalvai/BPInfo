@@ -1,4 +1,4 @@
-package com.example.bkkinfoplus.ui;
+package com.example.bkkinfoplus.ui.alertlist;
 
 import android.app.Dialog;
 import android.os.Bundle;
@@ -8,15 +8,15 @@ import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.bkkinfoplus.Alert;
+import com.example.bkkinfoplus.model.Alert;
 import com.example.bkkinfoplus.R;
-import com.example.bkkinfoplus.Route;
+import com.example.bkkinfoplus.model.Route;
+import com.example.bkkinfoplus.ui.UiUtils;
 import com.wefika.flowlayout.FlowLayout;
 
 import java.text.DateFormat;

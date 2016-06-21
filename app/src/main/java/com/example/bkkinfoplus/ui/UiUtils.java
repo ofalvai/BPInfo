@@ -10,12 +10,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.bkkinfoplus.R;
-import com.example.bkkinfoplus.Route;
+import com.example.bkkinfoplus.model.Route;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by oli on 2016. 06. 18..

@@ -1,11 +1,13 @@
 package com.example.bkkinfoplus;
 
-import android.content.Context;
 import android.net.Uri;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.bkkinfoplus.model.Alert;
+import com.example.bkkinfoplus.model.Route;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -23,9 +24,7 @@ import javax.inject.Inject;
 /**
  * Created by oli on 2016. 06. 14..
  */
-public class AlertLoader {
-
-    private RequestQueue mRequestQueue;
+public class FutarApiClient implements Response.Listener<JSONObject>, Response.ErrorListener {
 
     private static final String BASE_URL = "http://futar.bkk.hu/bkk-utvonaltervezo-api/ws/otp/api/where/alert-search.json";
 
@@ -37,14 +36,26 @@ public class AlertLoader {
 
     private static final String QUERY_INCLUDEREFERENCES = "true";
 
+    private RequestQueue mRequestQueue;
+
+    private List<Alert> mAlerts;
+
     private HashMap<String, Route> mRoutes;
 
+    private FutarApiCallback mApiCallback;
+
+    public interface FutarApiCallback {
+        void onAlertResponse(List<Alert> alerts);
+
+        void onError(Exception ex);
+    }
+
     @Inject
-    public AlertLoader(RequestQueue requestQueue) {
-        // This is for dependency injection
+    public FutarApiClient(RequestQueue requestQueue) {
         mRequestQueue = requestQueue;
 
         mRoutes = new HashMap<>();
+        mAlerts = new ArrayList<>();
     }
 
     private Uri buildUri() {
@@ -60,17 +71,45 @@ public class AlertLoader {
                 .build();
     }
 
-    public void fetchAlertList(Context context, Response.Listener<JSONObject> responseListener,
-                               Response.ErrorListener errorListener) {
+    public void fetchAlertList(FutarApiCallback callback) {
+        // TODO: esetleg egy fetchAll(), és mAlerts-től függően fetchAll() vagy visszatérni az mAlerts-el
+        setApiCallback(callback);
+
         Uri uri = buildUri();
 
-        JsonObjectRequest request = new JsonObjectRequest(uri.toString(), null,
-                responseListener, errorListener);
+        JsonObjectRequest request = new JsonObjectRequest(uri.toString(), null, this, this);
 
         mRequestQueue.add(request);
     }
 
-    public List<Alert> parseAlertList(JSONObject response) throws JSONException {
+    private void setApiCallback(FutarApiCallback callback) {
+        mApiCallback = callback;
+    }
+
+    @Override
+    public void onResponse(JSONObject response) {
+        try {
+            mAlerts = parseAlerts(response);
+            mRoutes = parseRoutes(response);
+        } catch (Exception ex) {
+            if (mApiCallback != null) {
+                mApiCallback.onError(ex);
+            }
+        }
+
+        if (mApiCallback != null) {
+            mApiCallback.onAlertResponse(mAlerts);
+        }
+    }
+
+    @Override
+    public void onErrorResponse(VolleyError error) {
+        if (mApiCallback != null) {
+            mApiCallback.onError(error);
+        }
+    }
+
+    public List<Alert> parseAlerts(JSONObject response) throws JSONException {
         List<Alert> alertList = new ArrayList<>();
 
         JSONObject dataNode = response.getJSONObject("data");
@@ -84,7 +123,7 @@ public class AlertLoader {
         JSONObject referencesNode = dataNode.getJSONObject("references");
         JSONObject alertsNode = referencesNode.getJSONObject("alerts");
 
-        JSONArray alerts = jsonObjectToArray(alertsNode);
+        JSONArray alerts = Utils.jsonObjectToArray(alertsNode);
 
         Date now = new Date();
 
@@ -121,10 +160,10 @@ public class AlertLoader {
         long timestamp = alertNode.getLong("timestamp");
 
         JSONArray stopIdsNode = alertNode.getJSONArray("stopIds");
-        List<String> stopIds = jsonArrayToStringList(stopIdsNode);
+        List<String> stopIds = Utils.jsonArrayToStringList(stopIdsNode);
 
         JSONArray routeIdsNode = alertNode.getJSONArray("routeIds");
-        List<String> routeIds = jsonArrayToStringList(routeIdsNode);
+        List<String> routeIds = Utils.jsonArrayToStringList(routeIdsNode);
 
         JSONObject urlNode = alertNode.getJSONObject("url");
         String url = urlNode.getString("someTranslation");
@@ -141,13 +180,13 @@ public class AlertLoader {
         return new Alert(id, start, end, timestamp, stopIds, routeIds, url, header, description);
     }
 
+    public HashMap<String, Route> parseRoutes(JSONObject response) throws JSONException {
+        HashMap<String, Route> routeMap = new HashMap<>();
 
-
-    public void updateRoutes(JSONObject response) throws JSONException {
         JSONObject dataNode = response.getJSONObject("data");
         JSONObject referencesNode = dataNode.getJSONObject("references");
         JSONObject routesNode = referencesNode.getJSONObject("routes");
-        JSONArray routesArray = jsonObjectToArray(routesNode);
+        JSONArray routesArray = Utils.jsonObjectToArray(routesNode);
 
         for (int i = 0; i < routesArray.length(); i++) {
             JSONObject routeNode = routesArray.getJSONObject(i);
@@ -157,12 +196,14 @@ public class AlertLoader {
 
                 if (!Utils.isRouteReplacement(route.getId())) {
                     // Replacement routes are inconsistent and unnecessary to display
-                    mRoutes.put(route.getId(), route);
+                    routeMap.put(route.getId(), route);
                 }
             } catch (JSONException ex) {
                 // TODO: valami logolás
             }
         }
+
+        return routeMap;
     }
 
     private Route parseRoute(JSONObject routeNode) throws JSONException {
@@ -203,26 +244,19 @@ public class AlertLoader {
         return mRoutes.get(id);
     }
 
-    private static List<String> jsonArrayToStringList(JSONArray array) throws JSONException {
-        List<String> list = new ArrayList<>();
+    public List<Route> getAffectedRoutesForAlert(Alert alert) {
+        List<Route> affectedRoutes = new ArrayList<>();
 
-        for (int i = 0; i < array.length(); i++) {
-            list.add(array.getString(i));
+        for (String routeId : alert.getRouteIds()) {
+            Route route = getRoute(routeId);
+            if (route == null) {
+                // Replacement routes are filtered out at the parse stage,
+                // getting a route by the returned routeId might be null.
+                continue;
+            }
+            affectedRoutes.add(route);
         }
 
-        return list;
+        return affectedRoutes;
     }
-
-    private static JSONArray jsonObjectToArray(JSONObject object) throws JSONException {
-        Iterator<String> keys = object.keys();
-        JSONArray result = new JSONArray();
-
-        while (keys.hasNext()) {
-            String key = keys.next();
-            result.put(object.getJSONObject(key));
-        }
-
-        return result;
-    }
-
 }

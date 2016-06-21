@@ -1,17 +1,11 @@
-package com.example.bkkinfoplus.ui;
+package com.example.bkkinfoplus.ui.alertlist;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 
-import com.example.bkkinfoplus.Alert;
-import com.example.bkkinfoplus.R;
-import com.example.bkkinfoplus.Route;
-
-import java.util.List;
+import com.example.bkkinfoplus.model.Alert;
+import com.example.bkkinfoplus.ui.SingleFragmentActivity;
 
 public class AlertDetailActivity extends SingleFragmentActivity {
 

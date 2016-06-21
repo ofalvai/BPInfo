@@ -1,6 +1,6 @@
 package com.example.bkkinfoplus;
 
-import com.example.bkkinfoplus.ui.AlertListFragment;
+import com.example.bkkinfoplus.ui.alertlist.AlertListPresenter;
 
 import javax.inject.Singleton;
 
@@ -15,6 +15,6 @@ import dagger.Component;
 @Component(modules={AppModule.class, NetModule.class})
 public interface AppComponent {
 
-    void inject(AlertListFragment alertListFragment);
+    void inject(AlertListPresenter alertListPresenter);
 
 }
