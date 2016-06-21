@@ -12,10 +12,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.bkkinfoplus.model.Alert;
 import com.example.bkkinfoplus.R;
-import com.example.bkkinfoplus.model.Route;
 import com.example.bkkinfoplus.Utils;
+import com.example.bkkinfoplus.model.Alert;
+import com.example.bkkinfoplus.model.Route;
 import com.example.bkkinfoplus.ui.SimpleDividerItemDecoration;
 import com.example.bkkinfoplus.ui.UiUtils;
 import com.wefika.flowlayout.FlowLayout;
@@ -37,7 +37,6 @@ public class AlertListFragment extends Fragment implements AlertListPresenter.Al
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // TODO: inject
         mAlertListPresenter = new AlertListPresenter(this);
     }
 

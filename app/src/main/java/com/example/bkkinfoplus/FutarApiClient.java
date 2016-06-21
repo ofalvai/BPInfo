@@ -50,7 +50,6 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
         void onError(Exception ex);
     }
 
-    @Inject
     public FutarApiClient(RequestQueue requestQueue) {
         mRequestQueue = requestQueue;
 

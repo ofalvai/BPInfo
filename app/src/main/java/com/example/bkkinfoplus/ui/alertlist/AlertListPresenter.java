@@ -26,8 +26,9 @@ public class AlertListPresenter implements FutarApiClient.FutarApiCallback {
     private long mLastUpdate;
 
     public AlertListPresenter(AlertInteractionListener interactionListener) {
-        // TODO: injection
         mInteractionListener = interactionListener;
+
+        BkkInfoApplication.injector.inject(this);
     }
 
     public interface AlertInteractionListener {
@@ -41,8 +42,6 @@ public class AlertListPresenter implements FutarApiClient.FutarApiCallback {
     }
 
     public void getAlertList() {
-        // TODO: temporary
-        BkkInfoApplication.injector.inject(this);
         mFutarApiClient.fetchAlertList(this);
     }
 

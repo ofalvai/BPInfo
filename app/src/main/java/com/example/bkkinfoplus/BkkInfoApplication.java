@@ -15,7 +15,7 @@ public class BkkInfoApplication extends Application {
 
         injector = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
-                .netModule(new NetModule())
+                .apiModule(new ApiModule())
                 .build();
     }
 }

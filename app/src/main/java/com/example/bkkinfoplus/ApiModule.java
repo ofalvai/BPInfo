@@ -12,15 +12,21 @@ import dagger.Module;
 import dagger.Provides;
 
 /**
- * Dagger module providing network stuff.
+ * Dagger module providing networking and API classes.
  */
 
 @Module
-public class NetModule {
+public class ApiModule {
 
     @Provides
     @Singleton
     RequestQueue provideRequestQueue(Context applicationContext) {
         return Volley.newRequestQueue(applicationContext);
+    }
+
+    @Provides
+    @Singleton
+    FutarApiClient provideFutarApiClient(RequestQueue requestQueue) {
+        return new FutarApiClient(requestQueue);
     }
 }
