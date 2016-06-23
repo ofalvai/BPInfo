@@ -4,9 +4,10 @@
     <string name="error_response">Hibás válasz érkezett a szerverről</string>
     <string name="alert_label_until_revoke">visszavonásig</string>
     <string name="alert_latel_date">%1$s  -  %2$s</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="alert_label_date_modified">Módosítva: %1$s</string>
     <string name="actionbar_subtitle_alert_count">%1$s forgalmi változás van ma</string>
+    <string name="error_no_connection">Nincs hálózati kapcsolat</string>
+    <string name="error_network">Hálózati hiba</string>
+    <string name="error_communication">Kommunikációs hiba</string>
+    <string name="label_retry">Újra</string>
 </resources>

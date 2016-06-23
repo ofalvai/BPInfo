@@ -7,4 +7,8 @@
     <string name="alert_latel_date">%1$s  -  %2$s</string>
     <string name="alert_label_date_modified">Módosítva: %1$s</string>
     <string name="actionbar_subtitle_alert_count">%1$s forgalmi változás van ma</string>
+    <string name="error_no_connection">Nincs hálózati kapcsolat</string>
+    <string name="error_network">Hálózati hiba</string>
+    <string name="error_communication">Kommunikációs hiba</string>
+    <string name="label_retry">Újra</string>
 </resources>

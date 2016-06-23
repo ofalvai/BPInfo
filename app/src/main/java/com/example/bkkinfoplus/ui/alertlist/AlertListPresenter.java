@@ -1,9 +1,12 @@
 package com.example.bkkinfoplus.ui.alertlist;
 
+import com.android.volley.VolleyError;
 import com.example.bkkinfoplus.model.Alert;
 import com.example.bkkinfoplus.BkkInfoApplication;
 import com.example.bkkinfoplus.FutarApiClient;
 import com.example.bkkinfoplus.model.Route;
+
+import org.json.JSONException;
 
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -34,7 +37,9 @@ public class AlertListPresenter implements FutarApiClient.FutarApiCallback {
     public interface AlertInteractionListener {
         void displayAlerts(List<Alert> alerts);
 
-        void displayNetworkError();
+        void displayNetworkError(VolleyError error);
+
+        void displayDataError();
 
         void displayGeneralError();
 
@@ -70,8 +75,14 @@ public class AlertListPresenter implements FutarApiClient.FutarApiCallback {
 
     @Override
     public void onError(Exception ex) {
-        // TODO: separate error causes
-        mInteractionListener.displayGeneralError();
+        if (ex instanceof VolleyError) {
+            VolleyError error = (VolleyError) ex;
+            mInteractionListener.displayNetworkError(error);
+        } else if (ex instanceof JSONException) {
+            mInteractionListener.displayDataError();
+        } else {
+            mInteractionListener.displayGeneralError();
+        }
     }
 
     /**

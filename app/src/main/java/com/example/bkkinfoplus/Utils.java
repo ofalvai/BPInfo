@@ -1,5 +1,12 @@
 package com.example.bkkinfoplus;
 
+import android.content.Context;
+
+import com.android.volley.NetworkError;
+import com.android.volley.NoConnectionError;
+import com.android.volley.ServerError;
+import com.android.volley.TimeoutError;
+import com.android.volley.VolleyError;
 import com.example.bkkinfoplus.model.Alert;
 
 import org.json.JSONArray;
@@ -10,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * Created by oli on 2016. 06. 15..
@@ -52,5 +61,26 @@ public class Utils {
         }
 
         return result;
+    }
+
+    /**
+     * Returns the appropriate error message depending on the concrete error type
+     * @param error VolleyError object
+     * @return  ID of the String resource of the appropriate error message
+     */
+    public static int volleyErrorTypeHandler(VolleyError error) {
+        int stringId;
+
+        if (error instanceof NoConnectionError) {
+            stringId = R.string.error_no_connection;
+        } else if (error instanceof NetworkError || error instanceof TimeoutError ) {
+            stringId = R.string.error_network;
+        } else if (error instanceof ServerError) {
+            stringId = R.string.error_response;
+        } else {
+            stringId = R.string.error_communication;
+        }
+
+        return stringId;
     }
 }

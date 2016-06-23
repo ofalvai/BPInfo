@@ -115,17 +115,15 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
 
         @Override
         public void onStateChanged(@NonNull View bottomSheet, int newState) {
-
             if (newState == BottomSheetBehavior.STATE_HIDDEN) {
                 // Dismiss dialog fragment
                 dismiss();
             }
-
         }
 
         @Override
         public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-            // TODO
+
         }
     };
 }

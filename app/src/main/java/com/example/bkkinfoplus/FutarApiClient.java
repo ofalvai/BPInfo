@@ -1,6 +1,7 @@
 package com.example.bkkinfoplus;
 
 import android.net.Uri;
+import android.util.Log;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -25,6 +26,7 @@ import javax.inject.Inject;
  * Created by oli on 2016. 06. 14..
  */
 public class FutarApiClient implements Response.Listener<JSONObject>, Response.ErrorListener {
+    private static final String TAG = "FutarApiClient";
 
     private static final String BASE_URL = "http://futar.bkk.hu/bkk-utvonaltervezo-api/ws/otp/api/where/alert-search.json";
 
@@ -198,7 +200,10 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
                     routeMap.put(route.getId(), route);
                 }
             } catch (JSONException ex) {
-                // TODO: valami logolás
+                Log.e(TAG, "Failed to parse route at index " + i + ":");
+                if (routeNode != null) {
+                    Log.e(TAG, routeNode.toString());
+                }
             }
         }
 

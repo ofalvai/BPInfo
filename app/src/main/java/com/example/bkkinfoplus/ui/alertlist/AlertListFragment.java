@@ -6,12 +6,16 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.VolleyError;
 import com.example.bkkinfoplus.R;
 import com.example.bkkinfoplus.Utils;
 import com.example.bkkinfoplus.model.Alert;
@@ -30,6 +34,7 @@ public class AlertListFragment extends Fragment implements AlertListPresenter.Al
     private RecyclerView mAlertRecyclerView;
     private AlertAdapter mAlertAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private LinearLayout mErrorLayout;
 
     private AlertListPresenter mAlertListPresenter;
 
@@ -45,6 +50,8 @@ public class AlertListFragment extends Fragment implements AlertListPresenter.Al
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_alert_list, container, false);
+
+        mErrorLayout = (LinearLayout) view.findViewById(R.id.error_with_action);
 
         mAlertRecyclerView = (RecyclerView) view.findViewById(R.id.alerts_recycler_view);
         mAlertRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -85,6 +92,8 @@ public class AlertListFragment extends Fragment implements AlertListPresenter.Al
 
     @Override
     public void displayAlerts(List<Alert> alerts) {
+        setErrorView(false, null);
+
         // Sort: descending by alert start time
         Collections.sort(alerts, new Utils.AlertStartTimestampComparator());
         Collections.reverse(alerts);
@@ -102,19 +111,59 @@ public class AlertListFragment extends Fragment implements AlertListPresenter.Al
     }
 
     @Override
-    public void displayNetworkError() {
-        // TODO
+    public void displayNetworkError(VolleyError error) {
+        int errorMessageId = Utils.volleyErrorTypeHandler(error);
+        String errorMessage = getResources().getString(errorMessageId);
+
+        setErrorView(true, errorMessage);
+    }
+
+    @Override
+    public void displayDataError() {
+        setErrorView(true, getString(R.string.error_list_display));
     }
 
     @Override
     public void displayGeneralError() {
-        setUpdating(false);
-        Toast.makeText(getActivity(), R.string.error_list_display, Toast.LENGTH_LONG).show();
+        setErrorView(true, getString(R.string.error_list_display));
     }
 
     @Override
     public void setUpdating(boolean state) {
         mSwipeRefreshLayout.setRefreshing(state);
+    }
+
+    /**
+     * Displays or hides the error view. If displaying, it also sets the retry button's event listener
+     * and the error message.
+     * @param state true to display, false to hide
+     * @param errorMessage
+     */
+    private void setErrorView(boolean state, String errorMessage) {
+        if (state) {
+            setUpdating(false);
+
+            TextView errorMessageView = (TextView) mErrorLayout.findViewById(R.id.error_message);
+            Button refreshButton = (Button) mErrorLayout.findViewById(R.id.error_action_button);
+
+            if (!refreshButton.hasOnClickListeners()) {
+                refreshButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        initRefresh();
+                    }
+                });
+            }
+            refreshButton.setText(getString(R.string.label_retry));
+
+            mErrorLayout.setVisibility(View.VISIBLE);
+            errorMessageView.setText(errorMessage);
+
+            mAlertRecyclerView.setVisibility(View.GONE);
+        } else {
+            mAlertRecyclerView.setVisibility(View.VISIBLE);
+            mErrorLayout.setVisibility(View.GONE);
+        }
     }
 
 
