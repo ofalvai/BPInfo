@@ -1,6 +1,8 @@
 package com.example.bkkinfoplus.ui.alertlist;
 
 import android.app.Dialog;
+import android.graphics.Paint;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
@@ -105,8 +107,17 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
         }
 
         mDescriptionTextView.setText(Html.fromHtml(mAlert.getDescription()));
-        mUrlTextView.setText(mAlert.getUrl());
-        mUrlTextView.setMovementMethod(LinkMovementMethod.getInstance());
+
+        mUrlTextView.setPaintFlags(mUrlTextView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        mUrlTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mAlert.getUrl() != null) {
+                    Uri url = Uri.parse(mAlert.getUrl());
+                    UiUtils.openCustomTab(getActivity(), url);
+                }
+            }
+        });
 
         return view;
     }
@@ -125,5 +136,5 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
         public void onSlide(@NonNull View bottomSheet, float slideOffset) {
 
         }
-    };
+    }
 }

@@ -1,10 +1,15 @@
 package com.example.bkkinfoplus.ui;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.support.customtabs.CustomTabsIntent;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -64,5 +69,28 @@ public class UiUtils {
         iconBackground.mutate().setColorFilter(colorFilter);
         iconView.setBackground(iconBackground);
 
+    }
+
+    /**
+     * Opens a Chrome custom tab styled to the application's theme
+     * @param activity  Used for context and launching fallback intent
+     * @param url   URL to open
+     */
+    public static void openCustomTab(Activity activity, Uri url) {
+        String packageName = CustomTabsHelper.getPackageNameToUse(activity);
+
+        if (packageName == null) {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(url);
+            activity.startActivity(intent);
+        } else {
+            CustomTabsIntent.Builder intentBuilder = new CustomTabsIntent.Builder();
+            int color = ContextCompat.getColor(activity, R.color.colorPrimary);
+            intentBuilder.setToolbarColor(color);
+
+            CustomTabsIntent customTabsIntent = intentBuilder.build();
+            customTabsIntent.intent.setPackage(packageName);
+            customTabsIntent.launchUrl(activity, url);
+        }
     }
 }
