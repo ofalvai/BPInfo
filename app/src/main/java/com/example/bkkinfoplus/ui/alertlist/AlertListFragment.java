@@ -6,14 +6,12 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.example.bkkinfoplus.R;
@@ -22,6 +20,7 @@ import com.example.bkkinfoplus.model.Alert;
 import com.example.bkkinfoplus.model.Route;
 import com.example.bkkinfoplus.ui.SimpleDividerItemDecoration;
 import com.example.bkkinfoplus.ui.UiUtils;
+import com.example.bkkinfoplus.ui.alert.AlertDetailFragment;
 import com.wefika.flowlayout.FlowLayout;
 
 import java.util.Collections;

@@ -1,4 +1,4 @@
-package com.example.bkkinfoplus.ui.alertlist;
+package com.example.bkkinfoplus.ui.alert;
 
 import android.content.Context;
 import android.content.Intent;

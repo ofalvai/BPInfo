@@ -1,4 +1,4 @@
-package com.example.bkkinfoplus.ui.alertlist;
+package com.example.bkkinfoplus.ui.alert;
 
 import android.app.Dialog;
 import android.graphics.Paint;
@@ -9,7 +9,6 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
 import android.text.Html;
-import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

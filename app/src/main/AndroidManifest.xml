@@ -19,7 +19,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.alertlist.AlertDetailActivity"
+            android:name=".ui.alert.AlertDetailActivity"
             android:parentActivityName=".ui.alertlist.AlertListActivity">
         </activity>
     </application>
