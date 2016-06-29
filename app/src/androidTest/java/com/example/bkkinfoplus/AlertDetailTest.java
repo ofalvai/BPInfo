@@ -4,7 +4,6 @@ import android.support.test.espresso.Espresso;
 import android.support.test.espresso.IdlingResource;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
-import android.support.v7.widget.ActionBarContainer;
 import android.text.format.DateUtils;
 
 import com.example.bkkinfoplus.ui.alertlist.AlertListActivity;
@@ -19,23 +18,21 @@ import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.pressBack;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.ViewMatchers.hasDescendant;
-import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static android.support.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed;
-import static android.support.test.espresso.matcher.ViewMatchers.isDescendantOfA;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.core.IsNot.not;
 
 /**
- * Created by oli on 2016. 06. 26..
+ * Created by oli on 2016. 06. 27..
  */
 
 @RunWith(AndroidJUnit4.class)
-public class AlertListTest {
+public class AlertDetailTest {
 
     private static final int RECYCLER_VIEW_ID = R.id.alerts_recycler_view;
 
@@ -63,6 +60,11 @@ public class AlertListTest {
         Espresso.registerIdlingResources(mIdlingResource);
     }
 
+    @Before
+    public void clickOnAlertInList() {
+        onView(withRecyclerView(RECYCLER_VIEW_ID).atPosition(0)).perform(click());
+    }
+
     @After
     public void tearDown() {
         Espresso.unregisterIdlingResources(mIdlingResource);
@@ -70,56 +72,51 @@ public class AlertListTest {
 
     }
 
-    /**
-     * Checks whether the list has items (rows)
-     */
     @Test
-    public void alertListHasItemTest() {
-        onView(withRecyclerView(RECYCLER_VIEW_ID).atPosition(0))
-                .check(matches(isCompletelyDisplayed()));
+    public void alertDetailHasTitleTest() {
+        onView(withId(R.id.alert_detail_title)).check(
+                matches(allOf(
+                    isCompletelyDisplayed(),
+                    not(withText(""))
+                ))
+        );
     }
 
-    /**
-     * Checks whether the first item in the list has a title
-     */
     @Test
-    public void alertListItemTitleTest() {
-        onView(withRecyclerView(RECYCLER_VIEW_ID).atPosition(0))
-                .check(matches(hasDescendant(allOf(
-                        withId(R.id.list_item_alert_description),
-                        isCompletelyDisplayed()
-                ))));
+    public void alertDetailHasDateTest() {
+        onView(withId(R.id.alert_detail_date)).check(
+                matches(allOf(
+                        isCompletelyDisplayed(),
+                        not(withText(""))
+                ))
+        );
     }
 
-    /**
-     * Checks whether the first item in the list has a date view
-     */
     @Test
-    public void alertListItemDateTest() {
-        onView(withRecyclerView(RECYCLER_VIEW_ID).atPosition(0))
-                .check(matches(hasDescendant(allOf(
-                        withId(R.id.list_item_alert_date),
-                        isCompletelyDisplayed()
-                ))));
+    public void alertDetailHasDescriptionTest() {
+        onView(withId(R.id.alert_detail_description)).check(
+                matches(allOf(
+                        isDisplayed(), // the whole view not necessarily fit the screen
+                        not(withText(""))
+                ))
+        );
     }
 
-    /**
-     * Checks whether the ActionBar's subtitle displays the number of alerts
-     */
-    @Test
-    public void actionBarSubtitleTest() {
-        onView(allOf(
-                isDescendantOfA(isAssignableFrom(ActionBarContainer.class)),
-                withText(endsWith("forgalmi változás van ma")) //TODO: String resource
-        )).check(matches(isDisplayed()));
-    }
+    // TODO: doesn't stop
+    //@Test
+    //public void alertDetailLinkClickTest() {
+    //    // Can't use scrollTo() here, because BottomSheet is not a ScrollView
+    //    onView(withId(R.id.alert_detail_title)).perform(swipeUp(), swipeUp());
+    //
+    //    onView(withId(R.id.alert_detail_url)).perform(click());
+    //
+    //    onView(isAssignableFrom(ImageButton.class)).check(matches(isCompletelyDisplayed()));
+    //}
 
-    /**
-     * Tries to click on an item in the list
-     */
     @Test
-    public void itemClickTest() {
-        onView(withRecyclerView(RECYCLER_VIEW_ID).atPosition(0)).perform(click());
-    }
+    public void alertDetailBackButtonTest() {
+        onView(withId(R.id.alert_detail_title)).perform(pressBack());
 
+        onView(withId(RECYCLER_VIEW_ID)).check(matches(isCompletelyDisplayed()));
+    }
 }
