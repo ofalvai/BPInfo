@@ -105,7 +105,7 @@ public class UiUtils {
             endTimeString = context.getString(R.string.date_until_revoke);
         } else if (endDateTime.hourOfDay().get() == 23 && endDateTime.minuteOfHour().get() == 59) {
             // The API marks "last departure" as 23:59
-            endTimeString = context.getString(R.string.date_until_revoke);
+            endTimeString = context.getString(R.string.date_last_departure);
         } else {
             endTimeString = FORMATTER_TIME.print(endDateTime);
         }
