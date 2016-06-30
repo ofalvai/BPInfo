@@ -17,29 +17,100 @@ import android.widget.TextView;
 import com.example.bkkinfoplus.R;
 import com.example.bkkinfoplus.model.Route;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 /**
  * Created by oli on 2016. 06. 18..
  */
 public class UiUtils {
 
-    public static final String DATE_FORMAT = "MMM. d. E HH:mm";
+    private static final DateTimeFormatter FORMATTER_TIME = DateTimeFormat.forPattern("HH:mm");
 
-    public static String createAlertDateString(Context context, long timestampStart, long timestampEnd) {
-        Date start = new Date(timestampStart * 1000);
-        DateFormat format = new SimpleDateFormat(DATE_FORMAT);
-        String startText = format.format(start);
-        String endText;
-        if (timestampEnd == 0) {
-            endText = context.getString(R.string.alert_label_until_revoke);
+    private static final DateTimeFormatter FORMATTER_DATE = DateTimeFormat.forPattern("MMM d. EEEE ");
+
+    private static final DateTimeFormatter FORMATTER_DATE_YEAR = DateTimeFormat.forPattern("YYYY MMM d. EEEE");
+
+    private static final String DATE_SEPARATOR = " ➔ ";
+
+    /**
+     * Transforms the start and end timestamps into a human-friendly readable string,
+     * with special replacements for special dates, times, and the API's strange notations.
+     * @param context
+     * @param startTimestamp Start of the alert in seconds since the UNIX epoch
+     * @param endTimestamp   End of the alert in seconds since the UNIX epoch
+     * @return  A string in the format of [startdate] [starttime] [separator] [enddate] [endtime]
+     */
+    public static String alertDateFormatter(Context context, long startTimestamp, long endTimestamp) {
+        DateTime startDateTime = new DateTime(startTimestamp * 1000L);
+        DateTime endDateTime = new DateTime(endTimestamp * 1000L);
+        LocalDate startDate = startDateTime.toLocalDate();
+        LocalDate endDate = endDateTime.toLocalDate();
+
+        DateTime today = new DateTime();
+        LocalDate todayDate = new DateTime().toLocalDate();
+        DateTime yesterday = today.minusDays(1);
+        LocalDate yesterdayDate = yesterday.toLocalDate();
+        DateTime tomorrow = today.plusDays(1);
+        LocalDate tomorrowDate = tomorrow.toLocalDate();
+
+        // Alert start, date part
+        String startDateString;
+        if (startDate.equals(todayDate)) {
+            // Start day is today, replacing month and day with today string
+            startDateString = context.getString(R.string.date_today) + " ";
+        } else if (startDate.equals(yesterdayDate)) {
+            startDateString = context.getString(R.string.date_yesterday) + " ";
+        } else if (startDate.equals(tomorrowDate)) {
+            startDateString = context.getString(R.string.date_tomorrow) + " ";
         } else {
-            Date end = new Date(timestampEnd * 1000);
-            endText = format.format(end);
+            startDateString = FORMATTER_DATE.print(startDateTime);
         }
-        return context.getResources().getString(R.string.alert_latel_date, startText, endText);
+
+        // Alert start, time part
+        String startTimeString;
+        if (startDateTime.hourOfDay().get() == 0 && startDateTime.minuteOfHour().get() == 0) {
+            // The API marks "first departure" as 00:00
+            startTimeString = context.getString(R.string.date_first_departure);
+        } else {
+            startTimeString = FORMATTER_TIME.print(startDateTime);
+        }
+
+        // Alert end, date part
+        String endDateString;
+        if (endTimestamp == 0) {
+            // The API marks "until further notice" as 0 (in UNIX epoch), no need to display date
+            // (the replacement string is displayed as the time part, not the date)
+            endDateString = " ";
+        } else if (endDate.year().get() > today.year().get()) {
+            // The end year is greater than the current year, displaying the year too
+            endDateString = FORMATTER_DATE_YEAR.print(endDateTime);
+        } else if (endDate.equals(todayDate)) {
+            // End  day is today, replacing month and day with today string
+            endDateString = context.getString(R.string.date_today) + " ";
+        } else if (endDate.equals(yesterdayDate)) {
+            endDateString = context.getString(R.string.date_yesterday) + " ";
+        } else if (endDate.equals(tomorrowDate)) {
+            endDateString = context.getString(R.string.date_tomorrow) + " ";
+        } else {
+            endDateString = FORMATTER_DATE.print(endDateTime);
+        }
+
+        // Alert end, time part
+        String endTimeString;
+        if (endTimestamp == 0) {
+            // The API marks "until further notice" as 0 (in UNIX epoch)
+            endTimeString = context.getString(R.string.date_until_revoke);
+        } else if (endDateTime.hourOfDay().get() == 23 && endDateTime.minuteOfHour().get() == 59) {
+            // The API marks "last departure" as 23:59
+            endTimeString = context.getString(R.string.date_until_revoke);
+        } else {
+            endTimeString = FORMATTER_TIME.print(endDateTime);
+        }
+
+        return startDateString + startTimeString + DATE_SEPARATOR + endDateString + endTimeString;
     }
 
     /**

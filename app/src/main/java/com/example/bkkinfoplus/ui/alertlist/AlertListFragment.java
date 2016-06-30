@@ -194,7 +194,7 @@ public class AlertListFragment extends Fragment implements AlertListPresenter.Al
             mTitleTextView.setText(alert.getHeader());
 
             // Start - end dates
-            String dateString = UiUtils.createAlertDateString(
+            String dateString = UiUtils.alertDateFormatter(
                     getActivity(), mAlert.getStart(), mAlert.getEnd()
             );
             mDateTextView.setText(dateString);

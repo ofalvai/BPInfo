@@ -14,15 +14,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.bkkinfoplus.model.Alert;
 import com.example.bkkinfoplus.R;
+import com.example.bkkinfoplus.model.Alert;
 import com.example.bkkinfoplus.model.Route;
 import com.example.bkkinfoplus.ui.UiUtils;
 import com.wefika.flowlayout.FlowLayout;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class AlertDetailFragment extends BottomSheetDialogFragment {
     private static final String ARG_ALERT_OBJECT = "alert_object";
@@ -90,14 +86,15 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
 
         mTitleTextView.setText(mAlert.getHeader());
 
-        String dateString = UiUtils.createAlertDateString(getActivity(), mAlert.getStart(), mAlert.getEnd());
+        String dateString = UiUtils.alertDateFormatter(getActivity(), mAlert.getStart(), mAlert.getEnd());
         mDateTextView.setText(dateString);
 
-        DateFormat dateFormat = new SimpleDateFormat(UiUtils.DATE_FORMAT);
-        String dateModifiedString = dateFormat.format(new Date(mAlert.getTimestamp() * 1000));
-        mDateModifiedTextView.setText(
-                getResources().getString(R.string.alert_label_date_modified, dateModifiedString)
-        );
+        //DateFormat dateFormat = new SimpleDateFormat(UiUtils.DATE_FORMAT);
+        //String dateModifiedString = dateFormat.format(new Date(mAlert.getTimestamp() * 1000));
+        //mDateModifiedTextView.setText(
+        //        getResources().getString(R.string.alert_label_date_modified, dateModifiedString)
+        //);
+        // TODO
 
         if (mAlert.getRouteIds() != null) {
             for (Route route : mAlert.getAffectedRoutes()) {
