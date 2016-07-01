@@ -9,6 +9,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.bkkinfoplus.model.Alert;
 import com.example.bkkinfoplus.model.Route;
+import com.example.bkkinfoplus.model.RouteType;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -19,8 +20,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
-
-import javax.inject.Inject;
 
 /**
  * Created by oli on 2016. 06. 14..
@@ -229,7 +228,7 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
             description = null;
         }
 
-        String type = routeNode.getString("type");
+        RouteType type = parseRouteType(routeNode.getString("type"));
 
         String url;
         try {
@@ -242,6 +241,15 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
         String textColor = routeNode.getString("textColor");
 
         return new Route(id, shortName, longName, description, type, url, color, textColor);
+    }
+
+    private RouteType parseRouteType(String type) {
+        try {
+            return RouteType.valueOf(type);
+        } catch (IllegalArgumentException ex) {
+            Log.w(TAG, "Failed to parse route type to enum: " + type);
+        }
+        return RouteType._OTHER_;
     }
 
     public Route getRoute(String id) {

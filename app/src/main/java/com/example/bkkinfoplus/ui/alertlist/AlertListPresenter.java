@@ -1,15 +1,19 @@
 package com.example.bkkinfoplus.ui.alertlist;
 
 import com.android.volley.VolleyError;
-import com.example.bkkinfoplus.model.Alert;
 import com.example.bkkinfoplus.BkkInfoApplication;
 import com.example.bkkinfoplus.FutarApiClient;
+import com.example.bkkinfoplus.model.Alert;
 import com.example.bkkinfoplus.model.Route;
+import com.example.bkkinfoplus.model.RouteType;
 
 import org.json.JSONException;
 
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -70,7 +74,10 @@ public class AlertListPresenter implements FutarApiClient.FutarApiCallback {
     public void onAlertResponse(List<Alert> alerts) {
         attachAffectedRoutesToAlerts(alerts);
 
-        mInteractionListener.displayAlerts(alerts);
+        Set<RouteType> filter = new HashSet<>();
+
+
+        mInteractionListener.displayAlerts(filter(filter, alerts));
     }
 
     @Override
@@ -95,5 +102,24 @@ public class AlertListPresenter implements FutarApiClient.FutarApiCallback {
             List<Route> affectedRoutes = mFutarApiClient.getAffectedRoutesForAlert(alert);
             alert.setAffectedRoutes(affectedRoutes);
         }
+    }
+
+    private List<Alert> filter(Set<RouteType> types, List<Alert> alerts) {
+        if (types == null || types.isEmpty()) {
+            return alerts;
+        }
+
+        List<Alert> filtered = new ArrayList<>();
+
+        for (Alert alert : alerts) {
+            for (Route route : alert.getAffectedRoutes()) {
+                if (types.contains(route.getType())) {
+                    filtered.add(alert);
+                    break;
+                }
+            }
+        }
+
+        return filtered;
     }
 }

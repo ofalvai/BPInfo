@@ -12,12 +12,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.example.bkkinfoplus.R;
 import com.example.bkkinfoplus.Utils;
 import com.example.bkkinfoplus.model.Alert;
 import com.example.bkkinfoplus.model.Route;
+import com.example.bkkinfoplus.model.RouteType;
 import com.example.bkkinfoplus.ui.SimpleDividerItemDecoration;
 import com.example.bkkinfoplus.ui.UiUtils;
 import com.example.bkkinfoplus.ui.alert.AlertDetailFragment;
@@ -207,6 +209,10 @@ public class AlertListFragment extends Fragment implements AlertListPresenter.Al
             if (alert.getRouteIds() != null) {
                 for (Route route : alert.getAffectedRoutes()) {
                     UiUtils.addRouteIcon(getActivity(), mRouteIconsWrapper, route);
+
+                    if (route.getType() == RouteType._OTHER_) {
+                        Toast.makeText(getContext(),"Unknown route type: " + route.getShortName() + "(" + route.getId() + ")", Toast.LENGTH_LONG).show();
+                    }
                 }
             }
         }

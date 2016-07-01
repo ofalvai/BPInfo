@@ -14,7 +14,7 @@ public class Route implements Serializable {
 
     private String description;
 
-    private String type; // TODO: enum
+    private RouteType type;
 
     private String URL;
 
@@ -22,7 +22,7 @@ public class Route implements Serializable {
 
     private String textColor;
 
-    public Route(String id, String shortName, String longName, String description, String type,
+    public Route(String id, String shortName, String longName, String description, RouteType type,
                  String URL, String color, String textColor) {
         this.id = id;
         this.shortName = shortName;
@@ -66,11 +66,11 @@ public class Route implements Serializable {
         this.description = description;
     }
 
-    public String getType() {
+    public RouteType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(RouteType type) {
         this.type = type;
     }
 
