@@ -61,6 +61,9 @@ public class UiUtils {
         if (startDate.equals(todayDate)) {
             // Start day is today, replacing month and day with today string
             startDateString = context.getString(R.string.date_today) + " ";
+        } else if (startDate.year().get() < today.year().get()) {
+            // The start year is less than the current year, displaying the year too
+            startDateString = FORMATTER_DATE_YEAR.print(startDateTime);
         } else if (startDate.equals(yesterdayDate)) {
             startDateString = context.getString(R.string.date_yesterday) + " ";
         } else if (startDate.equals(tomorrowDate)) {
