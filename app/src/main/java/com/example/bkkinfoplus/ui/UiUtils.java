@@ -31,7 +31,7 @@ public class UiUtils {
 
     private static final DateTimeFormatter FORMATTER_DATE = DateTimeFormat.forPattern("MMM d. EEEE ");
 
-    private static final DateTimeFormatter FORMATTER_DATE_YEAR = DateTimeFormat.forPattern("YYYY MMM d. EEEE");
+    private static final DateTimeFormatter FORMATTER_DATE_YEAR = DateTimeFormat.forPattern("YYYY MMM d. EEEE ");
 
     private static final String DATE_SEPARATOR = " ➔ ";
 
