@@ -90,13 +90,6 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
         String dateString = UiUtils.alertDateFormatter(getActivity(), mAlert.getStart(), mAlert.getEnd());
         mDateTextView.setText(dateString);
 
-        //DateFormat dateFormat = new SimpleDateFormat(UiUtils.DATE_FORMAT);
-        //String dateModifiedString = dateFormat.format(new Date(mAlert.getTimestamp() * 1000));
-        //mDateModifiedTextView.setText(
-        //        getResources().getString(R.string.alert_label_date_modified, dateModifiedString)
-        //);
-        // TODO
-
         if (mAlert.getRouteIds() != null) {
             for (Route route : mAlert.getAffectedRoutes()) {
                 UiUtils.addRouteIcon(getActivity(), mRouteIconsLayout, route);
