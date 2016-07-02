@@ -2,11 +2,15 @@ package com.example.bkkinfoplus.ui.alertlist;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -25,10 +29,11 @@ import com.example.bkkinfoplus.ui.UiUtils;
 import com.example.bkkinfoplus.ui.alert.AlertDetailFragment;
 import com.wefika.flowlayout.FlowLayout;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
-public class AlertListFragment extends Fragment implements AlertListPresenter.AlertInteractionListener {
+public class AlertListFragment extends Fragment
+        implements AlertListPresenter.AlertInteractionListener, AlertFilterFragment.AlertFilterListener {
 
     private static final String TAG = "AlertListFragment";
 
@@ -49,6 +54,7 @@ public class AlertListFragment extends Fragment implements AlertListPresenter.Al
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
 
         View view = inflater.inflate(R.layout.fragment_alert_list, container, false);
 
@@ -73,6 +79,21 @@ public class AlertListFragment extends Fragment implements AlertListPresenter.Al
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_main, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_item_filter_alerts:
+                displayFilter();
+                break;
+        }
+        return true;
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
 
@@ -80,7 +101,7 @@ public class AlertListFragment extends Fragment implements AlertListPresenter.Al
     }
 
     private void initRefresh() {
-        mAlertListPresenter.getAlertList();
+        mAlertListPresenter.fetchAlertList();
 
         mAlertListPresenter.setLastUpdate();
     }
@@ -91,13 +112,22 @@ public class AlertListFragment extends Fragment implements AlertListPresenter.Al
         activity.getSupportActionBar().setSubtitle(subtitle);
     }
 
+    private void displayFilter() {
+        AlertFilterFragment filterFragment = AlertFilterFragment.newInstance(this,
+                mAlertListPresenter.getFilter());
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        filterFragment.show(transaction, "dialog");
+    }
+
+    @Override
+    public void onFilterChanged(Set<RouteType> selectedTypes) {
+        mAlertListPresenter.setFilter(selectedTypes);
+        mAlertListPresenter.getAlertList();
+    }
+
     @Override
     public void displayAlerts(List<Alert> alerts) {
         setErrorView(false, null);
-
-        // Sort: descending by alert start time
-        Collections.sort(alerts, new Utils.AlertStartTimestampComparator());
-        Collections.reverse(alerts);
 
         if (mAlertAdapter == null) {
             mAlertAdapter = new AlertAdapter(alerts);

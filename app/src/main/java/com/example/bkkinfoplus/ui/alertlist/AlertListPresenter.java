@@ -3,6 +3,7 @@ package com.example.bkkinfoplus.ui.alertlist;
 import com.android.volley.VolleyError;
 import com.example.bkkinfoplus.BkkInfoApplication;
 import com.example.bkkinfoplus.FutarApiClient;
+import com.example.bkkinfoplus.Utils;
 import com.example.bkkinfoplus.model.Alert;
 import com.example.bkkinfoplus.model.Route;
 import com.example.bkkinfoplus.model.RouteType;
@@ -10,6 +11,7 @@ import com.example.bkkinfoplus.model.RouteType;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
@@ -30,7 +32,14 @@ public class AlertListPresenter implements FutarApiClient.FutarApiCallback {
 
     private AlertInteractionListener mInteractionListener;
 
+    /**
+     * List of alerts returned by the client, before filtering by RouteTypes
+     */
+    private List<Alert> mUnfilteredAlerts;
+
     private long mLastUpdate;
+
+    private Set<RouteType> mActiveFilter = new HashSet<>();
 
     public AlertListPresenter(AlertInteractionListener interactionListener) {
         mInteractionListener = interactionListener;
@@ -50,8 +59,21 @@ public class AlertListPresenter implements FutarApiClient.FutarApiCallback {
         void setUpdating(boolean state);
     }
 
-    public void getAlertList() {
+    /**
+     * Initiates a network refresh and returns the alert list to the listener
+     */
+    public void fetchAlertList() {
         mFutarApiClient.fetchAlertList(this);
+    }
+
+    /**
+     * Returns the local, filtered state of the alert list to the listener
+     */
+    public void getAlertList() {
+        // Filter by route type
+        List<Alert> filteredAlerts = filter(mActiveFilter, mUnfilteredAlerts);
+
+        mInteractionListener.displayAlerts(filteredAlerts);
     }
 
     public void setLastUpdate() {
@@ -66,22 +88,50 @@ public class AlertListPresenter implements FutarApiClient.FutarApiCallback {
 
         if (diffInSeconds > REFRESH_THRESHOLD_SEC) {
             mInteractionListener.setUpdating(true);
-            getAlertList();
+            fetchAlertList();
         }
     }
 
+    /**
+     * Sets the RouteType filter to be applied to the returned alert list.
+     * If an empty Set or null is passed, the list is not filtered.
+     * @param routeTypes
+     */
+    public void setFilter(Set<RouteType> routeTypes) {
+        mActiveFilter = routeTypes;
+    }
+
+    public Set<RouteType> getFilter() {
+        return mActiveFilter;
+    }
+
+    /**
+     * Transforms the list of returned alert in the following order:
+     * 1. Attach Route objects to each Alert based on the alert's route IDs
+     * 2. Sort the list by the alerts' start time in descending order
+     * 3. Filter the list by the currently active filter
+     * @param alerts
+     */
     @Override
     public void onAlertResponse(List<Alert> alerts) {
-        attachAffectedRoutesToAlerts(alerts);
+        mUnfilteredAlerts = alerts;
 
-        Set<RouteType> filter = new HashSet<>();
+        attachAffectedRoutesToAlerts(mUnfilteredAlerts);
 
+        // Sort: descending by alert start time
+        Collections.sort(mUnfilteredAlerts, new Utils.AlertStartTimestampComparator());
+        Collections.reverse(mUnfilteredAlerts);
 
-        mInteractionListener.displayAlerts(filter(filter, alerts));
+        // Filter by route type
+        List<Alert> filteredAlerts = filter(mActiveFilter, mUnfilteredAlerts);
+
+        mInteractionListener.displayAlerts(filteredAlerts);
     }
 
     @Override
     public void onError(Exception ex) {
+        mUnfilteredAlerts.clear();
+
         if (ex instanceof VolleyError) {
             VolleyError error = (VolleyError) ex;
             mInteractionListener.displayNetworkError(error);

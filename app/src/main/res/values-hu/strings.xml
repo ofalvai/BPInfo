@@ -17,4 +17,17 @@
     <string name="date_until_revoke">visszavonásig</string>
     <string name="date_first_departure">üzemkezdettől</string>
     <string name="date_last_departure">üzemzárásig</string>
+    <string name="menu_filter_label">Jármű szűrés</string>
+    <string name="filter_title">Jármű szűrés</string>
+
+    <string-array name="route_types">
+        <item>Metró</item>
+        <item>Villamos</item>
+        <item>Trolibusz</item>
+        <item>Autóbusz</item>
+        <item>HÉV</item>
+        <item>Hajó</item>
+    </string-array>
+    <string name="filter_positive_button">Szűrés</string>
+    <string name="filter_negative_button">Mégse</string>
 </resources>
