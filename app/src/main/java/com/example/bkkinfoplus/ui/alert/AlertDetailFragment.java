@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +19,8 @@ import com.example.bkkinfoplus.model.Route;
 import com.example.bkkinfoplus.ui.UiUtils;
 import com.wefika.flowlayout.FlowLayout;
 
+import org.sufficientlysecure.htmltextview.HtmlTextView;
+
 public class AlertDetailFragment extends BottomSheetDialogFragment {
     private static final String ARG_ALERT_OBJECT = "alert_object";
 
@@ -29,7 +30,7 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
     private TextView mDateTextView;
     private TextView mDateModifiedTextView;
     private FlowLayout mRouteIconsLayout;
-    private TextView mDescriptionTextView;
+    private HtmlTextView mDescriptionTextView;
     private TextView mUrlTextView;
 
     private BottomSheetBehavior.BottomSheetCallback mBottomSheetBehaviorCallback =
@@ -81,7 +82,7 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
         mDateTextView = (TextView) view.findViewById(R.id.alert_detail_date);
         mDateModifiedTextView = (TextView) view.findViewById(R.id.alert_detail_date_modified);
         mRouteIconsLayout = (FlowLayout) view.findViewById(R.id.alert_detail_route_icons_wrapper);
-        mDescriptionTextView = (TextView) view.findViewById(R.id.alert_detail_description);
+        mDescriptionTextView = (HtmlTextView) view.findViewById(R.id.alert_detail_description);
         mUrlTextView = (TextView) view.findViewById(R.id.alert_detail_url);
 
         mTitleTextView.setText(mAlert.getHeader());
@@ -102,7 +103,7 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
             }
         }
 
-        mDescriptionTextView.setText(Html.fromHtml(mAlert.getDescription()));
+        mDescriptionTextView.setHtmlFromString(mAlert.getDescription(), new HtmlTextView.LocalImageGetter());
 
         mUrlTextView.setPaintFlags(mUrlTextView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         mUrlTextView.setOnClickListener(new View.OnClickListener() {

@@ -77,6 +77,8 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
 
         Uri uri = buildUri();
 
+        Log.d(TAG, "API request: " + uri.toString());
+
         JsonObjectRequest request = new JsonObjectRequest(uri.toString(), null, this, this);
 
         mRequestQueue.add(request);

@@ -40,7 +40,7 @@
             android:paddingBottom="8dp">
         </com.wefika.flowlayout.FlowLayout>
 
-        <TextView
+        <org.sufficientlysecure.htmltextview.HtmlTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/alert_detail_description"
