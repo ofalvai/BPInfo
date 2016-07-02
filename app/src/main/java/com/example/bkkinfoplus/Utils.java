@@ -1,7 +1,5 @@
 package com.example.bkkinfoplus;
 
-import android.content.Context;
-
 import com.android.volley.NetworkError;
 import com.android.volley.NoConnectionError;
 import com.android.volley.ServerError;
@@ -18,8 +16,6 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.inject.Inject;
-
 /**
  * Created by oli on 2016. 06. 15..
  */
@@ -35,8 +31,21 @@ public class Utils {
         }
     }
 
+    /**
+     * Detects if a route seems to be a replacement route by its ID format.
+     * It's needed because the API returns replacement routes mixed together with the affected routes.
+     * @param routeId
+     * @return
+     */
     public static boolean isRouteReplacement(String routeId) {
-        String replacementIdPattern = "BKK_(VP|TP)[0-9]+";
+        /**
+         * Possible values and meanings:
+         * BKK_VP: VillamosPótló
+         * BKK_TP: TroliPótló
+         * BKK_HP: HévPótló
+         * to be continued...
+         */
+        String replacementIdPattern = "BKK_(VP|TP|HP)[0-9]+";
 
         return routeId.matches(replacementIdPattern);
     }
