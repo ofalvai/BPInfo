@@ -37,12 +37,13 @@ public class AlertFilterFragment extends DialogFragment {
         return fragment;
     }
 
+    public void setFilterListener(AlertFilterListener listener) {
+        mFilterListener = listener;
+    }
 
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        //TODO: savedInstanceState
-
         return new AlertDialog.Builder(getActivity())
                 // Title
                 .setTitle(R.string.filter_title)

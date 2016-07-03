@@ -47,6 +47,7 @@ public class AlertListFragment extends Fragment
     private AlertAdapter mAlertAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private LinearLayout mErrorLayout;
+    private AlertFilterFragment mFilterFragment;
     private TextView mFilterWarningView;
 
     @Inject
@@ -92,6 +93,12 @@ public class AlertListFragment extends Fragment
                 initRefresh();
             }
         });
+
+        // If this fragment got recreated while the filter dialog was open, we need to update
+        // the listener reference
+        if (mFilterFragment != null) {
+            mFilterFragment.setFilterListener(this);
+        }
 
         return view;
     }
@@ -141,10 +148,10 @@ public class AlertListFragment extends Fragment
     }
 
     private void displayFilter() {
-        AlertFilterFragment filterFragment = AlertFilterFragment.newInstance(this,
+        mFilterFragment = AlertFilterFragment.newInstance(this,
                 mAlertListPresenter.getFilter());
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        filterFragment.show(transaction, "dialog");
+        mFilterFragment.show(transaction, "dialog");
     }
 
     @Override
