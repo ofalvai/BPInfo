@@ -24,6 +24,7 @@ import com.example.bkkinfoplus.Utils;
 import com.example.bkkinfoplus.model.Alert;
 import com.example.bkkinfoplus.model.Route;
 import com.example.bkkinfoplus.model.RouteType;
+import com.example.bkkinfoplus.ui.EmptyRecyclerView;
 import com.example.bkkinfoplus.ui.SimpleDividerItemDecoration;
 import com.example.bkkinfoplus.ui.UiUtils;
 import com.example.bkkinfoplus.ui.alert.AlertDetailFragment;
@@ -37,7 +38,7 @@ public class AlertListFragment extends Fragment
 
     private static final String TAG = "AlertListFragment";
 
-    private RecyclerView mAlertRecyclerView;
+    private EmptyRecyclerView mAlertRecyclerView;
     private AlertAdapter mAlertAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private LinearLayout mErrorLayout;
@@ -60,10 +61,12 @@ public class AlertListFragment extends Fragment
 
         mErrorLayout = (LinearLayout) view.findViewById(R.id.error_with_action);
 
-        mAlertRecyclerView = (RecyclerView) view.findViewById(R.id.alerts_recycler_view);
+        mAlertRecyclerView = (EmptyRecyclerView) view.findViewById(R.id.alerts_recycler_view);
         mAlertRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mAlertRecyclerView.addItemDecoration(
                 new SimpleDividerItemDecoration(getActivity().getApplicationContext()));
+        final View emptyView = view.findViewById(R.id.empty_view);
+        mAlertRecyclerView.setEmptyView(emptyView);
 
         initRefresh();
 

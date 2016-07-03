@@ -29,4 +29,5 @@
     </string-array>
     <string name="filter_positive_button">Szűrés</string>
     <string name="filter_negative_button">Mégse</string>
+    <string name="alert_list_empty">Nincs megjeleníthető forgalmi változás</string>
 </resources>

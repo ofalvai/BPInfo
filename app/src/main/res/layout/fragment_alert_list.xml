@@ -7,18 +7,20 @@
 
     <include layout="@layout/error_with_action" />
 
+    <include layout="@layout/list_item_empty" />
+
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/alerts_swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
+        <com.example.bkkinfoplus.ui.EmptyRecyclerView
 
             android:id="@+id/alerts_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:context=".ui.alertlist.AlertListFragment">
-        </android.support.v7.widget.RecyclerView>
+        </com.example.bkkinfoplus.ui.EmptyRecyclerView>
 
     </android.support.v4.widget.SwipeRefreshLayout>
     
