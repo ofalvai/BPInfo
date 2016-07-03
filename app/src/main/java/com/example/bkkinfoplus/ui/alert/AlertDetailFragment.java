@@ -28,7 +28,6 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
 
     private TextView mTitleTextView;
     private TextView mDateTextView;
-    private TextView mDateModifiedTextView;
     private FlowLayout mRouteIconsLayout;
     private HtmlTextView mDescriptionTextView;
     private TextView mUrlTextView;
@@ -80,7 +79,6 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
         View view = inflater.inflate(R.layout.fragment_alert_detail, container, false);
         mTitleTextView = (TextView) view.findViewById(R.id.alert_detail_title);
         mDateTextView = (TextView) view.findViewById(R.id.alert_detail_date);
-        mDateModifiedTextView = (TextView) view.findViewById(R.id.alert_detail_date_modified);
         mRouteIconsLayout = (FlowLayout) view.findViewById(R.id.alert_detail_route_icons_wrapper);
         mDescriptionTextView = (HtmlTextView) view.findViewById(R.id.alert_detail_description);
         mUrlTextView = (TextView) view.findViewById(R.id.alert_detail_url);
