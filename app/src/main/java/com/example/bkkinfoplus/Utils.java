@@ -1,11 +1,14 @@
 package com.example.bkkinfoplus;
 
+import android.content.Context;
+
 import com.android.volley.NetworkError;
 import com.android.volley.NoConnectionError;
 import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.example.bkkinfoplus.model.Alert;
+import com.example.bkkinfoplus.model.RouteType;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -48,6 +51,36 @@ public class Utils {
         String replacementIdPattern = "BKK_(VP|TP|HP)[0-9]+";
 
         return routeId.matches(replacementIdPattern);
+    }
+
+    public static String routeTypeToString(Context context, RouteType routeType) {
+        int resourceId;
+        switch (routeType) {
+            case BUS:
+                resourceId = R.string.route_bus;
+                break;
+            case FERRY:
+                resourceId = R.string.route_ferry;
+                break;
+            case RAIL:
+                resourceId = R.string.route_rail;
+                break;
+            case TRAM:
+                resourceId = R.string.route_tram;
+                break;
+            case TROLLEYBUS:
+                resourceId = R.string.route_trolleybus;
+                break;
+            case SUBWAY:
+                resourceId = R.string.route_subway;
+                break;
+            case _OTHER_:
+                resourceId = R.string.route_other;
+                break;
+            default:
+                resourceId = R.string.route_other;
+        }
+        return context.getString(resourceId);
     }
 
     public static List<String> jsonArrayToStringList(JSONArray array) throws JSONException {

@@ -42,6 +42,7 @@ public class AlertListFragment extends Fragment
     private AlertAdapter mAlertAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private LinearLayout mErrorLayout;
+    private TextView mFilterWarningView;
 
     private AlertListPresenter mAlertListPresenter;
 
@@ -60,6 +61,7 @@ public class AlertListFragment extends Fragment
         View view = inflater.inflate(R.layout.fragment_alert_list, container, false);
 
         mErrorLayout = (LinearLayout) view.findViewById(R.id.error_with_action);
+        mFilterWarningView = (TextView) view.findViewById(R.id.alert_list_filter_active_message);
 
         mAlertRecyclerView = (EmptyRecyclerView) view.findViewById(R.id.alerts_recycler_view);
         mAlertRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -126,6 +128,8 @@ public class AlertListFragment extends Fragment
     public void onFilterChanged(Set<RouteType> selectedTypes) {
         mAlertListPresenter.setFilter(selectedTypes);
         mAlertListPresenter.getAlertList();
+
+        updateFilterWarning(selectedTypes);
     }
 
     @Override
@@ -176,27 +180,60 @@ public class AlertListFragment extends Fragment
     private void setErrorView(boolean state, String errorMessage) {
         if (state) {
             setUpdating(false);
-
-            TextView errorMessageView = (TextView) mErrorLayout.findViewById(R.id.error_message);
-            Button refreshButton = (Button) mErrorLayout.findViewById(R.id.error_action_button);
-
-            if (!refreshButton.hasOnClickListeners()) {
-                refreshButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        initRefresh();
-                    }
-                });
-            }
-            refreshButton.setText(getString(R.string.label_retry));
-
-            mErrorLayout.setVisibility(View.VISIBLE);
-            errorMessageView.setText(errorMessage);
-
             mAlertRecyclerView.setVisibility(View.GONE);
+
+            if (mErrorLayout != null) {
+                TextView errorMessageView = (TextView) mErrorLayout.findViewById(R.id.error_message);
+                Button refreshButton = (Button) mErrorLayout.findViewById(R.id.error_action_button);
+
+                if (!refreshButton.hasOnClickListeners()) {
+                    refreshButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            initRefresh();
+                        }
+                    });
+                }
+                refreshButton.setText(getString(R.string.label_retry));
+
+                mErrorLayout.setVisibility(View.VISIBLE);
+                errorMessageView.setText(errorMessage);
+            }
         } else {
             mAlertRecyclerView.setVisibility(View.VISIBLE);
-            mErrorLayout.setVisibility(View.GONE);
+
+            if (mErrorLayout != null) {
+                mErrorLayout.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    /**
+     * Updates the filter warning bar above the list based on the currently selected RouteTypes.
+     * Hides the bar if nothing is selected as filter.
+     * @param selectedTypes To hide the warning bar, pass an empty set
+     */
+    private void updateFilterWarning(Set<RouteType> selectedTypes) {
+        if (mFilterWarningView != null) {
+            if (selectedTypes.isEmpty()) {
+                mFilterWarningView.setVisibility(View.GONE);
+            } else {
+                StringBuilder typeList = new StringBuilder();
+                final String separator = ", ";
+                for (RouteType type : selectedTypes) {
+                    typeList.append(Utils.routeTypeToString(getContext(), type));
+                    typeList.append(separator);
+                }
+
+                // Removing the last separator at the end of the list
+                String completeString = getString(R.string.filter_message, typeList.toString());
+                if (completeString.endsWith(separator)) {
+                    completeString = completeString.substring(0, completeString.length() - separator.length());
+                }
+
+                mFilterWarningView.setText(completeString);
+                mFilterWarningView.setVisibility(View.VISIBLE);
+            }
         }
     }
 

@@ -31,4 +31,12 @@
     <string name="filter_positive_button">Szűrés</string>
     <string name="filter_negative_button">Mégse</string>
     <string name="alert_list_empty">Nincs megjeleníthető forgalmi változás</string>
+    <string name="route_bus">Busz</string>
+    <string name="route_ferry">Hajó</string>
+    <string name="route_rail">HÉV</string>
+    <string name="route_subway">Metró</string>
+    <string name="route_tram">Villamos</string>
+    <string name="route_trolleybus">Trolibusz</string>
+    <string name="filter_message">Szűrés: %1$s</string>
+    <string name="route_other">Egyéb</string>
 </resources>
