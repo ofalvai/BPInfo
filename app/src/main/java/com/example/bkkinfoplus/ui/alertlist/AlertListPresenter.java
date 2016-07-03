@@ -67,13 +67,19 @@ public class AlertListPresenter implements FutarApiClient.FutarApiCallback {
     }
 
     /**
-     * Returns the local, filtered state of the alert list to the listener
+     * If possible, returns the local, filtered state of the alert list to the listener,
+     * otherwise calls fetchAlertList() to get data from the API.
      */
     public void getAlertList() {
-        // Filter by route type
-        List<Alert> filteredAlerts = filter(mActiveFilter, mUnfilteredAlerts);
+        if (mUnfilteredAlerts != null) {
+            // Filter by route type
+            List<Alert> filteredAlerts = filter(mActiveFilter, mUnfilteredAlerts);
 
-        mInteractionListener.displayAlerts(filteredAlerts);
+            mInteractionListener.displayAlerts(filteredAlerts);
+        } else {
+            fetchAlertList();
+        }
+
     }
 
     public void setLastUpdate() {

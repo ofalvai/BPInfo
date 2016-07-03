@@ -30,13 +30,18 @@ import com.example.bkkinfoplus.ui.UiUtils;
 import com.example.bkkinfoplus.ui.alert.AlertDetailFragment;
 import com.wefika.flowlayout.FlowLayout;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import javax.inject.Inject;
 
 public class AlertListFragment extends Fragment
         implements AlertListPresenter.AlertInteractionListener, AlertFilterFragment.AlertFilterListener {
 
     private static final String TAG = "AlertListFragment";
+
+    private static final String KEY_ACTIVE_FILTER = "active_filter";
 
     private EmptyRecyclerView mAlertRecyclerView;
     private AlertAdapter mAlertAdapter;
@@ -44,13 +49,20 @@ public class AlertListFragment extends Fragment
     private LinearLayout mErrorLayout;
     private TextView mFilterWarningView;
 
-    private AlertListPresenter mAlertListPresenter;
+    @Inject
+    public AlertListPresenter mAlertListPresenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mAlertListPresenter = new AlertListPresenter(this);
+
+        if (savedInstanceState != null) {
+            @SuppressWarnings("unchecked")
+            HashSet<RouteType> filter = (HashSet<RouteType>) savedInstanceState.getSerializable(KEY_ACTIVE_FILTER);
+            onFilterChanged(filter);
+        }
     }
 
     @Override
@@ -71,6 +83,7 @@ public class AlertListFragment extends Fragment
         mAlertRecyclerView.setEmptyView(emptyView);
 
         initRefresh();
+        updateFilterWarning();
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.alerts_swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -105,6 +118,16 @@ public class AlertListFragment extends Fragment
         mAlertListPresenter.checkIfUpdateNeeded();
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        // Casting to HashSet, because Set is not serializable :(
+        HashSet<RouteType> filter = (HashSet<RouteType>) mAlertListPresenter.getFilter();
+
+        outState.putSerializable(KEY_ACTIVE_FILTER, filter);
+    }
+
     private void initRefresh() {
         mAlertListPresenter.fetchAlertList();
 
@@ -129,7 +152,7 @@ public class AlertListFragment extends Fragment
         mAlertListPresenter.setFilter(selectedTypes);
         mAlertListPresenter.getAlertList();
 
-        updateFilterWarning(selectedTypes);
+        updateFilterWarning();
     }
 
     @Override
@@ -211,10 +234,12 @@ public class AlertListFragment extends Fragment
     /**
      * Updates the filter warning bar above the list based on the currently selected RouteTypes.
      * Hides the bar if nothing is selected as filter.
-     * @param selectedTypes To hide the warning bar, pass an empty set
      */
-    private void updateFilterWarning(Set<RouteType> selectedTypes) {
-        if (mFilterWarningView != null) {
+    private void updateFilterWarning() {
+        // Might be null, because it gets called by onCreate() too
+        if (mFilterWarningView != null && mAlertListPresenter != null) {
+            Set<RouteType> selectedTypes = mAlertListPresenter.getFilter();
+
             if (selectedTypes.isEmpty()) {
                 mFilterWarningView.setVisibility(View.GONE);
             } else {
