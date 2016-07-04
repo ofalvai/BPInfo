@@ -8,8 +8,8 @@ import android.support.v7.widget.ActionBarContainer;
 import android.text.format.DateUtils;
 
 import com.example.bkkinfoplus.ui.alertlist.AlertListActivity;
+import com.example.bkkinfoplus.util.AlertListTestHelper;
 import com.example.bkkinfoplus.util.ElapsedTimeIdlingResource;
-import com.example.bkkinfoplus.util.RecyclerViewMatcher;
 
 import org.junit.After;
 import org.junit.Before;
@@ -25,8 +25,11 @@ import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFro
 import static android.support.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isDescendantOfA;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static com.example.bkkinfoplus.util.AlertListTestHelper.withRecyclerView;
+import static com.example.bkkinfoplus.util.OrientationChangeAction.orientationLandscape;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.endsWith;
 
@@ -37,14 +40,7 @@ import static org.hamcrest.Matchers.endsWith;
 @RunWith(AndroidJUnit4.class)
 public class AlertListTest {
 
-    private static final int RECYCLER_VIEW_ID = R.id.alerts_recycler_view;
-
     private IdlingResource mIdlingResource;
-
-    // Convenience helper
-    private static RecyclerViewMatcher withRecyclerView(final int recyclerViewId) {
-        return new RecyclerViewMatcher(recyclerViewId);
-    }
 
     @Rule
     public ActivityTestRule<AlertListActivity> mActivityRule =
@@ -75,7 +71,7 @@ public class AlertListTest {
      */
     @Test
     public void alertListHasItemTest() {
-        onView(withRecyclerView(RECYCLER_VIEW_ID).atPosition(0))
+        onView(withRecyclerView(AlertListTestHelper.RECYCLER_VIEW_ID).atPosition(0))
                 .check(matches(isCompletelyDisplayed()));
     }
 
@@ -84,7 +80,7 @@ public class AlertListTest {
      */
     @Test
     public void alertListItemTitleTest() {
-        onView(withRecyclerView(RECYCLER_VIEW_ID).atPosition(0))
+        onView(withRecyclerView(AlertListTestHelper.RECYCLER_VIEW_ID).atPosition(0))
                 .check(matches(hasDescendant(allOf(
                         withId(R.id.list_item_alert_description),
                         isCompletelyDisplayed()
@@ -96,7 +92,7 @@ public class AlertListTest {
      */
     @Test
     public void alertListItemDateTest() {
-        onView(withRecyclerView(RECYCLER_VIEW_ID).atPosition(0))
+        onView(withRecyclerView(AlertListTestHelper.RECYCLER_VIEW_ID).atPosition(0))
                 .check(matches(hasDescendant(allOf(
                         withId(R.id.list_item_alert_date),
                         isCompletelyDisplayed()
@@ -119,7 +115,15 @@ public class AlertListTest {
      */
     @Test
     public void itemClickTest() {
-        onView(withRecyclerView(RECYCLER_VIEW_ID).atPosition(0)).perform(click());
+        onView(withRecyclerView(AlertListTestHelper.RECYCLER_VIEW_ID).atPosition(0)).perform(click());
+    }
+
+    //TODO: doesn't work yet
+    @Test
+    public void alertListRotationTest() {
+        onView(isRoot()).perform(orientationLandscape()).check(matches(isCompletelyDisplayed()));
+
+        onView(withId(AlertListTestHelper.RECYCLER_VIEW_ID)).check(matches(isCompletelyDisplayed()));
     }
 
 }

@@ -7,8 +7,8 @@ import android.support.test.runner.AndroidJUnit4;
 import android.text.format.DateUtils;
 
 import com.example.bkkinfoplus.ui.alertlist.AlertListActivity;
+import com.example.bkkinfoplus.util.AlertListTestHelper;
 import com.example.bkkinfoplus.util.ElapsedTimeIdlingResource;
-import com.example.bkkinfoplus.util.RecyclerViewMatcher;
 
 import org.junit.After;
 import org.junit.Before;
@@ -24,6 +24,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.isCompletelyDis
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static com.example.bkkinfoplus.util.AlertListTestHelper.withRecyclerView;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.core.IsNot.not;
 
@@ -34,14 +35,7 @@ import static org.hamcrest.core.IsNot.not;
 @RunWith(AndroidJUnit4.class)
 public class AlertDetailTest {
 
-    private static final int RECYCLER_VIEW_ID = R.id.alerts_recycler_view;
-
     private IdlingResource mIdlingResource;
-
-    // Convenience helper
-    private static RecyclerViewMatcher withRecyclerView(final int recyclerViewId) {
-        return new RecyclerViewMatcher(recyclerViewId);
-    }
 
     @Rule
     public ActivityTestRule<AlertListActivity> mActivityRule =
@@ -62,7 +56,7 @@ public class AlertDetailTest {
 
     @Before
     public void clickOnAlertInList() {
-        onView(withRecyclerView(RECYCLER_VIEW_ID).atPosition(0)).perform(click());
+        onView(withRecyclerView(AlertListTestHelper.RECYCLER_VIEW_ID).atPosition(0)).perform(click());
     }
 
     @After
@@ -117,6 +111,6 @@ public class AlertDetailTest {
     public void alertDetailBackButtonTest() {
         onView(withId(R.id.alert_detail_title)).perform(pressBack());
 
-        onView(withId(RECYCLER_VIEW_ID)).check(matches(isCompletelyDisplayed()));
+        onView(withId(AlertListTestHelper.RECYCLER_VIEW_ID)).check(matches(isCompletelyDisplayed()));
     }
 }
