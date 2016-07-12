@@ -3,6 +3,7 @@ package com.example.bkkinfoplus.ui.settings;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -15,7 +16,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.example.bkkinfoplus.BkkInfoApplication;
 import com.example.bkkinfoplus.R;
+
+import javax.inject.Inject;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -28,7 +32,9 @@ import com.example.bkkinfoplus.R;
  * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
  * API Guide</a> for more information on developing a Settings UI.
  */
-public class SettingsActivity extends AppCompatPreferenceActivity {
+public class SettingsActivity extends AppCompatPreferenceActivity  implements SharedPreferences.OnSharedPreferenceChangeListener {
+
+    @Inject SharedPreferences mSharedPreferences;
 
     public static Intent newIntent(Context context) {
         Intent intent = new Intent(context, SettingsActivity.class);
@@ -91,11 +97,20 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        BkkInfoApplication.injector.inject(this);
+
         setupActionBar();
 
         addPreferencesFromResource(R.xml.pref_general);
-        bindPreferenceSummaryToValue(findPreference("pref_key_language"));
+        PreferenceManager.setDefaultValues(this, R.xml.pref_general, false);
+        bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_language)));
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
 
     }
 
@@ -146,5 +161,10 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
      */
     protected boolean isValidFragment(String fragmentName) {
         return PreferenceFragment.class.getName().equals(fragmentName);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+
     }
 }

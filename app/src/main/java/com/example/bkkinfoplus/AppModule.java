@@ -1,6 +1,8 @@
 package com.example.bkkinfoplus;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import javax.inject.Singleton;
 
@@ -25,4 +27,11 @@ public class AppModule {
     Context providesContext() {
         return mContext;
     }
+
+    @Provides
+    @Singleton
+    SharedPreferences providesSharedPreferences(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context);
+    }
+
 }
