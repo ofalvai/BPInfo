@@ -18,4 +18,6 @@ public interface AppComponent {
     void inject(AlertListPresenter alertListPresenter);
 
     void inject(SettingsActivity settingsActivity);
+
+    void inject(BkkInfoApplication bkkInfoApplication);
 }

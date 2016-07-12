@@ -70,4 +70,13 @@
     <string name="pref_description_rate">Értékeld a Play Store-ban, ha tetszik az app</string>
     <string name="pref_description_licences">Felhasznált nyílt forráskódú könyvtárak</string>
     <string name="menu_debug">Debug mód</string>
+
+    <!-- Settings keys -->
+    <string name="pref_key_category_general" translatable="false">category_general</string>
+    <string name="pref_key_language" translatable="false">language</string>
+    <string name="pref_language_dialog_title">Újraindítás szükséges</string>
+    <string name="pref_language_dialog_message">Az új nyelv érvénybe lépéséhez újra kell indítani az appot.</string>
+    <string name="pref_language_dialog_positive_button">Újraindítás</string>
+    <string name="pref_language_dialog_negative_button">Később</string>
+
 </resources>

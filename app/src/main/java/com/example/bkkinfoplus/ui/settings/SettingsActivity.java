@@ -2,6 +2,7 @@ package com.example.bkkinfoplus.ui.settings;
 
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,12 +13,14 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.example.bkkinfoplus.BkkInfoApplication;
 import com.example.bkkinfoplus.R;
+import com.jakewharton.processphoenix.ProcessPhoenix;
 
 import javax.inject.Inject;
 
@@ -33,6 +36,8 @@ import javax.inject.Inject;
  * API Guide</a> for more information on developing a Settings UI.
  */
 public class SettingsActivity extends AppCompatPreferenceActivity  implements SharedPreferences.OnSharedPreferenceChangeListener {
+
+    private static final String TAG = "SettingsActivity";
 
     @Inject SharedPreferences mSharedPreferences;
 
@@ -109,9 +114,35 @@ public class SettingsActivity extends AppCompatPreferenceActivity  implements Sh
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
+        mSharedPreferences.registerOnSharedPreferenceChangeListener(this);
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mSharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(getString(R.string.pref_key_language))) {
+            Preference languagePreference = findPreference(getString(R.string.pref_key_language));
+
+            new AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.pref_language_dialog_title))
+                    .setMessage(getString(R.string.pref_language_dialog_message))
+                    .setNegativeButton(getString(R.string.pref_language_dialog_negative_button), null)
+                    .setPositiveButton(getString(R.string.pref_language_dialog_positive_button),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                ProcessPhoenix.triggerRebirth(getApplicationContext());
+                            }
+                        })
+                    .show();
+        }
     }
 
     @Override
@@ -132,17 +163,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity  implements Sh
         return true;
     }
 
-    /**
-     * Set up the {@link android.app.ActionBar}, if the API is available.
-     */
-    private void setupActionBar() {
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            // Show the Up button in the action bar.
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-    }
-
     @Override
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
         int id = item.getItemId();
@@ -156,15 +176,21 @@ public class SettingsActivity extends AppCompatPreferenceActivity  implements Sh
     }
 
     /**
+     * Set up the {@link android.app.ActionBar}, if the API is available.
+     */
+    private void setupActionBar() {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            // Show the Up button in the action bar.
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+    }
+
+    /**
      * This method stops fragment injection in malicious applications.
      * Make sure to deny any unknown fragments here.
      */
     protected boolean isValidFragment(String fragmentName) {
         return PreferenceFragment.class.getName().equals(fragmentName);
-    }
-
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-
     }
 }
