@@ -28,6 +28,7 @@ import com.example.bkkinfoplus.ui.EmptyRecyclerView;
 import com.example.bkkinfoplus.ui.SimpleDividerItemDecoration;
 import com.example.bkkinfoplus.ui.UiUtils;
 import com.example.bkkinfoplus.ui.alert.AlertDetailFragment;
+import com.example.bkkinfoplus.ui.settings.SettingsActivity;
 import com.wefika.flowlayout.FlowLayout;
 
 import java.util.HashSet;
@@ -113,6 +114,9 @@ public class AlertListFragment extends Fragment
         switch (item.getItemId()) {
             case R.id.menu_item_filter_alerts:
                 displayFilter();
+                break;
+            case R.id.menu_item_settings:
+                startActivity(SettingsActivity.newIntent(getContext()));
                 break;
         }
         return true;

@@ -39,4 +39,35 @@
     <string name="route_rail">HÉV</string>
     <string name="filter_message">Szűrés: %1$s</string>
     <string name="route_other">Egyéb</string>
+    <string name="title_activity_settings">Beállítások</string>
+
+    <string name="pref_language_auto">Automatikus</string>
+    <string name="pref_language_hu">Magyar</string>
+    <string name="pref_language_en">Angol</string>
+
+    <string-array name="pref_language_list_titles">
+        <item>@string/pref_language_auto</item>
+        <item>@string/pref_language_hu</item>
+        <item>@string/pref_language_en</item>
+    </string-array>
+
+    <string-array name="pref_language_list_values">
+        <item>auto</item>
+        <item>hu</item>
+        <item>en</item>
+    </string-array>
+
+    <string name="menu_settings">Beállítások</string>
+    <string name="pref_category_general">Általános</string>
+    <string name="pref_title_language">Nyelv</string>
+    <string name="pref_category_about">Névjegy</string>
+    <string name="pref_title_send_bugreport">Hibajelentés</string>
+    <string name="pref_title_send_bugreport_bkk">Hibajelentés a BKK-nak</string>
+    <string name="pref_title_rate">App értékelése</string>
+    <string name="pref_title_licences">Licencek</string>
+    <string name="pref_description_send_bugreport">Ha az alkalmazással van gond</string>
+    <string name="pref_description_send_bugreport_bkk">Ha az adatokkal van gond (Futár)</string>
+    <string name="pref_description_rate">Értékeld a Play Store-ban, ha tetszik az app</string>
+    <string name="pref_description_licences">Felhasznált nyílt forráskódú könyvtárak</string>
+    <string name="menu_debug">Debug mód</string>
 </resources>

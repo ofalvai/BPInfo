@@ -22,6 +22,14 @@
             android:name=".ui.alert.AlertDetailActivity"
             android:parentActivityName=".ui.alertlist.AlertListActivity">
         </activity>
+        <activity
+            android:name=".ui.settings.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".ui.alertlist.AlertListActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.bkkinfoplus.ui.alertlist.AlertListActivity"/>
+        </activity>
     </application>
 
 </manifest>

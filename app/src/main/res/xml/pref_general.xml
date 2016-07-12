@@ -1,0 +1,46 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="@string/pref_category_general"
+        android:key="pref_key_category_general">
+
+        <ListPreference
+            android:title="@string/pref_title_language"
+            android:key="pref_key_language"
+            android:defaultValue="@string/pref_language_auto"
+            android:entries="@array/pref_language_list_titles"
+            android:entryValues="@array/pref_language_list_values" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/pref_category_about"
+        android:key="pref_key_category_about">
+
+        <Preference
+            android:title="@string/app_name"
+            android:summary="TODO: version" />
+
+        <Preference
+            android:title="@string/pref_title_send_bugreport"
+            android:summary="@string/pref_description_send_bugreport"
+            android:key="pref_key_send_bugreport"/>
+
+        <Preference
+            android:title="@string/pref_title_send_bugreport_bkk"
+            android:summary="@string/pref_description_send_bugreport_bkk"
+            android:key="pref_key_send_bugreport_bkk"/>
+
+        <Preference
+            android:title="@string/pref_title_rate"
+            android:summary="@string/pref_description_rate"
+            android:key="pref_key_rate"/>
+
+        <Preference
+            android:title="@string/pref_title_licences"
+            android:summary="@string/pref_description_licences"
+            android:key="pref_key_licences"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
