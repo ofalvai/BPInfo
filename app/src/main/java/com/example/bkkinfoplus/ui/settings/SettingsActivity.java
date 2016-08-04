@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
@@ -46,7 +45,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity  implements Sh
 
         return intent;
     }
-
 
     /**
      * A preference value change listener that updates the preference's summary
@@ -109,6 +107,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity  implements Sh
 
         addPreferencesFromResource(R.xml.pref_general);
         PreferenceManager.setDefaultValues(this, R.xml.pref_general, false);
+
         bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_language)));
 
     }
@@ -167,9 +166,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity  implements Sh
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            if (!super.onMenuItemSelected(featureId, item)) {
-                NavUtils.navigateUpFromSameTask(this);
-            }
+            NavUtils.navigateUpFromSameTask(this);
             return true;
         }
         return super.onMenuItemSelected(featureId, item);
@@ -184,13 +181,5 @@ public class SettingsActivity extends AppCompatPreferenceActivity  implements Sh
             // Show the Up button in the action bar.
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-    }
-
-    /**
-     * This method stops fragment injection in malicious applications.
-     * Make sure to deny any unknown fragments here.
-     */
-    protected boolean isValidFragment(String fragmentName) {
-        return PreferenceFragment.class.getName().equals(fragmentName);
     }
 }

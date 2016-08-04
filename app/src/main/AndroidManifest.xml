@@ -9,9 +9,13 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:supportsRtl="true"
+        android:supportsRtl="false"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.alertlist.AlertListActivity">
+
+        <!--Alert List-->
+        <activity
+            android:name=".ui.alertlist.AlertListActivity"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -19,10 +23,14 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <!-- Alert Detail (currently not used as an activity) -->
         <activity
             android:name=".ui.alert.AlertDetailActivity"
             android:parentActivityName=".ui.alertlist.AlertListActivity">
         </activity>
+
+        <!-- Settings -->
         <activity
             android:name=".ui.settings.SettingsActivity"
             android:label="@string/title_activity_settings"
