@@ -8,6 +8,7 @@ import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.example.bkkinfoplus.model.Alert;
+import com.example.bkkinfoplus.model.Route;
 import com.example.bkkinfoplus.model.RouteType;
 
 import org.json.JSONArray;
@@ -125,5 +126,23 @@ public class Utils {
         }
 
         return stringId;
+    }
+
+    /**
+     * Certain affected routes returned by the alerts API are visually identical if we display only
+     * their shortName and color. It's enough to display only one of these routes, so every affected
+     * route can be compared to the already displayed routes with this method.
+     * @param routeToTest
+     * @param routes List of routes to test against
+     * @return true if routeToTest is visually identical to any of the other routes, false otherwise
+     */
+    public static boolean isRouteVisuallyDuplicate(Route routeToTest, List<Route> routes) {
+        for (Route route : routes) {
+            if (route.getShortName().equals(routeToTest.getShortName()) &&
+                    route.getType().equals(routeToTest.getType())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -14,12 +14,16 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.bkkinfoplus.R;
+import com.example.bkkinfoplus.Utils;
 import com.example.bkkinfoplus.model.Alert;
 import com.example.bkkinfoplus.model.Route;
 import com.example.bkkinfoplus.ui.UiUtils;
 import com.wefika.flowlayout.FlowLayout;
 
 import org.sufficientlysecure.htmltextview.HtmlTextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AlertDetailFragment extends BottomSheetDialogFragment {
     private static final String ARG_ALERT_OBJECT = "alert_object";
@@ -31,6 +35,12 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
     private FlowLayout mRouteIconsLayout;
     private HtmlTextView mDescriptionTextView;
     private TextView mUrlTextView;
+
+    /**
+     * List of currently displayed route icons. This list is needed in order to find visually
+     * duplicate route data, and not to display them twice.
+     */
+    private List<Route> mDisplayedRoutes = new ArrayList<>();
 
     private BottomSheetBehavior.BottomSheetCallback mBottomSheetBehaviorCallback =
             new AlertDetailCallback();
@@ -88,9 +98,15 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
         String dateString = UiUtils.alertDateFormatter(getActivity(), mAlert.getStart(), mAlert.getEnd());
         mDateTextView.setText(dateString);
 
+        // There are alerts without affected routes, eg. announcements
         if (mAlert.getRouteIds() != null) {
             for (Route route : mAlert.getAffectedRoutes()) {
-                UiUtils.addRouteIcon(getActivity(), mRouteIconsLayout, route);
+                // Some affected routes are visually identical to others in the list, no need
+                // to diplay them again.
+                if (!Utils.isRouteVisuallyDuplicate(route, mDisplayedRoutes)) {
+                    mDisplayedRoutes.add(route);
+                    UiUtils.addRouteIcon(getActivity(), mRouteIconsLayout, route);
+                }
             }
         }
 

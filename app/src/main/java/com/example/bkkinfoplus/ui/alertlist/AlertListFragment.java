@@ -31,6 +31,7 @@ import com.example.bkkinfoplus.ui.alert.AlertDetailFragment;
 import com.example.bkkinfoplus.ui.settings.SettingsActivity;
 import com.wefika.flowlayout.FlowLayout;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -300,6 +301,12 @@ public class AlertListFragment extends Fragment
 
         private Alert mAlert;
 
+        /**
+         * List of currently displayed route icons. This list is needed in order to find visually
+         * duplicate route data, and not to display them twice.
+         */
+        private List<Route> mDisplayedRoutes = new ArrayList<>();
+
         public AlertHolder(View itemView) {
             super(itemView);
 
@@ -323,16 +330,22 @@ public class AlertListFragment extends Fragment
             mDateTextView.setText(dateString);
 
             // Route icons
-            // First, removing any previously added icon views from the layout
+            // First, removing any previously added icons
             mRouteIconsWrapper.removeAllViews();
+            mDisplayedRoutes.clear();
 
             // There are alerts without affected routes, eg. announcements
             if (alert.getRouteIds() != null) {
                 for (Route route : alert.getAffectedRoutes()) {
-                    UiUtils.addRouteIcon(getActivity(), mRouteIconsWrapper, route);
+                    // Some affected routes are visually identical to others in the list, no need
+                    // to diplay them again.
+                    if (!Utils.isRouteVisuallyDuplicate(route, mDisplayedRoutes)) {
+                        mDisplayedRoutes.add(route);
+                        UiUtils.addRouteIcon(getActivity(), mRouteIconsWrapper, route);
 
-                    if (route.getType() == RouteType._OTHER_) {
-                        Toast.makeText(getContext(),"Unknown route type: " + route.getShortName() + "(" + route.getId() + ")", Toast.LENGTH_LONG).show();
+                        if (route.getType() == RouteType._OTHER_) {
+                            Toast.makeText(getContext(),"Unknown route type: " + route.getShortName() + "(" + route.getId() + ")", Toast.LENGTH_LONG).show();
+                        }
                     }
                 }
             }

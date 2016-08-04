@@ -196,8 +196,8 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
             try {
                 route = parseRoute(routeNode);
 
+                // Replacement routes are inconsistent and unnecessary to display
                 if (!Utils.isRouteReplacement(route.getId())) {
-                    // Replacement routes are inconsistent and unnecessary to display
                     routeMap.put(route.getId(), route);
                 }
             } catch (JSONException ex) {
