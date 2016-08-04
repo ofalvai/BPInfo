@@ -16,6 +16,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.bkkinfoplus.BkkInfoApplication;
 import com.example.bkkinfoplus.R;
@@ -126,6 +127,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity  implements Sh
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        // Language
         if (key.equals(getString(R.string.pref_key_language))) {
             Preference languagePreference = findPreference(getString(R.string.pref_key_language));
 
@@ -142,6 +144,13 @@ public class SettingsActivity extends AppCompatPreferenceActivity  implements Sh
                         })
                     .show();
         }
+        // Debug mode
+        else if (key.equals(getString(R.string.pref_key_debug_mode))) {
+            boolean state = mSharedPreferences.getBoolean(key, false);
+            String text = state ? getString(R.string.debug_mode_on) : getString(R.string.debog_mode_off);
+
+            Toast.makeText(this, text, Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -155,7 +164,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity  implements Sh
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_item_debug:
-                // TODO
+                final String key = getString(R.string.pref_key_debug_mode);
+                boolean oldState = mSharedPreferences.getBoolean(key, false);
+                mSharedPreferences.edit().putBoolean(key, !oldState).apply();
                 break;
         }
 

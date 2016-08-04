@@ -15,7 +15,7 @@
 
     <PreferenceCategory
         android:title="@string/pref_category_about"
-        android:key="pref_key_category_about">
+        android:key="@string/pref_key_category_about">
 
         <Preference
             android:title="@string/app_name"
