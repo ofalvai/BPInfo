@@ -63,7 +63,9 @@ public class AlertListFragment extends Fragment
         if (savedInstanceState != null) {
             @SuppressWarnings("unchecked")
             HashSet<RouteType> filter = (HashSet<RouteType>) savedInstanceState.getSerializable(KEY_ACTIVE_FILTER);
-            onFilterChanged(filter);
+            if (filter != null) {
+                onFilterChanged(filter);
+            }
         }
     }
 
@@ -84,9 +86,6 @@ public class AlertListFragment extends Fragment
         final View emptyView = view.findViewById(R.id.empty_view);
         mAlertRecyclerView.setEmptyView(emptyView);
 
-        initRefresh();
-        updateFilterWarning();
-
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.alerts_swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -100,6 +99,9 @@ public class AlertListFragment extends Fragment
         if (mFilterFragment != null) {
             mFilterFragment.setFilterListener(this);
         }
+
+        initRefresh();
+        updateFilterWarning();
 
         return view;
     }
@@ -141,6 +143,8 @@ public class AlertListFragment extends Fragment
 
     private void initRefresh() {
         mAlertListPresenter.fetchAlertList();
+
+        setUpdating(true);
 
         mAlertListPresenter.setLastUpdate();
     }
@@ -202,7 +206,18 @@ public class AlertListFragment extends Fragment
 
     @Override
     public void setUpdating(boolean state) {
-        mSwipeRefreshLayout.setRefreshing(state);
+        if (state) {
+            // Workaround for https://code.google.com/p/android/issues/detail?id=77712
+            // From: http://stackoverflow.com/a/26910973/745637
+            mSwipeRefreshLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    mSwipeRefreshLayout.setRefreshing(true);
+                }
+            });
+        } else {
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
     }
 
     /**
