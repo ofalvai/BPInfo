@@ -38,10 +38,10 @@ public class BkkInfoApplication extends Application {
     private void setLanguage() {
         String languagePreference = mSharedPreferences.getString(
                 getString(R.string.pref_key_language),
-                getString(R.string.pref_language_auto)
+                getString(R.string.pref_key_language_auto)
         );
 
-        if (languagePreference.equals(getString(R.string.pref_language_auto))) {
+        if (languagePreference.equals(getString(R.string.pref_key_language_auto))) {
             // Language is "auto". This is either because the preference is missing,
             // or because it has been set to "auto"
             return;
