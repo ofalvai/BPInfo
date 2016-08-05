@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
 
@@ -22,12 +23,14 @@ public class AlertFilterFragment extends DialogFragment {
 
     private static final String TAG = "AlertFilterFragment";
 
+    @Nullable
     private Set<RouteType> mSelectedRouteTypes = new HashSet<>();
 
     public interface AlertFilterListener {
-        void onFilterChanged(Set<RouteType> selectedTypes);
+        void onFilterChanged(@NonNull Set<RouteType> selectedTypes);
     }
 
+    @Nullable
     private AlertFilterListener mFilterListener;
 
     public static AlertFilterFragment newInstance(AlertFilterListener listener, Set<RouteType> initialFilter) {
@@ -37,11 +40,11 @@ public class AlertFilterFragment extends DialogFragment {
         return fragment;
     }
 
-    public void setFilterListener(AlertFilterListener listener) {
+    public void setFilterListener(@Nullable AlertFilterListener listener) {
         mFilterListener = listener;
     }
 
-    public void setFilter(Set<RouteType> filter) {
+    public void setFilter(@Nullable Set<RouteType> filter) {
         mSelectedRouteTypes = filter;
     }
 
@@ -66,7 +69,7 @@ public class AlertFilterFragment extends DialogFragment {
                         new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (mFilterListener != null) {
+                        if (mFilterListener != null && mSelectedRouteTypes != null) {
                             mFilterListener.onFilterChanged(mSelectedRouteTypes);
                         }
                     }
@@ -89,6 +92,7 @@ public class AlertFilterFragment extends DialogFragment {
      * @param index
      * @return
      */
+    @Nullable
     private RouteType indexToRouteType(int index) {
         RouteType type;
         switch (index) {
@@ -156,15 +160,25 @@ public class AlertFilterFragment extends DialogFragment {
 
         if (type != null) {
             if (isChecked) {
-                mSelectedRouteTypes.add(type);
+                if (mSelectedRouteTypes != null) {
+                    mSelectedRouteTypes.add(type);
+                }
             } else {
-                mSelectedRouteTypes.remove(type);
+                if (mSelectedRouteTypes != null) {
+                    mSelectedRouteTypes.remove(type);
+                }
             }
         } else {
             Log.d(TAG, "Unable to find a RouteType to index " + which);
         }
     }
 
+    /**
+     * Creates a boolean[] based on the selected route types. This is used to indicate already
+     * checked items
+     * @return
+     */
+    @NonNull
     private boolean[] defaultCheckedItems() {
         CharSequence[] routeTypeArray = getResources().getTextArray(R.array.route_types);
         boolean[] checkedItems = new boolean[routeTypeArray.length];
@@ -173,7 +187,7 @@ public class AlertFilterFragment extends DialogFragment {
             RouteType type = indexToRouteType(i);
 
             if (type != null) {
-                if (mSelectedRouteTypes.contains(type)) {
+                if (mSelectedRouteTypes != null && mSelectedRouteTypes.contains(type)) {
                     checkedItems[i] = true;
                 } else {
                     checkedItems[i] = false;

@@ -1,6 +1,8 @@
 package com.example.bkkinfoplus;
 
 import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.android.volley.RequestQueue;
@@ -65,9 +67,9 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
     private String mLanguageCode;
 
     public interface FutarApiCallback {
-        void onAlertResponse(List<Alert> alerts);
+        void onAlertResponse(@Nullable List<Alert> alerts);
 
-        void onError(Exception ex);
+        void onError(@NonNull Exception ex);
     }
 
     public FutarApiClient(RequestQueue requestQueue) {
@@ -77,6 +79,7 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
         mAlerts = new ArrayList<>();
     }
 
+    @NonNull
     private Uri buildUri() {
         String startTimestamp = String.valueOf(new GregorianCalendar().getTimeInMillis() / 1000L);
 
@@ -90,7 +93,7 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
                 .build();
     }
 
-    public void fetchAlertList(FutarApiCallback callback, String languageCode) {
+    public void fetchAlertList(@NonNull FutarApiCallback callback, @NonNull String languageCode) {
         // TODO: esetleg egy fetchAll(), és mAlerts-től függően fetchAll() vagy visszatérni az mAlerts-el
         setApiCallback(callback);
 
@@ -105,7 +108,7 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
         mRequestQueue.add(request);
     }
 
-    private void setApiCallback(FutarApiCallback callback) {
+    private void setApiCallback(@Nullable FutarApiCallback callback) {
         mApiCallback = callback;
     }
 
@@ -132,7 +135,9 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
         }
     }
 
-    public List<Alert> parseAlerts(JSONObject response, String languageCode) throws JSONException {
+    @NonNull
+    public List<Alert> parseAlerts(@NonNull JSONObject response, @NonNull String languageCode)
+            throws JSONException {
         List<Alert> alertList = new ArrayList<>();
 
         JSONObject dataNode = response.getJSONObject("data");
@@ -169,7 +174,9 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
         return alertList;
     }
 
-    public Alert parseAlert(JSONObject alertNode, String languageCode) throws JSONException {
+    @NonNull
+    public Alert parseAlert(@NonNull JSONObject alertNode, @NonNull String languageCode)
+            throws JSONException {
         String id = alertNode.getString("id");
         long start = alertNode.getLong("start");
         long end;
@@ -228,7 +235,8 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
         return new Alert(id, start, end, timestamp, stopIds, routeIds, url, header, description);
     }
 
-    public HashMap<String, Route> parseRoutes(JSONObject response) throws JSONException {
+    @NonNull
+    public HashMap<String, Route> parseRoutes(@NonNull JSONObject response) throws JSONException {
         HashMap<String, Route> routeMap = new HashMap<>();
 
         JSONObject dataNode = response.getJSONObject("data");
@@ -248,16 +256,15 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
                 }
             } catch (JSONException ex) {
                 Log.e(TAG, "Failed to parse route at index " + i + ":");
-                if (routeNode != null) {
-                    Log.e(TAG, routeNode.toString());
-                }
+                Log.e(TAG, routeNode.toString());
             }
         }
 
         return routeMap;
     }
 
-    private Route parseRoute(JSONObject routeNode) throws JSONException {
+    @NonNull
+    private Route parseRoute(@NonNull JSONObject routeNode) throws JSONException {
         String id = routeNode.getString("id");
         String shortName = routeNode.getString("shortName");
 
@@ -291,7 +298,8 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
         return new Route(id, shortName, longName, description, type, url, color, textColor);
     }
 
-    private RouteType parseRouteType(String type) {
+    @NonNull
+    private RouteType parseRouteType(@NonNull String type) {
         try {
             return RouteType.valueOf(type);
         } catch (IllegalArgumentException ex) {
@@ -300,11 +308,13 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
         return RouteType._OTHER_;
     }
 
-    public Route getRoute(String id) {
+    @Nullable
+    public Route getRoute(@NonNull String id) {
         return mRoutes.get(id);
     }
 
-    public List<Route> getAffectedRoutesForAlert(Alert alert) {
+    @NonNull
+    public List<Route> getAffectedRoutesForAlert(@NonNull Alert alert) {
         List<Route> affectedRoutes = new ArrayList<>();
 
         for (String routeId : alert.getRouteIds()) {

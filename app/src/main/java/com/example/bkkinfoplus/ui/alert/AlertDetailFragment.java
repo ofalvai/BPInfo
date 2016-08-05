@@ -45,7 +45,7 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
     private BottomSheetBehavior.BottomSheetCallback mBottomSheetBehaviorCallback =
             new AlertDetailCallback();
 
-    public static AlertDetailFragment newInstance(Alert alert) {
+    public static AlertDetailFragment newInstance(@NonNull Alert alert) {
         AlertDetailFragment fragment = new AlertDetailFragment();
         Bundle args = new Bundle();
         args.putSerializable(ARG_ALERT_OBJECT, alert);

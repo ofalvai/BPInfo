@@ -2,6 +2,8 @@ package com.example.bkkinfoplus.ui.alertlist;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.android.volley.VolleyError;
 import com.example.bkkinfoplus.BkkInfoApplication;
@@ -56,9 +58,9 @@ public class AlertListPresenter implements FutarApiClient.FutarApiCallback {
     }
 
     public interface AlertInteractionListener {
-        void displayAlerts(List<Alert> alerts);
+        void displayAlerts(@NonNull List<Alert> alerts);
 
-        void displayNetworkError(VolleyError error);
+        void displayNetworkError(@NonNull VolleyError error);
 
         void displayDataError();
 
@@ -111,10 +113,11 @@ public class AlertListPresenter implements FutarApiClient.FutarApiCallback {
      * If an empty Set or null is passed, the list is not filtered.
      * @param routeTypes
      */
-    public void setFilter(Set<RouteType> routeTypes) {
+    public void setFilter(@Nullable Set<RouteType> routeTypes) {
         mActiveFilter = routeTypes;
     }
 
+    @Nullable
     public Set<RouteType> getFilter() {
         return mActiveFilter;
     }
@@ -143,7 +146,7 @@ public class AlertListPresenter implements FutarApiClient.FutarApiCallback {
     }
 
     @Override
-    public void onError(Exception ex) {
+    public void onError(@NonNull Exception ex) {
         mUnfilteredAlerts.clear();
 
         if (ex instanceof VolleyError) {
@@ -161,14 +164,21 @@ public class AlertListPresenter implements FutarApiClient.FutarApiCallback {
      * but this method adds parsed Route object to the Alert objects
      * @param alerts    List of Alerts to apply adding Route objects
      */
-    private void attachAffectedRoutesToAlerts(List<Alert> alerts) {
+    private void attachAffectedRoutesToAlerts(@NonNull List<Alert> alerts) {
         for (Alert alert : alerts) {
             List<Route> affectedRoutes = mFutarApiClient.getAffectedRoutesForAlert(alert);
             alert.setAffectedRoutes(affectedRoutes);
         }
     }
 
-    private List<Alert> filter(Set<RouteType> types, List<Alert> alerts) {
+    /**
+     * Filters a list of Alerts matching the provided set of RouteTypes
+     * @param types RouteTypes to match
+     * @param alerts List of Alerts to filter
+     * @return Filtered list of Alerts
+     */
+    @NonNull
+    private List<Alert> filter(@Nullable Set<RouteType> types, @NonNull List<Alert> alerts) {
         if (types == null || types.isEmpty()) {
             return alerts;
         }
@@ -194,6 +204,7 @@ public class AlertListPresenter implements FutarApiClient.FutarApiCallback {
      * any other language than Hungarian ("hu")
      * @return The app's current language's code.
      */
+    @NonNull
     private String getCurrentLanguageCode() {
         String languageCode = mSharedPreferences.getString(
                 mContext.getString(R.string.pref_key_language),

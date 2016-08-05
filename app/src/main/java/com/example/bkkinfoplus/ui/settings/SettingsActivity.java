@@ -10,6 +10,7 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -86,7 +87,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
      *
      * @see #sBindPreferenceSummaryToValueListener
      */
-    private static void bindPreferenceSummaryToValue(Preference preference) {
+    private static void bindPreferenceSummaryToValue(@NonNull Preference preference) {
         // Set the listener to watch for value changes.
         preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
 
@@ -129,8 +130,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         // Language
         if (key.equals(getString(R.string.pref_key_language))) {
-            Preference languagePreference = findPreference(getString(R.string.pref_key_language));
-
             new AlertDialog.Builder(this)
                     .setTitle(getString(R.string.pref_language_dialog_title))
                     .setMessage(getString(R.string.pref_language_dialog_message))

@@ -1,6 +1,7 @@
 package com.example.bkkinfoplus.ui.alertlist;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -158,7 +159,9 @@ public class AlertListFragment extends Fragment
     private void updateSubtitle(int count) {
         String subtitle = getResources().getString(R.string.actionbar_subtitle_alert_count, count);
         AppCompatActivity activity = (AppCompatActivity) getActivity();
-        activity.getSupportActionBar().setSubtitle(subtitle);
+        if (activity.getSupportActionBar() != null) {
+            activity.getSupportActionBar().setSubtitle(subtitle);
+        }
     }
 
     private void displayFilter() {
@@ -169,7 +172,7 @@ public class AlertListFragment extends Fragment
     }
 
     @Override
-    public void onFilterChanged(Set<RouteType> selectedTypes) {
+    public void onFilterChanged(@NonNull Set<RouteType> selectedTypes) {
         mAlertListPresenter.setFilter(selectedTypes);
         mAlertListPresenter.getAlertList();
 
@@ -177,7 +180,7 @@ public class AlertListFragment extends Fragment
     }
 
     @Override
-    public void displayAlerts(List<Alert> alerts) {
+    public void displayAlerts(@NonNull List<Alert> alerts) {
         setErrorView(false, null);
 
         if (mAlertAdapter == null) {
@@ -193,7 +196,7 @@ public class AlertListFragment extends Fragment
     }
 
     @Override
-    public void displayNetworkError(VolleyError error) {
+    public void displayNetworkError(@NonNull VolleyError error) {
         int errorMessageId = Utils.volleyErrorTypeHandler(error);
         String errorMessage = getResources().getString(errorMessageId);
 
@@ -272,6 +275,10 @@ public class AlertListFragment extends Fragment
         if (mFilterWarningView != null && mAlertListPresenter != null) {
             Set<RouteType> selectedTypes = mAlertListPresenter.getFilter();
 
+            if (selectedTypes == null) {
+                return;
+            }
+
             if (selectedTypes.isEmpty()) {
                 mFilterWarningView.setVisibility(View.GONE);
             } else {
@@ -322,7 +329,7 @@ public class AlertListFragment extends Fragment
             itemView.setOnClickListener(this);
         }
 
-        public void bindAlert(Alert alert) {
+        public void bindAlert(@NonNull Alert alert) {
             mAlert = alert;
 
             // Title (header text)

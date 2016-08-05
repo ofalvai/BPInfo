@@ -8,6 +8,7 @@ import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
@@ -43,6 +44,7 @@ public class UiUtils {
      * @param endTimestamp   End of the alert in seconds since the UNIX epoch
      * @return  A string in the format of [startdate] [starttime] [separator] [enddate] [endtime]
      */
+    @NonNull
     public static String alertDateFormatter(Context context, long startTimestamp, long endTimestamp) {
         DateTime startDateTime = new DateTime(startTimestamp * 1000L);
         DateTime endDateTime = new DateTime(endTimestamp * 1000L);
@@ -125,7 +127,7 @@ public class UiUtils {
      * @param root      This is where the view will be added
      * @param route     Route object containing the color and text attributes
      */
-    public static void addRouteIcon(Context context, ViewGroup root, Route route) {
+    public static void addRouteIcon(Context context, @NonNull ViewGroup root, @NonNull Route route) {
         View.inflate(
                 context, R.layout.list_item_route_icon, root
         );
@@ -138,10 +140,12 @@ public class UiUtils {
 
         // Setting a custom colored rounded background drawable as background
         Drawable iconBackground = context.getResources().getDrawable(R.drawable.rounded_corner_5dp);
-        ColorFilter colorFilter = new LightingColorFilter(Color.rgb(1, 1, 1),
-                Color.parseColor("#" + route.getColor()));
-        iconBackground.mutate().setColorFilter(colorFilter);
-        iconView.setBackground(iconBackground);
+        if (iconBackground != null) {
+            ColorFilter colorFilter = new LightingColorFilter(Color.rgb(1, 1, 1),
+                    Color.parseColor("#" + route.getColor()));
+            iconBackground.mutate().setColorFilter(colorFilter);
+            iconView.setBackground(iconBackground);
+        }
 
     }
 
