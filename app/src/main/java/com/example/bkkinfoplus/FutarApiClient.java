@@ -25,6 +25,23 @@ import java.util.List;
  * Created by oli on 2016. 06. 14..
  */
 public class FutarApiClient implements Response.Listener<JSONObject>, Response.ErrorListener {
+    public static final String LANG_HU = "hu";
+    public static final String LANG_EN = "en";
+    private static final String LANG_SOME = "someTranslation";
+
+    // The website doesn't have a language switch, but the URL has a hidden query parameter:
+    // /alert.php?id=1234&lang=en
+    // This creates a session cookie with the language code, and the website uses this cookie
+    // for language selection.
+    // The only problem: it seems that the cookie has higher priority that the URL
+    // parameter in the language selection, and even though this is a session cookie,
+    // Chrome doesn't delete it immediately after closing the custom tab, but when the last
+    // Chrome process dies.
+    // So it can be really hard to change the website's language AFTER it's been visited with
+    // the app set to a different language.
+    // But it's better than having no language selection at all.
+    private static final String LANG_PARAM = "&lang=";
+
     private static final String TAG = "FutarApiClient";
 
     private static final String BASE_URL = "http://futar.bkk.hu/bkk-utvonaltervezo-api/ws/otp/api/where/alert-search.json";
@@ -44,6 +61,8 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
     private HashMap<String, Route> mRoutes;
 
     private FutarApiCallback mApiCallback;
+
+    private String mLanguageCode;
 
     public interface FutarApiCallback {
         void onAlertResponse(List<Alert> alerts);
@@ -71,9 +90,11 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
                 .build();
     }
 
-    public void fetchAlertList(FutarApiCallback callback) {
+    public void fetchAlertList(FutarApiCallback callback, String languageCode) {
         // TODO: esetleg egy fetchAll(), és mAlerts-től függően fetchAll() vagy visszatérni az mAlerts-el
         setApiCallback(callback);
+
+        mLanguageCode = languageCode;
 
         Uri uri = buildUri();
 
@@ -91,7 +112,7 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
     @Override
     public void onResponse(JSONObject response) {
         try {
-            mAlerts = parseAlerts(response);
+            mAlerts = parseAlerts(response, mLanguageCode);
             mRoutes = parseRoutes(response);
         } catch (Exception ex) {
             if (mApiCallback != null) {
@@ -111,7 +132,7 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
         }
     }
 
-    public List<Alert> parseAlerts(JSONObject response) throws JSONException {
+    public List<Alert> parseAlerts(JSONObject response, String languageCode) throws JSONException {
         List<Alert> alertList = new ArrayList<>();
 
         JSONObject dataNode = response.getJSONObject("data");
@@ -133,7 +154,7 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
             JSONObject alertNode = alerts.getJSONObject(i);
             Alert alert;
             try {
-                alert = parseAlert(alertNode);
+                alert = parseAlert(alertNode, languageCode);
             } catch (JSONException ex) {
                 alert = new Alert(null, 0, 0, 0, null, null, null, null, null);
             }
@@ -148,7 +169,7 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
         return alertList;
     }
 
-    public Alert parseAlert(JSONObject alertNode) throws JSONException {
+    public Alert parseAlert(JSONObject alertNode, String languageCode) throws JSONException {
         String id = alertNode.getString("id");
         long start = alertNode.getLong("start");
         long end;
@@ -168,16 +189,41 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
         List<String> routeIds = Utils.jsonArrayToStringList(routeIdsNode);
 
         JSONObject urlNode = alertNode.getJSONObject("url");
-        String url = urlNode.getString("someTranslation");
 
+        String url = urlNode.getString("someTranslation") + LANG_PARAM + languageCode;
+
+        String header;
         JSONObject headerNode = alertNode.getJSONObject("header");
         JSONObject translationsNode = headerNode.getJSONObject("translations");
-        String header = translationsNode.getString("hu");
+        try {
+            // Trying to get the specific language's translation
+            // It might be null or completely missing from the response
+            header = translationsNode.getString(languageCode);
+
+            if (header == null || header.equals("null")) {
+                throw new JSONException("header field is null");
+            }
+        } catch (JSONException ex) {
+            // Falling back to the "someTranslation" field
+            header = headerNode.getString(LANG_SOME);
+        }
         header = Utils.capitalizeString(header);
 
+        String description;
         JSONObject descriptionNode = alertNode.getJSONObject("description");
         JSONObject translationsNode2 = descriptionNode.getJSONObject("translations");
-        String description = translationsNode2.getString("hu");
+        try {
+            // Trying to get the specific language's translation
+            // It might be null or completely missing from the response
+            description = translationsNode2.getString(languageCode);
+
+            if (description == null || description.equals("null")) {
+                throw new JSONException("description field is null");
+            }
+        } catch (JSONException ex) {
+            // Falling back to the "someTranslation" field
+            description = descriptionNode.getString(LANG_SOME);
+        }
 
         return new Alert(id, start, end, timestamp, stopIds, routeIds, url, header, description);
     }

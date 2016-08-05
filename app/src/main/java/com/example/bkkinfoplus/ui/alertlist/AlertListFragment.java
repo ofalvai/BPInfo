@@ -54,8 +54,7 @@ public class AlertListFragment extends Fragment
     private AlertFilterFragment mFilterFragment;
     private TextView mFilterWarningView;
 
-    @Inject
-    public AlertListPresenter mAlertListPresenter;
+    @Inject AlertListPresenter mAlertListPresenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

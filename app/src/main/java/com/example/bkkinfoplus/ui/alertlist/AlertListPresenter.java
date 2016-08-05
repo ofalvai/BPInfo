@@ -1,8 +1,12 @@
 package com.example.bkkinfoplus.ui.alertlist;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import com.android.volley.VolleyError;
 import com.example.bkkinfoplus.BkkInfoApplication;
 import com.example.bkkinfoplus.FutarApiClient;
+import com.example.bkkinfoplus.R;
 import com.example.bkkinfoplus.Utils;
 import com.example.bkkinfoplus.model.Alert;
 import com.example.bkkinfoplus.model.Route;
@@ -15,6 +19,7 @@ import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -27,8 +32,11 @@ public class AlertListPresenter implements FutarApiClient.FutarApiCallback {
 
     private static final int REFRESH_THRESHOLD_SEC = 30;
 
-    @Inject
-    FutarApiClient mFutarApiClient;
+    @Inject FutarApiClient mFutarApiClient;
+
+    @Inject SharedPreferences mSharedPreferences;
+
+    @Inject Context mContext;
 
     private AlertInteractionListener mInteractionListener;
 
@@ -63,7 +71,7 @@ public class AlertListPresenter implements FutarApiClient.FutarApiCallback {
      * Initiates a network refresh and returns the alert list to the listener
      */
     public void fetchAlertList() {
-        mFutarApiClient.fetchAlertList(this);
+        mFutarApiClient.fetchAlertList(this, getCurrentLanguageCode());
     }
 
     /**
@@ -177,5 +185,31 @@ public class AlertListPresenter implements FutarApiClient.FutarApiCallback {
         }
 
         return filtered;
+    }
+
+    /**
+     * Gets the current language's language code.
+     * If a language has been set in the preferences, it reads the value from SharedPreferences.
+     * If it has been set to "auto" or unset, it decides based on the current locale, using "en" for
+     * any other language than Hungarian ("hu")
+     * @return The app's current language's code.
+     */
+    private String getCurrentLanguageCode() {
+        String languageCode = mSharedPreferences.getString(
+                mContext.getString(R.string.pref_key_language),
+                mContext.getString(R.string.pref_key_language_auto)
+        );
+
+        if (languageCode.equals(mContext.getString(R.string.pref_key_language_auto))) {
+            Locale locale = Locale.getDefault();
+
+            if (locale.getLanguage().equals(FutarApiClient.LANG_HU)) {
+                languageCode = FutarApiClient.LANG_HU;
+            } else {
+                languageCode = FutarApiClient.LANG_EN;
+            }
+        }
+        
+        return languageCode;
     }
 }
