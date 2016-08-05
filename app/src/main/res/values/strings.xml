@@ -1,23 +1,23 @@
 <resources>
     <string name="app_name">BKK Info</string>
-    <string name="error_list_display">Nem sikerült megjeleníteni a forgalmi infókat</string>
-    <string name="error_response">Hibás válasz érkezett a szerverről</string>
+    <string name="error_list_display">Unable to display traffic info</string>
+    <string name="error_response">Incorrect response received from server</string>
     <string name="alert_latel_date">%1$s  -  %2$s</string>
-    <string name="alert_label_date_modified">Módosítva: %1$s</string>
-    <string name="actionbar_subtitle_alert_count">%1$s forgalmi változás van ma</string>
-    <string name="error_no_connection">Nincs hálózati kapcsolat</string>
-    <string name="error_network">Hálózati hiba</string>
-    <string name="error_communication">Kommunikációs hiba</string>
-    <string name="label_retry">Újra</string>
-    <string name="alert_detail_label">Részletek</string>
-    <string name="date_today">Ma </string>
-    <string name="date_yesterday">Tegnap</string>
-    <string name="date_tomorrow">Holnap</string>
-    <string name="date_until_revoke">visszavonásig</string>
-    <string name="date_first_departure">üzemkezdettől</string>
-    <string name="date_last_departure">üzemzárásig</string>
-    <string name="menu_filter_label">Jármű szűrés</string>
-    <string name="filter_title">Jármű szűrés</string>
+    <string name="alert_label_date_modified">Modified: %1$s</string>
+    <string name="actionbar_subtitle_alert_count">%1$s traffic changes today</string>
+    <string name="error_no_connection">No network connection</string>
+    <string name="error_network">Network error</string>
+    <string name="error_communication">Communication error</string>
+    <string name="label_retry">Retry</string>
+    <string name="alert_detail_label">Details</string>
+    <string name="date_today">Today</string>
+    <string name="date_yesterday">Yesterday</string>
+    <string name="date_tomorrow">Tomorrow</string>
+    <string name="date_until_revoke">until further notice</string>
+    <string name="date_first_departure">from first departure</string>
+    <string name="date_last_departure">until last departure</string>
+    <string name="menu_filter_label">Filter vehicle type</string>
+    <string name="filter_title">Filter vehicle type</string>
 
     <string-array name="route_types">
         <item>@string/route_subway</item>
@@ -28,22 +28,22 @@
         <item>@string/route_ferry</item>
     </string-array>
 
-    <string name="filter_positive_button">Szűrés</string>
-    <string name="filter_negative_button">Mégse</string>
-    <string name="alert_list_empty">Nincs megjeleníthető forgalmi változás</string>
-    <string name="route_bus">Busz</string>
-    <string name="route_tram">Villamos</string>
-    <string name="route_ferry">Hajó</string>
-    <string name="route_trolleybus">Trolibusz</string>
-    <string name="route_subway">Metró</string>
-    <string name="route_rail">HÉV</string>
-    <string name="filter_message">Szűrés: %1$s</string>
-    <string name="route_other">Egyéb</string>
-    <string name="title_activity_settings">Beállítások</string>
+    <string name="filter_positive_button">Filter</string>
+    <string name="filter_negative_button">Cancel</string>
+    <string name="alert_list_empty">No traffic change to display</string>
+    <string name="route_bus">Bus</string>
+    <string name="route_tram">Tram</string>
+    <string name="route_ferry">Ferry</string>
+    <string name="route_trolleybus">Trolleybus</string>
+    <string name="route_subway">Subway</string>
+    <string name="route_rail">HÉV (Suburban rail)</string>
+    <string name="filter_message">Filtering: %1$s</string>
+    <string name="route_other">Other</string>
+    <string name="title_activity_settings">Settings</string>
 
-    <string name="pref_language_auto">Automatikus</string>
-    <string name="pref_language_hu">Magyar</string>
-    <string name="pref_language_en">Angol</string>
+    <string name="pref_language_auto">Automatic</string>
+    <string name="pref_language_hu">Hungarian</string>
+    <string name="pref_language_en">English</string>
 
     <string-array name="pref_language_list_titles">
         <item>@string/pref_language_auto</item>
@@ -57,31 +57,31 @@
         <item>@string/pref_key_language_en</item>
     </string-array>
 
-    <string name="menu_settings">Beállítások</string>
-    <string name="pref_category_general">Általános</string>
-    <string name="pref_title_language">Nyelv</string>
-    <string name="pref_category_about">Névjegy</string>
-    <string name="pref_title_send_bugreport">Hibajelentés</string>
-    <string name="pref_title_send_bugreport_bkk">Hibajelentés a BKK-nak</string>
-    <string name="pref_title_rate">App értékelése</string>
-    <string name="pref_title_licences">Licencek</string>
-    <string name="pref_description_send_bugreport">Ha az alkalmazással van gond</string>
-    <string name="pref_description_send_bugreport_bkk">Ha az adatokkal van gond (Futár)</string>
-    <string name="pref_description_rate">Értékeld a Play Store-ban, ha tetszik az app</string>
-    <string name="pref_description_licences">Felhasznált nyílt forráskódú könyvtárak</string>
-    <string name="menu_debug">Debug mód</string>
+    <string name="menu_settings">Settings</string>
+    <string name="pref_category_general">General</string>
+    <string name="pref_title_language">Language</string>
+    <string name="pref_category_about">About</string>
+    <string name="pref_title_send_bugreport">Report a problem</string>
+    <string name="pref_title_send_bugreport_bkk">Report a problem to BKK</string>
+    <string name="pref_title_rate">Rate the app</string>
+    <string name="pref_title_licences">Licences</string>
+    <string name="pref_description_send_bugreport">If there\'s a problem with the app</string>
+    <string name="pref_description_send_bugreport_bkk">If there\'s a problem with data (FUTÁR)</string>
+    <string name="pref_description_rate">If you like the app, rate it in the Play Store</string>
+    <string name="pref_description_licences">Used open source libraries</string>
+    <string name="menu_debug">Debug mode</string>
 
     <!-- Settings keys -->
     <string name="pref_key_category_general" translatable="false">category_general</string>
     <string name="pref_key_language" translatable="false">language</string>
-    <string name="pref_language_dialog_title">Újraindítás szükséges</string>
-    <string name="pref_language_dialog_message">Az új nyelv érvénybe lépéséhez újra kell indítani az appot.</string>
-    <string name="pref_language_dialog_positive_button">Újraindítás</string>
-    <string name="pref_language_dialog_negative_button">Később</string>
+    <string name="pref_language_dialog_title">Restart needed</string>
+    <string name="pref_language_dialog_message">In order to use the new language, the app needs to be restarted.</string>
+    <string name="pref_language_dialog_positive_button">Restart</string>
+    <string name="pref_language_dialog_negative_button">Later</string>
     <string name="pref_key_category_about" translatable="false">category_about</string>
     <string name="pref_key_debug_mode" translatable="false">pref_key_debug_mode</string>
-    <string name="debug_mode_on">Debug mód bekapcsolva</string>
-    <string name="debog_mode_off">Debug mód kikapcsolva</string>
+    <string name="debug_mode_on">Debug mode disabled</string>
+    <string name="debog_mode_off">Debug mode enabled</string>
     <string name="pref_key_language_auto" translatable="false">auto</string>
     <string name="pref_key_language_en" translatable="false">en</string>
     <string name="pref_key_language_hu" translatable="false">hu</string>
