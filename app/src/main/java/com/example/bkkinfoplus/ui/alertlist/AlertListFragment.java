@@ -45,6 +45,8 @@ public class AlertListFragment extends Fragment
 
     private static final String KEY_ACTIVE_FILTER = "active_filter";
 
+    private static final String FILTER_DIALOG_TAG = "filter_dialog";
+
     private EmptyRecyclerView mAlertRecyclerView;
     private AlertAdapter mAlertAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -97,8 +99,12 @@ public class AlertListFragment extends Fragment
 
         // If this fragment got recreated while the filter dialog was open, we need to update
         // the listener reference
-        if (mFilterFragment != null) {
-            mFilterFragment.setFilterListener(this);
+        if (savedInstanceState != null) {
+            mFilterFragment = (AlertFilterFragment) getFragmentManager().findFragmentByTag(FILTER_DIALOG_TAG);
+            if (mFilterFragment != null) {
+                mFilterFragment.setFilterListener(this);
+                mFilterFragment.setFilter(mAlertListPresenter.getFilter());
+            }
         }
 
         initRefresh();
@@ -160,7 +166,7 @@ public class AlertListFragment extends Fragment
         mFilterFragment = AlertFilterFragment.newInstance(this,
                 mAlertListPresenter.getFilter());
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        mFilterFragment.show(transaction, "dialog");
+        mFilterFragment.show(transaction, FILTER_DIALOG_TAG);
     }
 
     @Override

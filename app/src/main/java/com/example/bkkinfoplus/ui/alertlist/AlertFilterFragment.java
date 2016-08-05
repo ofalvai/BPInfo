@@ -41,6 +41,10 @@ public class AlertFilterFragment extends DialogFragment {
         mFilterListener = listener;
     }
 
+    public void setFilter(Set<RouteType> filter) {
+        mSelectedRouteTypes = filter;
+    }
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
