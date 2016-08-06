@@ -187,11 +187,7 @@ public class AlertFilterFragment extends DialogFragment {
             RouteType type = indexToRouteType(i);
 
             if (type != null) {
-                if (mSelectedRouteTypes != null && mSelectedRouteTypes.contains(type)) {
-                    checkedItems[i] = true;
-                } else {
-                    checkedItems[i] = false;
-                }
+                checkedItems[i] = mSelectedRouteTypes != null && mSelectedRouteTypes.contains(type);
             } else {
                 Log.d(TAG, "Unable to find a RouteType to index " + i);
             }

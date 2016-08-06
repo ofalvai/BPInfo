@@ -43,9 +43,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
     @Inject SharedPreferences mSharedPreferences;
 
     public static Intent newIntent(Context context) {
-        Intent intent = new Intent(context, SettingsActivity.class);
-
-        return intent;
+        return new Intent(context, SettingsActivity.class);
     }
 
     /**

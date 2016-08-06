@@ -13,7 +13,8 @@
         android:id="@+id/error_icon"
         android:layout_gravity="center_horizontal"
         android:background="@drawable/ic_error_icon"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="16dp"
+        android:contentDescription="@string/error_list_display"/>
 
     <TextView
         android:layout_width="wrap_content"
