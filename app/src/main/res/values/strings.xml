@@ -84,5 +84,8 @@
     <string name="pref_key_language_auto" translatable="false">auto</string>
     <string name="pref_key_language_en" translatable="false">en</string>
     <string name="pref_key_language_hu" translatable="false">hu</string>
+    <string name="email_bkk_mailto" translatable="false">mailto:futar@bkk.hu</string>
+    <string name="email_bkk_body">Tisztelt BKK!\n\nA nyilvános FUTÁR API által visszaadott adatokban az alábbi problémát szeretném jelenteni:\n\nÜdvözlettel:\n</string>
+    <string name="email_bkk_subject">FUTÁR API bugreport</string>
 
 </resources>
