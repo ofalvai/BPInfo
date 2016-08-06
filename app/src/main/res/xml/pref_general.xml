@@ -56,10 +56,16 @@
             </intent>
         </PreferenceScreen>
 
-        <Preference
+        <PreferenceScreen
             android:title="@string/pref_title_licences"
             android:summary="@string/pref_description_licences"
-            android:key="pref_key_licences"/>
+            android:key="pref_key_licences">
+
+            <intent
+                android:targetPackage="com.example.bkkinfoplus"
+                android:targetClass="com.example.bkkinfoplus.ui.settings.LicencesActivity">
+            </intent>
+        </PreferenceScreen>
 
     </PreferenceCategory>
 

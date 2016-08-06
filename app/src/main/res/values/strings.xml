@@ -87,5 +87,6 @@
     <string name="email_bkk_mailto" translatable="false">mailto:futar@bkk.hu</string>
     <string name="email_bkk_body">Tisztelt BKK!\n\nA nyilvános FUTÁR API által visszaadott adatokban az alábbi problémát szeretném jelenteni:\n\nÜdvözlettel:\n</string>
     <string name="email_bkk_subject">FUTÁR API bugreport</string>
+    <string name="title_activity_licences">Licences</string>
 
 </resources>
