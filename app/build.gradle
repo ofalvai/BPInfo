@@ -7,7 +7,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.bkkinfoplus"
-        minSdkVersion 16
+        minSdkVersion 16 // Don't forget to change in the flavors too!
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -18,6 +18,15 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    productFlavors {
+        fastBuild {
+            minSdkVersion 21
+        }
+        regular {
+            minSdkVersion 16
         }
     }
 }
