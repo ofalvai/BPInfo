@@ -13,13 +13,12 @@ import com.example.bkkinfoplus.model.Alert;
 import com.example.bkkinfoplus.model.Route;
 import com.example.bkkinfoplus.model.RouteType;
 
+import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 
@@ -81,7 +80,7 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
 
     @NonNull
     private Uri buildUri() {
-        String startTimestamp = String.valueOf(new GregorianCalendar().getTimeInMillis() / 1000L);
+        String startTimestamp = String.valueOf(new DateTime().getMillis() / 1000L);
 
         return Uri.parse(BASE_URL).buildUpon()
                 .appendQueryParameter("key", QUERY_KEY)
@@ -153,8 +152,6 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
 
         JSONArray alerts = Utils.jsonObjectToArray(alertsNode);
 
-        Date now = new Date();
-
         for (int i = 0; i < alerts.length(); i++) {
             JSONObject alertNode = alerts.getJSONObject(i);
             Alert alert;
@@ -165,8 +162,9 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
             }
 
             // Sometimes the API returns alerts from the future,
-            // despite settings the "start" parameter to current time.
-            if (alert.getStart() <= (now.getTime() / 1000L)) {
+            // despite setting the "start" parameter to current time.
+            DateTime alertStartTime = new DateTime(alert.getStart() * 1000L);
+            if (alertStartTime.isBeforeNow()) {
                 alertList.add(alert);
             }
         }

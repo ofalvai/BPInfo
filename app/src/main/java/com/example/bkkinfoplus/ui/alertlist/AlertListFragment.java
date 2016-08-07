@@ -135,7 +135,7 @@ public class AlertListFragment extends Fragment
     public void onStart() {
         super.onStart();
 
-        mAlertListPresenter.checkIfUpdateNeeded();
+        mAlertListPresenter.updateIfNeeded();
     }
 
     @Override

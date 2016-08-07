@@ -14,16 +14,16 @@ import com.example.bkkinfoplus.model.Alert;
 import com.example.bkkinfoplus.model.Route;
 import com.example.bkkinfoplus.model.RouteType;
 
+import org.joda.time.DateTime;
+import org.joda.time.Period;
 import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -47,7 +47,7 @@ public class AlertListPresenter implements FutarApiClient.FutarApiCallback {
      */
     private List<Alert> mUnfilteredAlerts;
 
-    private long mLastUpdate;
+    private DateTime mLastUpdate;
 
     private Set<RouteType> mActiveFilter = new HashSet<>();
 
@@ -93,16 +93,15 @@ public class AlertListPresenter implements FutarApiClient.FutarApiCallback {
     }
 
     public void setLastUpdate() {
-        mLastUpdate = new GregorianCalendar().getTimeInMillis();
+        mLastUpdate = new DateTime();
     }
 
-    public void checkIfUpdateNeeded() {
-        long currentTimestamp = new GregorianCalendar().getTimeInMillis();
-        long diff = currentTimestamp - mLastUpdate;
-        TimeUnit secondUnit = TimeUnit.SECONDS;
-        long diffInSeconds = secondUnit.convert(diff, TimeUnit.MILLISECONDS);
-
-        if (diffInSeconds > REFRESH_THRESHOLD_SEC) {
+    /**
+     * Initiates a list update if enough time has passed since the last update
+     */
+    public void updateIfNeeded() {
+        Period updatePeriod = new Period().withSeconds(REFRESH_THRESHOLD_SEC);
+        if (mLastUpdate.plus(updatePeriod).isBeforeNow()) {
             mInteractionListener.setUpdating(true);
             fetchAlertList();
         }
