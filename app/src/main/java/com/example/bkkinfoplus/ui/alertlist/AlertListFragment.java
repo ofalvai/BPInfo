@@ -311,6 +311,8 @@ public class AlertListFragment extends Fragment
 
         private FlowLayout mRouteIconsWrapper;
 
+        private TextView mRecentTextView;
+
         private Alert mAlert;
 
         /**
@@ -325,6 +327,7 @@ public class AlertListFragment extends Fragment
             mTitleTextView = (TextView) itemView.findViewById(R.id.list_item_alert_description);
             mDateTextView = (TextView) itemView.findViewById(R.id.list_item_alert_date);
             mRouteIconsWrapper = (FlowLayout) itemView.findViewById(R.id.list_item_alert_route_icons_wrapper);
+            mRecentTextView = (TextView) itemView.findViewById(R.id.list_item_alert_recent);
 
             itemView.setOnClickListener(this);
         }
@@ -361,6 +364,8 @@ public class AlertListFragment extends Fragment
                     }
                 }
             }
+
+            mRecentTextView.setVisibility(Utils.isAlertRecent(alert) ? View.VISIBLE : View.GONE);
         }
 
         @Override

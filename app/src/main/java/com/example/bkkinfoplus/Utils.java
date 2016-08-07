@@ -14,6 +14,7 @@ import com.example.bkkinfoplus.model.Alert;
 import com.example.bkkinfoplus.model.Route;
 import com.example.bkkinfoplus.model.RouteType;
 
+import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -153,5 +154,23 @@ public class Utils {
             }
         }
         return false;
+    }
+
+    /**
+     * Returns whether an alert counts as a recent one based on the start timestamp.
+     * @param alert
+     * @return  true if the alert is a recent one, false otherwise
+     */
+    public static boolean isAlertRecent(@NonNull Alert alert) {
+        DateTime alertTime = new DateTime(alert.getStart() * 1000L);
+        DateTime now = new DateTime();
+
+        final int RECENT_DELTA_HOURS = 24;
+
+        if (alertTime.plusHours(RECENT_DELTA_HOURS).getMillis() >= now.getMillis()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
