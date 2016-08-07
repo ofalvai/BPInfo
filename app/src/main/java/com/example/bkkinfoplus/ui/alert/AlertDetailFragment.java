@@ -6,11 +6,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.example.bkkinfoplus.R;
@@ -81,6 +83,15 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
         if (getArguments() != null) {
             mAlert = (Alert) getArguments().getSerializable(ARG_ALERT_OBJECT);
         }
+    }
+
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        // By default, the BottomSheetDialog changes the statusbar's color to black.
+        // Found this solution here: https://code.google.com/p/android/issues/detail?id=202691
+        BottomSheetDialog dialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
+        dialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        return dialog;
     }
 
     @Override
