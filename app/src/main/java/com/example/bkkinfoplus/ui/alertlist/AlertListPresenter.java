@@ -61,6 +61,7 @@ public class AlertListPresenter implements FutarApiClient.FutarApiCallback {
     /**
      * List of alerts returned by the client, before filtering by RouteTypes
      */
+    @Nullable
     private List<Alert> mUnfilteredAlerts;
 
     private DateTime mLastUpdate;
@@ -162,7 +163,9 @@ public class AlertListPresenter implements FutarApiClient.FutarApiCallback {
 
     @Override
     public void onError(@NonNull Exception ex) {
-        mUnfilteredAlerts.clear();
+        if (mUnfilteredAlerts != null) {
+            mUnfilteredAlerts.clear();
+        }
 
         if (ex instanceof VolleyError) {
             VolleyError error = (VolleyError) ex;
