@@ -46,6 +46,18 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
     public static final String LANG_EN = "en";
     private static final String LANG_SOME = "someTranslation";
 
+    private static final String TAG = "FutarApiClient";
+
+    private static final String BASE_URL = "http://futar.bkk.hu/bkk-utvonaltervezo-api/ws/otp/api/where/alert-search.json";
+
+    private static final String QUERY_KEY = "apaiary-test";
+
+    private static final String QUERY_VERSION = "3";
+
+    private static final String QUERY_APPVERSION = "apiary-1.0";
+
+    private static final String QUERY_INCLUDEREFERENCES = "alerts,routes";
+
     // The website doesn't have a language switch, but the URL has a hidden query parameter:
     // /alert.php?id=1234&lang=en
     // This creates a session cookie with the language code, and the website uses this cookie
@@ -58,18 +70,6 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
     // the app set to a different language.
     // But it's better than having no language selection at all.
     private static final String LANG_PARAM = "&lang=";
-
-    private static final String TAG = "FutarApiClient";
-
-    private static final String BASE_URL = "http://futar.bkk.hu/bkk-utvonaltervezo-api/ws/otp/api/where/alert-search.json";
-
-    private static final String QUERY_KEY = "apaiary-test";
-
-    private static final String QUERY_VERSION = "3";
-
-    private static final String QUERY_APPVERSION = "apiary-1.0";
-
-    private static final String QUERY_INCLUDEREFERENCES = "true";
 
     private RequestQueue mRequestQueue;
 
@@ -104,7 +104,6 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
                 .appendQueryParameter("appVersion", QUERY_APPVERSION)
                 .appendQueryParameter("includeReferences", QUERY_INCLUDEREFERENCES)
                 .appendQueryParameter("start", startTimestamp)
-                //.appendQueryParameter("end", startTimestamp)
                 .build();
     }
 
