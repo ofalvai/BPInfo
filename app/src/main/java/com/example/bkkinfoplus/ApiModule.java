@@ -20,6 +20,7 @@ import android.content.Context;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.example.bkkinfoplus.api.FutarApiClient;
 
 import javax.inject.Singleton;
 

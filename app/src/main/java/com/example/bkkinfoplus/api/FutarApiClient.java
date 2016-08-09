@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package com.example.bkkinfoplus;
+package com.example.bkkinfoplus.api;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -25,6 +25,9 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.bkkinfoplus.BuildConfig;
+import com.example.bkkinfoplus.Config;
+import com.example.bkkinfoplus.Utils;
 import com.example.bkkinfoplus.model.Alert;
 import com.example.bkkinfoplus.model.Route;
 import com.example.bkkinfoplus.model.RouteType;
@@ -41,8 +44,6 @@ import java.util.List;
 public class FutarApiClient implements Response.Listener<JSONObject>, Response.ErrorListener {
     private static final String TAG = "FutarApiClient";
 
-    private static final String API_ENDPOINT = "alert-search.json";
-
     private static final String QUERY_API_KEY = BuildConfig.APPLICATION_ID;
 
     private static final String QUERY_API_VERSION = "3";
@@ -50,10 +51,6 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
     private static final String QUERY_APPVERSION = BuildConfig.VERSION_NAME;
 
     private static final String QUERY_INCLUDEREFERENCES = "alerts,routes";
-
-    public static final String LANG_HU = "hu";
-    public static final String LANG_EN = "en";
-    private static final String LANG_SOME = "someTranslation";
 
     // The website doesn't have a language switch, but the URL has a hidden query parameter:
     // /alert.php?id=1234&lang=en
@@ -95,7 +92,7 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
         String startTimestamp = String.valueOf(new DateTime().getMillis() / 1000L);
 
         return Uri.parse(Config.FUTAR_API_BASE_URL).buildUpon()
-                .appendEncodedPath(API_ENDPOINT)
+                .appendEncodedPath(AlertSearchContract.API_ENDPOINT)
                 .appendQueryParameter("key", QUERY_API_KEY)
                 .appendQueryParameter("version", QUERY_API_VERSION)
                 .appendQueryParameter("appVersion", QUERY_APPVERSION)
@@ -150,16 +147,16 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
             throws JSONException {
         List<Alert> alertList = new ArrayList<>();
 
-        JSONObject dataNode = response.getJSONObject("data");
-        JSONObject entryNode = dataNode.getJSONObject("entry");
-        JSONArray alertIdsNode = entryNode.getJSONArray("alertIds");
+        JSONObject dataNode = response.getJSONObject(AlertSearchContract.DATA);
+        JSONObject entryNode = dataNode.getJSONObject(AlertSearchContract.DATA_ENTRY);
+        JSONArray alertIdsNode = entryNode.getJSONArray(AlertSearchContract.DATA_ENTRY_ALERT_IDS);
 
         if (alertIdsNode.length() == 0) {
             return alertList;
         }
 
-        JSONObject referencesNode = dataNode.getJSONObject("references");
-        JSONObject alertsNode = referencesNode.getJSONObject("alerts");
+        JSONObject referencesNode = dataNode.getJSONObject(AlertSearchContract.DATA_REFERENCES);
+        JSONObject alertsNode = referencesNode.getJSONObject(AlertSearchContract.DATA_REFERENCES_ALERTS);
 
         JSONArray alerts = Utils.jsonObjectToArray(alertsNode);
 
@@ -186,31 +183,31 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
     @NonNull
     public Alert parseAlert(@NonNull JSONObject alertNode, @NonNull String languageCode)
             throws JSONException {
-        String id = alertNode.getString("id");
-        long start = alertNode.getLong("start");
+        String id = alertNode.getString(AlertContract.ALERT_ID);
+        long start = alertNode.getLong(AlertContract.ALERT_START);
         long end;
         try {
             // There are alerts with unknown ends, represented by null
-            end = alertNode.getLong("end");
+            end = alertNode.getLong(AlertContract.ALERT_END);
         } catch (JSONException ex) {
             end = 0;
         }
 
-        long timestamp = alertNode.getLong("timestamp");
+        long timestamp = alertNode.getLong(AlertContract.ALERT_TIMESTAMP);
 
-        JSONArray stopIdsNode = alertNode.getJSONArray("stopIds");
+        JSONArray stopIdsNode = alertNode.getJSONArray(AlertContract.ALERT_STOP_IDS);
         List<String> stopIds = Utils.jsonArrayToStringList(stopIdsNode);
 
-        JSONArray routeIdsNode = alertNode.getJSONArray("routeIds");
+        JSONArray routeIdsNode = alertNode.getJSONArray(AlertContract.ALERT_ROUTE_IDS);
         List<String> routeIds = Utils.jsonArrayToStringList(routeIdsNode);
 
-        JSONObject urlNode = alertNode.getJSONObject("url");
+        JSONObject urlNode = alertNode.getJSONObject(AlertContract.ALERT_URL);
 
-        String url = urlNode.getString("someTranslation") + LANG_PARAM + languageCode;
+        String url = urlNode.getString(AlertSearchContract.LANG_SOME) + LANG_PARAM + languageCode;
 
         String header;
-        JSONObject headerNode = alertNode.getJSONObject("header");
-        JSONObject translationsNode = headerNode.getJSONObject("translations");
+        JSONObject headerNode = alertNode.getJSONObject(AlertContract.ALERT_HEADER);
+        JSONObject translationsNode = headerNode.getJSONObject(AlertContract.ALERT_HEADER_TRANSLATIONS);
         try {
             // Trying to get the specific language's translation
             // It might be null or completely missing from the response
@@ -221,13 +218,13 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
             }
         } catch (JSONException ex) {
             // Falling back to the "someTranslation" field
-            header = headerNode.getString(LANG_SOME);
+            header = headerNode.getString(AlertSearchContract.LANG_SOME);
         }
         header = Utils.capitalizeString(header);
 
         String description;
-        JSONObject descriptionNode = alertNode.getJSONObject("description");
-        JSONObject translationsNode2 = descriptionNode.getJSONObject("translations");
+        JSONObject descriptionNode = alertNode.getJSONObject(AlertContract.ALERT_DESC);
+        JSONObject translationsNode2 = descriptionNode.getJSONObject(AlertContract.ALERT_DESC_TRANSLATIONS);
         try {
             // Trying to get the specific language's translation
             // It might be null or completely missing from the response
@@ -238,7 +235,7 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
             }
         } catch (JSONException ex) {
             // Falling back to the "someTranslation" field
-            description = descriptionNode.getString(LANG_SOME);
+            description = descriptionNode.getString(AlertSearchContract.LANG_SOME);
         }
 
         return new Alert(id, start, end, timestamp, stopIds, routeIds, url, header, description);
@@ -248,9 +245,9 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
     public HashMap<String, Route> parseRoutes(@NonNull JSONObject response) throws JSONException {
         HashMap<String, Route> routeMap = new HashMap<>();
 
-        JSONObject dataNode = response.getJSONObject("data");
-        JSONObject referencesNode = dataNode.getJSONObject("references");
-        JSONObject routesNode = referencesNode.getJSONObject("routes");
+        JSONObject dataNode = response.getJSONObject(AlertSearchContract.DATA);
+        JSONObject referencesNode = dataNode.getJSONObject(AlertSearchContract.DATA_REFERENCES);
+        JSONObject routesNode = referencesNode.getJSONObject(AlertSearchContract.DATA_REFERENCES_ROUTES);
         JSONArray routesArray = Utils.jsonObjectToArray(routesNode);
 
         for (int i = 0; i < routesArray.length(); i++) {
@@ -274,12 +271,12 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
 
     @NonNull
     private Route parseRoute(@NonNull JSONObject routeNode) throws JSONException {
-        String id = routeNode.getString("id");
-        String shortName = routeNode.getString("shortName");
+        String id = routeNode.getString(RouteContract.ROUTE_ID);
+        String shortName = routeNode.getString(RouteContract.ROUTE_SHORT_NAME);
 
         String longName;
         try {
-            longName = routeNode.getString("longName");
+            longName = routeNode.getString(RouteContract.ROUTE_LONG_NAME);
         } catch (JSONException ex) {
             longName = null;
         }
@@ -287,22 +284,22 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
         // Sometimes the description field is missing form the object
         String description;
         try {
-            description = routeNode.getString("description");
+            description = routeNode.getString(RouteContract.ROUTE_DESC);
         } catch (JSONException ex) {
             description = null;
         }
 
-        RouteType type = parseRouteType(routeNode.getString("type"));
+        RouteType type = parseRouteType(routeNode.getString(RouteContract.ROUTE_TYPE));
 
         String url;
         try {
-            url = routeNode.getString("url");
+            url = routeNode.getString(RouteContract.ROUTE_URL);
         } catch (JSONException ex) {
             url = null;
         }
 
-        String color = routeNode.getString("color");
-        String textColor = routeNode.getString("textColor");
+        String color = routeNode.getString(RouteContract.ROUTE_COLOR);
+        String textColor = routeNode.getString(RouteContract.ROUTE_TEXT_COLOR);
 
         return new Route(id, shortName, longName, description, type, url, color, textColor);
     }

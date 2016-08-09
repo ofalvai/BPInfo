@@ -24,7 +24,8 @@ import android.support.annotation.Nullable;
 import com.android.volley.NoConnectionError;
 import com.android.volley.VolleyError;
 import com.example.bkkinfoplus.BkkInfoApplication;
-import com.example.bkkinfoplus.FutarApiClient;
+import com.example.bkkinfoplus.api.AlertSearchContract;
+import com.example.bkkinfoplus.api.FutarApiClient;
 import com.example.bkkinfoplus.R;
 import com.example.bkkinfoplus.Utils;
 import com.example.bkkinfoplus.model.Alert;
@@ -243,10 +244,10 @@ public class AlertListPresenter implements FutarApiClient.FutarApiCallback {
         if (languageCode.equals(mContext.getString(R.string.pref_key_language_auto))) {
             Locale locale = Locale.getDefault();
 
-            if (locale.getLanguage().equals(FutarApiClient.LANG_HU)) {
-                languageCode = FutarApiClient.LANG_HU;
+            if (locale.getLanguage().equals(AlertSearchContract.LANG_HU)) {
+                languageCode = AlertSearchContract.LANG_HU;
             } else {
-                languageCode = FutarApiClient.LANG_EN;
+                languageCode = AlertSearchContract.LANG_EN;
             }
         }
         
