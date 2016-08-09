@@ -16,9 +16,13 @@
 
 package com.example.bkkinfoplus;
 
+import android.Manifest;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.annotation.CheckResult;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresPermission;
 import android.support.annotation.StringRes;
 
 import com.android.volley.NetworkError;
@@ -188,5 +192,14 @@ public class Utils {
         } else {
             return false;
         }
+    }
+
+    @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
+    public static boolean hasNetworkConnection(@NonNull Context context) {
+        ConnectivityManager cm =
+                (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 }

@@ -18,6 +18,7 @@ package com.example.bkkinfoplus.ui.alertlist;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -165,9 +166,9 @@ public class AlertListFragment extends Fragment
     }
 
     private void initRefresh() {
-        mAlertListPresenter.fetchAlertList();
-
         setUpdating(true);
+
+        mAlertListPresenter.fetchAlertList();
 
         mAlertListPresenter.setLastUpdate();
     }
@@ -230,19 +231,30 @@ public class AlertListFragment extends Fragment
     }
 
     @Override
-    public void setUpdating(boolean state) {
-        if (state) {
-            // Workaround for https://code.google.com/p/android/issues/detail?id=77712
-            // From: http://stackoverflow.com/a/26910973/745637
-            mSwipeRefreshLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    mSwipeRefreshLayout.setRefreshing(true);
-                }
-            });
-        } else {
-            mSwipeRefreshLayout.setRefreshing(false);
-        }
+    public void setUpdating(final boolean updating) {
+        // Workaround for https://code.google.com/p/android/issues/detail?id=77712
+        // From: http://stackoverflow.com/a/26910973/745637
+        mSwipeRefreshLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                mSwipeRefreshLayout.setRefreshing(updating);
+            }
+        });
+    }
+
+    @Override
+    public void displayNoNetworkWarning() {
+        setUpdating(false);
+
+        Snackbar snackbar =
+                Snackbar.make(mSwipeRefreshLayout, R.string.error_no_connection, Snackbar.LENGTH_LONG);
+        snackbar.setAction(R.string.label_retry, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                initRefresh();
+            }
+        });
+        snackbar.show();
     }
 
     /**

@@ -21,6 +21,7 @@ import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.android.volley.NoConnectionError;
 import com.android.volley.VolleyError;
 import com.example.bkkinfoplus.BkkInfoApplication;
 import com.example.bkkinfoplus.FutarApiClient;
@@ -84,13 +85,24 @@ public class AlertListPresenter implements FutarApiClient.FutarApiCallback {
         void displayGeneralError();
 
         void setUpdating(boolean state);
+
+        void displayNoNetworkWarning();
     }
 
     /**
-     * Initiates a network refresh and returns the alert list to the listener
+     * Initiates a network refresh if possible, and returns the alert list to the listener, or
+     * calls the appropriate callback.
      */
     public void fetchAlertList() {
-        mFutarApiClient.fetchAlertList(this, getCurrentLanguageCode());
+        if (Utils.hasNetworkConnection(mContext)) {
+            mFutarApiClient.fetchAlertList(this, getCurrentLanguageCode());
+        } else if (mUnfilteredAlerts == null) {
+            // Nothing was displayed previously, showing a full error view
+            mInteractionListener.displayNetworkError(new NoConnectionError());
+        } else {
+            // A list was loaded previously, we don't clear that, only display a warning.
+            mInteractionListener.displayNoNetworkWarning();
+        }
     }
 
     /**
@@ -119,7 +131,6 @@ public class AlertListPresenter implements FutarApiClient.FutarApiCallback {
     public void updateIfNeeded() {
         Period updatePeriod = new Period().withSeconds(REFRESH_THRESHOLD_SEC);
         if (mLastUpdate.plus(updatePeriod).isBeforeNow()) {
-            mInteractionListener.setUpdating(true);
             fetchAlertList();
         }
     }

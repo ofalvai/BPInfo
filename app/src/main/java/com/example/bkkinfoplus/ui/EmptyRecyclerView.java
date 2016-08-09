@@ -70,4 +70,18 @@ public class EmptyRecyclerView extends RecyclerView {
         this.emptyView = emptyView;
         checkIfEmpty();
     }
+
+    /**
+     * Sets the emptyView to GONE when the Recyclerview itself is set to GONE.
+     * @param changedView
+     * @param visibility
+     */
+    @Override
+    protected void onVisibilityChanged(View changedView, int visibility) {
+        super.onVisibilityChanged(changedView, visibility);
+
+        if (changedView.equals(this) && visibility == GONE && emptyView != null) {
+            emptyView.setVisibility(GONE);
+        }
+    }
 }
