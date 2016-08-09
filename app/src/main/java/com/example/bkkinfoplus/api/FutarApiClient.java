@@ -27,7 +27,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.bkkinfoplus.BuildConfig;
 import com.example.bkkinfoplus.Config;
-import com.example.bkkinfoplus.Utils;
+import com.example.bkkinfoplus.util.Utils;
 import com.example.bkkinfoplus.model.Alert;
 import com.example.bkkinfoplus.model.Route;
 import com.example.bkkinfoplus.model.RouteType;

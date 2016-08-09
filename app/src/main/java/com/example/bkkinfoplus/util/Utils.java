@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package com.example.bkkinfoplus;
+package com.example.bkkinfoplus.util;
 
 import android.Manifest;
 import android.content.Context;
@@ -30,6 +30,7 @@ import com.android.volley.NoConnectionError;
 import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
+import com.example.bkkinfoplus.R;
 import com.example.bkkinfoplus.model.Alert;
 import com.example.bkkinfoplus.model.Route;
 import com.example.bkkinfoplus.model.RouteType;
@@ -44,9 +45,6 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * Created by oli on 2016. 06. 15..
- */
 public class Utils {
 
     @NonNull

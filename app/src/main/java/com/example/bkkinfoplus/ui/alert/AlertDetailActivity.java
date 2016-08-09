@@ -21,7 +21,7 @@ import android.content.Intent;
 import android.support.v4.app.Fragment;
 
 import com.example.bkkinfoplus.model.Alert;
-import com.example.bkkinfoplus.ui.SingleFragmentActivity;
+import com.example.bkkinfoplus.util.SingleFragmentActivity;
 
 public class AlertDetailActivity extends SingleFragmentActivity {
 

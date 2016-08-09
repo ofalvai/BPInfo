@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package com.example.bkkinfoplus.ui;
+package com.example.bkkinfoplus.util;
 
 import android.app.Activity;
 import android.content.Context;

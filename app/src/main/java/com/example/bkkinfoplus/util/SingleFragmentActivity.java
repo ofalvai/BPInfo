@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package com.example.bkkinfoplus.ui;
+package com.example.bkkinfoplus.util;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

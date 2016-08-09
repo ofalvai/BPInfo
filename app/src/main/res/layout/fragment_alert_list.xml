@@ -49,12 +49,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.example.bkkinfoplus.ui.EmptyRecyclerView
+            <com.example.bkkinfoplus.util.EmptyRecyclerView
                 android:id="@+id/alerts_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 tools:context=".ui.alertlist.AlertListFragment">
-            </com.example.bkkinfoplus.ui.EmptyRecyclerView>
+            </com.example.bkkinfoplus.util.EmptyRecyclerView>
 
         </android.support.v4.widget.SwipeRefreshLayout>
 

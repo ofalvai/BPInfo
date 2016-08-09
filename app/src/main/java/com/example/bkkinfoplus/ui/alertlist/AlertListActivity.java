@@ -18,7 +18,7 @@ package com.example.bkkinfoplus.ui.alertlist;
 
 import android.support.v4.app.Fragment;
 
-import com.example.bkkinfoplus.ui.SingleFragmentActivity;
+import com.example.bkkinfoplus.util.SingleFragmentActivity;
 
 public class AlertListActivity extends SingleFragmentActivity {
 

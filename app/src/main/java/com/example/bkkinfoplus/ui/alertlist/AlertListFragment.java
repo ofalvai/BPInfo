@@ -38,13 +38,13 @@ import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.example.bkkinfoplus.R;
-import com.example.bkkinfoplus.Utils;
+import com.example.bkkinfoplus.util.Utils;
 import com.example.bkkinfoplus.model.Alert;
 import com.example.bkkinfoplus.model.Route;
 import com.example.bkkinfoplus.model.RouteType;
-import com.example.bkkinfoplus.ui.EmptyRecyclerView;
-import com.example.bkkinfoplus.ui.SimpleDividerItemDecoration;
-import com.example.bkkinfoplus.ui.UiUtils;
+import com.example.bkkinfoplus.util.EmptyRecyclerView;
+import com.example.bkkinfoplus.util.SimpleDividerItemDecoration;
+import com.example.bkkinfoplus.util.UiUtils;
 import com.example.bkkinfoplus.ui.alert.AlertDetailFragment;
 import com.example.bkkinfoplus.ui.settings.SettingsActivity;
 import com.wefika.flowlayout.FlowLayout;

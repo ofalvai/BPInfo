@@ -26,7 +26,7 @@ import com.android.volley.VolleyError;
 import com.example.bkkinfoplus.BkkInfoApplication;
 import com.example.bkkinfoplus.Config;
 import com.example.bkkinfoplus.R;
-import com.example.bkkinfoplus.Utils;
+import com.example.bkkinfoplus.util.Utils;
 import com.example.bkkinfoplus.api.AlertSearchContract;
 import com.example.bkkinfoplus.api.FutarApiClient;
 import com.example.bkkinfoplus.model.Alert;
