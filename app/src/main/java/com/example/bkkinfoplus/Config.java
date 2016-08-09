@@ -16,8 +16,24 @@
 
 package com.example.bkkinfoplus;
 
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 public class Config {
 
     public static final String FUTAR_API_BASE_URL = "http://futar.bkk.hu/bkk-utvonaltervezo-api/ws/otp/api/where/";
+
+    /**
+     * Time after the alert list is considered outdated when the user returns to the activity
+     */
+    public static final int REFRESH_THRESHOLD_SEC = 30;
+
+    public static final DateTimeFormatter FORMATTER_TIME = DateTimeFormat.forPattern("HH:mm");
+
+    public static final DateTimeFormatter FORMATTER_DATE = DateTimeFormat.forPattern("MMM d. EEEE ");
+
+    public static final DateTimeFormatter FORMATTER_DATE_YEAR = DateTimeFormat.forPattern("YYYY MMM d. EEEE ");
+
+    public static final String DATE_SEPARATOR = " ➔ ";
 
 }

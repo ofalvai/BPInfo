@@ -31,26 +31,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.bkkinfoplus.Config;
 import com.example.bkkinfoplus.R;
 import com.example.bkkinfoplus.model.Route;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 /**
  * Created by oli on 2016. 06. 18..
  */
 public class UiUtils {
 
-    private static final DateTimeFormatter FORMATTER_TIME = DateTimeFormat.forPattern("HH:mm");
 
-    private static final DateTimeFormatter FORMATTER_DATE = DateTimeFormat.forPattern("MMM d. EEEE ");
-
-    private static final DateTimeFormatter FORMATTER_DATE_YEAR = DateTimeFormat.forPattern("YYYY MMM d. EEEE ");
-
-    private static final String DATE_SEPARATOR = " ➔ ";
 
     /**
      * Transforms the start and end timestamps into a human-friendly readable string,
@@ -81,13 +74,13 @@ public class UiUtils {
             startDateString = context.getString(R.string.date_today) + " ";
         } else if (startDate.year().get() < today.year().get()) {
             // The start year is less than the current year, displaying the year too
-            startDateString = FORMATTER_DATE_YEAR.print(startDateTime);
+            startDateString = Config.FORMATTER_DATE_YEAR.print(startDateTime);
         } else if (startDate.equals(yesterdayDate)) {
             startDateString = context.getString(R.string.date_yesterday) + " ";
         } else if (startDate.equals(tomorrowDate)) {
             startDateString = context.getString(R.string.date_tomorrow) + " ";
         } else {
-            startDateString = FORMATTER_DATE.print(startDateTime);
+            startDateString = Config.FORMATTER_DATE.print(startDateTime);
         }
 
         // Alert start, time part
@@ -96,7 +89,7 @@ public class UiUtils {
             // The API marks "first departure" as 00:00
             startTimeString = context.getString(R.string.date_first_departure);
         } else {
-            startTimeString = FORMATTER_TIME.print(startDateTime);
+            startTimeString = Config.FORMATTER_TIME.print(startDateTime);
         }
 
         // Alert end, date part
@@ -107,7 +100,7 @@ public class UiUtils {
             endDateString = " ";
         } else if (endDate.year().get() > today.year().get()) {
             // The end year is greater than the current year, displaying the year too
-            endDateString = FORMATTER_DATE_YEAR.print(endDateTime);
+            endDateString = Config.FORMATTER_DATE_YEAR.print(endDateTime);
         } else if (endDate.equals(todayDate)) {
             // End  day is today, replacing month and day with today string
             endDateString = context.getString(R.string.date_today) + " ";
@@ -116,7 +109,7 @@ public class UiUtils {
         } else if (endDate.equals(tomorrowDate)) {
             endDateString = context.getString(R.string.date_tomorrow) + " ";
         } else {
-            endDateString = FORMATTER_DATE.print(endDateTime);
+            endDateString = Config.FORMATTER_DATE.print(endDateTime);
         }
 
         // Alert end, time part
@@ -128,10 +121,10 @@ public class UiUtils {
             // The API marks "last departure" as 23:59
             endTimeString = context.getString(R.string.date_last_departure);
         } else {
-            endTimeString = FORMATTER_TIME.print(endDateTime);
+            endTimeString = Config.FORMATTER_TIME.print(endDateTime);
         }
 
-        return startDateString + startTimeString + DATE_SEPARATOR + endDateString + endTimeString;
+        return startDateString + startTimeString + Config.DATE_SEPARATOR + endDateString + endTimeString;
     }
 
     /**
@@ -162,7 +155,6 @@ public class UiUtils {
             iconBackground.mutate().setColorFilter(colorFilter);
             iconView.setBackground(iconBackground);
         }
-
     }
 
     /**

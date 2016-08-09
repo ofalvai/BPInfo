@@ -24,10 +24,11 @@ import android.support.annotation.Nullable;
 import com.android.volley.NoConnectionError;
 import com.android.volley.VolleyError;
 import com.example.bkkinfoplus.BkkInfoApplication;
-import com.example.bkkinfoplus.api.AlertSearchContract;
-import com.example.bkkinfoplus.api.FutarApiClient;
+import com.example.bkkinfoplus.Config;
 import com.example.bkkinfoplus.R;
 import com.example.bkkinfoplus.Utils;
+import com.example.bkkinfoplus.api.AlertSearchContract;
+import com.example.bkkinfoplus.api.FutarApiClient;
 import com.example.bkkinfoplus.model.Alert;
 import com.example.bkkinfoplus.model.Route;
 import com.example.bkkinfoplus.model.RouteType;
@@ -49,8 +50,6 @@ import javax.inject.Inject;
  * Created by oli on 2016. 06. 20..
  */
 public class AlertListPresenter implements FutarApiClient.FutarApiCallback {
-
-    private static final int REFRESH_THRESHOLD_SEC = 30;
 
     @Inject FutarApiClient mFutarApiClient;
 
@@ -130,7 +129,7 @@ public class AlertListPresenter implements FutarApiClient.FutarApiCallback {
      * Initiates a list update if enough time has passed since the last update
      */
     public void updateIfNeeded() {
-        Period updatePeriod = new Period().withSeconds(REFRESH_THRESHOLD_SEC);
+        Period updatePeriod = new Period().withSeconds(Config.REFRESH_THRESHOLD_SEC);
         if (mLastUpdate.plus(updatePeriod).isBeforeNow()) {
             fetchAlertList();
         }
