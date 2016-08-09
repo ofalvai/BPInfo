@@ -38,25 +38,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * Created by oli on 2016. 06. 14..
- */
 public class FutarApiClient implements Response.Listener<JSONObject>, Response.ErrorListener {
+    private static final String TAG = "FutarApiClient";
+
+    private static final String API_ENDPOINT = "alert-search.json";
+
+    private static final String QUERY_API_KEY = BuildConfig.APPLICATION_ID;
+
+    private static final String QUERY_API_VERSION = "3";
+
+    private static final String QUERY_APPVERSION = BuildConfig.VERSION_NAME;
+
+    private static final String QUERY_INCLUDEREFERENCES = "alerts,routes";
+
     public static final String LANG_HU = "hu";
     public static final String LANG_EN = "en";
     private static final String LANG_SOME = "someTranslation";
-
-    private static final String TAG = "FutarApiClient";
-
-    private static final String BASE_URL = "http://futar.bkk.hu/bkk-utvonaltervezo-api/ws/otp/api/where/alert-search.json";
-
-    private static final String QUERY_KEY = "apaiary-test";
-
-    private static final String QUERY_VERSION = "3";
-
-    private static final String QUERY_APPVERSION = "apiary-1.0";
-
-    private static final String QUERY_INCLUDEREFERENCES = "alerts,routes";
 
     // The website doesn't have a language switch, but the URL has a hidden query parameter:
     // /alert.php?id=1234&lang=en
@@ -78,7 +75,6 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
     private HashMap<String, Route> mRoutes;
 
     private FutarApiCallback mApiCallback;
-
     private String mLanguageCode;
 
     public interface FutarApiCallback {
@@ -98,9 +94,10 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
     private Uri buildUri() {
         String startTimestamp = String.valueOf(new DateTime().getMillis() / 1000L);
 
-        return Uri.parse(BASE_URL).buildUpon()
-                .appendQueryParameter("key", QUERY_KEY)
-                .appendQueryParameter("version", QUERY_VERSION)
+        return Uri.parse(Config.FUTAR_API_BASE_URL).buildUpon()
+                .appendEncodedPath(API_ENDPOINT)
+                .appendQueryParameter("key", QUERY_API_KEY)
+                .appendQueryParameter("version", QUERY_API_VERSION)
                 .appendQueryParameter("appVersion", QUERY_APPVERSION)
                 .appendQueryParameter("includeReferences", QUERY_INCLUDEREFERENCES)
                 .appendQueryParameter("start", startTimestamp)
@@ -108,7 +105,6 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
     }
 
     public void fetchAlertList(@NonNull FutarApiCallback callback, @NonNull String languageCode) {
-        // TODO: esetleg egy fetchAll(), és mAlerts-től függően fetchAll() vagy visszatérni az mAlerts-el
         setApiCallback(callback);
 
         mLanguageCode = languageCode;

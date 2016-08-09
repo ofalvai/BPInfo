@@ -6,6 +6,7 @@ com_crashlytics_export_strings.xml
 
 # Local configuration file (sdk path, etc)
 local.properties
+/app/localconfig.properties
 
 # Gradle generated files
 .gradle/
@@ -36,3 +37,6 @@ local.properties
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+
+

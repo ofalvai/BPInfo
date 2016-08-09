@@ -17,6 +17,12 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 
+// This file contains private information, create your own by renaming localconfig.example.properties
+def localConfig = new Properties()
+localConfig.load(new FileInputStream(project.file("localconfig.properties")))
+
+// Other variables are declared in gradle.properties
+
 android {
     compileSdkVersion 23
     buildToolsVersion '23.0.2'
@@ -26,11 +32,13 @@ android {
         minSdkVersion 16 // Don't forget to change in the flavors too!
         targetSdkVersion 23
         versionCode version_code.toInteger()
-        versionName version_code
+        versionName version_name
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         resConfigs "en", "hu"
+
+        buildConfigField("boolean", "ENABLE_DEBUG_TOOLS", "false")
     }
     buildTypes {
         debug {
