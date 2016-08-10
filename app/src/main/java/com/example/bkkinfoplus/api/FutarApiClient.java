@@ -19,7 +19,6 @@ package com.example.bkkinfoplus.api;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -27,10 +26,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.bkkinfoplus.BuildConfig;
 import com.example.bkkinfoplus.Config;
-import com.example.bkkinfoplus.util.Utils;
 import com.example.bkkinfoplus.model.Alert;
 import com.example.bkkinfoplus.model.Route;
 import com.example.bkkinfoplus.model.RouteType;
+import com.example.bkkinfoplus.util.Utils;
 
 import org.joda.time.DateTime;
 import org.json.JSONArray;
@@ -40,6 +39,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import static com.example.bkkinfoplus.util.LogUtils.LOGD;
+import static com.example.bkkinfoplus.util.LogUtils.LOGE;
+import static com.example.bkkinfoplus.util.LogUtils.LOGW;
 
 public class FutarApiClient implements Response.Listener<JSONObject>, Response.ErrorListener {
     private static final String TAG = "FutarApiClient";
@@ -108,7 +111,7 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
 
         Uri uri = buildUri();
 
-        Log.d(TAG, "API request: " + uri.toString());
+        LOGD(TAG, "API request: " + uri.toString());
 
         JsonObjectRequest request = new JsonObjectRequest(uri.toString(), null, this, this);
 
@@ -261,8 +264,8 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
                     routeMap.put(route.getId(), route);
                 }
             } catch (JSONException ex) {
-                Log.e(TAG, "Failed to parse route at index " + i + ":");
-                Log.e(TAG, routeNode.toString());
+                LOGE(TAG, "Failed to parse route at index " + i + ":");
+                LOGE(TAG, routeNode.toString());
             }
         }
 
@@ -309,7 +312,7 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
         try {
             return RouteType.valueOf(type);
         } catch (IllegalArgumentException ex) {
-            Log.w(TAG, "Failed to parse route type to enum: " + type);
+            LOGW(TAG, "Failed to parse route type to enum: " + type);
         }
         return RouteType._OTHER_;
     }

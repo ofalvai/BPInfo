@@ -34,19 +34,18 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.example.bkkinfoplus.R;
-import com.example.bkkinfoplus.util.Utils;
 import com.example.bkkinfoplus.model.Alert;
 import com.example.bkkinfoplus.model.Route;
 import com.example.bkkinfoplus.model.RouteType;
+import com.example.bkkinfoplus.ui.alert.AlertDetailFragment;
+import com.example.bkkinfoplus.ui.settings.SettingsActivity;
 import com.example.bkkinfoplus.util.EmptyRecyclerView;
 import com.example.bkkinfoplus.util.SimpleDividerItemDecoration;
 import com.example.bkkinfoplus.util.UiUtils;
-import com.example.bkkinfoplus.ui.alert.AlertDetailFragment;
-import com.example.bkkinfoplus.ui.settings.SettingsActivity;
+import com.example.bkkinfoplus.util.Utils;
 import com.wefika.flowlayout.FlowLayout;
 
 import java.util.ArrayList;
@@ -55,6 +54,8 @@ import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
+
+import static com.example.bkkinfoplus.util.LogUtils.LOGD;
 
 public class AlertListFragment extends Fragment
         implements AlertListPresenter.AlertInteractionListener, AlertFilterFragment.AlertFilterListener {
@@ -387,7 +388,7 @@ public class AlertListFragment extends Fragment
                         UiUtils.addRouteIcon(getActivity(), mRouteIconsWrapper, route);
 
                         if (route.getType() == RouteType._OTHER_) {
-                            Toast.makeText(getContext(),"Unknown route type: " + route.getShortName() + "(" + route.getId() + ")", Toast.LENGTH_LONG).show();
+                            LOGD(TAG, "Unknown route type: " + route.getShortName() + "(" + route.getId() + ")");
                         }
                     }
                 }

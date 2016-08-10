@@ -23,10 +23,11 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.text.TextUtils;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.bkkinfoplus.util.LogUtils.LOGE;
 
 /**
  * Helper class for Custom Tabs.
@@ -124,7 +125,7 @@ public class CustomTabsHelper {
                 return true;
             }
         } catch (RuntimeException e) {
-            Log.e(TAG, "Runtime exception while getting specialized handlers");
+            LOGE(TAG, "Runtime exception while getting specialized handlers");
         }
         return false;
     }

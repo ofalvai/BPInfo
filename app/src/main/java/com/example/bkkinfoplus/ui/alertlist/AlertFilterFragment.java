@@ -23,13 +23,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 
 import com.example.bkkinfoplus.R;
 import com.example.bkkinfoplus.model.RouteType;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import static com.example.bkkinfoplus.util.LogUtils.LOGD;
 
 /**
  * A DialogFragment containing a multi-choice list of RouteTypes.
@@ -185,7 +186,7 @@ public class AlertFilterFragment extends DialogFragment {
                 }
             }
         } else {
-            Log.d(TAG, "Unable to find a RouteType to index " + which);
+            LOGD(TAG, "Unable to find a RouteType to index " + which);
         }
     }
 
@@ -205,7 +206,7 @@ public class AlertFilterFragment extends DialogFragment {
             if (type != null) {
                 checkedItems[i] = mSelectedRouteTypes != null && mSelectedRouteTypes.contains(type);
             } else {
-                Log.d(TAG, "Unable to find a RouteType to index " + i);
+                LOGD(TAG, "Unable to find a RouteType to index " + i);
             }
         }
 
