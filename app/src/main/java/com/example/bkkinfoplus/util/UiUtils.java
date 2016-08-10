@@ -38,17 +38,12 @@ import com.example.bkkinfoplus.model.Route;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 
-/**
- * Created by oli on 2016. 06. 18..
- */
 public class UiUtils {
-
-
 
     /**
      * Transforms the start and end timestamps into a human-friendly readable string,
      * with special replacements for special dates, times, and the API's strange notations.
-     * @param context
+     * @param context Context
      * @param startTimestamp Start of the alert in seconds since the UNIX epoch
      * @param endTimestamp   End of the alert in seconds since the UNIX epoch
      * @return  A string in the format of [startdate] [starttime] [separator] [enddate] [endtime]

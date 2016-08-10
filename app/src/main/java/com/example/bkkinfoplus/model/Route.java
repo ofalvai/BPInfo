@@ -18,9 +18,6 @@ package com.example.bkkinfoplus.model;
 
 import java.io.Serializable;
 
-/**
- * Created by oli on 2016. 06. 15..
- */
 public class Route implements Serializable {
     private String id;
 

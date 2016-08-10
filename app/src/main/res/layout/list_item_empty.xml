@@ -26,10 +26,10 @@
         android:layout_height="wrap_content"
         android:text="@string/alert_list_empty"
         android:layout_gravity="center_horizontal"
-        android:textSize="@dimen/abc_text_size_title_material"
+        android:textSize="@dimen/text_size_title"
         android:layout_margin="16dp"
         android:paddingTop="32dp"
-        android:textColor="@color/secondary_text_default_material_light"
+        android:textColor="@color/colorSecondaryText"
         android:textAlignment="center"/>
 
 </LinearLayout>

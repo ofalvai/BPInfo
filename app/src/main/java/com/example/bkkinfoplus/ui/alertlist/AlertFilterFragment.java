@@ -106,8 +106,6 @@ public class AlertFilterFragment extends DialogFragment {
     /**
      * Returns the corresponding RouteType value to the menu item index.
      * The order is based on R.array.route_types
-     * @param index
-     * @return
      */
     @Nullable
     private RouteType indexToRouteType(int index) {
@@ -141,8 +139,6 @@ public class AlertFilterFragment extends DialogFragment {
     /**
      * Returns the corresponding menu item index to the RouteType value.
      * The order is based on R.array.route_types
-     * @param type
-     * @return
      */
     private int routeTypeToIndex(RouteType type) {
         int index;
@@ -191,9 +187,8 @@ public class AlertFilterFragment extends DialogFragment {
     }
 
     /**
-     * Creates a boolean[] based on the selected route types. This is used to indicate already
+     * Returns a boolean[] based on the selected route types. This is used to indicate already
      * checked items
-     * @return
      */
     @NonNull
     private boolean[] defaultCheckedItems() {

@@ -63,8 +63,6 @@ public class Utils {
     /**
      * Detects if a route seems to be a replacement route by its ID format.
      * It's needed because the API returns replacement routes mixed together with the affected routes.
-     * @param routeId
-     * @return
      */
     public static boolean isRouteReplacement(@NonNull String routeId) {
         /**
@@ -160,10 +158,10 @@ public class Utils {
      * Certain affected routes returned by the alerts API are visually identical if we display only
      * their shortName and color. It's enough to display only one of these routes, so every affected
      * route can be compared to the already displayed routes with this method.
-     * @param routeToTest
      * @param routes List of routes to test against
      * @return true if routeToTest is visually identical to any of the other routes, false otherwise
      */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean isRouteVisuallyDuplicate(@NonNull Route routeToTest, @NonNull List<Route> routes) {
         for (Route route : routes) {
             if (route.getShortName().equals(routeToTest.getShortName()) &&
@@ -176,8 +174,6 @@ public class Utils {
 
     /**
      * Returns whether an alert counts as a recent one based on the start timestamp.
-     * @param alert
-     * @return  true if the alert is a recent one, false otherwise
      */
     public static boolean isAlertRecent(@NonNull Alert alert) {
         DateTime alertTime = new DateTime(alert.getStart() * 1000L);
@@ -185,11 +181,7 @@ public class Utils {
 
         final int RECENT_DELTA_HOURS = 24;
 
-        if (alertTime.plusHours(RECENT_DELTA_HOURS).getMillis() >= now.getMillis()) {
-            return true;
-        } else {
-            return false;
-        }
+        return alertTime.plusHours(RECENT_DELTA_HOURS).getMillis() >= now.getMillis();
     }
 
     @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)

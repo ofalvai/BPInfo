@@ -20,9 +20,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by oli on 2016. 06. 14..
- */
 public class Alert implements Serializable {
 
     private String id;

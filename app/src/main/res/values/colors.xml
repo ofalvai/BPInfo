@@ -23,4 +23,6 @@
     <color name="colorDivider">#EBEBEB</color>
     <color name="colorLinkBlue">#2196F3</color>
 
+    <color name="colorSecondaryText">#8a000000</color>
+
 </resources>

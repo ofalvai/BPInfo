@@ -18,7 +18,6 @@
     <string name="app_name">BKK Info</string>
     <string name="error_list_display">Unable to display traffic info</string>
     <string name="error_response">Incorrect response received from server</string>
-    <string name="alert_label_date_modified">Modified: %1$s</string>
     <string name="actionbar_subtitle_alert_count">%1$s traffic changes today</string>
     <string name="error_no_connection">No network connection</string>
     <string name="error_network">Network error</string>

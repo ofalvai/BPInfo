@@ -28,7 +28,7 @@ import com.example.bkkinfoplus.R;
  * From: https://gist.github.com/polbins/e37206fbc444207c0e92
  */
 public class SimpleDividerItemDecoration extends RecyclerView.ItemDecoration {
-    private Drawable mDivider;
+    private final Drawable mDivider;
 
     public SimpleDividerItemDecoration(Context context) {
         mDivider = context.getResources().getDrawable(R.drawable.line_divider);

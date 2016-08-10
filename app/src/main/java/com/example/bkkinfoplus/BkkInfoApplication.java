@@ -50,7 +50,6 @@ public class BkkInfoApplication extends Application {
     /**
      * This handles orientation and other configuration changes. Without this, a screen rotation
      * would reset the language previously set in Application.onCreate() above.
-     * @param newConfig
      */
     @Override
     public void onConfigurationChanged(Configuration newConfig) {

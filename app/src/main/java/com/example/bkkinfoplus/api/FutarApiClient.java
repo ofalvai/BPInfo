@@ -68,7 +68,7 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
     // But it's better than having no language selection at all.
     private static final String LANG_PARAM = "&lang=";
 
-    private RequestQueue mRequestQueue;
+    private final RequestQueue mRequestQueue;
 
     private List<Alert> mAlerts;
 
@@ -146,7 +146,7 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
     }
 
     @NonNull
-    public List<Alert> parseAlerts(@NonNull JSONObject response, @NonNull String languageCode)
+    private List<Alert> parseAlerts(@NonNull JSONObject response, @NonNull String languageCode)
             throws JSONException {
         List<Alert> alertList = new ArrayList<>();
 
@@ -184,7 +184,7 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
     }
 
     @NonNull
-    public Alert parseAlert(@NonNull JSONObject alertNode, @NonNull String languageCode)
+    private Alert parseAlert(@NonNull JSONObject alertNode, @NonNull String languageCode)
             throws JSONException {
         String id = alertNode.getString(AlertContract.ALERT_ID);
         long start = alertNode.getLong(AlertContract.ALERT_START);
@@ -245,7 +245,7 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
     }
 
     @NonNull
-    public HashMap<String, Route> parseRoutes(@NonNull JSONObject response) throws JSONException {
+    private HashMap<String, Route> parseRoutes(@NonNull JSONObject response) throws JSONException {
         HashMap<String, Route> routeMap = new HashMap<>();
 
         JSONObject dataNode = response.getJSONObject(AlertSearchContract.DATA);

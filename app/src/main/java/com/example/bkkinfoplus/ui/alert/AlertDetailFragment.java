@@ -58,9 +58,9 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
      * List of currently displayed route icons. This list is needed in order to find visually
      * duplicate route data, and not to display them twice.
      */
-    private List<Route> mDisplayedRoutes = new ArrayList<>();
+    private final List<Route> mDisplayedRoutes = new ArrayList<>();
 
-    private BottomSheetBehavior.BottomSheetCallback mBottomSheetBehaviorCallback =
+    private final BottomSheetBehavior.BottomSheetCallback mBottomSheetBehaviorCallback =
             new AlertDetailCallback();
 
     public static AlertDetailFragment newInstance(@NonNull Alert alert) {
@@ -73,8 +73,6 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
 
     /**
      * Sets up the fragment as a child of a BottomSheetDialogFragment
-     * @param dialog
-     * @param style
      */
     @Override
     public void setupDialog(Dialog dialog, int style) {
@@ -101,6 +99,7 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
         }
     }
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // By default, the BottomSheetDialog changes the statusbar's color to black.

@@ -46,9 +46,6 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-/**
- * Created by oli on 2016. 06. 20..
- */
 public class AlertListPresenter implements FutarApiClient.FutarApiCallback {
 
     @Inject FutarApiClient mFutarApiClient;
@@ -138,7 +135,6 @@ public class AlertListPresenter implements FutarApiClient.FutarApiCallback {
     /**
      * Sets the RouteType filter to be applied to the returned alert list.
      * If an empty Set or null is passed, the list is not filtered.
-     * @param routeTypes
      */
     public void setFilter(@Nullable Set<RouteType> routeTypes) {
         mActiveFilter = routeTypes;
@@ -154,7 +150,6 @@ public class AlertListPresenter implements FutarApiClient.FutarApiCallback {
      * 1. Attach Route objects to each Alert based on the alert's route IDs
      * 2. Sort the list by the alerts' start time in descending order
      * 3. Filter the list by the currently active filter
-     * @param alerts
      */
     @Override
     public void onAlertResponse(List<Alert> alerts) {

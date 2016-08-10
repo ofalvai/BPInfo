@@ -83,7 +83,7 @@ public class AlertListFragment extends Fragment
 
         if (savedInstanceState != null) {
             @SuppressWarnings("unchecked")
-            HashSet<RouteType> filter = (HashSet<RouteType>) savedInstanceState.getSerializable(KEY_ACTIVE_FILTER);
+            Set<RouteType> filter = (HashSet<RouteType>) savedInstanceState.getSerializable(KEY_ACTIVE_FILTER);
             if (filter != null) {
                 onFilterChanged(filter);
             }
@@ -161,6 +161,7 @@ public class AlertListFragment extends Fragment
         super.onSaveInstanceState(outState);
 
         // Casting to HashSet, because Set is not serializable :(
+        //noinspection CollectionDeclaredAsConcreteClass
         HashSet<RouteType> filter = (HashSet<RouteType>) mAlertListPresenter.getFilter();
 
         outState.putSerializable(KEY_ACTIVE_FILTER, filter);
@@ -262,7 +263,6 @@ public class AlertListFragment extends Fragment
      * Displays or hides the error view. If displaying, it also sets the retry button's event listener
      * and the error message.
      * @param state true to display, false to hide
-     * @param errorMessage
      */
     private void setErrorView(boolean state, String errorMessage) {
         if (state) {
@@ -334,13 +334,13 @@ public class AlertListFragment extends Fragment
 
     private class AlertHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private TextView mTitleTextView;
+        private final TextView mTitleTextView;
 
-        private TextView mDateTextView;
+        private final TextView mDateTextView;
 
-        private FlowLayout mRouteIconsWrapper;
+        private final FlowLayout mRouteIconsWrapper;
 
-        private TextView mRecentTextView;
+        private final TextView mRecentTextView;
 
         private Alert mAlert;
 
@@ -348,7 +348,7 @@ public class AlertListFragment extends Fragment
          * List of currently displayed route icons. This list is needed in order to find visually
          * duplicate route data, and not to display them twice.
          */
-        private List<Route> mDisplayedRoutes = new ArrayList<>();
+        private final List<Route> mDisplayedRoutes = new ArrayList<>();
 
         public AlertHolder(View itemView) {
             super(itemView);
