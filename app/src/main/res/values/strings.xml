@@ -101,7 +101,7 @@
     <string name="pref_key_language_en" translatable="false">en</string>
     <string name="pref_key_language_hu" translatable="false">hu</string>
     <string name="email_bkk_mailto" translatable="false">mailto:futar@bkk.hu</string>
-    <string name="email_bkk_body">Tisztelt BKK!\n\nA nyilvános FUTÁR API által visszaadott adatokban az alábbi problémát szeretném jelenteni:\n\nÜdvözlettel:\n</string>
+    <string name="email_bkk_body">To whom it may concern,\n\nI would like to report a problem in the data returned by the FUTÁR API:\n\nSincerely,\n</string>
     <string name="email_bkk_subject">FUTÁR API bugreport</string>
     <string name="title_activity_licences">Licences</string>
     <string name="alert_label_recent">RECENT</string>
