@@ -50,6 +50,7 @@ public class AlertFilterFragment extends DialogFragment {
     @Nullable
     private AlertFilterListener mFilterListener;
 
+    @NonNull
     public static AlertFilterFragment newInstance(AlertFilterListener listener, Set<RouteType> initialFilter) {
         AlertFilterFragment fragment = new AlertFilterFragment();
         fragment.mFilterListener = listener;

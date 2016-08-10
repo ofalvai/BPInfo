@@ -18,6 +18,7 @@ package com.example.bkkinfoplus.ui.alert;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
 import com.example.bkkinfoplus.model.Alert;
@@ -27,7 +28,7 @@ public class AlertDetailActivity extends SingleFragmentActivity {
 
     private static final String EXTRA_ALERT_OBJECT = "com.example.bkkinfoplus.alert_object";
 
-
+    @NonNull
     @Override
     protected Fragment createFragment() {
         Alert alert = (Alert) getIntent().getSerializableExtra(EXTRA_ALERT_OBJECT);

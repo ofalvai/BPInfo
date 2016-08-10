@@ -36,6 +36,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -70,11 +71,16 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
 
     private final RequestQueue mRequestQueue;
 
+    @NonNull
     private List<Alert> mAlerts;
 
-    private HashMap<String, Route> mRoutes;
+    @NonNull
+    private AbstractMap<String, Route> mRoutes;
 
+    @Nullable
     private FutarApiCallback mApiCallback;
+
+    @Nullable
     private String mLanguageCode;
 
     public interface FutarApiCallback {
@@ -125,7 +131,7 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
     @Override
     public void onResponse(JSONObject response) {
         try {
-            mAlerts = parseAlerts(response, mLanguageCode);
+            mAlerts = parseAlerts(response);
             mRoutes = parseRoutes(response);
         } catch (Exception ex) {
             if (mApiCallback != null) {
@@ -146,7 +152,7 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
     }
 
     @NonNull
-    private List<Alert> parseAlerts(@NonNull JSONObject response, @NonNull String languageCode)
+    private List<Alert> parseAlerts(@NonNull JSONObject response)
             throws JSONException {
         List<Alert> alertList = new ArrayList<>();
 
@@ -167,7 +173,7 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
             JSONObject alertNode = alerts.getJSONObject(i);
             Alert alert;
             try {
-                alert = parseAlert(alertNode, languageCode);
+                alert = parseAlert(alertNode);
             } catch (JSONException ex) {
                 alert = new Alert(null, 0, 0, 0, null, null, null, null, null);
             }
@@ -184,8 +190,9 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
     }
 
     @NonNull
-    private Alert parseAlert(@NonNull JSONObject alertNode, @NonNull String languageCode)
+    private Alert parseAlert(@NonNull JSONObject alertNode)
             throws JSONException {
+
         String id = alertNode.getString(AlertContract.ALERT_ID);
         long start = alertNode.getLong(AlertContract.ALERT_START);
         long end;
@@ -206,7 +213,7 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
 
         JSONObject urlNode = alertNode.getJSONObject(AlertContract.ALERT_URL);
 
-        String url = urlNode.getString(AlertSearchContract.LANG_SOME) + LANG_PARAM + languageCode;
+        String url = urlNode.getString(AlertSearchContract.LANG_SOME) + LANG_PARAM + mLanguageCode;
 
         String header;
         JSONObject headerNode = alertNode.getJSONObject(AlertContract.ALERT_HEADER);
@@ -214,7 +221,7 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
         try {
             // Trying to get the specific language's translation
             // It might be null or completely missing from the response
-            header = translationsNode.getString(languageCode);
+            header = translationsNode.getString(mLanguageCode);
 
             if (header == null || header.equals("null")) {
                 throw new JSONException("header field is null");
@@ -231,7 +238,7 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
         try {
             // Trying to get the specific language's translation
             // It might be null or completely missing from the response
-            description = translationsNode2.getString(languageCode);
+            description = translationsNode2.getString(mLanguageCode);
 
             if (description == null || description.equals("null")) {
                 throw new JSONException("description field is null");

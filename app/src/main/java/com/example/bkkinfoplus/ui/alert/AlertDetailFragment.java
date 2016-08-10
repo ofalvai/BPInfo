@@ -21,6 +21,7 @@ import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.BottomSheetDialogFragment;
@@ -48,10 +49,19 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
 
     private Alert mAlert;
 
+    @Nullable
     private TextView mTitleTextView;
+
+    @Nullable
     private TextView mDateTextView;
+
+    @Nullable
     private FlowLayout mRouteIconsLayout;
+
+    @Nullable
     private HtmlTextView mDescriptionTextView;
+
+    @Nullable
     private TextView mUrlTextView;
 
     /**
@@ -119,35 +129,45 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
         mDescriptionTextView = (HtmlTextView) view.findViewById(R.id.alert_detail_description);
         mUrlTextView = (TextView) view.findViewById(R.id.alert_detail_url);
 
-        mTitleTextView.setText(mAlert.getHeader());
+        if (mTitleTextView != null) {
+            mTitleTextView.setText(mAlert.getHeader());
+        }
 
-        String dateString = UiUtils.alertDateFormatter(getActivity(), mAlert.getStart(), mAlert.getEnd());
-        mDateTextView.setText(dateString);
+        if (mDateTextView != null) {
+            String dateString = UiUtils.alertDateFormatter(getActivity(), mAlert.getStart(), mAlert.getEnd());
+            mDateTextView.setText(dateString);
+        }
 
-        // There are alerts without affected routes, eg. announcements
-        if (mAlert.getRouteIds() != null) {
-            for (Route route : mAlert.getAffectedRoutes()) {
-                // Some affected routes are visually identical to others in the list, no need
-                // to diplay them again.
-                if (!Utils.isRouteVisuallyDuplicate(route, mDisplayedRoutes)) {
-                    mDisplayedRoutes.add(route);
-                    UiUtils.addRouteIcon(getActivity(), mRouteIconsLayout, route);
+        if (mRouteIconsLayout != null) {
+            // There are alerts without affected routes, eg. announcements
+            if (mAlert.getRouteIds() != null) {
+                for (Route route : mAlert.getAffectedRoutes()) {
+                    // Some affected routes are visually identical to others in the list, no need
+                    // to diplay them again.
+                    if (!Utils.isRouteVisuallyDuplicate(route, mDisplayedRoutes)) {
+                        mDisplayedRoutes.add(route);
+                        UiUtils.addRouteIcon(getActivity(), mRouteIconsLayout, route);
+                    }
                 }
             }
         }
 
-        mDescriptionTextView.setHtmlFromString(mAlert.getDescription(), new HtmlTextView.LocalImageGetter());
+        if (mDescriptionTextView != null) {
+            mDescriptionTextView.setHtmlFromString(mAlert.getDescription(), new HtmlTextView.LocalImageGetter());
+        }
 
-        mUrlTextView.setPaintFlags(mUrlTextView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-        mUrlTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mAlert.getUrl() != null) {
-                    Uri url = Uri.parse(mAlert.getUrl());
-                    UiUtils.openCustomTab(getActivity(), url);
+        if (mUrlTextView != null) {
+            mUrlTextView.setPaintFlags(mUrlTextView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+            mUrlTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mAlert.getUrl() != null) {
+                        Uri url = Uri.parse(mAlert.getUrl());
+                        UiUtils.openCustomTab(getActivity(), url);
+                    }
                 }
-            }
-        });
+            });
+        }
 
         return view;
     }

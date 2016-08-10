@@ -16,15 +16,17 @@
 
 package com.example.bkkinfoplus.util;
 
+import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 
 import com.example.bkkinfoplus.R;
 
 public abstract class SingleFragmentActivity extends AppCompatActivity {
 
+    @NonNull
     protected abstract Fragment createFragment();
 
     @Override

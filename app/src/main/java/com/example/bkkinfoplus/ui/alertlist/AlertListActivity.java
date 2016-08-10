@@ -16,12 +16,14 @@
 
 package com.example.bkkinfoplus.ui.alertlist;
 
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
 import com.example.bkkinfoplus.util.SingleFragmentActivity;
 
 public class AlertListActivity extends SingleFragmentActivity {
 
+    @NonNull
     @Override
     protected Fragment createFragment() {
         return new AlertListFragment();

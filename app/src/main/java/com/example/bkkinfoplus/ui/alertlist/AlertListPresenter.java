@@ -54,6 +54,7 @@ public class AlertListPresenter implements FutarApiClient.FutarApiCallback {
 
     @Inject Context mContext;
 
+    @NonNull
     private AlertInteractionListener mInteractionListener;
 
     /**
@@ -62,11 +63,13 @@ public class AlertListPresenter implements FutarApiClient.FutarApiCallback {
     @Nullable
     private List<Alert> mUnfilteredAlerts;
 
+    @Nullable
     private DateTime mLastUpdate;
 
+    @NonNull
     private Set<RouteType> mActiveFilter = new HashSet<>();
 
-    public AlertListPresenter(AlertInteractionListener interactionListener) {
+    public AlertListPresenter(@NonNull AlertInteractionListener interactionListener) {
         mInteractionListener = interactionListener;
 
         BkkInfoApplication.injector.inject(this);
@@ -127,7 +130,7 @@ public class AlertListPresenter implements FutarApiClient.FutarApiCallback {
      */
     public void updateIfNeeded() {
         Period updatePeriod = new Period().withSeconds(Config.REFRESH_THRESHOLD_SEC);
-        if (mLastUpdate.plus(updatePeriod).isBeforeNow()) {
+        if (mLastUpdate != null && mLastUpdate.plus(updatePeriod).isBeforeNow()) {
             fetchAlertList();
         }
     }
@@ -137,7 +140,11 @@ public class AlertListPresenter implements FutarApiClient.FutarApiCallback {
      * If an empty Set or null is passed, the list is not filtered.
      */
     public void setFilter(@Nullable Set<RouteType> routeTypes) {
-        mActiveFilter = routeTypes;
+        if (routeTypes == null) {
+            mActiveFilter.clear();
+        } else {
+            mActiveFilter = routeTypes;
+        }
     }
 
     @Nullable

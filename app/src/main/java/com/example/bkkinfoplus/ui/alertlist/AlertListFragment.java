@@ -18,6 +18,7 @@ package com.example.bkkinfoplus.ui.alertlist;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -66,11 +67,22 @@ public class AlertListFragment extends Fragment
 
     private static final String FILTER_DIALOG_TAG = "filter_dialog";
 
+    @Nullable
     private EmptyRecyclerView mAlertRecyclerView;
+
+    @Nullable
     private AlertAdapter mAlertAdapter;
+
+    @Nullable
     private SwipeRefreshLayout mSwipeRefreshLayout;
+
+    @Nullable
     private LinearLayout mErrorLayout;
+
+    @Nullable
     private AlertFilterFragment mFilterFragment;
+
+    @Nullable
     private TextView mFilterWarningView;
 
     @Inject AlertListPresenter mAlertListPresenter;
@@ -101,19 +113,23 @@ public class AlertListFragment extends Fragment
         mFilterWarningView = (TextView) view.findViewById(R.id.alert_list_filter_active_message);
 
         mAlertRecyclerView = (EmptyRecyclerView) view.findViewById(R.id.alerts_recycler_view);
-        mAlertRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mAlertRecyclerView.addItemDecoration(
-                new SimpleDividerItemDecoration(getActivity().getApplicationContext()));
-        final View emptyView = view.findViewById(R.id.empty_view);
-        mAlertRecyclerView.setEmptyView(emptyView);
+        if (mAlertRecyclerView != null) {
+            mAlertRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            mAlertRecyclerView.addItemDecoration(
+                    new SimpleDividerItemDecoration(getActivity().getApplicationContext()));
+            final View emptyView = view.findViewById(R.id.empty_view);
+            mAlertRecyclerView.setEmptyView(emptyView);
+        }
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.alerts_swipe_refresh_layout);
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                initRefresh();
-            }
-        });
+        if (mSwipeRefreshLayout != null) {
+            mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    initRefresh();
+                }
+            });
+        }
 
         // If this fragment got recreated while the filter dialog was open, we need to update
         // the listener reference
@@ -204,7 +220,9 @@ public class AlertListFragment extends Fragment
 
         if (mAlertAdapter == null) {
             mAlertAdapter = new AlertAdapter(alerts);
-            mAlertRecyclerView.setAdapter(mAlertAdapter);
+            if (mAlertRecyclerView != null) {
+                mAlertRecyclerView.setAdapter(mAlertAdapter);
+            }
         } else {
             mAlertAdapter.updateAlertData(alerts);
             mAlertAdapter.notifyDataSetChanged();
@@ -236,27 +254,32 @@ public class AlertListFragment extends Fragment
     public void setUpdating(final boolean updating) {
         // Workaround for https://code.google.com/p/android/issues/detail?id=77712
         // From: http://stackoverflow.com/a/26910973/745637
-        mSwipeRefreshLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                mSwipeRefreshLayout.setRefreshing(updating);
-            }
-        });
+        if (mSwipeRefreshLayout != null) {
+            mSwipeRefreshLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    mSwipeRefreshLayout.setRefreshing(updating);
+                }
+            });
+        }
     }
 
     @Override
     public void displayNoNetworkWarning() {
         setUpdating(false);
 
-        Snackbar snackbar =
-                Snackbar.make(mSwipeRefreshLayout, R.string.error_no_connection, Snackbar.LENGTH_LONG);
-        snackbar.setAction(R.string.label_retry, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                initRefresh();
-            }
-        });
-        snackbar.show();
+        if (mSwipeRefreshLayout != null) {
+            Snackbar snackbar =
+                    Snackbar.make(mSwipeRefreshLayout, R.string.error_no_connection, Snackbar.LENGTH_LONG);
+
+            snackbar.setAction(R.string.label_retry, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    initRefresh();
+                }
+            });
+            snackbar.show();
+        }
     }
 
     /**
@@ -267,7 +290,10 @@ public class AlertListFragment extends Fragment
     private void setErrorView(boolean state, String errorMessage) {
         if (state) {
             setUpdating(false);
-            mAlertRecyclerView.setVisibility(View.GONE);
+
+            if (mAlertRecyclerView != null) {
+                mAlertRecyclerView.setVisibility(View.GONE);
+            }
 
             if (mErrorLayout != null) {
                 TextView errorMessageView = (TextView) mErrorLayout.findViewById(R.id.error_message);
@@ -287,7 +313,9 @@ public class AlertListFragment extends Fragment
                 errorMessageView.setText(errorMessage);
             }
         } else {
-            mAlertRecyclerView.setVisibility(View.VISIBLE);
+            if (mAlertRecyclerView != null) {
+                mAlertRecyclerView.setVisibility(View.VISIBLE);
+            }
 
             if (mErrorLayout != null) {
                 mErrorLayout.setVisibility(View.GONE);
