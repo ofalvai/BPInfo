@@ -13,13 +13,12 @@
   ~    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   ~    See the License for the specific language governing permissions and
   ~    limitations under the License.
-  -->
-
+-->
 <manifest package="com.example.bkkinfoplus"
           xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
         android:name=".BkkInfoApplication"
@@ -56,14 +55,27 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.bkkinfoplus.ui.alertlist.AlertListActivity"/>
         </activity>
+
+        <!-- About -->
         <activity
-            android:name=".ui.settings.LicencesActivity"
-            android:label="@string/title_activity_licences"
+            android:name=".ui.settings.AboutActivity"
+            android:label="@string/title_activity_about"
             android:parentActivityName=".ui.settings.SettingsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.bkkinfoplus.ui.settings.SettingsActivity"/>
         </activity>
+
+        <!-- Licences -->
+        <activity
+        android:name=".ui.settings.LicencesActivity"
+        android:label="@string/title_activity_licences"
+        android:parentActivityName=".ui.settings.AboutActivity">
+            <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value="com.example.bkkinfoplus.ui.settings.AboutActivity"/>
+        </activity>
+
     </application>
 
 </manifest>

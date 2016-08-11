@@ -38,11 +38,13 @@ android {
 
         resConfigs "en", "hu"
 
-        //buildConfigField("boolean", "ENABLE_DEBUG_TOOLS", "false")
+        resValue "string", "APP_VERSION", version_name
     }
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
+
+            resValue "string", "PACKAGE_NAME_REAL", "com.example.bkkinfoplus.debug"
         }
 
         release {
@@ -50,6 +52,8 @@ android {
             shrinkResources true
             debuggable false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            resValue "string", "PACKAGE_NAME_REAL", "com.example.bkkinfoplus"
         }
     }
     productFlavors {

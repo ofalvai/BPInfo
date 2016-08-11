@@ -66,7 +66,7 @@
         <item>@string/pref_language_hu</item>
         <item>@string/pref_language_en</item>
     </string-array>
-    <string name="pref_category_about">Névjegy</string>
+    <string name="pref_category_other">Egyéb</string>
     <string name="pref_title_send_bugreport">Hibajelentés</string>
     <string name="pref_title_send_bugreport_bkk">Hibajelentés a BKK-nak</string>
     <string name="pref_title_rate">App értékelése</string>
@@ -88,5 +88,10 @@
     <string name="email_bkk_body">Tisztelt BKK!\n\nA nyilvános FUTÁR API által visszaadott adatokban az alábbi problémát szeretném jelenteni:\n\nÜdvözlettel:\n</string>
     <string name="title_activity_licences">Licencek</string>
     <string name="alert_label_recent">FRISS</string>
+    <string name="title_activity_about">Névjegy</string>
+    <string name="about_label_licences">Nyílt forrású licencek</string>
+    <string name="about_label_source_code">Forráskód GitHub-on</string>
+    <string name="pref_description_about">Verzió, licencek</string>
+    <string name="pref_title_about">Névjegy</string>
 
 </resources>

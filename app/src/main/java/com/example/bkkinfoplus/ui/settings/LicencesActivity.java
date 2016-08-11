@@ -16,7 +16,10 @@
 
 package com.example.bkkinfoplus.ui.settings;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.webkit.WebView;
 
@@ -33,8 +36,11 @@ public class LicencesActivity extends AppCompatActivity {
         if (webView != null) {
             webView.loadUrl("file:///android_asset/licences.html");
         }
+    }
 
-
+    @NonNull
+    public static Intent newIntent(Context context) {
+        return new Intent(context, LicencesActivity.class);
     }
 
 

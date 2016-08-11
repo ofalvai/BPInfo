@@ -30,12 +30,18 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="@string/pref_category_about"
-        android:key="@string/pref_key_category_about">
+        android:title="@string/pref_category_other"
+        android:key="@string/pref_key_category_other">
 
-        <Preference
-            android:title="@string/app_name"
-            android:summary="TODO: version" />
+        <PreferenceScreen
+            android:title="@string/pref_title_about"
+            android:summary="@string/pref_description_about">
+
+            <intent
+                android:targetPackage="@string/PACKAGE_NAME_REAL"
+                android:targetClass="com.example.bkkinfoplus.ui.settings.AboutActivity">
+            </intent>
+        </PreferenceScreen>
 
         <PreferenceScreen
             android:title="@string/pref_title_send_bugreport"
@@ -71,17 +77,6 @@
                 android:action="android.intent.action.VIEW"
                 android:data="market://details?id=com.example">
                 <!-- TODO! -->
-            </intent>
-        </PreferenceScreen>
-
-        <PreferenceScreen
-            android:title="@string/pref_title_licences"
-            android:summary="@string/pref_description_licences"
-            android:key="pref_key_licences">
-
-            <intent
-                android:targetPackage="com.example.bkkinfoplus"
-                android:targetClass="com.example.bkkinfoplus.ui.settings.LicencesActivity">
             </intent>
         </PreferenceScreen>
 
