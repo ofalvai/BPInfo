@@ -20,6 +20,8 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 
+import net.danlew.android.joda.JodaTimeAndroid;
+
 import java.util.Locale;
 
 import javax.inject.Inject;
@@ -45,6 +47,8 @@ public class BkkInfoApplication extends Application {
         injector.inject(this); // Oh the irony...
 
         setLanguage();
+
+        JodaTimeAndroid.init(this);
     }
 
     /**
