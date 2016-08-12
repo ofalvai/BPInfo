@@ -141,10 +141,15 @@ public class AlertListFragment extends Fragment
             }
         }
 
+        return view;
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+
         initRefresh();
         updateFilterWarning();
-
-        return view;
     }
 
     @Override
