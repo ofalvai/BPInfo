@@ -17,28 +17,40 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 
-// This file contains private information, create your own by renaming localconfig.example.properties
+// Create a variable called keystorePropertiesFile, and initialize it to your
+// keystore.properties file, in the rootProject folder.
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
+
+// This file contains private information, create your own by renaming
+// localconfig.example.properties in the project folder
 def localConfig = new Properties()
 localConfig.load(new FileInputStream(project.file("localconfig.properties")))
 
 // Other variables are declared in gradle.properties
 
 android {
+    signingConfigs {
+        config {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+        }
+    }
     compileSdkVersion 23
     buildToolsVersion '23.0.2'
-
     defaultConfig {
         applicationId "com.example.bkkinfoplus"
         minSdkVersion 16 // Don't forget to change in the flavors too!
         targetSdkVersion 23
-        versionCode version_code.toInteger()
         versionName version_name
-
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
         resConfigs "en", "hu"
-
         resValue "string", "APP_VERSION", version_name
+        signingConfig signingConfigs.config
     }
     buildTypes {
         debug {
