@@ -41,8 +41,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.example.bkkinfoplus.util.LogUtils.LOGD;
 import static com.example.bkkinfoplus.util.LogUtils.LOGE;
+import static com.example.bkkinfoplus.util.LogUtils.LOGI;
 import static com.example.bkkinfoplus.util.LogUtils.LOGW;
 
 public class FutarApiClient implements Response.Listener<JSONObject>, Response.ErrorListener {
@@ -117,7 +117,7 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
 
         Uri uri = buildUri();
 
-        LOGD(TAG, "API request: " + uri.toString());
+        LOGI(TAG, "API request: " + uri.toString());
 
         JsonObjectRequest request = new JsonObjectRequest(uri.toString(), null, this, this);
 
