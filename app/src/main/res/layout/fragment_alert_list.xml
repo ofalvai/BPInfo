@@ -33,10 +33,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="14sp"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
+            android:paddingLeft="@dimen/toolbar_horizontal_margin"
+            android:paddingRight="@dimen/toolbar_horizontal_margin"
             android:background="@color/colorAccent"
             android:textColor="@android:color/white"/>
 
@@ -53,6 +53,8 @@
                 android:id="@+id/alerts_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
                 tools:context=".ui.alertlist.AlertListFragment">
             </com.example.bkkinfoplus.util.EmptyRecyclerView>
 

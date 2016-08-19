@@ -18,5 +18,9 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
+    <!-- Replicating the Toolbar's margin, which gets slightly bigger on tablets,
+         but not as big as the Preferences layout. -->
+    <dimen name="toolbar_horizontal_margin">16dp</dimen>
+
     <dimen name="text_size_title">20sp</dimen>
 </resources>
