@@ -25,4 +25,6 @@
 
     <color name="colorSecondaryText">#8a000000</color>
 
+    <color name="colorBackground">#fafafa</color>
+
 </resources>
