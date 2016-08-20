@@ -42,7 +42,7 @@
         android:textSize="@dimen/text_size_title"
         android:layout_margin="16dp"
         android:textColor="@color/colorSecondaryText"
-        android:textAlignment="center"
+        android:gravity="center"
         tools:ignore="HardcodedText"/>
 
     <Button

@@ -30,6 +30,6 @@
         android:layout_margin="16dp"
         android:paddingTop="32dp"
         android:textColor="@color/colorSecondaryText"
-        android:textAlignment="center"/>
+        android:gravity="center"/>
 
 </merge>
