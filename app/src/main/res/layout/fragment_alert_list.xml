@@ -53,8 +53,8 @@
                 android:id="@+id/alerts_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingLeft="@dimen/list_extra_padding"
+                android:paddingRight="@dimen/list_extra_padding"
                 tools:context=".ui.alertlist.AlertListFragment">
             </com.example.bkkinfoplus.util.EmptyRecyclerView>
 

@@ -22,5 +22,7 @@
          but not as big as the Preferences layout. -->
     <dimen name="toolbar_horizontal_margin">16dp</dimen>
 
+    <dimen name="list_extra_padding">0dp</dimen>
+
     <dimen name="text_size_title">20sp</dimen>
 </resources>

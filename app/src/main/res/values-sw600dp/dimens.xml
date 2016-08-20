@@ -21,4 +21,6 @@
     <!-- Replicating the Toolbar's margin, which gets slightly bigger on tablets,
          but not as big as the Preferences layout. -->
     <dimen name="toolbar_horizontal_margin">24dp</dimen>
+
+    <dimen name="list_extra_padding">8dp</dimen>
 </resources>
