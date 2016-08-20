@@ -46,9 +46,9 @@
                     android:background="@color/colorAccent"
                     android:textColor="@android:color/white"/>
 
-                <!--<include layout="@layout/error_with_action" />-->
+                <include layout="@layout/error_with_action" />
 
-                <!--<include layout="@layout/list_item_empty" />-->
+                <include layout="@layout/list_item_empty" />
 
                 <com.example.bkkinfoplus.util.EmptyRecyclerView
                     android:id="@+id/alerts_recycler_view"
