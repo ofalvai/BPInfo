@@ -85,6 +85,9 @@ public class AlertListFragment extends Fragment
     @Nullable
     private TextView mFilterWarningView;
 
+    @Nullable
+    private TextView mEmptyView;
+
     @Inject AlertListPresenter mAlertListPresenter;
 
     @Override
@@ -111,14 +114,14 @@ public class AlertListFragment extends Fragment
 
         mErrorLayout = (LinearLayout) view.findViewById(R.id.error_with_action);
         mFilterWarningView = (TextView) view.findViewById(R.id.alert_list_filter_active_message);
+        mEmptyView = (TextView) view.findViewById(R.id.empty_view);
 
         mAlertRecyclerView = (EmptyRecyclerView) view.findViewById(R.id.alerts_recycler_view);
         if (mAlertRecyclerView != null) {
             mAlertRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             mAlertRecyclerView.addItemDecoration(
                     new SimpleDividerItemDecoration(getActivity().getApplicationContext()));
-            final View emptyView = view.findViewById(R.id.empty_view);
-            mAlertRecyclerView.setEmptyView(emptyView);
+            mAlertRecyclerView.setEmptyView(mEmptyView);
         }
 
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.alerts_swipe_refresh_layout);
@@ -300,6 +303,10 @@ public class AlertListFragment extends Fragment
                 mAlertRecyclerView.setVisibility(View.GONE);
             }
 
+            if (mEmptyView != null) {
+                mEmptyView.setVisibility(View.GONE);
+            }
+
             if (mErrorLayout != null) {
                 TextView errorMessageView = (TextView) mErrorLayout.findViewById(R.id.error_message);
                 Button refreshButton = (Button) mErrorLayout.findViewById(R.id.error_action_button);
@@ -320,6 +327,10 @@ public class AlertListFragment extends Fragment
         } else {
             if (mAlertRecyclerView != null) {
                 mAlertRecyclerView.setVisibility(View.VISIBLE);
+            }
+
+            if (mEmptyView != null) {
+                mEmptyView.setVisibility(View.VISIBLE);
             }
 
             if (mErrorLayout != null) {

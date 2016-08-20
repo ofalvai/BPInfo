@@ -17,7 +17,6 @@
 package com.example.bkkinfoplus.util;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
@@ -86,17 +85,5 @@ public class EmptyRecyclerView extends RecyclerView {
     public void setEmptyView(View emptyView) {
         this.emptyView = emptyView;
         checkIfEmpty();
-    }
-
-    /**
-     * Sets the emptyView to GONE when the Recyclerview itself is set to GONE.
-     */
-    @Override
-    protected void onVisibilityChanged(@NonNull View changedView, int visibility) {
-        super.onVisibilityChanged(changedView, visibility);
-
-        if (changedView.equals(this) && visibility == GONE && emptyView != null) {
-            emptyView.setVisibility(GONE);
-        }
     }
 }
