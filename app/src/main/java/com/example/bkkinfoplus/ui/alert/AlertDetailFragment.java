@@ -33,10 +33,10 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.example.bkkinfoplus.R;
-import com.example.bkkinfoplus.util.Utils;
 import com.example.bkkinfoplus.model.Alert;
 import com.example.bkkinfoplus.model.Route;
 import com.example.bkkinfoplus.util.UiUtils;
+import com.example.bkkinfoplus.util.Utils;
 import com.wefika.flowlayout.FlowLayout;
 
 import org.sufficientlysecure.htmltextview.HtmlTextView;
