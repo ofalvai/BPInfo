@@ -14,7 +14,7 @@
   ~    See the License for the specific language governing permissions and
   ~    limitations under the License.
 -->
-<manifest package="com.example.bkkinfoplus"
+<manifest package="com.ofalvai.bpinfo"
           xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
           android:installLocation="auto">
@@ -60,7 +60,7 @@
             android:parentActivityName=".ui.alertlist.AlertListActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.bkkinfoplus.ui.alertlist.AlertListActivity"/>
+                android:value=".ui.alertlist.AlertListActivity"/>
         </activity>
 
         <!-- About -->
@@ -70,7 +70,7 @@
             android:parentActivityName=".ui.settings.SettingsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.bkkinfoplus.ui.settings.SettingsActivity"/>
+                android:value=".ui.settings.SettingsActivity"/>
         </activity>
 
         <!-- Licences -->
@@ -80,7 +80,7 @@
         android:parentActivityName=".ui.settings.AboutActivity">
             <meta-data
             android:name="android.support.PARENT_ACTIVITY"
-            android:value="com.example.bkkinfoplus.ui.settings.AboutActivity"/>
+            android:value=".ui.settings.AboutActivity"/>
         </activity>
 
     </application>

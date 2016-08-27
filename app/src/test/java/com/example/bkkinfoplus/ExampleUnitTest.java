@@ -1,4 +1,4 @@
-package com.example.bkkinfoplus;
+package com.ofalvai.bpinfo;
 
 import org.junit.Test;
 

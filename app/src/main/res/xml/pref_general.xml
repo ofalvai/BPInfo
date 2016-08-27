@@ -39,7 +39,7 @@
 
             <intent
                 android:targetPackage="@string/PACKAGE_NAME_REAL"
-                android:targetClass="com.example.bkkinfoplus.ui.settings.AboutActivity">
+                android:targetClass="com.ofalvai.bpinfo.ui.settings.AboutActivity">
             </intent>
         </PreferenceScreen>
 
@@ -75,8 +75,7 @@
             android:key="pref_key_rate">
             <intent
                 android:action="android.intent.action.VIEW"
-                android:data="market://details?id=com.example">
-                <!-- TODO! -->
+                android:data="market://details?id=com.ofalvai.bpinfo">
             </intent>
         </PreferenceScreen>
 

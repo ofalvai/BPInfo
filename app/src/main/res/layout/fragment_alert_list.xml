@@ -50,14 +50,14 @@
 
                 <include layout="@layout/list_item_empty" />
 
-                <com.example.bkkinfoplus.util.EmptyRecyclerView
+                <com.ofalvai.bpinfo.util.EmptyRecyclerView
                     android:id="@+id/alerts_recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:paddingLeft="@dimen/list_extra_padding"
                     android:paddingRight="@dimen/list_extra_padding"
                     tools:context=".ui.alertlist.AlertListFragment">
-                </com.example.bkkinfoplus.util.EmptyRecyclerView>
+                </com.ofalvai.bpinfo.util.EmptyRecyclerView>
 
             </LinearLayout>
 

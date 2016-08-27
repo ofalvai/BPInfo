@@ -45,7 +45,7 @@ android {
     buildToolsVersion '24.0.1'
 
     defaultConfig {
-        applicationId "com.example.bkkinfoplus"
+        applicationId "com.ofalvai.bpinfo"
         signingConfig signingConfigs.config
 
         minSdkVersion 16 // Don't forget to change in the flavors too!
@@ -64,7 +64,7 @@ android {
         debug {
             applicationIdSuffix ".debug"
 
-            resValue "string", "PACKAGE_NAME_REAL", "com.example.bkkinfoplus.debug"
+            resValue "string", "PACKAGE_NAME_REAL", "com.ofalvai.bpinfo.debug"
         }
 
         release {
@@ -73,7 +73,7 @@ android {
             debuggable false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
-            resValue "string", "PACKAGE_NAME_REAL", "com.example.bkkinfoplus"
+            resValue "string", "PACKAGE_NAME_REAL", "com.ofalvai.bpinfo"
         }
     }
     productFlavors {
