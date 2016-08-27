@@ -120,7 +120,7 @@ public class AlertListFragment extends Fragment
         if (mAlertRecyclerView != null) {
             mAlertRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             mAlertRecyclerView.addItemDecoration(
-                    new SimpleDividerItemDecoration(getActivity().getApplicationContext()));
+                    new SimpleDividerItemDecoration(getActivity()));
             mAlertRecyclerView.setEmptyView(mEmptyView);
         }
 

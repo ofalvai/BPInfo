@@ -40,7 +40,7 @@ public class AppModule {
 
     @Provides
     @Singleton
-    Context providesContext() {
+    Context providesAppContext() {
         return mContext;
     }
 
