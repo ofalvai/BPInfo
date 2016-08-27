@@ -37,9 +37,13 @@ import android.widget.Toast;
 
 import com.example.bkkinfoplus.BkkInfoApplication;
 import com.example.bkkinfoplus.R;
+import com.instabug.library.IBGInvocationMode;
+import com.instabug.library.Instabug;
 import com.jakewharton.processphoenix.ProcessPhoenix;
 
 import javax.inject.Inject;
+
+import static com.example.bkkinfoplus.util.LogUtils.LOGW;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -125,6 +129,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
         addPreferencesFromResource(R.xml.pref_general);
         PreferenceManager.setDefaultValues(this, R.xml.pref_general, false);
 
+        setupBugreportClickListener();
+
         bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_language)));
 
     }
@@ -205,6 +211,27 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
         if (actionBar != null) {
             // Show the Up button in the action bar.
             actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+    }
+
+    /**
+     *
+     * This should be called after the preferences have been added from XML.
+     */
+    private void setupBugreportClickListener() {
+        String preferenceKey = getString(R.string.pref_key_send_bugreport);
+        Preference preference = getPreferenceManager().findPreference(preferenceKey);
+
+        if (preference != null) {
+            preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Instabug.invoke(IBGInvocationMode.IBGInvocationModeNA);
+                    return true;
+                }
+            });
+        } else {
+            LOGW(TAG, "Preference '" + preferenceKey + "' not found");
         }
     }
 }

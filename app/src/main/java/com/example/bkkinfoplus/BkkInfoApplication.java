@@ -20,6 +20,10 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 
+import com.instabug.library.Feature;
+import com.instabug.library.IBGInvocationEvent;
+import com.instabug.library.Instabug;
+
 import net.danlew.android.joda.JodaTimeAndroid;
 
 import java.util.Locale;
@@ -49,6 +53,8 @@ public class BkkInfoApplication extends Application {
         setLanguage();
 
         JodaTimeAndroid.init(this);
+
+        initInstaBug();
     }
 
     /**
@@ -84,5 +90,15 @@ public class BkkInfoApplication extends Application {
         config.locale = newLocale;
 
         getResources().updateConfiguration(config, null);
+    }
+
+    private void initInstaBug() {
+        new Instabug.Builder(this, Config.INSTABUG_TOKEN)
+                .setInvocationEvent(IBGInvocationEvent.IBGInvocationEventNone)
+                .setEmailFieldRequired(false)
+                .setInAppMessagingState(Feature.State.DISABLED)
+                .setWillTakeScreenshot(false)
+                .setCrashReportingState(Feature.State.ENABLED) //TODO
+                .build();
     }
 }
