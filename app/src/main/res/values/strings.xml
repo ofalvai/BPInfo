@@ -15,7 +15,7 @@
   -->
 
 <resources>
-    <string name="app_name">BKK Info</string>
+    <string name="app_name">BPInfo</string>
     <string name="error_list_display">Unable to display traffic info</string>
     <string name="error_response">Incorrect response received from server</string>
     <string name="actionbar_subtitle_alert_count">%1$s traffic changes today</string>
@@ -85,9 +85,9 @@
     <string name="pref_description_licences">Used open source libraries</string>
     <string name="menu_debug">Debug mode</string>
 
-    <!-- Settings keys -->
     <string name="pref_key_category_general" translatable="false">category_general</string>
     <string name="pref_key_language" translatable="false">language</string>
+    <string name="pref_key_send_bugreport" translatable="false">send_bugreport</string>
     <string name="pref_language_dialog_title">Restart needed</string>
     <string name="pref_language_dialog_message">In order to use the new language, the app needs to be restarted.</string>
     <string name="pref_language_dialog_positive_button">Restart</string>
