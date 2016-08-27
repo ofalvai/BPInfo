@@ -43,16 +43,22 @@ android {
     }
     compileSdkVersion 24
     buildToolsVersion '24.0.1'
+
     defaultConfig {
         applicationId "com.example.bkkinfoplus"
+        signingConfig signingConfigs.config
+
         minSdkVersion 16 // Don't forget to change in the flavors too!
         targetSdkVersion 24
+
+        version version_code
         versionName version_name
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
         resConfigs "en", "hu"
         resValue "string", "APP_VERSION", version_name
-        signingConfig signingConfigs.config
         buildConfigField "String", "INSTABUG_TOKEN", "\"${localConfig.instaBugToken}\""
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         debug {
@@ -104,7 +110,9 @@ dependencies {
     compile 'net.danlew:android.joda:2.9.4.1'
     compile 'com.jakewharton:process-phoenix:1.0.2'
     compile 'com.instabug.library:instabug:2+'
+
     testCompile 'junit:junit:4.12'
+
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2') {
         // Necessary if your app targets Marshmallow (since Espresso
         // hasn't moved to Marshmallow yet)
