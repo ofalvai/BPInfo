@@ -44,6 +44,7 @@ import com.ofalvai.bpinfo.model.RouteType;
 import com.ofalvai.bpinfo.ui.alert.AlertDetailFragment;
 import com.ofalvai.bpinfo.ui.settings.SettingsActivity;
 import com.ofalvai.bpinfo.util.EmptyRecyclerView;
+import com.ofalvai.bpinfo.util.FabricUtils;
 import com.ofalvai.bpinfo.util.SimpleDividerItemDecoration;
 import com.ofalvai.bpinfo.util.UiUtils;
 import com.ofalvai.bpinfo.util.Utils;
@@ -130,6 +131,7 @@ public class AlertListFragment extends Fragment
                 @Override
                 public void onRefresh() {
                     initRefresh();
+                    FabricUtils.logManualRefresh();
                 }
             });
         }
@@ -212,6 +214,8 @@ public class AlertListFragment extends Fragment
                 mAlertListPresenter.getFilter());
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         mFilterFragment.show(transaction, FILTER_DIALOG_TAG);
+
+        FabricUtils.logFilterDialogOpened();
     }
 
     @Override

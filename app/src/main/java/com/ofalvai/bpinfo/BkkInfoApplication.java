@@ -20,6 +20,8 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 
+import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.answers.Answers;
 import com.instabug.library.Feature;
 import com.instabug.library.IBGInvocationEvent;
 import com.instabug.library.Instabug;
@@ -29,6 +31,8 @@ import net.danlew.android.joda.JodaTimeAndroid;
 import java.util.Locale;
 
 import javax.inject.Inject;
+
+import io.fabric.sdk.android.Fabric;
 
 /**
  * Subclassing Application in order to build the Dagger injector.
@@ -55,6 +59,8 @@ public class BkkInfoApplication extends Application {
         JodaTimeAndroid.init(this);
 
         initInstaBug();
+
+        Fabric.with(this, new Crashlytics(), new Answers());
     }
 
     /**
@@ -98,7 +104,7 @@ public class BkkInfoApplication extends Application {
                 .setEmailFieldRequired(false)
                 .setInAppMessagingState(Feature.State.DISABLED)
                 .setWillTakeScreenshot(false)
-                .setCrashReportingState(Feature.State.ENABLED) //TODO
+                .setCrashReportingState(Feature.State.DISABLED)
                 .build();
     }
 }

@@ -35,6 +35,10 @@
         android:supportsRtl="false"
         android:theme="@style/AppTheme">
 
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="${fabricApiKey}" />
+
         <!-- Alert List -->
         <activity
             android:name=".ui.alertlist.AlertListActivity"

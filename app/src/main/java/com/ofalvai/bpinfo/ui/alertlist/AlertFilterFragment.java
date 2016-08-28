@@ -26,6 +26,7 @@ import android.support.v7.app.AlertDialog;
 
 import com.ofalvai.bpinfo.R;
 import com.ofalvai.bpinfo.model.RouteType;
+import com.ofalvai.bpinfo.util.FabricUtils;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -89,6 +90,8 @@ public class AlertFilterFragment extends DialogFragment {
                     public void onClick(DialogInterface dialog, int which) {
                         if (mFilterListener != null && mSelectedRouteTypes != null) {
                             mFilterListener.onFilterChanged(mSelectedRouteTypes);
+
+                            FabricUtils.logFilterApplied(mSelectedRouteTypes);
                         }
                     }
                 })

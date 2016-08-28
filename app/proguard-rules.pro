@@ -30,3 +30,8 @@
 -dontwarn com.google.android.gms.**
 -dontwarn com.android.volley.toolbox.**
 -dontwarn com.instabug.**
+
+## Fabric
+-keepattributes *Annotation*
+-keepattributes SourceFile,LineNumberTable
+-keep public class * extends java.lang.Exception

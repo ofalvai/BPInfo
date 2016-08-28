@@ -35,6 +35,7 @@ import android.widget.TextView;
 import com.ofalvai.bpinfo.R;
 import com.ofalvai.bpinfo.model.Alert;
 import com.ofalvai.bpinfo.model.Route;
+import com.ofalvai.bpinfo.util.FabricUtils;
 import com.ofalvai.bpinfo.util.UiUtils;
 import com.ofalvai.bpinfo.util.Utils;
 import com.wefika.flowlayout.FlowLayout;
@@ -107,6 +108,8 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
         if (getArguments() != null) {
             mAlert = (Alert) getArguments().getSerializable(ARG_ALERT_OBJECT);
         }
+
+        FabricUtils.logAlertContentView(mAlert);
     }
 
     @NonNull
@@ -164,6 +167,7 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
                     if (mAlert.getUrl() != null) {
                         Uri url = Uri.parse(mAlert.getUrl());
                         UiUtils.openCustomTab(getActivity(), url);
+                        FabricUtils.logAlertUrlClick(mAlert);
                     }
                 }
             });

@@ -40,4 +40,4 @@ Thumbs.db
 
 *.apk
 /**/keystore.properties
-
+/**/fabric.properties
