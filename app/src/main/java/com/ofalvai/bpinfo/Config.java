@@ -28,6 +28,11 @@ public class Config {
      */
     public static final int REFRESH_THRESHOLD_SEC = 30;
 
+    /**
+     * Time before an alert is considered "recent".
+     */
+    public static final int ALERT_RECENT_THRESHOLD_HOURS = 24;
+
     public static final DateTimeFormatter FORMATTER_TIME = DateTimeFormat.forPattern("HH:mm");
 
     public static final DateTimeFormatter FORMATTER_DATE = DateTimeFormat.forPattern("MMM d. EEEE ");

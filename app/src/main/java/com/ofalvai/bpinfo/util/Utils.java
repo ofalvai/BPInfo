@@ -30,6 +30,7 @@ import com.android.volley.NoConnectionError;
 import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
+import com.ofalvai.bpinfo.Config;
 import com.ofalvai.bpinfo.R;
 import com.ofalvai.bpinfo.model.Alert;
 import com.ofalvai.bpinfo.model.Route;
@@ -179,9 +180,7 @@ public class Utils {
         DateTime alertTime = new DateTime(alert.getStart() * 1000L);
         DateTime now = new DateTime();
 
-        final int RECENT_DELTA_HOURS = 24;
-
-        return alertTime.plusHours(RECENT_DELTA_HOURS).getMillis() >= now.getMillis();
+        return alertTime.plusHours(Config.ALERT_RECENT_THRESHOLD_HOURS).getMillis() >= now.getMillis();
     }
 
     @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
