@@ -23,6 +23,7 @@ import android.support.annotation.Nullable;
 
 import com.android.volley.NoConnectionError;
 import com.android.volley.VolleyError;
+import com.crashlytics.android.Crashlytics;
 import com.ofalvai.bpinfo.BkkInfoApplication;
 import com.ofalvai.bpinfo.Config;
 import com.ofalvai.bpinfo.R;
@@ -188,6 +189,8 @@ public class AlertListPresenter implements FutarApiClient.FutarApiCallback {
         } else {
             mInteractionListener.displayGeneralError();
         }
+
+        Crashlytics.logException(ex);
     }
 
     /**

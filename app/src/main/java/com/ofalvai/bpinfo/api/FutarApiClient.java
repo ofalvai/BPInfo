@@ -19,17 +19,17 @@ package com.ofalvai.bpinfo.api;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.ofalvai.bpinfo.Config;
-import com.ofalvai.bpinfo.model.Route;
-
+import com.crashlytics.android.Crashlytics;
 import com.ofalvai.bpinfo.BuildConfig;
-
+import com.ofalvai.bpinfo.Config;
 import com.ofalvai.bpinfo.model.Alert;
+import com.ofalvai.bpinfo.model.Route;
 import com.ofalvai.bpinfo.model.RouteType;
 import com.ofalvai.bpinfo.util.Utils;
 
@@ -43,9 +43,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.ofalvai.bpinfo.util.LogUtils.LOGE;
 import static com.ofalvai.bpinfo.util.LogUtils.LOGI;
-import static com.ofalvai.bpinfo.util.LogUtils.LOGW;
 
 public class FutarApiClient implements Response.Listener<JSONObject>, Response.ErrorListener {
     private static final String TAG = "FutarApiClient";
@@ -178,6 +176,9 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
                 alert = parseAlert(alertNode);
             } catch (JSONException ex) {
                 alert = new Alert(null, 0, 0, 0, null, null, null, null, null);
+
+                Crashlytics.log(Log.WARN, TAG, "Alert parse: failed to parse");
+
             }
 
             // Sometimes the API returns alerts from the future,
@@ -231,6 +232,7 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
         } catch (JSONException ex) {
             // Falling back to the "someTranslation" field
             header = headerNode.getString(AlertSearchContract.LANG_SOME);
+            Crashlytics.log(Log.WARN, TAG, "Alert parse: header translation missing");
         }
         header = Utils.capitalizeString(header);
 
@@ -248,6 +250,9 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
         } catch (JSONException ex) {
             // Falling back to the "someTranslation" field
             description = descriptionNode.getString(AlertSearchContract.LANG_SOME);
+
+            Crashlytics.log(Log.WARN, TAG, "Alert parse: description translation missing");
+
         }
 
         return new Alert(id, start, end, timestamp, stopIds, routeIds, url, header, description);
@@ -273,8 +278,7 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
                     routeMap.put(route.getId(), route);
                 }
             } catch (JSONException ex) {
-                LOGE(TAG, "Failed to parse route at index " + i + ":");
-                LOGE(TAG, routeNode.toString());
+                Crashlytics.log(Log.ERROR, TAG, "Route parse: failed at index " + i + ":\n" + routeNode.toString());
             }
         }
 
@@ -321,7 +325,7 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
         try {
             return RouteType.valueOf(type);
         } catch (IllegalArgumentException ex) {
-            LOGW(TAG, "Failed to parse route type to enum: " + type);
+            Crashlytics.log(Log.WARN, TAG, "Route parse: failed to parse route type to enum: " + type);
         }
         return RouteType._OTHER_;
     }
