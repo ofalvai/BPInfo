@@ -56,6 +56,7 @@
                     android:layout_height="match_parent"
                     android:paddingLeft="@dimen/list_extra_padding"
                     android:paddingRight="@dimen/list_extra_padding"
+                    android:scrollbars="vertical"
                     tools:context=".ui.alertlist.AlertListFragment">
                 </com.ofalvai.bpinfo.util.EmptyRecyclerView>
 
