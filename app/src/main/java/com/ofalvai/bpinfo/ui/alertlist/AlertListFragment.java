@@ -228,38 +228,52 @@ public class AlertListFragment extends Fragment
 
     @Override
     public void displayAlerts(@NonNull List<Alert> alerts) {
-        setErrorView(false, null);
+        // It's possible that the network response callback thread executes this faster than
+        // the UI thread attaching the fragment to the activity. In that case getResources() or
+        // getString() would throw an exception.
+        if (isAdded()) {
+            setErrorView(false, null);
 
-        if (mAlertAdapter == null) {
-            mAlertAdapter = new AlertAdapter(alerts);
-            if (mAlertRecyclerView != null) {
-                mAlertRecyclerView.setAdapter(mAlertAdapter);
+            if (mAlertAdapter == null) {
+                mAlertAdapter = new AlertAdapter(alerts);
+                if (mAlertRecyclerView != null) {
+                    mAlertRecyclerView.setAdapter(mAlertAdapter);
+                }
+            } else {
+                mAlertAdapter.updateAlertData(alerts);
+                mAlertAdapter.notifyDataSetChanged();
             }
-        } else {
-            mAlertAdapter.updateAlertData(alerts);
-            mAlertAdapter.notifyDataSetChanged();
-        }
 
-        updateSubtitle(alerts.size());
-        setUpdating(false);
+            updateSubtitle(alerts.size());
+            setUpdating(false);
+        }
     }
 
     @Override
     public void displayNetworkError(@NonNull VolleyError error) {
-        int errorMessageId = Utils.volleyErrorTypeHandler(error);
-        String errorMessage = getResources().getString(errorMessageId);
+        // It's possible that the network response callback thread executes this faster than
+        // the UI thread attaching the fragment to the activity. In that case getResources() would
+        // throw an exception.
+        if (isAdded()) {
+            int errorMessageId = Utils.volleyErrorTypeHandler(error);
+            String errorMessage = getResources().getString(errorMessageId);
 
-        setErrorView(true, errorMessage);
+            setErrorView(true, errorMessage);
+        }
     }
 
     @Override
     public void displayDataError() {
-        setErrorView(true, getString(R.string.error_list_display));
+        if (isAdded()) {
+            setErrorView(true, getString(R.string.error_list_display));
+        }
     }
 
     @Override
     public void displayGeneralError() {
-        setErrorView(true, getString(R.string.error_list_display));
+        if (isAdded()) {
+            setErrorView(true, getString(R.string.error_list_display));
+        }
     }
 
     @Override
@@ -278,19 +292,21 @@ public class AlertListFragment extends Fragment
 
     @Override
     public void displayNoNetworkWarning() {
-        setUpdating(false);
+        if (isAdded()) {
+            setUpdating(false);
 
-        if (mSwipeRefreshLayout != null) {
-            Snackbar snackbar =
-                    Snackbar.make(mSwipeRefreshLayout, R.string.error_no_connection, Snackbar.LENGTH_LONG);
+            if (mSwipeRefreshLayout != null) {
+                Snackbar snackbar =
+                        Snackbar.make(mSwipeRefreshLayout, R.string.error_no_connection, Snackbar.LENGTH_LONG);
 
-            snackbar.setAction(R.string.label_retry, new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    initRefresh();
-                }
-            });
-            snackbar.show();
+                snackbar.setAction(R.string.label_retry, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        initRefresh();
+                    }
+                });
+                snackbar.show();
+            }
         }
     }
 
