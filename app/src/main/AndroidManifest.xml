@@ -27,6 +27,21 @@
         android:name="android.permission.RECORD_AUDIO"
         tools:node="remove" />
 
+    <!-- Denying READ_EXTERNAL_STORAGE permission from Instabug -->
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        tools:node="remove" />
+
+    <!-- Denying WRITE_EXTERNAL_STORAGE permission from Instabug -->
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:node="remove" />
+
+    <!-- Denying ACCESS_WIFI_STATE permission from Instabug -->
+    <uses-permission
+        android:name="android.permission.ACCESS_WIFI_STATE"
+        tools:node="remove" />
+
     <application
         android:name=".BkkInfoApplication"
         android:allowBackup="true"
