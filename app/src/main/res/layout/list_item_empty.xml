@@ -28,7 +28,7 @@
         android:layout_gravity="center_horizontal"
         android:textSize="@dimen/text_size_title"
         android:layout_margin="16dp"
-        android:paddingTop="32dp"
+        android:paddingTop="48dp"
         android:textColor="@color/colorSecondaryText"
         android:gravity="center"/>
 
