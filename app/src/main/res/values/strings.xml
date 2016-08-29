@@ -94,8 +94,8 @@
     <string name="pref_language_dialog_negative_button">Later</string>
     <string name="pref_key_category_other" translatable="false">category_about</string>
     <string name="pref_key_debug_mode" translatable="false">pref_key_debug_mode</string>
-    <string name="debug_mode_on">Debug mode disabled</string>
-    <string name="debog_mode_off">Debug mode enabled</string>
+    <string name="debug_mode_on">Debug mode enabled</string>
+    <string name="debog_mode_off">Debug mode disabled</string>
     <string name="pref_key_language_auto" translatable="false">auto</string>
     <string name="pref_key_language_en" translatable="false">en</string>
     <string name="pref_key_language_hu" translatable="false">hu</string>

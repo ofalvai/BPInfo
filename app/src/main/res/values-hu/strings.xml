@@ -82,8 +82,8 @@
     <string name="pref_language_dialog_message">Az új nyelv érvénybe lépéséhez újra kell indítani az appot.</string>
     <string name="pref_language_dialog_positive_button">Újraindítás</string>
     <string name="pref_language_dialog_negative_button">Később</string>
-    <string name="debog_mode_off">Debug mód bekapcsolva</string>
-    <string name="debug_mode_on">Debug mód kikapcsolva</string>
+    <string name="debog_mode_off">Debug mód kikapcsolva</string>
+    <string name="debug_mode_on">Debug mód bekapcsolva</string>
     <string name="email_bkk_subject">FUTÁR API hibajelentés</string>
     <string name="email_bkk_body">Tisztelt BKK!\n\nA nyilvános FUTÁR API által visszaadott adatokban az alábbi problémát szeretném jelenteni:\n\nÜdvözlettel:\n</string>
     <string name="title_activity_licences">Licencek</string>
