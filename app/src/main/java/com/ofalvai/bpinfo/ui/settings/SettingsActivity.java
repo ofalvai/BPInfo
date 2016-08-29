@@ -232,7 +232,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
             preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    Instabug.invoke(IBGInvocationMode.IBGInvocationModeNA);
+                    Instabug.invoke(IBGInvocationMode.IBGInvocationModeBugReporter);
                     return true;
                 }
             });
