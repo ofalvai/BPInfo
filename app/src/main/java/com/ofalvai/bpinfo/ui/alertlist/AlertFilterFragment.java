@@ -116,16 +116,16 @@ public class AlertFilterFragment extends DialogFragment {
         RouteType type;
         switch (index) {
             case 0:
-                type = RouteType.SUBWAY;
+                type = RouteType.BUS;
                 break;
             case 1:
                 type = RouteType.TRAM;
                 break;
             case 2:
-                type = RouteType.TROLLEYBUS;
+                type = RouteType.SUBWAY;
                 break;
             case 3:
-                type = RouteType.BUS;
+                type = RouteType.TROLLEYBUS;
                 break;
             case 4:
                 type = RouteType.RAIL;
