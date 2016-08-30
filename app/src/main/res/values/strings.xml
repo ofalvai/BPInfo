@@ -78,11 +78,9 @@
     <string name="pref_title_send_bugreport">Report a problem</string>
     <string name="pref_title_send_bugreport_bkk">Report a problem to BKK</string>
     <string name="pref_title_rate">Rate the app</string>
-    <string name="pref_title_licences">Licences</string>
     <string name="pref_description_send_bugreport">If there\'s a problem with the app</string>
     <string name="pref_description_send_bugreport_bkk">If there\'s a problem with data (FUTÁR)</string>
     <string name="pref_description_rate">If you like the app, rate it in the Play Store</string>
-    <string name="pref_description_licences">Used open source libraries</string>
     <string name="menu_debug">Debug mode</string>
 
     <string name="pref_key_category_general" translatable="false">category_general</string>

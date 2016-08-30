@@ -45,16 +45,13 @@ import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.startsWith;
 import static org.hamcrest.core.IsNot.not;
 
-/**
- * Created by oli on 2016. 07. 04..
- */
 public class AlertListFilterTest {
 
     private IdlingResource mIdlingResource;
 
     @Rule
     public ActivityTestRule<AlertListActivity> mActivityRule =
-            new ActivityTestRule<AlertListActivity>(AlertListActivity.class);
+            new ActivityTestRule<>(AlertListActivity.class);
 
     /**
      * Delays the test so that the RecyclerView has items

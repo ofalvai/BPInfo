@@ -71,11 +71,9 @@
     <string name="pref_title_send_bugreport_bkk">Hibajelentés a BKK-nak</string>
     <string name="pref_title_rate">App értékelése</string>
     <string name="pref_title_language">Nyelv</string>
-    <string name="pref_title_licences">Licencek</string>
     <string name="pref_description_send_bugreport">Ha az alkalmazással van gond</string>
     <string name="pref_description_send_bugreport_bkk">Ha az adatokkal van gond (FUTÁR)</string>
     <string name="pref_description_rate">Értékeld a Play Store-ban, ha tetszik az app</string>
-    <string name="pref_description_licences">Felhasznált nyílt forráskódú könyvtárak</string>
     <string name="menu_debug">Debug mód</string>
     <string name="title_activity_settings">Beállítások</string>
     <string name="pref_language_dialog_title">Újraindítás szükséges</string>

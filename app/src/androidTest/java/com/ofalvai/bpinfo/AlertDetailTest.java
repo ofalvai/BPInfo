@@ -50,7 +50,7 @@ public class AlertDetailTest {
 
     @Rule
     public ActivityTestRule<AlertListActivity> mActivityRule =
-            new ActivityTestRule<AlertListActivity>(AlertListActivity.class);
+            new ActivityTestRule<>(AlertListActivity.class);
 
     /**
      * Delays the test so that the RecyclerView has items

@@ -49,10 +49,6 @@ import static com.ofalvai.bpinfo.util.OrientationChangeAction.orientationLandsca
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.endsWith;
 
-/**
- * Created by oli on 2016. 06. 26..
- */
-
 @RunWith(AndroidJUnit4.class)
 public class AlertListTest {
 
@@ -60,7 +56,7 @@ public class AlertListTest {
 
     @Rule
     public ActivityTestRule<AlertListActivity> mActivityRule =
-            new ActivityTestRule<AlertListActivity>(AlertListActivity.class);
+            new ActivityTestRule<>(AlertListActivity.class);
 
     /**
      * Delays the test so that the RecyclerView has items

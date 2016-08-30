@@ -18,9 +18,6 @@ package com.ofalvai.bpinfo.util;
 
 import com.ofalvai.bpinfo.R;
 
-/**
- * Created by oli on 2016. 07. 04..
- */
 public class AlertListTestHelper {
 
     public static final int RECYCLER_VIEW_ID = R.id.alerts_recycler_view;
