@@ -26,4 +26,5 @@
     android:layout_marginRight="8dp"
     android:layout_marginTop="8dp"
     android:minWidth="10dp"
+    android:textStyle="bold"
     />
