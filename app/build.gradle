@@ -98,7 +98,7 @@ ribbonizer {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    apt 'com.google.dagger:dagger-compiler:2.5'
+    apt 'com.google.dagger:dagger-compiler:2.6.1'
     compile 'com.android.support:appcompat-v7:24.2.0'
     compile 'com.android.support:support-v4:24.2.0'
     compile 'com.android.support:recyclerview-v7:24.2.0'
@@ -107,7 +107,7 @@ dependencies {
     compile 'com.android.support:support-annotations:24.2.0'
     compile 'com.android.volley:volley:1.0.0'
     compile 'com.wefika:flowlayout:0.4.1'
-    compile 'com.google.dagger:dagger:2.5'
+    compile 'com.google.dagger:dagger:2.6.1'
     compile 'org.sufficientlysecure:html-textview:1.6'
     compile 'net.danlew:android.joda:2.9.4.1'
     compile 'com.jakewharton:process-phoenix:1.0.2'
