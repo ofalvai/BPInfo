@@ -47,7 +47,7 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-public class AlertListPresenter implements FutarApiClient.FutarApiCallback {
+public class AlertListPresenter implements FutarApiClient.FutarApiListener {
 
     @Inject FutarApiClient mFutarApiClient;
 

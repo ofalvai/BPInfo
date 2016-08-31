@@ -45,7 +45,7 @@ import java.util.List;
 
 import static com.ofalvai.bpinfo.util.LogUtils.LOGI;
 
-public class FutarApiClient implements Response.Listener<JSONObject>, Response.ErrorListener {
+public class FutarApiClient {
     private static final String TAG = "FutarApiClient";
 
     private static final String QUERY_API_KEY = BuildConfig.APPLICATION_ID;
@@ -78,12 +78,9 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
     private AbstractMap<String, Route> mRoutes;
 
     @Nullable
-    private FutarApiCallback mApiCallback;
-
-    @Nullable
     private String mLanguageCode;
 
-    public interface FutarApiCallback {
+    public interface FutarApiListener {
         void onAlertResponse(@Nullable List<Alert> alerts);
 
         void onError(@NonNull Exception ex);
@@ -110,45 +107,46 @@ public class FutarApiClient implements Response.Listener<JSONObject>, Response.E
                 .build();
     }
 
-    public void fetchAlertList(@NonNull FutarApiCallback callback, @NonNull String languageCode) {
-        setApiCallback(callback);
-
+    public void fetchAlertList(@NonNull final FutarApiListener listener, @NonNull String languageCode) {
         mLanguageCode = languageCode;
 
         Uri uri = buildUri();
 
         LOGI(TAG, "API request: " + uri.toString());
 
-        JsonObjectRequest request = new JsonObjectRequest(uri.toString(), null, this, this);
+        JsonObjectRequest request = new JsonObjectRequest(
+                uri.toString(),
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        onResponseCallback(listener, response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        onErrorCallback(listener, error);
+                    }
+                }
+        );
 
         mRequestQueue.add(request);
     }
 
-    private void setApiCallback(@Nullable FutarApiCallback callback) {
-        mApiCallback = callback;
-    }
-
-    @Override
-    public void onResponse(JSONObject response) {
+    private void onResponseCallback(@NonNull FutarApiListener listener, JSONObject response) {
         try {
             mAlerts = parseAlerts(response);
             mRoutes = parseRoutes(response);
         } catch (Exception ex) {
-            if (mApiCallback != null) {
-                mApiCallback.onError(ex);
-            }
+            listener.onError(ex);
         }
 
-        if (mApiCallback != null) {
-            mApiCallback.onAlertResponse(mAlerts);
-        }
+        listener.onAlertResponse(mAlerts);
     }
 
-    @Override
-    public void onErrorResponse(VolleyError error) {
-        if (mApiCallback != null) {
-            mApiCallback.onError(error);
-        }
+    private void onErrorCallback(@NonNull FutarApiListener listener, VolleyError error) {
+        listener.onError(error);
     }
 
     @NonNull
