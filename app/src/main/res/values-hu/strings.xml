@@ -82,5 +82,7 @@
     <string name="about_label_source_code">Forráskód GitHub-on</string>
     <string name="pref_description_about">Verzió, licencek</string>
     <string name="pref_title_about">Névjegy</string>
+    <string name="tab_title_today">Ma</string>
+    <string name="tab_title_future">Közeljövő</string>
 
 </resources>

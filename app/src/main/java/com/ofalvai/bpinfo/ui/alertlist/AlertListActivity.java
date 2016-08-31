@@ -18,11 +18,13 @@ package com.ofalvai.bpinfo.ui.alertlist;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 
 import com.ofalvai.bpinfo.R;
 
@@ -34,17 +36,31 @@ public class AlertListActivity extends AppCompatActivity {
     @Nullable
     private AlertListPagerAdapter mAlertListPagerAdapter;
 
+    @Nullable
+    private TabLayout mTabLayout;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_alert_list);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+        }
+
         mAlertListPagerAdapter = new AlertListPagerAdapter(getSupportFragmentManager());
+
         mViewPager = (ViewPager) findViewById(R.id.alert_list_pager);
 
         if (mViewPager != null) {
             mViewPager.setAdapter(mAlertListPagerAdapter);
+        }
+
+        mTabLayout = (TabLayout) findViewById(R.id.tabs);
+        if (mViewPager != null && mViewPager.getAdapter() != null) {
+            mTabLayout.setupWithViewPager(mViewPager, false);
         }
     }
 
@@ -62,6 +78,22 @@ public class AlertListActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             return 2;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            String title;
+            switch (position) {
+                case 0:
+                    title = getString(R.string.tab_title_today);
+                break;
+                case 1:
+                    title = getString(R.string.tab_title_future);
+                break;
+                default:
+                    title = "Default tab";
+            }
+            return title;
         }
     }
 }

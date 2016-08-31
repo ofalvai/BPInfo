@@ -57,7 +57,8 @@
         <!-- Alert List -->
         <activity
             android:name=".ui.alertlist.AlertListActivity"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
