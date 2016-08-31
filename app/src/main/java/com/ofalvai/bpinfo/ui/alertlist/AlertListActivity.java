@@ -16,16 +16,52 @@
 
 package com.ofalvai.bpinfo.ui.alertlist;
 
-import android.support.annotation.NonNull;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 
-import com.ofalvai.bpinfo.util.SingleFragmentActivity;
+import com.ofalvai.bpinfo.R;
 
-public class AlertListActivity extends SingleFragmentActivity {
+public class AlertListActivity extends AppCompatActivity {
 
-    @NonNull
+    @Nullable
+    private ViewPager mViewPager;
+
+    @Nullable
+    private AlertListPagerAdapter mAlertListPagerAdapter;
+
     @Override
-    protected Fragment createFragment() {
-        return new AlertListFragment();
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.activity_alert_list);
+
+        mAlertListPagerAdapter = new AlertListPagerAdapter(getSupportFragmentManager());
+        mViewPager = (ViewPager) findViewById(R.id.alert_list_pager);
+
+        if (mViewPager != null) {
+            mViewPager.setAdapter(mAlertListPagerAdapter);
+        }
+    }
+
+    private class AlertListPagerAdapter extends FragmentPagerAdapter {
+
+        public AlertListPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return new AlertListFragment();
+        }
+
+        @Override
+        public int getCount() {
+            return 2;
+        }
     }
 }
