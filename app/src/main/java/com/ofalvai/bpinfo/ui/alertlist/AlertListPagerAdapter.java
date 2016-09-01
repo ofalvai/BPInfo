@@ -9,7 +9,6 @@ import android.util.SparseArray;
 import android.view.ViewGroup;
 
 import com.ofalvai.bpinfo.R;
-import com.ofalvai.bpinfo.api.AlertSearchContract;
 
 public class AlertListPagerAdapter extends FragmentPagerAdapter implements ViewPager.OnPageChangeListener {
 
@@ -30,11 +29,11 @@ public class AlertListPagerAdapter extends FragmentPagerAdapter implements ViewP
         Fragment fragment;
         switch (position) {
             case 0:
-                fragment = AlertListFragment.newInstance(AlertSearchContract.AlertListType.ALERTS_TODAY);
+                fragment = AlertListFragment.newInstance(AlertListType.ALERTS_TODAY);
                 mRegisteredFragments.put(position, fragment);
                 break;
             case 1:
-                fragment = AlertListFragment.newInstance(AlertSearchContract.AlertListType.ALERTS_FUTURE);
+                fragment = AlertListFragment.newInstance(AlertListType.ALERTS_FUTURE);
                 mRegisteredFragments.put(position, fragment);
                 break;
             default:

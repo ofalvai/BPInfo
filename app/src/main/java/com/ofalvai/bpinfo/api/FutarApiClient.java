@@ -31,6 +31,7 @@ import com.ofalvai.bpinfo.Config;
 import com.ofalvai.bpinfo.model.Alert;
 import com.ofalvai.bpinfo.model.Route;
 import com.ofalvai.bpinfo.model.RouteType;
+import com.ofalvai.bpinfo.ui.alertlist.AlertListType;
 import com.ofalvai.bpinfo.util.Utils;
 
 import org.joda.time.DateTime;
@@ -38,12 +39,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.ofalvai.bpinfo.util.LogUtils.LOGI;
+import static com.ofalvai.bpinfo.util.LogUtils.LOGW;
 
 public class FutarApiClient {
     private static final String TAG = "FutarApiClient";
@@ -71,37 +73,31 @@ public class FutarApiClient {
 
     private final RequestQueue mRequestQueue;
 
-    @NonNull
-    private List<Alert> mAlerts;
-
-    @NonNull
-    private AbstractMap<String, Route> mRoutes;
-
     @Nullable
     private String mLanguageCode;
 
     public interface FutarApiListener {
-        void onAlertResponse(@Nullable List<Alert> alerts);
+        void onAlertResponse(@NonNull List<Alert> alerts);
 
         void onError(@NonNull Exception ex);
     }
 
     public FutarApiClient(RequestQueue requestQueue) {
         mRequestQueue = requestQueue;
-
-        mRoutes = new HashMap<>();
-        mAlerts = new ArrayList<>();
     }
 
     @NonNull
-    private Uri buildUri(@NonNull AlertSearchContract.AlertListType alertListType) {
+    private Uri buildUri(@NonNull AlertListType alertListType) {
         String startTimestamp = "";
-        if (alertListType == AlertSearchContract.AlertListType.ALERTS_TODAY) {
+
+        if (alertListType == AlertListType.ALERTS_TODAY) {
             startTimestamp = String.valueOf(new DateTime().getMillis() / 1000L);
-        } else if (alertListType == AlertSearchContract.AlertListType.ALERTS_FUTURE) {
+        } else if (alertListType == AlertListType.ALERTS_FUTURE) {
             DateTime now = new DateTime().withTimeAtStartOfDay();
             DateTime tomorrow = now.plusDays(1).withTimeAtStartOfDay();
             startTimestamp = String.valueOf(tomorrow.getMillis() / 1000L);
+        } else {
+            LOGW(TAG, "No alert list type provided, startTimestamp will be empty");
         }
 
         return Uri.parse(Config.FUTAR_API_BASE_URL).buildUpon()
@@ -116,7 +112,7 @@ public class FutarApiClient {
 
     public void fetchAlertList(@NonNull final FutarApiListener listener,
                                @NonNull String languageCode,
-                               @NonNull final AlertSearchContract.AlertListType alertListType) {
+                               @NonNull final AlertListType alertListType) {
         mLanguageCode = languageCode;
 
         Uri uri = buildUri(alertListType);
@@ -143,16 +139,26 @@ public class FutarApiClient {
         mRequestQueue.add(request);
     }
 
+    /**
+     * Parses alerts and routes, then sends the parsed objects to the listener.
+     */
     private void onResponseCallback(@NonNull FutarApiListener listener, JSONObject response,
-                                    @NonNull AlertSearchContract.AlertListType alertListType) {
+                                    @NonNull AlertListType alertListType) {
+        List<Alert> alerts = new ArrayList<>();
+        Map<String, Route> routes;
         try {
-            mAlerts = parseAlerts(response, alertListType);
-            mRoutes = parseRoutes(response);
+            routes = parseRoutes(response);
+            alerts = parseAlerts(response, alertListType);
+
+            for (Alert alert : alerts) {
+                List<Route> affectedRoutes = getAffectedRoutesForAlert(alert, routes);
+                alert.setAffectedRoutes(affectedRoutes);
+            }
         } catch (Exception ex) {
             listener.onError(ex);
         }
 
-        listener.onAlertResponse(mAlerts);
+        listener.onAlertResponse(alerts);
     }
 
     private void onErrorCallback(@NonNull FutarApiListener listener, VolleyError error) {
@@ -160,7 +166,7 @@ public class FutarApiClient {
     }
 
     @NonNull
-    private List<Alert> parseAlerts(@NonNull JSONObject response, @NonNull AlertSearchContract.AlertListType alertListType)
+    private List<Alert> parseAlerts(@NonNull JSONObject response, @NonNull AlertListType alertListType)
             throws JSONException {
         List<Alert> alertList = new ArrayList<>();
 
@@ -189,16 +195,14 @@ public class FutarApiClient {
 
             }
 
-            // Sometimes the API returns alerts from the future,
-            // despite setting the "start" parameter to current time.
+            // Time ranges in the API response are messed up. We need to filter out alerts that are
+            // before/after the time range we want.
             DateTime alertStartTime = new DateTime(alert.getStart() * 1000L);
-            if (alertListType == AlertSearchContract.AlertListType.ALERTS_TODAY && alertStartTime.isBeforeNow()) {
+            if (alertListType == AlertListType.ALERTS_TODAY && alertStartTime.isBeforeNow()) {
                 alertList.add(alert);
-            } else if (alertListType == AlertSearchContract.AlertListType.ALERTS_FUTURE && alertStartTime.isAfterNow()) {
+            } else if (alertListType == AlertListType.ALERTS_FUTURE && alertStartTime.isAfterNow()) {
                 alertList.add(alert);
             }
-
-
         }
 
         return alertList;
@@ -271,8 +275,8 @@ public class FutarApiClient {
     }
 
     @NonNull
-    private HashMap<String, Route> parseRoutes(@NonNull JSONObject response) throws JSONException {
-        HashMap<String, Route> routeMap = new HashMap<>();
+    private Map<String, Route> parseRoutes(@NonNull JSONObject response) throws JSONException {
+        Map<String, Route> routeMap = new HashMap<>();
 
         JSONObject dataNode = response.getJSONObject(AlertSearchContract.DATA);
         JSONObject referencesNode = dataNode.getJSONObject(AlertSearchContract.DATA_REFERENCES);
@@ -342,17 +346,16 @@ public class FutarApiClient {
         return RouteType._OTHER_;
     }
 
-    @Nullable
-    public Route getRoute(@NonNull String id) {
-        return mRoutes.get(id);
-    }
-
+    /**
+     * Alerts returned by the API has affected routes' IDs only,
+     * but this method returns a list of affected routes from the parsed routes
+     */
     @NonNull
-    public List<Route> getAffectedRoutesForAlert(@NonNull Alert alert) {
+    private List<Route> getAffectedRoutesForAlert(@NonNull Alert alert, @NonNull Map<String, Route> routes) {
         List<Route> affectedRoutes = new ArrayList<>();
 
         for (String routeId : alert.getRouteIds()) {
-            Route route = getRoute(routeId);
+            Route route = routes.get(routeId);
             if (route == null) {
                 // Replacement routes are filtered out at the parse stage,
                 // getting a route by the returned routeId might be null.

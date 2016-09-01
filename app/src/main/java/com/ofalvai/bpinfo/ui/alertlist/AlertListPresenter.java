@@ -58,7 +58,7 @@ public class AlertListPresenter implements FutarApiClient.FutarApiListener {
     @NonNull
     private AlertInteractionListener mInteractionListener;
 
-    private AlertSearchContract.AlertListType mAlertListType;
+    private AlertListType mAlertListType;
 
     /**
      * List of alerts returned by the client, before filtering by RouteTypes
@@ -73,7 +73,7 @@ public class AlertListPresenter implements FutarApiClient.FutarApiListener {
     private Set<RouteType> mActiveFilter = new HashSet<>();
 
     public AlertListPresenter(@NonNull AlertInteractionListener interactionListener,
-                              @NonNull AlertSearchContract.AlertListType alertListType) {
+                              @NonNull AlertListType alertListType) {
         mInteractionListener = interactionListener;
         mAlertListType = alertListType;
 
@@ -158,20 +158,17 @@ public class AlertListPresenter implements FutarApiClient.FutarApiListener {
     }
 
     /**
-     * Transforms the list of returned alert in the following order:
-     * 1. Attach Route objects to each Alert based on the alert's route IDs
-     * 2. Sort the list by the alerts' start time in descending order
-     * 3. Filter the list by the currently active filter
+     * Transforms the list of returned alerts in the following order:
+     * 1. Sort the list by the alerts' start time
+     * 2. Filter the list by the currently active filter
      */
     @Override
-    public void onAlertResponse(List<Alert> alerts) {
+    public void onAlertResponse(@NonNull List<Alert> alerts) {
         mUnfilteredAlerts = alerts;
-
-        attachAffectedRoutesToAlerts(mUnfilteredAlerts);
 
         // Sort: descending by alert start time
         Collections.sort(mUnfilteredAlerts, new Utils.AlertStartTimestampComparator());
-        if (mAlertListType == AlertSearchContract.AlertListType.ALERTS_TODAY) {
+        if (mAlertListType == AlertListType.ALERTS_TODAY) {
             Collections.reverse(mUnfilteredAlerts);
         }
 
@@ -197,18 +194,6 @@ public class AlertListPresenter implements FutarApiClient.FutarApiListener {
         }
 
         Crashlytics.logException(ex);
-    }
-
-    /**
-     * Alerts returned by the API list affected routes only by their IDs,
-     * but this method adds parsed Route object to the Alert objects
-     * @param alerts    List of Alerts to apply adding Route objects
-     */
-    private void attachAffectedRoutesToAlerts(@NonNull List<Alert> alerts) {
-        for (Alert alert : alerts) {
-            List<Route> affectedRoutes = mFutarApiClient.getAffectedRoutesForAlert(alert);
-            alert.setAffectedRoutes(affectedRoutes);
-        }
     }
 
     /**

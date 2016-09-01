@@ -38,7 +38,6 @@ import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.ofalvai.bpinfo.R;
-import com.ofalvai.bpinfo.api.AlertSearchContract;
 import com.ofalvai.bpinfo.model.Alert;
 import com.ofalvai.bpinfo.model.Route;
 import com.ofalvai.bpinfo.model.RouteType;
@@ -69,7 +68,7 @@ public class AlertListFragment extends Fragment
 
     private static final String FILTER_DIALOG_TAG = "filter_dialog";
 
-    private AlertSearchContract.AlertListType mAlertListType;
+    private AlertListType mAlertListType;
 
     @Nullable
     private EmptyRecyclerView mAlertRecyclerView;
@@ -94,7 +93,7 @@ public class AlertListFragment extends Fragment
 
     private AlertListPresenter mAlertListPresenter;
 
-    public static AlertListFragment newInstance(@NonNull AlertSearchContract.AlertListType type) {
+    public static AlertListFragment newInstance(@NonNull AlertListType type) {
         AlertListFragment fragment = new AlertListFragment();
         fragment.mAlertListType = type;
         return fragment;
@@ -108,7 +107,7 @@ public class AlertListFragment extends Fragment
         Set<RouteType> filter = null;
 
         if (savedInstanceState != null) {
-            mAlertListType = (AlertSearchContract.AlertListType) savedInstanceState.getSerializable(KEY_ALERT_LIST_TYPE);
+            mAlertListType = (AlertListType) savedInstanceState.getSerializable(KEY_ALERT_LIST_TYPE);
 
             filter = (HashSet<RouteType>) savedInstanceState.getSerializable(KEY_ACTIVE_FILTER);
         }
@@ -486,7 +485,7 @@ public class AlertListFragment extends Fragment
                 }
             }
 
-            if (mAlertListType == AlertSearchContract.AlertListType.ALERTS_TODAY) {
+            if (mAlertListType == AlertListType.ALERTS_TODAY) {
                 mRecentTextView.setVisibility(Utils.isAlertRecent(alert) ? View.VISIBLE : View.GONE);
             } else {
                 mRecentTextView.setVisibility(View.GONE);
