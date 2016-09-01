@@ -14,35 +14,27 @@
  *    limitations under the License.
  */
 
-package com.ofalvai.bpinfo;
+package com.ofalvai.bpinfo.injection;
 
-import android.content.Context;
-
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
-import com.ofalvai.bpinfo.api.FutarApiClient;
+import com.ofalvai.bpinfo.BkkInfoApplication;
+import com.ofalvai.bpinfo.ui.alertlist.AlertListPresenter;
+import com.ofalvai.bpinfo.ui.settings.SettingsActivity;
 
 import javax.inject.Singleton;
 
-import dagger.Module;
-import dagger.Provides;
+import dagger.Component;
 
 /**
- * Dagger module providing networking and API classes.
+ * Required interface for Dagger code generation.
+ * The methods are used where field injection is needed.
  */
 
-@Module
-public class ApiModule {
+@Singleton
+@Component(modules={AppModule.class, ApiModule.class})
+public interface AppComponent {
+    void inject(AlertListPresenter alertListPresenter);
 
-    @Provides
-    @Singleton
-    RequestQueue provideRequestQueue(Context applicationContext) {
-        return Volley.newRequestQueue(applicationContext);
-    }
+    void inject(SettingsActivity settingsActivity);
 
-    @Provides
-    @Singleton
-    FutarApiClient provideFutarApiClient(RequestQueue requestQueue) {
-        return new FutarApiClient(requestQueue);
-    }
+    void inject(BkkInfoApplication bkkInfoApplication);
 }

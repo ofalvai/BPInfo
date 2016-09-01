@@ -25,6 +25,10 @@ import com.crashlytics.android.answers.Answers;
 import com.instabug.library.Feature;
 import com.instabug.library.IBGInvocationEvent;
 import com.instabug.library.Instabug;
+import com.ofalvai.bpinfo.injection.ApiModule;
+import com.ofalvai.bpinfo.injection.AppComponent;
+import com.ofalvai.bpinfo.injection.AppModule;
+import com.ofalvai.bpinfo.injection.DaggerAppComponent;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -34,23 +38,25 @@ import javax.inject.Inject;
 
 import io.fabric.sdk.android.Fabric;
 
-/**
- * Subclassing Application in order to build the Dagger injector.
- */
+
 public class BkkInfoApplication extends Application {
 
     public static AppComponent injector;
 
     @Inject SharedPreferences mSharedPreferences;
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-
+    private void initDagger() {
         injector = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
                 .apiModule(new ApiModule())
                 .build();
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        initDagger();
 
         injector.inject(this); // Oh the irony...
 
