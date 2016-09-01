@@ -477,6 +477,8 @@ public class AlertListFragment extends Fragment
 
             if (mAlertListType == AlertSearchContract.AlertListType.ALERTS_TODAY) {
                 mRecentTextView.setVisibility(Utils.isAlertRecent(alert) ? View.VISIBLE : View.GONE);
+            } else {
+                mRecentTextView.setVisibility(View.GONE);
             }
         }
 
