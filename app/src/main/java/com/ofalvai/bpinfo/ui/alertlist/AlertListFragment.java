@@ -218,11 +218,17 @@ public class AlertListFragment extends Fragment
         mAlertListPresenter.setLastUpdate();
     }
 
-    private void updateSubtitle(int count) {
-        String subtitle = getResources().getString(R.string.actionbar_subtitle_alert_count, count);
-        AppCompatActivity activity = (AppCompatActivity) getActivity();
-        if (activity.getSupportActionBar() != null) {
-            activity.getSupportActionBar().setSubtitle(subtitle);
+    /**
+     * Updates the Toolbar's subtitle to the number of current items in the RecyclerView's Adapter
+     */
+    public void updateSubtitle() {
+        if (mAlertAdapter != null && isAdded()) {
+            int count = mAlertAdapter.getItemCount();
+            String subtitle = getResources().getQuantityString(R.plurals.actionbar_subtitle_alert_count, count, count);
+            AppCompatActivity activity = (AppCompatActivity) getActivity();
+            if (activity.getSupportActionBar() != null) {
+                activity.getSupportActionBar().setSubtitle(subtitle);
+            }
         }
     }
 
@@ -261,7 +267,12 @@ public class AlertListFragment extends Fragment
                 mAlertAdapter.notifyDataSetChanged();
             }
 
-            updateSubtitle(alerts.size());
+            // Only update the subtitle if the fragment is visible (and not preloading by ViewPager)
+            if (getUserVisibleHint()) {
+                updateSubtitle();
+
+            }
+
             setUpdating(false);
         }
     }

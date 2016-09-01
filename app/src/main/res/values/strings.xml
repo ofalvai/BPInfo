@@ -18,7 +18,10 @@
     <string name="app_name">BPInfo</string>
     <string name="error_list_display">Unable to display traffic info</string>
     <string name="error_response">Incorrect response received from server</string>
-    <string name="actionbar_subtitle_alert_count">%1$s traffic changes</string>
+    <plurals name="actionbar_subtitle_alert_count">
+        <item quantity="one">%d traffic change</item>
+        <item quantity="other">%d traffic changes</item>
+    </plurals>
     <string name="error_no_connection">No network connection</string>
     <string name="error_network">Network error</string>
     <string name="error_communication">Communication error</string>
