@@ -39,7 +39,7 @@ import javax.inject.Inject;
 import io.fabric.sdk.android.Fabric;
 
 
-public class BkkInfoApplication extends Application {
+public class BpInfoApplication extends Application {
 
     public static AppComponent injector;
 

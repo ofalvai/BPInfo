@@ -16,7 +16,7 @@
 
 package com.ofalvai.bpinfo.injection;
 
-import com.ofalvai.bpinfo.BkkInfoApplication;
+import com.ofalvai.bpinfo.BpInfoApplication;
 import com.ofalvai.bpinfo.ui.alertlist.AlertListPresenter;
 import com.ofalvai.bpinfo.ui.settings.SettingsActivity;
 
@@ -36,5 +36,5 @@ public interface AppComponent {
 
     void inject(SettingsActivity settingsActivity);
 
-    void inject(BkkInfoApplication bkkInfoApplication);
+    void inject(BpInfoApplication bpInfoApplication);
 }

@@ -24,7 +24,7 @@ import android.support.annotation.Nullable;
 import com.android.volley.NoConnectionError;
 import com.android.volley.VolleyError;
 import com.crashlytics.android.Crashlytics;
-import com.ofalvai.bpinfo.BkkInfoApplication;
+import com.ofalvai.bpinfo.BpInfoApplication;
 import com.ofalvai.bpinfo.Config;
 import com.ofalvai.bpinfo.R;
 import com.ofalvai.bpinfo.api.AlertSearchContract;
@@ -77,7 +77,7 @@ public class AlertListPresenter implements FutarApiClient.FutarApiListener {
         mInteractionListener = interactionListener;
         mAlertListType = alertListType;
 
-        BkkInfoApplication.injector.inject(this);
+        BpInfoApplication.injector.inject(this);
     }
 
     public interface AlertInteractionListener {

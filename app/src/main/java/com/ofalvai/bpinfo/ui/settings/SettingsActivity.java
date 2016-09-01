@@ -38,7 +38,7 @@ import android.widget.Toast;
 import com.instabug.library.IBGInvocationMode;
 import com.instabug.library.Instabug;
 import com.jakewharton.processphoenix.ProcessPhoenix;
-import com.ofalvai.bpinfo.BkkInfoApplication;
+import com.ofalvai.bpinfo.BpInfoApplication;
 import com.ofalvai.bpinfo.R;
 import com.ofalvai.bpinfo.util.FabricUtils;
 
@@ -123,7 +123,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        BkkInfoApplication.injector.inject(this);
+        BpInfoApplication.injector.inject(this);
 
         setupActionBar();
 
