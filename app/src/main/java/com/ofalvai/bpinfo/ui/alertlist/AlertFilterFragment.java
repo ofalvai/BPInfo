@@ -128,6 +128,7 @@ public class AlertFilterFragment extends DialogFragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putSerializable(KEY_ALERT_LIST_TYPE, mAlertListType);
+        // Note: The selected filters are stored in the fragment and restored here with setFilter()
         super.onSaveInstanceState(outState);
     }
 

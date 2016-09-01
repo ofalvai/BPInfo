@@ -103,20 +103,18 @@ public class AlertListFragment extends Fragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        @SuppressWarnings("unchecked")
-        Set<RouteType> filter = null;
+        Set<RouteType> restoredFilter = null;
 
         if (savedInstanceState != null) {
             mAlertListType = (AlertListType) savedInstanceState.getSerializable(KEY_ALERT_LIST_TYPE);
 
-            filter = (HashSet<RouteType>) savedInstanceState.getSerializable(KEY_ACTIVE_FILTER);
+            restoredFilter = (HashSet<RouteType>) savedInstanceState.getSerializable(KEY_ACTIVE_FILTER);
         }
 
         mAlertListPresenter = new AlertListPresenter(this, mAlertListType);
 
-        // TODO: temporary fix until filter restore logic gets refactored
-        if (filter != null) {
-            onFilterChanged(filter);
+        if (restoredFilter != null) {
+            mAlertListPresenter.setFilter(restoredFilter);
         }
     }
 
