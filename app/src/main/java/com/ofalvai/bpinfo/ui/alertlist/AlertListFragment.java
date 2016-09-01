@@ -56,8 +56,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.inject.Inject;
-
 import static com.ofalvai.bpinfo.util.LogUtils.LOGD;
 
 public class AlertListFragment extends Fragment
@@ -66,6 +64,8 @@ public class AlertListFragment extends Fragment
     private static final String TAG = "AlertListFragment";
 
     private static final String KEY_ACTIVE_FILTER = "active_filter";
+
+    private static final String KEY_ALERT_LIST_TYPE = "alert_list_type";
 
     private static final String FILTER_DIALOG_TAG = "filter_dialog";
 
@@ -92,7 +92,7 @@ public class AlertListFragment extends Fragment
     @Nullable
     private TextView mEmptyView;
 
-    @Inject AlertListPresenter mAlertListPresenter;
+    private AlertListPresenter mAlertListPresenter;
 
     public static AlertListFragment newInstance(@NonNull AlertSearchContract.AlertListType type) {
         AlertListFragment fragment = new AlertListFragment();
@@ -104,14 +104,20 @@ public class AlertListFragment extends Fragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mAlertListPresenter = new AlertListPresenter(this, mAlertListType);
+        @SuppressWarnings("unchecked")
+        Set<RouteType> filter = null;
 
         if (savedInstanceState != null) {
-            @SuppressWarnings("unchecked")
-            Set<RouteType> filter = (HashSet<RouteType>) savedInstanceState.getSerializable(KEY_ACTIVE_FILTER);
-            if (filter != null) {
-                onFilterChanged(filter);
-            }
+            mAlertListType = (AlertSearchContract.AlertListType) savedInstanceState.getSerializable(KEY_ALERT_LIST_TYPE);
+
+            filter = (HashSet<RouteType>) savedInstanceState.getSerializable(KEY_ACTIVE_FILTER);
+        }
+
+        mAlertListPresenter = new AlertListPresenter(this, mAlertListType);
+
+        // TODO: temporary fix until filter restore logic gets refactored
+        if (filter != null) {
+            onFilterChanged(filter);
         }
     }
 
@@ -167,6 +173,19 @@ public class AlertListFragment extends Fragment
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putSerializable(KEY_ALERT_LIST_TYPE, mAlertListType);
+
+        // Casting to HashSet, because Set is not serializable :(
+        //noinspection CollectionDeclaredAsConcreteClass
+        HashSet<RouteType> filter = (HashSet<RouteType>) mAlertListPresenter.getFilter();
+
+        outState.putSerializable(KEY_ACTIVE_FILTER, filter);
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_main, menu);
     }
@@ -189,17 +208,6 @@ public class AlertListFragment extends Fragment
         super.onStart();
 
         mAlertListPresenter.updateIfNeeded();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        // Casting to HashSet, because Set is not serializable :(
-        //noinspection CollectionDeclaredAsConcreteClass
-        HashSet<RouteType> filter = (HashSet<RouteType>) mAlertListPresenter.getFilter();
-
-        outState.putSerializable(KEY_ACTIVE_FILTER, filter);
     }
 
     private void initRefresh() {
