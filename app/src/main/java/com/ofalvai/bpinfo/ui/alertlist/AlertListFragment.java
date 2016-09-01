@@ -305,15 +305,8 @@ public class AlertListFragment extends Fragment
 
     @Override
     public void setUpdating(final boolean updating) {
-        // Workaround for https://code.google.com/p/android/issues/detail?id=77712
-        // From: http://stackoverflow.com/a/26910973/745637
         if (mSwipeRefreshLayout != null) {
-            mSwipeRefreshLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    mSwipeRefreshLayout.setRefreshing(updating);
-                }
-            });
+            mSwipeRefreshLayout.setRefreshing(updating);
         }
     }
 
