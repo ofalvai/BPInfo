@@ -41,6 +41,8 @@ public class AlertFilterFragment extends DialogFragment {
 
     private static final String TAG = "AlertFilterFragment";
 
+    private static final String KEY_ALERT_LIST_TYPE = "alert_list_type";
+
     @Nullable
     private Set<RouteType> mSelectedRouteTypes = new HashSet<>();
 
@@ -51,11 +53,22 @@ public class AlertFilterFragment extends DialogFragment {
     @Nullable
     private AlertFilterListener mFilterListener;
 
+    /**
+     * Type of alert list the dialog filters. This is needed because there are two AlertListFragments
+     * in the ViewPager, and we need to remember which one was visible when the user opened the
+     * filter dialog. Otherwise the dialog might filter the wrong alert list after state restore.
+     */
+    private AlertListType mAlertListType;
+
     @NonNull
-    public static AlertFilterFragment newInstance(AlertFilterListener listener, Set<RouteType> initialFilter) {
+    public static AlertFilterFragment newInstance(
+            @NonNull AlertFilterListener listener,
+            Set<RouteType> initialFilter,
+            @NonNull AlertListType alertListType) {
         AlertFilterFragment fragment = new AlertFilterFragment();
         fragment.mFilterListener = listener;
         fragment.mSelectedRouteTypes = initialFilter;
+        fragment.mAlertListType = alertListType;
         return fragment;
     }
 
@@ -65,6 +78,11 @@ public class AlertFilterFragment extends DialogFragment {
 
     public void setFilter(@Nullable Set<RouteType> filter) {
         mSelectedRouteTypes = filter;
+    }
+
+    @NonNull
+    public AlertListType getAlertListType() {
+        return mAlertListType;
     }
 
     @NonNull
@@ -105,6 +123,21 @@ public class AlertFilterFragment extends DialogFragment {
                     }
                 })
                 .create();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putSerializable(KEY_ALERT_LIST_TYPE, mAlertListType);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            mAlertListType = (AlertListType) savedInstanceState.getSerializable(KEY_ALERT_LIST_TYPE);
+        }
     }
 
     /**

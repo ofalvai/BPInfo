@@ -154,7 +154,9 @@ public class AlertListFragment extends Fragment
         // the listener reference
         if (savedInstanceState != null) {
             mFilterFragment = (AlertFilterFragment) getFragmentManager().findFragmentByTag(FILTER_DIALOG_TAG);
-            if (mFilterFragment != null) {
+
+            // Only attach to the filter fragment if it filters our type of list
+            if (mFilterFragment != null && mAlertListType == mFilterFragment.getAlertListType()) {
                 mFilterFragment.setFilterListener(this);
                 mFilterFragment.setFilter(mAlertListPresenter.getFilter());
             }
@@ -233,7 +235,7 @@ public class AlertListFragment extends Fragment
 
     private void displayFilter() {
         mFilterFragment = AlertFilterFragment.newInstance(this,
-                mAlertListPresenter.getFilter());
+                mAlertListPresenter.getFilter(), mAlertListType);
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         mFilterFragment.show(transaction, FILTER_DIALOG_TAG);
 
