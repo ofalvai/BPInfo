@@ -30,11 +30,9 @@ public class AlertListPagerAdapter extends FragmentPagerAdapter implements ViewP
         switch (position) {
             case 0:
                 fragment = AlertListFragment.newInstance(AlertListType.ALERTS_TODAY);
-                mRegisteredFragments.put(position, fragment);
                 break;
             case 1:
                 fragment = AlertListFragment.newInstance(AlertListType.ALERTS_FUTURE);
-                mRegisteredFragments.put(position, fragment);
                 break;
             default:
                 fragment = new Fragment();
@@ -48,6 +46,12 @@ public class AlertListPagerAdapter extends FragmentPagerAdapter implements ViewP
         Fragment fragment = (Fragment) super.instantiateItem(container, position);
         mRegisteredFragments.put(position, fragment);
         return fragment;
+    }
+
+    @Override
+    public void destroyItem(ViewGroup container, int position, Object object) {
+        mRegisteredFragments.remove(position);
+        super.destroyItem(container, position, object);
     }
 
     @Override
@@ -84,7 +88,8 @@ public class AlertListPagerAdapter extends FragmentPagerAdapter implements ViewP
     @Override
     public void onPageSelected(int position) {
         AlertListFragment fragment = (AlertListFragment) mRegisteredFragments.get(position);
-        fragment.updateSubtitle();
-
+        if (fragment != null) {
+            fragment.updateSubtitle();
+        }
     }
 }
