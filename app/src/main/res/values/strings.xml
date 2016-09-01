@@ -18,7 +18,7 @@
     <string name="app_name">BPInfo</string>
     <string name="error_list_display">Unable to display traffic info</string>
     <string name="error_response">Incorrect response received from server</string>
-    <string name="actionbar_subtitle_alert_count">%1$s traffic changes today</string>
+    <string name="actionbar_subtitle_alert_count">%1$s traffic changes</string>
     <string name="error_no_connection">No network connection</string>
     <string name="error_network">Network error</string>
     <string name="error_communication">Communication error</string>
@@ -108,6 +108,6 @@
     <string name="pref_description_about">Version, licenses</string>
     <string name="pref_title_about">About</string>
     <string name="tab_title_today">Today</string>
-    <string name="tab_title_future">Near future</string>
+    <string name="tab_title_future">Soon</string>
 
 </resources>
