@@ -37,4 +37,9 @@ public interface AlertSearchContract {
     String LANG_HU = "hu";
     String LANG_EN = "en";
 
+    public enum AlertListType {
+        ALERTS_TODAY,
+        ALERTS_FUTURE
+    }
+
 }

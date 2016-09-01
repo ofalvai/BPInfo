@@ -38,6 +38,7 @@ import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.ofalvai.bpinfo.R;
+import com.ofalvai.bpinfo.api.AlertSearchContract;
 import com.ofalvai.bpinfo.model.Alert;
 import com.ofalvai.bpinfo.model.Route;
 import com.ofalvai.bpinfo.model.RouteType;
@@ -68,6 +69,8 @@ public class AlertListFragment extends Fragment
 
     private static final String FILTER_DIALOG_TAG = "filter_dialog";
 
+    private AlertSearchContract.AlertListType mAlertListType;
+
     @Nullable
     private EmptyRecyclerView mAlertRecyclerView;
 
@@ -91,11 +94,17 @@ public class AlertListFragment extends Fragment
 
     @Inject AlertListPresenter mAlertListPresenter;
 
+    public static AlertListFragment newInstance(@NonNull AlertSearchContract.AlertListType type) {
+        AlertListFragment fragment = new AlertListFragment();
+        fragment.mAlertListType = type;
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mAlertListPresenter = new AlertListPresenter(this);
+        mAlertListPresenter = new AlertListPresenter(this, mAlertListType);
 
         if (savedInstanceState != null) {
             @SuppressWarnings("unchecked")
@@ -458,7 +467,9 @@ public class AlertListFragment extends Fragment
                 }
             }
 
-            mRecentTextView.setVisibility(Utils.isAlertRecent(alert) ? View.VISIBLE : View.GONE);
+            if (mAlertListType == AlertSearchContract.AlertListType.ALERTS_TODAY) {
+                mRecentTextView.setVisibility(Utils.isAlertRecent(alert) ? View.VISIBLE : View.GONE);
+            }
         }
 
         @Override

@@ -58,6 +58,8 @@ public class AlertListPresenter implements FutarApiClient.FutarApiListener {
     @NonNull
     private AlertInteractionListener mInteractionListener;
 
+    private AlertSearchContract.AlertListType mAlertListType;
+
     /**
      * List of alerts returned by the client, before filtering by RouteTypes
      */
@@ -70,8 +72,10 @@ public class AlertListPresenter implements FutarApiClient.FutarApiListener {
     @NonNull
     private Set<RouteType> mActiveFilter = new HashSet<>();
 
-    public AlertListPresenter(@NonNull AlertInteractionListener interactionListener) {
+    public AlertListPresenter(@NonNull AlertInteractionListener interactionListener,
+                              @NonNull AlertSearchContract.AlertListType alertListType) {
         mInteractionListener = interactionListener;
+        mAlertListType = alertListType;
 
         BkkInfoApplication.injector.inject(this);
     }
@@ -96,7 +100,7 @@ public class AlertListPresenter implements FutarApiClient.FutarApiListener {
      */
     public void fetchAlertList() {
         if (Utils.hasNetworkConnection(mContext)) {
-            mFutarApiClient.fetchAlertList(this, getCurrentLanguageCode());
+            mFutarApiClient.fetchAlertList(this, getCurrentLanguageCode(), mAlertListType);
         } else if (mUnfilteredAlerts == null) {
             // Nothing was displayed previously, showing a full error view
             mInteractionListener.displayNetworkError(new NoConnectionError());
@@ -167,7 +171,9 @@ public class AlertListPresenter implements FutarApiClient.FutarApiListener {
 
         // Sort: descending by alert start time
         Collections.sort(mUnfilteredAlerts, new Utils.AlertStartTimestampComparator());
-        Collections.reverse(mUnfilteredAlerts);
+        if (mAlertListType == AlertSearchContract.AlertListType.ALERTS_TODAY) {
+            Collections.reverse(mUnfilteredAlerts);
+        }
 
         // Filter by route type
         List<Alert> filteredAlerts = filter(mActiveFilter, mUnfilteredAlerts);

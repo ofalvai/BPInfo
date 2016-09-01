@@ -27,6 +27,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.ofalvai.bpinfo.R;
+import com.ofalvai.bpinfo.api.AlertSearchContract;
 
 public class AlertListActivity extends AppCompatActivity {
 
@@ -60,6 +61,7 @@ public class AlertListActivity extends AppCompatActivity {
 
         mTabLayout = (TabLayout) findViewById(R.id.tabs);
         if (mViewPager != null && mViewPager.getAdapter() != null) {
+            //TODO
             mTabLayout.setupWithViewPager(mViewPager, false);
         }
     }
@@ -72,7 +74,18 @@ public class AlertListActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            return new AlertListFragment();
+            Fragment fragment;
+            switch (position) {
+                case 0:
+                    fragment = AlertListFragment.newInstance(AlertSearchContract.AlertListType.ALERTS_TODAY);
+                    break;
+                case 1:
+                    fragment = AlertListFragment.newInstance(AlertSearchContract.AlertListType.ALERTS_FUTURE);
+                    break;
+                default:
+                    fragment = new Fragment();
+            }
+            return fragment;
         }
 
         @Override

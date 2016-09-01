@@ -94,8 +94,15 @@ public class FutarApiClient {
     }
 
     @NonNull
-    private Uri buildUri() {
-        String startTimestamp = String.valueOf(new DateTime().getMillis() / 1000L);
+    private Uri buildUri(@NonNull AlertSearchContract.AlertListType alertListType) {
+        String startTimestamp = "";
+        if (alertListType == AlertSearchContract.AlertListType.ALERTS_TODAY) {
+            startTimestamp = String.valueOf(new DateTime().getMillis() / 1000L);
+        } else if (alertListType == AlertSearchContract.AlertListType.ALERTS_FUTURE) {
+            DateTime now = new DateTime().withTimeAtStartOfDay();
+            DateTime tomorrow = now.plusDays(1).withTimeAtStartOfDay();
+            startTimestamp = String.valueOf(tomorrow.getMillis() / 1000L);
+        }
 
         return Uri.parse(Config.FUTAR_API_BASE_URL).buildUpon()
                 .appendEncodedPath(AlertSearchContract.API_ENDPOINT)
@@ -107,10 +114,12 @@ public class FutarApiClient {
                 .build();
     }
 
-    public void fetchAlertList(@NonNull final FutarApiListener listener, @NonNull String languageCode) {
+    public void fetchAlertList(@NonNull final FutarApiListener listener,
+                               @NonNull String languageCode,
+                               @NonNull final AlertSearchContract.AlertListType alertListType) {
         mLanguageCode = languageCode;
 
-        Uri uri = buildUri();
+        Uri uri = buildUri(alertListType);
 
         LOGI(TAG, "API request: " + uri.toString());
 
@@ -120,7 +129,7 @@ public class FutarApiClient {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        onResponseCallback(listener, response);
+                        onResponseCallback(listener, response, alertListType);
                     }
                 },
                 new Response.ErrorListener() {
@@ -134,9 +143,10 @@ public class FutarApiClient {
         mRequestQueue.add(request);
     }
 
-    private void onResponseCallback(@NonNull FutarApiListener listener, JSONObject response) {
+    private void onResponseCallback(@NonNull FutarApiListener listener, JSONObject response,
+                                    @NonNull AlertSearchContract.AlertListType alertListType) {
         try {
-            mAlerts = parseAlerts(response);
+            mAlerts = parseAlerts(response, alertListType);
             mRoutes = parseRoutes(response);
         } catch (Exception ex) {
             listener.onError(ex);
@@ -150,7 +160,7 @@ public class FutarApiClient {
     }
 
     @NonNull
-    private List<Alert> parseAlerts(@NonNull JSONObject response)
+    private List<Alert> parseAlerts(@NonNull JSONObject response, @NonNull AlertSearchContract.AlertListType alertListType)
             throws JSONException {
         List<Alert> alertList = new ArrayList<>();
 
@@ -182,9 +192,13 @@ public class FutarApiClient {
             // Sometimes the API returns alerts from the future,
             // despite setting the "start" parameter to current time.
             DateTime alertStartTime = new DateTime(alert.getStart() * 1000L);
-            if (alertStartTime.isBeforeNow()) {
+            if (alertListType == AlertSearchContract.AlertListType.ALERTS_TODAY && alertStartTime.isBeforeNow()) {
+                alertList.add(alert);
+            } else if (alertListType == AlertSearchContract.AlertListType.ALERTS_FUTURE && alertStartTime.isAfterNow()) {
                 alertList.add(alert);
             }
+
+
         }
 
         return alertList;
