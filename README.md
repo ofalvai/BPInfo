@@ -2,9 +2,9 @@
 
 Budapest public transport info app based on the public BKK FUTÁR API.
 
-Demo: [video](https://gfycat.com/RegalInfiniteAlligatorgar)
+[__Get It On Google Play__](play.google.com/store/apps/details?id=com.ofalvai.bpinfo)
 
-Play Store: [link](play.google.com/store/apps/details?id=com.ofalvai.bpinfo)
+![Screenshot](/screenshots.png?raw=true)
 
 ## Build
 
