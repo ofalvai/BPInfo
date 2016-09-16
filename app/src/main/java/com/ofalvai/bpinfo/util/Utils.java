@@ -62,7 +62,7 @@ public class Utils {
     }
 
     /**
-     * Detects if a route seems to be a replacement route by its ID format.
+     * Detects if a route seems to be a replacement route from its ID format.
      * It's needed because the API returns replacement routes mixed together with the affected routes.
      */
     public static boolean isRouteReplacement(@NonNull String routeId) {
@@ -72,9 +72,10 @@ public class Utils {
          * BKK_OP: Operatív villamosPótló
          * BKK_TP: TroliPótló
          * BKK_HP: HévPótló
+         * BKK_MK: MetróPótló
          * to be continued...
          */
-        String replacementIdPattern = "BKK_(VP|OP|TP|HP)[0-9]+";
+        String replacementIdPattern = "BKK_(VP|OP|TP|HP|MP)[0-9]+";
 
         return routeId.matches(replacementIdPattern);
     }
