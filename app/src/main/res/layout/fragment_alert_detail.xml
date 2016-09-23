@@ -17,6 +17,7 @@
 
 <android.support.v4.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -37,14 +38,16 @@
             android:id="@+id/alert_detail_title"
             android:textSize="24sp"
             android:textColor="@color/colorPrimaryText"
-            android:textIsSelectable="true"/>
+            android:textIsSelectable="true"
+            tools:text="Alert title"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/alert_detail_date"
             android:textSize="16sp"
-            android:textIsSelectable="true"/>
+            android:textIsSelectable="true"
+            tools:text="2016.01.01 12:00 ➔ tomorrow 16:40"/>
 
         <com.wefika.flowlayout.FlowLayout
             android:layout_width="match_parent"
@@ -59,6 +62,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/alert_detail_description"
+            tools:text="Delectus vel et atque eligendi tempora ut. Iure consectetur aspernatur eaque. Dignissimos ut sit id repellat aut. Aut ut quasi nemo quas distinctio. Sit accusamus quod et qui asperiores in libero fugiat. Molestias laborum in in qui assumenda autem voluptate nihil.\n"
             />
 
         <TextView

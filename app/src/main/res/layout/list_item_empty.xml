@@ -15,10 +15,12 @@
   ~    limitations under the License.
   -->
 
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/empty_view"
@@ -31,6 +33,7 @@
         android:layout_margin="16dp"
         android:paddingTop="48dp"
         android:textColor="@color/colorSecondaryText"
-        android:gravity="center"/>
+        android:gravity="center"
+        tools:visibility="visible"/>
 
 </merge>

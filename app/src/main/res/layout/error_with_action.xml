@@ -22,7 +22,8 @@
               android:layout_height="wrap_content"
               android:padding="16dp"
               android:id="@+id/error_with_action"
-              android:visibility="gone">
+              android:visibility="gone"
+              tools:visibility="visible">
 
     <ImageView
         android:layout_width="48dp"
@@ -36,14 +37,13 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sample error message"
+        tools:text="Sample error message"
         android:id="@+id/error_message"
         android:layout_gravity="center_horizontal"
         android:textSize="@dimen/text_size_title"
         android:layout_margin="16dp"
         android:textColor="@color/colorSecondaryText"
-        android:gravity="center"
-        tools:ignore="HardcodedText"/>
+        android:gravity="center" />
 
     <Button
         android:layout_width="wrap_content"

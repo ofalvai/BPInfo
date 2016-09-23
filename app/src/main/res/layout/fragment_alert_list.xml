@@ -45,7 +45,8 @@
                     android:paddingLeft="@dimen/toolbar_horizontal_margin"
                     android:paddingRight="@dimen/toolbar_horizontal_margin"
                     android:background="@color/colorAccent"
-                    android:textColor="@android:color/white"/>
+                    android:textColor="@android:color/white"
+                    tools:visibility="visible" />
 
                 <include layout="@layout/error_with_action" />
 
@@ -58,7 +59,8 @@
                     android:paddingLeft="@dimen/list_extra_padding"
                     android:paddingRight="@dimen/list_extra_padding"
                     android:scrollbars="vertical"
-                    tools:context=".ui.alertlist.AlertListFragment">
+                    tools:context=".ui.alertlist.AlertListFragment"
+                    tools:listitem="@layout/list_item_alert">
                 </com.ofalvai.bpinfo.util.EmptyRecyclerView>
 
             </LinearLayout>

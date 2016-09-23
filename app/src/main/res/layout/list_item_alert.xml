@@ -36,8 +36,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginBottom="4dp">
-    </com.wefika.flowlayout.FlowLayout>
+        android:layout_marginBottom="4dp"
+        tools:listitem="@layout/list_item_route_icon"/>
 
     <TextView
         android:id="@id/list_item_alert_recent"
@@ -57,7 +57,9 @@
         android:layout_height="wrap_content"
         android:textSize="16sp"
         android:textColor="@color/colorPrimaryText"
-        tools:ignore="SelectableText"/>
+        tools:ignore="SelectableText"
+        tools:text="Alert title"
+        />
 
     <TextView
         android:id="@+id/list_item_alert_date"
@@ -65,6 +67,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="14sp"
-        tools:ignore="SelectableText"/>
+        tools:ignore="SelectableText"
+        tools:text="2016.01.01 12:00 ➔ tomorrow 16:40"/>
 
 </RelativeLayout>
