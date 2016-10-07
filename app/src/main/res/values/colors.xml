@@ -21,7 +21,8 @@
     <color name="colorAccent">#E5481C</color>
     <color name="colorPrimaryText">#070109</color>
     <color name="colorDivider">#EBEBEB</color>
-    <color name="colorLinkBlue">#2196F3</color>
+    <color name="colorLinkText">#2196F3</color>
+    <color name="colorLinkBackground">#ACD7FA</color>
 
     <color name="colorSecondaryText">#8a000000</color>
 

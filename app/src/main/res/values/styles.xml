@@ -34,9 +34,11 @@
     </style>
 
     <style name="LinkLabel">
-        <item name="android:textColor">@color/colorLinkBlue</item>
+        <item name="android:textColor">@color/colorLinkText</item>
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
+        <item name="android:background">@drawable/link_text_background</item>
+        <item name="android:padding">4dp</item>
     </style>
 
     <style name="RouteIcon">
