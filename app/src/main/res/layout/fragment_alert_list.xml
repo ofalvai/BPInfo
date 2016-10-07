@@ -70,7 +70,7 @@
 
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/alert_list_bottom_sheet"
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 

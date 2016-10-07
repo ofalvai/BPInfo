@@ -29,6 +29,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
@@ -98,7 +99,7 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
                 (CoordinatorLayout.LayoutParams) parentView.getLayoutParams();
         CoordinatorLayout.Behavior behavior = params.getBehavior();
 
-        if (behavior != null && behavior instanceof BottomSheetBehavior ) {
+        if (behavior != null && behavior instanceof BottomSheetBehavior) {
             ((BottomSheetBehavior) behavior).setBottomSheetCallback(mBottomSheetBehaviorCallback);
         }
     }
@@ -124,6 +125,23 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+
+        /**
+         *  Bottom sheets on tablets should have a smaller width than the screen width.
+         */
+        int width = getContext().getResources().getDimensionPixelSize(R.dimen.bottom_sheet_width);
+        int actualWidth = width > 0 ? width : ViewGroup.LayoutParams.MATCH_PARENT;
+        Window window = getDialog().getWindow();
+        if (window != null) {
+            window.setLayout(actualWidth, ViewGroup.LayoutParams.MATCH_PARENT);
+        }
+
+
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_alert_detail, container, false);
@@ -133,16 +151,22 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
         mDescriptionTextView = (FixedHtmlTextView) view.findViewById(R.id.alert_detail_description);
         mUrlTextView = (TextView) view.findViewById(R.id.alert_detail_url);
 
-        if (mTitleTextView != null) {
+        if (mTitleTextView != null)
+
+        {
             mTitleTextView.setText(mAlert.getHeader());
         }
 
-        if (mDateTextView != null) {
+        if (mDateTextView != null)
+
+        {
             String dateString = UiUtils.alertDateFormatter(getActivity(), mAlert.getStart(), mAlert.getEnd());
             mDateTextView.setText(dateString);
         }
 
-        if (mRouteIconsLayout != null) {
+        if (mRouteIconsLayout != null)
+
+        {
             // There are alerts without affected routes, eg. announcements
             if (mAlert.getRouteIds() != null) {
                 for (Route route : mAlert.getAffectedRoutes()) {
@@ -156,11 +180,15 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
             }
         }
 
-        if (mDescriptionTextView != null) {
+        if (mDescriptionTextView != null)
+
+        {
             mDescriptionTextView.setHtmlFromString(mAlert.getDescription(), new HtmlTextView.LocalImageGetter());
         }
 
-        if (mUrlTextView != null) {
+        if (mUrlTextView != null)
+
+        {
             mUrlTextView.setPaintFlags(mUrlTextView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
             mUrlTextView.setOnClickListener(new View.OnClickListener() {
                 @Override

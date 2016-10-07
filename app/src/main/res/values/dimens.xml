@@ -27,4 +27,6 @@
     <dimen name="text_size_title">20sp</dimen>
 
     <dimen name="route_icon_margin">8dp</dimen>
+
+    <dimen name="bottom_sheet_width">0dp</dimen> <!-- MATCH_PARENT -->
 </resources>
