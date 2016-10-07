@@ -41,7 +41,7 @@ public class Config {
 
     public static final String DATE_SEPARATOR = " ➔ ";
 
-    public static final String SOURCE_CODE_URL = "https://github.com/ofalvai/bkk-info-plus";
+    public static final String SOURCE_CODE_URL = "https://github.com/ofalvai/BPInfo";
 
     public static final String INSTABUG_TOKEN = BuildConfig.INSTABUG_TOKEN;
 
