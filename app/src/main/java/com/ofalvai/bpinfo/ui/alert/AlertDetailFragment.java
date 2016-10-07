@@ -36,6 +36,7 @@ import com.ofalvai.bpinfo.R;
 import com.ofalvai.bpinfo.model.Alert;
 import com.ofalvai.bpinfo.model.Route;
 import com.ofalvai.bpinfo.util.FabricUtils;
+import com.ofalvai.bpinfo.util.FixedHtmlTextView;
 import com.ofalvai.bpinfo.util.UiUtils;
 import com.ofalvai.bpinfo.util.Utils;
 import com.wefika.flowlayout.FlowLayout;
@@ -60,7 +61,7 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
     private FlowLayout mRouteIconsLayout;
 
     @Nullable
-    private HtmlTextView mDescriptionTextView;
+    private FixedHtmlTextView mDescriptionTextView;
 
     @Nullable
     private TextView mUrlTextView;
@@ -129,7 +130,7 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
         mTitleTextView = (TextView) view.findViewById(R.id.alert_detail_title);
         mDateTextView = (TextView) view.findViewById(R.id.alert_detail_date);
         mRouteIconsLayout = (FlowLayout) view.findViewById(R.id.alert_detail_route_icons_wrapper);
-        mDescriptionTextView = (HtmlTextView) view.findViewById(R.id.alert_detail_description);
+        mDescriptionTextView = (FixedHtmlTextView) view.findViewById(R.id.alert_detail_description);
         mUrlTextView = (TextView) view.findViewById(R.id.alert_detail_url);
 
         if (mTitleTextView != null) {

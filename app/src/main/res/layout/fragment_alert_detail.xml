@@ -58,10 +58,13 @@
             android:paddingBottom="8dp">
         </com.wefika.flowlayout.FlowLayout>
 
-        <org.sufficientlysecure.htmltextview.HtmlTextView
+        <com.ofalvai.bpinfo.util.FixedHtmlTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/alert_detail_description"
+            android:textIsSelectable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="false"
             tools:text="Delectus vel et atque eligendi tempora ut. Iure consectetur aspernatur eaque. Dignissimos ut sit id repellat aut. Aut ut quasi nemo quas distinctio. Sit accusamus quod et qui asperiores in libero fugiat. Molestias laborum in in qui assumenda autem voluptate nihil.\n"
             />
 
