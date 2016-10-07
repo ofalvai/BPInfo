@@ -39,4 +39,19 @@
         <item name="android:focusable">true</item>
     </style>
 
+    <style name="RouteIcon">
+        <!-- Note: these layout attributes are ignored if the view is constructed from code using a ContextThemeWrapper -->
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginRight">@dimen/route_icon_margin</item>
+        <item name="android:layout_marginTop">@dimen/route_icon_margin</item>
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:paddingRight">8dp</item>
+        <item name="android:paddingTop">3dp</item>
+        <item name="android:paddingBottom">3dp</item>
+        <item name="android:minWidth">10dp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+
 </resources>

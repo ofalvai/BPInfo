@@ -27,14 +27,13 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.v4.content.ContextCompat;
-import android.view.View;
+import android.support.v7.view.ContextThemeWrapper;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.ofalvai.bpinfo.Config;
-import com.ofalvai.bpinfo.model.Route;
-
 import com.ofalvai.bpinfo.R;
+import com.ofalvai.bpinfo.model.Route;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -126,22 +125,27 @@ public class UiUtils {
     /**
      * Adds a rectangular icon for the affected route.
      *
-     * First it inflates the view, then sets the text and color properties of the view.
+     * First it creates a TextView, then sets the style properties of the view.
      * The custom colored rounded background is achieved by a Drawable and a ColorFilter on top of that.
-     * @param context   Needed for inflating
-     * @param root      This is where the view will be added
-     * @param route     Route object containing the color and text attributes
      */
     public static void addRouteIcon(Context context, @NonNull ViewGroup root, @NonNull Route route) {
-        View.inflate(
-                context, R.layout.list_item_route_icon, root
-        );
-
-        // Finding the inflated view, because inflate() returns its root, not the inflated view
-        TextView iconView = (TextView) root.getChildAt(root.getChildCount() - 1);
+        ContextThemeWrapper iconContextTheme = new ContextThemeWrapper(context, R.style.RouteIcon);
+        TextView iconView = new TextView(iconContextTheme);
 
         iconView.setText(route.getShortName());
         iconView.setTextColor(Color.parseColor("#" + route.getTextColor()));
+        root.addView(iconView);
+
+        // Layout attributes defined in R.style.RouteIcon were ignored before attaching the view to
+        // a parent, so we need to manually set them
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) iconView.getLayoutParams();
+        params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+        int margin = (int) context.getResources().getDimension(R.dimen.route_icon_margin);
+        params.rightMargin = margin;
+        params.topMargin = margin;
+        // A requestLayout() call is not necessary here because the setBackground() method below
+        // will call that anyway.
+        //iconView.requestLayout();
 
         // Setting a custom colored rounded background drawable as background
         Drawable iconBackground = context.getResources().getDrawable(R.drawable.rounded_corner_5dp);
