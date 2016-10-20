@@ -19,6 +19,7 @@ package com.ofalvai.bpinfo.api;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.ArrayMap;
 import android.util.Log;
 
 import com.android.volley.RequestQueue;
@@ -40,7 +41,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -276,7 +276,7 @@ public class FutarApiClient {
 
     @NonNull
     private Map<String, Route> parseRoutes(@NonNull JSONObject response) throws JSONException {
-        Map<String, Route> routeMap = new HashMap<>();
+        Map<String, Route> routeMap = new ArrayMap<>();
 
         JSONObject dataNode = response.getJSONObject(AlertSearchContract.DATA);
         JSONObject referencesNode = dataNode.getJSONObject(AlertSearchContract.DATA_REFERENCES);
