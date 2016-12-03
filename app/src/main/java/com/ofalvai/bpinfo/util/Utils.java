@@ -69,13 +69,13 @@ public class Utils {
         /**
          * Possible values and meanings:
          * BKK_VP: VillamosPótló
-         * BKK_OP: Operatív villamosPótló
+         * BKK_OP: Operatív Pótló (Metró, Villamos)
          * BKK_TP: TroliPótló
          * BKK_HP: HévPótló
-         * BKK_MK: MetróPótló
+         * BKK_MP: MetróPótló
          * to be continued...
          */
-        String replacementIdPattern = "BKK_(VP|OP|TP|HP|MP)[0-9]+";
+        String replacementIdPattern = "BKK_(VP|OP|TP|HP|MP)[0-9A-Z]+";
 
         return routeId.matches(replacementIdPattern);
     }
