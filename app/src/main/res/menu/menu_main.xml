@@ -21,7 +21,7 @@
         android:id="@+id/menu_item_filter_alerts"
         android:icon="@drawable/ic_filter_route"
         android:title="@string/menu_filter_label"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom|withText"/>
 
     <item
         android:id="@+id/menu_item_settings"

@@ -33,7 +33,7 @@
     <string name="date_until_revoke">until further notice</string>
     <string name="date_first_departure">from first departure</string>
     <string name="date_last_departure">until last departure</string>
-    <string name="menu_filter_label">Filter vehicle type</string>
+    <string name="menu_filter_label">Filter vehicle</string>
     <string name="filter_title">Filter vehicle type</string>
 
     <string-array name="route_types">
