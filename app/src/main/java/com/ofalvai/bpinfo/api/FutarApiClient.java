@@ -16,6 +16,8 @@
 
 package com.ofalvai.bpinfo.api;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -27,8 +29,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.crashlytics.android.Crashlytics;
+import com.ofalvai.bpinfo.BpInfoApplication;
 import com.ofalvai.bpinfo.BuildConfig;
 import com.ofalvai.bpinfo.Config;
+import com.ofalvai.bpinfo.R;
 import com.ofalvai.bpinfo.model.Alert;
 import com.ofalvai.bpinfo.model.Route;
 import com.ofalvai.bpinfo.model.RouteType;
@@ -43,6 +47,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 import static com.ofalvai.bpinfo.util.LogUtils.LOGI;
 import static com.ofalvai.bpinfo.util.LogUtils.LOGW;
@@ -76,6 +82,10 @@ public class FutarApiClient {
     @Nullable
     private String mLanguageCode;
 
+    @Inject SharedPreferences mSharedPreferences;
+
+    @Inject Context mContext;
+
     public interface FutarApiListener {
         void onAlertResponse(@NonNull List<Alert> alerts);
 
@@ -84,30 +94,38 @@ public class FutarApiClient {
 
     public FutarApiClient(RequestQueue requestQueue) {
         mRequestQueue = requestQueue;
+        BpInfoApplication.injector.inject(this);
     }
 
     @NonNull
     private Uri buildUri(@NonNull AlertListType alertListType) {
-        String startTimestamp = "";
-
-        if (alertListType == AlertListType.ALERTS_TODAY) {
-            startTimestamp = String.valueOf(new DateTime().getMillis() / 1000L);
-        } else if (alertListType == AlertListType.ALERTS_FUTURE) {
-            DateTime now = new DateTime().withTimeAtStartOfDay();
-            DateTime tomorrow = now.plusDays(1).withTimeAtStartOfDay();
-            startTimestamp = String.valueOf(tomorrow.getMillis() / 1000L);
-        } else {
-            LOGW(TAG, "No alert list type provided, startTimestamp will be empty");
-        }
-
-        return Uri.parse(Config.FUTAR_API_BASE_URL).buildUpon()
+        Uri.Builder builder = Uri.parse(Config.FUTAR_API_BASE_URL).buildUpon()
                 .appendEncodedPath(AlertSearchContract.API_ENDPOINT)
                 .appendQueryParameter("key", QUERY_API_KEY)
                 .appendQueryParameter("version", QUERY_API_VERSION)
                 .appendQueryParameter("appVersion", QUERY_APPVERSION)
-                .appendQueryParameter("includeReferences", QUERY_INCLUDEREFERENCES)
-                .appendQueryParameter("start", startTimestamp)
-                .build();
+                .appendQueryParameter("includeReferences", QUERY_INCLUDEREFERENCES);
+
+        // In debug mode, all alerts (even past ones) are retrieved
+        boolean isDebugMode = mSharedPreferences.getBoolean(
+                mContext.getString(R.string.pref_key_debug_mode), false);
+
+        if (!isDebugMode) {
+            String startTimestamp = "";
+
+            if (alertListType == AlertListType.ALERTS_TODAY) {
+                startTimestamp = String.valueOf(new DateTime().getMillis() / 1000L);
+            } else if (alertListType == AlertListType.ALERTS_FUTURE) {
+                DateTime now = new DateTime().withTimeAtStartOfDay();
+                DateTime tomorrow = now.plusDays(1).withTimeAtStartOfDay();
+                startTimestamp = String.valueOf(tomorrow.getMillis() / 1000L);
+            } else {
+                LOGW(TAG, "No alert list type provided, startTimestamp will be empty");
+            }
+            builder.appendQueryParameter("start", startTimestamp);
+        }
+
+        return builder.build();
     }
 
     public void fetchAlertList(@NonNull final FutarApiListener listener,
