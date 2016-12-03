@@ -264,12 +264,15 @@ public class AlertListFragment extends Fragment
             } else {
                 mAlertAdapter.updateAlertData(alerts);
                 mAlertAdapter.notifyDataSetChanged();
+
+                if (mAlertRecyclerView != null) {
+                    mAlertRecyclerView.smoothScrollToPosition(0);
+                }
             }
 
             // Only update the subtitle if the fragment is visible (and not preloading by ViewPager)
             if (getUserVisibleHint()) {
                 updateSubtitle();
-
             }
 
             setUpdating(false);
