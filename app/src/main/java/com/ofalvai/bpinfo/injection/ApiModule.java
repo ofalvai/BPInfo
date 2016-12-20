@@ -21,6 +21,7 @@ import android.content.Context;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.ofalvai.bpinfo.api.FutarApiClient;
+import com.ofalvai.bpinfo.api.NoticeClient;
 
 import javax.inject.Singleton;
 
@@ -44,5 +45,11 @@ public class ApiModule {
     @Singleton
     FutarApiClient provideFutarApiClient(RequestQueue requestQueue) {
         return new FutarApiClient(requestQueue);
+    }
+
+    @Provides
+    @Singleton
+    NoticeClient provideNoticeClient(RequestQueue requestQueue) {
+        return new NoticeClient(requestQueue);
     }
 }

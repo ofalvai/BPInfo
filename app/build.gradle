@@ -58,6 +58,7 @@ android {
         resConfigs "en", "hu"
         resValue "string", "APP_VERSION", version_name
         buildConfigField "String", "INSTABUG_TOKEN", "\"${localConfig.instaBugToken}\""
+        buildConfigField "String", "BACKEND_URL", "\"${localConfig.backendUrl}\""
         manifestPlaceholders = [fabricApiKey: localConfig.fabricApiKey]
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
