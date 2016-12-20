@@ -87,5 +87,7 @@
     <string name="pref_title_about">Névjegy</string>
     <string name="tab_title_today">Most</string>
     <string name="tab_title_future">Hamarosan</string>
+    <string name="dialog_notice_title">Közlemény</string>
+    <string name="dialog_notice_positive_button">OK</string>
 
 </resources>

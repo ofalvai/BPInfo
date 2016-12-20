@@ -29,6 +29,7 @@ import com.ofalvai.bpinfo.Config;
 import com.ofalvai.bpinfo.R;
 import com.ofalvai.bpinfo.api.AlertSearchContract;
 import com.ofalvai.bpinfo.api.FutarApiClient;
+import com.ofalvai.bpinfo.api.NoticeClient;
 import com.ofalvai.bpinfo.model.Alert;
 import com.ofalvai.bpinfo.model.Route;
 import com.ofalvai.bpinfo.model.RouteType;
@@ -47,9 +48,12 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-public class AlertListPresenter implements FutarApiClient.FutarApiListener {
+public class AlertListPresenter implements FutarApiClient.FutarApiListener,
+        NoticeClient.NoticeListener {
 
     @Inject FutarApiClient mFutarApiClient;
+
+    @Inject NoticeClient mNoticeClient;
 
     @Inject SharedPreferences mSharedPreferences;
 
@@ -92,6 +96,8 @@ public class AlertListPresenter implements FutarApiClient.FutarApiListener {
         void setUpdating(boolean state);
 
         void displayNoNetworkWarning();
+
+        void displayNotice(String noticeText);
     }
 
     /**
@@ -137,6 +143,7 @@ public class AlertListPresenter implements FutarApiClient.FutarApiListener {
         Period updatePeriod = new Period().withSeconds(Config.REFRESH_THRESHOLD_SEC);
         if (mLastUpdate != null && mLastUpdate.plus(updatePeriod).isBeforeNow()) {
             fetchAlertList();
+            fetchNotice(); //TODO: letesztelni dialoggal
         }
     }
 
@@ -247,5 +254,17 @@ public class AlertListPresenter implements FutarApiClient.FutarApiListener {
         }
         
         return languageCode;
+    }
+
+    public void fetchNotice() {
+        // We only need to display one dialog per activity
+        if (mAlertListType.equals(AlertListType.ALERTS_TODAY)) {
+            mNoticeClient.fetchNotice(this);
+        }
+    }
+
+    @Override
+    public void onNoticeResponse(String noticeText) {
+        mInteractionListener.displayNotice(noticeText);
     }
 }

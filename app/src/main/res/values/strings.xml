@@ -112,5 +112,7 @@
     <string name="pref_title_about">About</string>
     <string name="tab_title_today">Now</string>
     <string name="tab_title_future">Soon</string>
+    <string name="dialog_notice_title">Notice</string>
+    <string name="dialog_notice_positive_button">OK</string>
 
 </resources>

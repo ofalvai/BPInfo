@@ -213,6 +213,7 @@ public class AlertListFragment extends Fragment
         setUpdating(true);
 
         mAlertListPresenter.fetchAlertList();
+        mAlertListPresenter.fetchNotice();
 
         mAlertListPresenter.setLastUpdate();
     }
@@ -331,6 +332,13 @@ public class AlertListFragment extends Fragment
                 snackbar.show();
             }
         }
+    }
+
+    @Override
+    public void displayNotice(String noticeText) {
+        NoticeFragment fragment = NoticeFragment.newInstance(noticeText);
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        fragment.show(transaction, FILTER_DIALOG_TAG);
     }
 
     /**
