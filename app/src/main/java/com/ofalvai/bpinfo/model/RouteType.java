@@ -17,7 +17,6 @@
 package com.ofalvai.bpinfo.model;
 
 public enum RouteType {
-    //TODO: HÉV, Éjszakai, Libegő, Sikló
     BUS,
     FERRY,
     RAIL,

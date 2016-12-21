@@ -145,7 +145,7 @@ public class AlertListPresenter implements FutarApiClient.FutarApiListener,
         Period updatePeriod = new Period().withSeconds(Config.REFRESH_THRESHOLD_SEC);
         if (mLastUpdate != null && mLastUpdate.plus(updatePeriod).isBeforeNow()) {
             fetchAlertList();
-            fetchNotice(); //TODO: letesztelni dialoggal
+            fetchNotice();
         }
     }
 

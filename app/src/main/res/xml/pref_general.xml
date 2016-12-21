@@ -47,8 +47,6 @@
             android:title="@string/pref_title_send_bugreport"
             android:summary="@string/pref_description_send_bugreport"
             android:key="@string/pref_key_send_bugreport">
-
-            <!-- TODO: intent -->
         </PreferenceScreen>
 
         <PreferenceScreen
