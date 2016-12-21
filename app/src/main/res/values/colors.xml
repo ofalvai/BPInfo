@@ -28,5 +28,6 @@
 
     <color name="colorBackground">#fafafa</color>
     <color name="colorNoticeBackground">#eeeeee</color>
+    <color name="colorNoticeBorder">#bdbdbd</color>
 
 </resources>
