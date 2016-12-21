@@ -37,6 +37,10 @@ import javax.inject.Inject;
 
 import static com.ofalvai.bpinfo.util.LogUtils.LOGE;
 
+/**
+ * Fetches messages (notices) from our own backend. This is used to inform the users when the API is
+ * down or broken, without updating the app itself.
+ */
 public class NoticeClient implements Response.ErrorListener {
 
     public interface NoticeListener {
@@ -63,7 +67,7 @@ public class NoticeClient implements Response.ErrorListener {
         BpInfoApplication.injector.inject(this);
     }
 
-    public void fetchNotice(@NonNull final NoticeListener noticeListener) {
+    public void fetchNotice(@NonNull final NoticeListener noticeListener, @NonNull final String languageCode) {
         final Uri url = Uri.parse(Config.BACKEND_URL).buildUpon()
                 .appendEncodedPath(Config.BACKEND_NOTICE_PATH)
                 .build();
@@ -73,7 +77,7 @@ public class NoticeClient implements Response.ErrorListener {
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        onResponseCallback(response, noticeListener);
+                        onResponseCallback(response, noticeListener, languageCode);
                     }
                 },
                 this
@@ -91,20 +95,25 @@ public class NoticeClient implements Response.ErrorListener {
         Crashlytics.logException(error);
     }
 
-    private void onResponseCallback(JSONArray response, NoticeListener listener) {
+    private void onResponseCallback(JSONArray response, NoticeListener listener, String languageCode) {
         try {
             StringBuilder noticeBuilder = new StringBuilder();
 
             // The response contains an array of notices, we display the ones marked as enabled
             for (int i = 0; i < response.length(); i++) {
                 final JSONObject notice = response.getJSONObject(i);
-                boolean enabled = notice.getBoolean("enabled");
-                boolean debugEnabled = notice.getBoolean("debugEnabled");
+                boolean enabled = notice.getBoolean(NoticeContract.ENABLED);
+                boolean debugEnabled = notice.getBoolean(NoticeContract.ENABLED_DEBUG);
 
                 // Only display notice if it's marked as enabled OR marked as enabled for debug mode
                 // and debug mode is actually turned on:
                 if (enabled || (debugEnabled && isDebugActivated())) {
-                    String noticeText = notice.getString("text");
+                    String noticeText;
+                    if (languageCode.equals("hu")) {
+                        noticeText = notice.getString(NoticeContract.TEXT_HU);
+                    } else {
+                        noticeText = notice.getString(NoticeContract.TEXT_EN);
+                    }
                     noticeBuilder.append(noticeText);
                     noticeBuilder.append("<br /><br />");
                 }
@@ -115,7 +124,6 @@ public class NoticeClient implements Response.ErrorListener {
             } else {
                 listener.onNoNotice();
             }
-
         } catch (Exception ex) {
             // We don't display anything on the UI because this feature is meant to be silent
             LOGE(TAG, ex.toString());
