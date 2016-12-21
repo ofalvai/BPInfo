@@ -59,7 +59,7 @@ import java.util.Set;
 import static com.ofalvai.bpinfo.util.LogUtils.LOGD;
 
 public class AlertListFragment extends Fragment
-        implements AlertListPresenter.AlertInteractionListener, AlertFilterFragment.AlertFilterListener {
+        implements AlertListContract.View, AlertFilterFragment.AlertFilterListener {
 
     private static final String TAG = "AlertListFragment";
 
@@ -70,6 +70,9 @@ public class AlertListFragment extends Fragment
     private static final String FILTER_DIALOG_TAG = "filter_dialog";
 
     private static final String NOTICE_DIALOG_TAG = "notice_dialog";
+
+    @Nullable
+    private AlertListContract.Presenter mPresenter;
 
     private AlertListType mAlertListType;
 
@@ -96,8 +99,6 @@ public class AlertListFragment extends Fragment
 
     private TextView mNoticeView;
 
-    private AlertListPresenter mAlertListPresenter;
-
     public static AlertListFragment newInstance(@NonNull AlertListType type) {
         AlertListFragment fragment = new AlertListFragment();
         fragment.mAlertListType = type;
@@ -116,10 +117,11 @@ public class AlertListFragment extends Fragment
             restoredFilter = (HashSet<RouteType>) savedInstanceState.getSerializable(KEY_ACTIVE_FILTER);
         }
 
-        mAlertListPresenter = new AlertListPresenter(this, mAlertListType);
+        mPresenter = new AlertListPresenter(mAlertListType);
+        mPresenter.attachView(this);
 
         if (restoredFilter != null) {
-            mAlertListPresenter.setFilter(restoredFilter);
+            mPresenter.setFilter(restoredFilter);
         }
     }
 
@@ -162,7 +164,7 @@ public class AlertListFragment extends Fragment
             // Only attach to the filter fragment if it filters our type of list
             if (mFilterFragment != null && mAlertListType == mFilterFragment.getAlertListType()) {
                 mFilterFragment.setFilterListener(this);
-                mFilterFragment.setFilter(mAlertListPresenter.getFilter());
+                mFilterFragment.setFilter(mPresenter.getFilter());
             }
         }
 
@@ -185,7 +187,7 @@ public class AlertListFragment extends Fragment
 
         // Casting to HashSet, because Set is not serializable :(
         //noinspection CollectionDeclaredAsConcreteClass
-        HashSet<RouteType> filter = (HashSet<RouteType>) mAlertListPresenter.getFilter();
+        HashSet<RouteType> filter = (HashSet<RouteType>) mPresenter.getFilter();
 
         outState.putSerializable(KEY_ACTIVE_FILTER, filter);
     }
@@ -212,16 +214,16 @@ public class AlertListFragment extends Fragment
     public void onStart() {
         super.onStart();
 
-        mAlertListPresenter.updateIfNeeded();
+        mPresenter.updateIfNeeded();
     }
 
     private void initRefresh() {
         setUpdating(true);
 
-        mAlertListPresenter.fetchAlertList();
-        mAlertListPresenter.fetchNotice();
+        mPresenter.fetchAlertList();
+        mPresenter.fetchNotice();
 
-        mAlertListPresenter.setLastUpdate();
+        mPresenter.setLastUpdate();
     }
 
     /**
@@ -240,7 +242,7 @@ public class AlertListFragment extends Fragment
 
     private void displayFilter() {
         mFilterFragment = AlertFilterFragment.newInstance(this,
-                mAlertListPresenter.getFilter(), mAlertListType);
+                mPresenter.getFilter(), mAlertListType);
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         mFilterFragment.show(transaction, FILTER_DIALOG_TAG);
 
@@ -249,8 +251,8 @@ public class AlertListFragment extends Fragment
 
     @Override
     public void onFilterChanged(@NonNull Set<RouteType> selectedTypes) {
-        mAlertListPresenter.setFilter(selectedTypes);
-        mAlertListPresenter.getAlertList();
+        mPresenter.setFilter(selectedTypes);
+        mPresenter.getAlertList();
 
         updateFilterWarning();
     }
@@ -363,6 +365,7 @@ public class AlertListFragment extends Fragment
     /**
      * Displays or hides the error view. If displaying, it also sets the retry button's event listener
      * and the error message.
+     *
      * @param state true to display, false to hide
      */
     private void setErrorView(boolean state, String errorMessage) {
@@ -415,8 +418,8 @@ public class AlertListFragment extends Fragment
      */
     private void updateFilterWarning() {
         // Might be null, because it gets called by onCreate() too
-        if (mFilterWarningView != null && mAlertListPresenter != null) {
-            Set<RouteType> selectedTypes = mAlertListPresenter.getFilter();
+        if (mFilterWarningView != null && mPresenter != null) {
+            Set<RouteType> selectedTypes = mPresenter.getFilter();
 
             if (selectedTypes == null) {
                 return;
@@ -443,7 +446,6 @@ public class AlertListFragment extends Fragment
             }
         }
     }
-
 
 
     private class AlertHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

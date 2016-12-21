@@ -33,6 +33,7 @@ import com.ofalvai.bpinfo.api.NoticeClient;
 import com.ofalvai.bpinfo.model.Alert;
 import com.ofalvai.bpinfo.model.Route;
 import com.ofalvai.bpinfo.model.RouteType;
+import com.ofalvai.bpinfo.ui.base.BasePresenter;
 import com.ofalvai.bpinfo.util.Utils;
 
 import org.joda.time.DateTime;
@@ -48,19 +49,20 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-public class AlertListPresenter implements FutarApiClient.FutarApiListener,
-        NoticeClient.NoticeListener {
+public class AlertListPresenter extends BasePresenter<AlertListContract.View>
+        implements FutarApiClient.FutarApiListener, NoticeClient.NoticeListener,
+        AlertListContract.Presenter {
 
-    @Inject FutarApiClient mFutarApiClient;
+    @Inject
+    FutarApiClient mFutarApiClient;
 
     @Inject NoticeClient mNoticeClient;
 
-    @Inject SharedPreferences mSharedPreferences;
+    @Inject
+    SharedPreferences mSharedPreferences;
 
-    @Inject Context mContext;
-
-    @NonNull
-    private AlertInteractionListener mInteractionListener;
+    @Inject
+    Context mContext;
 
     private AlertListType mAlertListType;
 
@@ -76,45 +78,26 @@ public class AlertListPresenter implements FutarApiClient.FutarApiListener,
     @NonNull
     private Set<RouteType> mActiveFilter = new HashSet<>();
 
-    public AlertListPresenter(@NonNull AlertInteractionListener interactionListener,
-                              @NonNull AlertListType alertListType) {
-        mInteractionListener = interactionListener;
+    public AlertListPresenter(@NonNull AlertListType alertListType) {
         mAlertListType = alertListType;
 
         BpInfoApplication.injector.inject(this);
-    }
-
-    public interface AlertInteractionListener {
-        void displayAlerts(@NonNull List<Alert> alerts);
-
-        void displayNetworkError(@NonNull VolleyError error);
-
-        void displayDataError();
-
-        void displayGeneralError();
-
-        void setUpdating(boolean state);
-
-        void displayNoNetworkWarning();
-
-        void displayNotice(String noticeText);
-
-        void removeNotice();
     }
 
     /**
      * Initiates a network refresh if possible, and returns the alert list to the listener, or
      * calls the appropriate callback.
      */
+    @Override
     public void fetchAlertList() {
         if (Utils.hasNetworkConnection(mContext)) {
             mFutarApiClient.fetchAlertList(this, getCurrentLanguageCode(), mAlertListType);
         } else if (mUnfilteredAlerts == null) {
             // Nothing was displayed previously, showing a full error view
-            mInteractionListener.displayNetworkError(new NoConnectionError());
+            getView().displayNetworkError(new NoConnectionError());
         } else {
             // A list was loaded previously, we don't clear that, only display a warning.
-            mInteractionListener.displayNoNetworkWarning();
+            getView().displayNoNetworkWarning();
         }
     }
 
@@ -122,18 +105,20 @@ public class AlertListPresenter implements FutarApiClient.FutarApiListener,
      * If possible, returns the local, filtered state of the alert list to the listener,
      * otherwise calls fetchAlertList() to get data from the API.
      */
+    @Override
     public void getAlertList() {
         if (mUnfilteredAlerts != null) {
             // Filter by route type
             List<Alert> filteredAlerts = filter(mActiveFilter, mUnfilteredAlerts);
 
-            mInteractionListener.displayAlerts(filteredAlerts);
+            getView().displayAlerts(filteredAlerts);
         } else {
             fetchAlertList();
         }
 
     }
 
+    @Override
     public void setLastUpdate() {
         mLastUpdate = new DateTime();
     }
@@ -141,6 +126,7 @@ public class AlertListPresenter implements FutarApiClient.FutarApiListener,
     /**
      * Initiates a list update if enough time has passed since the last update
      */
+    @Override
     public void updateIfNeeded() {
         Period updatePeriod = new Period().withSeconds(Config.REFRESH_THRESHOLD_SEC);
         if (mLastUpdate != null && mLastUpdate.plus(updatePeriod).isBeforeNow()) {
@@ -153,6 +139,7 @@ public class AlertListPresenter implements FutarApiClient.FutarApiListener,
      * Sets the RouteType filter to be applied to the returned alert list.
      * If an empty Set or null is passed, the list is not filtered.
      */
+    @Override
     public void setFilter(@Nullable Set<RouteType> routeTypes) {
         if (routeTypes == null) {
             mActiveFilter.clear();
@@ -162,6 +149,7 @@ public class AlertListPresenter implements FutarApiClient.FutarApiListener,
     }
 
     @Nullable
+    @Override
     public Set<RouteType> getFilter() {
         return mActiveFilter;
     }
@@ -184,7 +172,7 @@ public class AlertListPresenter implements FutarApiClient.FutarApiListener,
         // Filter by route type
         List<Alert> filteredAlerts = filter(mActiveFilter, mUnfilteredAlerts);
 
-        mInteractionListener.displayAlerts(filteredAlerts);
+        getView().displayAlerts(filteredAlerts);
     }
 
     @Override
@@ -195,11 +183,11 @@ public class AlertListPresenter implements FutarApiClient.FutarApiListener,
 
         if (ex instanceof VolleyError) {
             VolleyError error = (VolleyError) ex;
-            mInteractionListener.displayNetworkError(error);
+            getView().displayNetworkError(error);
         } else if (ex instanceof JSONException) {
-            mInteractionListener.displayDataError();
+            getView().displayDataError();
         } else {
-            mInteractionListener.displayGeneralError();
+            getView().displayGeneralError();
         }
 
         Crashlytics.logException(ex);
@@ -258,6 +246,7 @@ public class AlertListPresenter implements FutarApiClient.FutarApiListener,
         return languageCode;
     }
 
+    @Override
     public void fetchNotice() {
         // We only need to display one dialog per activity
         if (mAlertListType.equals(AlertListType.ALERTS_TODAY)) {
@@ -267,11 +256,12 @@ public class AlertListPresenter implements FutarApiClient.FutarApiListener,
 
     @Override
     public void onNoticeResponse(String noticeText) {
-        mInteractionListener.displayNotice(noticeText);
+        getView().displayNotice(noticeText);
     }
 
     @Override
     public void onNoNotice() {
-        mInteractionListener.removeNotice();
+        getView().removeNotice();
     }
+
 }
