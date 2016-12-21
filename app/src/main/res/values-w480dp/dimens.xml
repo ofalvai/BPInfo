@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The reason we define this layout qualifier instead of landscape is that in multi window mode,
+ the app can technically be in landscape, while the phone itself is in portrait, so there's not
+ too much space horizontally -->
+<resources>
+    <dimen name="bottom_sheet_width">430dp</dimen>
+</resources>
