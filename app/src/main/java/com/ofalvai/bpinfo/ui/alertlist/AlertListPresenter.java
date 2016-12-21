@@ -258,7 +258,7 @@ public class AlertListPresenter implements FutarApiClient.FutarApiListener,
         return languageCode;
     }
 
-    private void fetchNotice() {
+    public void fetchNotice() {
         // We only need to display one dialog per activity
         if (mAlertListType.equals(AlertListType.ALERTS_TODAY)) {
             mNoticeClient.fetchNotice(this, getCurrentLanguageCode());
