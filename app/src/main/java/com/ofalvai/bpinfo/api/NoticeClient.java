@@ -45,6 +45,8 @@ public class NoticeClient implements Response.ErrorListener {
          * @param noticeBody HTML string of 1 or more notices appended
          */
         void onNoticeResponse(String noticeBody);
+
+        void onNoNotice();
     }
 
     private static final String TAG = "NoticeClient";
@@ -79,7 +81,6 @@ public class NoticeClient implements Response.ErrorListener {
 
         // Invalidating Volley's cache for this URL to always get the latest notice
         mRequestQueue.getCache().remove(url.toString());
-
         mRequestQueue.add(request);
     }
 
@@ -88,10 +89,9 @@ public class NoticeClient implements Response.ErrorListener {
         // We don't display anything on the UI because this feature is meant to be silent
         LOGE(TAG, error.toString());
         Crashlytics.logException(error);
-
     }
 
-    public void onResponseCallback(JSONArray response, NoticeListener listener) {
+    private void onResponseCallback(JSONArray response, NoticeListener listener) {
         try {
             StringBuilder noticeBuilder = new StringBuilder();
 
@@ -112,6 +112,8 @@ public class NoticeClient implements Response.ErrorListener {
 
             if (noticeBuilder.length() > 0) {
                 listener.onNoticeResponse(noticeBuilder.toString());
+            } else {
+                listener.onNoNotice();
             }
 
         } catch (Exception ex) {

@@ -94,6 +94,8 @@ public class AlertListFragment extends Fragment
     @Nullable
     private TextView mEmptyView;
 
+    private TextView mNoticeView;
+
     private AlertListPresenter mAlertListPresenter;
 
     public static AlertListFragment newInstance(@NonNull AlertListType type) {
@@ -131,6 +133,7 @@ public class AlertListFragment extends Fragment
         mErrorLayout = (LinearLayout) view.findViewById(R.id.error_with_action);
         mFilterWarningView = (TextView) view.findViewById(R.id.alert_list_filter_active_message);
         mEmptyView = (TextView) view.findViewById(R.id.empty_view);
+        mNoticeView = (TextView) view.findViewById(R.id.alert_list_notice);
 
         mAlertRecyclerView = (EmptyRecyclerView) view.findViewById(R.id.alerts_recycler_view);
         if (mAlertRecyclerView != null) {
@@ -339,10 +342,9 @@ public class AlertListFragment extends Fragment
 
     @Override
     public void displayNotice(final String noticeText) {
-        final TextView noticeView = (TextView) mSwipeRefreshLayout.findViewById(R.id.alert_list_notice);
-        noticeView.setVisibility(View.VISIBLE);
-        noticeView.setText(Html.fromHtml(noticeText));
-        noticeView.setOnClickListener(new View.OnClickListener() {
+        mNoticeView.setVisibility(View.VISIBLE);
+        mNoticeView.setText(Html.fromHtml(noticeText));
+        mNoticeView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 NoticeFragment fragment = NoticeFragment.newInstance(noticeText);
@@ -351,6 +353,11 @@ public class AlertListFragment extends Fragment
                 fragment.show(transaction, NOTICE_DIALOG_TAG);
             }
         });
+    }
+
+    @Override
+    public void removeNotice() {
+        mNoticeView.setVisibility(View.GONE);
     }
 
     /**

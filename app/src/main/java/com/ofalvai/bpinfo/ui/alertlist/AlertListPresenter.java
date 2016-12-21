@@ -98,6 +98,8 @@ public class AlertListPresenter implements FutarApiClient.FutarApiListener,
         void displayNoNetworkWarning();
 
         void displayNotice(String noticeText);
+
+        void removeNotice();
     }
 
     /**
@@ -266,5 +268,10 @@ public class AlertListPresenter implements FutarApiClient.FutarApiListener,
     @Override
     public void onNoticeResponse(String noticeText) {
         mInteractionListener.displayNotice(noticeText);
+    }
+
+    @Override
+    public void onNoNotice() {
+        mInteractionListener.removeNotice();
     }
 }
