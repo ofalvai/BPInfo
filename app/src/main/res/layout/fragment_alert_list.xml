@@ -48,6 +48,21 @@
                     android:textColor="@android:color/white"
                     tools:visibility="visible" />
 
+                <TextView
+                    android:id="@+id/alert_list_notice"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/toolbar_horizontal_margin"
+                    android:paddingRight="@dimen/toolbar_horizontal_margin"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:lines="2"
+                    android:ellipsize="end"
+                    android:visibility="gone"
+                    android:background="@color/colorNoticeBackground"
+                    tools:visibility="visible"
+                    tools:text="Notice form backend\nMax 2 lines." />
+
                 <include layout="@layout/error_with_action" />
 
                 <include layout="@layout/list_item_empty" />

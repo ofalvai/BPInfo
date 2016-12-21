@@ -26,6 +26,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -335,10 +336,19 @@ public class AlertListFragment extends Fragment
     }
 
     @Override
-    public void displayNotice(String noticeText) {
-        NoticeFragment fragment = NoticeFragment.newInstance(noticeText);
-        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        fragment.show(transaction, FILTER_DIALOG_TAG);
+    public void displayNotice(final String noticeText) {
+        final TextView noticeView = (TextView) mSwipeRefreshLayout.findViewById(R.id.alert_list_notice);
+        noticeView.setVisibility(View.VISIBLE);
+        noticeView.setText(Html.fromHtml(noticeText));
+        noticeView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NoticeFragment fragment = NoticeFragment.newInstance(noticeText);
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager()
+                        .beginTransaction();
+                fragment.show(transaction, FILTER_DIALOG_TAG);
+            }
+        });
     }
 
     /**
