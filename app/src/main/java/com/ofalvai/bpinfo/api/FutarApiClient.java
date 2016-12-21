@@ -21,7 +21,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.ArrayMap;
+import android.support.v4.util.ArrayMap;
 import android.util.Log;
 
 import com.android.volley.RequestQueue;
