@@ -69,6 +69,8 @@ public class AlertListFragment extends Fragment
 
     private static final String FILTER_DIALOG_TAG = "filter_dialog";
 
+    private static final String NOTICE_DIALOG_TAG = "notice_dialog";
+
     private AlertListType mAlertListType;
 
     @Nullable
@@ -346,7 +348,7 @@ public class AlertListFragment extends Fragment
                 NoticeFragment fragment = NoticeFragment.newInstance(noticeText);
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager()
                         .beginTransaction();
-                fragment.show(transaction, FILTER_DIALOG_TAG);
+                fragment.show(transaction, NOTICE_DIALOG_TAG);
             }
         });
     }

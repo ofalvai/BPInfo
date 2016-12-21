@@ -19,6 +19,8 @@ package com.ofalvai.bpinfo.ui.alertlist;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
@@ -27,7 +29,10 @@ import com.ofalvai.bpinfo.R;
 
 public class NoticeFragment extends DialogFragment {
 
+    @Nullable
     private String mNoticeText;
+
+    private static final String KEY_NOTICE_TEXT = "notice_text";
 
     public static NoticeFragment newInstance(String noticeText) {
         NoticeFragment noticeFragment = new NoticeFragment();
@@ -35,6 +40,18 @@ public class NoticeFragment extends DialogFragment {
         return noticeFragment;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            if (savedInstanceState.getCharSequence(KEY_NOTICE_TEXT) != null) {
+                mNoticeText = savedInstanceState.getCharSequence(KEY_NOTICE_TEXT, "").toString();
+            }
+        }
+    }
+
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         return new AlertDialog.Builder(getActivity())
@@ -47,5 +64,11 @@ public class NoticeFragment extends DialogFragment {
                     }
                 })
                 .create();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putCharSequence(KEY_NOTICE_TEXT, mNoticeText);
+        super.onSaveInstanceState(outState);
     }
 }
