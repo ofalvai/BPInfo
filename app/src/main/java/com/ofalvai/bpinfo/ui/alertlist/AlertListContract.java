@@ -17,6 +17,8 @@ public interface AlertListContract {
     interface View extends MvpView {
         void displayAlerts(@NonNull List<Alert> alerts);
 
+        void displayAlertDetail(@NonNull Alert alert);
+
         void displayNetworkError(@NonNull VolleyError error);
 
         void displayDataError();
@@ -25,11 +27,15 @@ public interface AlertListContract {
 
         void setUpdating(boolean state);
 
+        void updateSubtitle();
+
         void displayNoNetworkWarning();
 
         void displayNotice(String noticeText);
 
         void removeNotice();
+
+        AlertListType getAlertListType();
     }
 
     interface Presenter extends MvpPresenter<View> {

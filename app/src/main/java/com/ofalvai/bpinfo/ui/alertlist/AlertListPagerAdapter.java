@@ -87,9 +87,9 @@ public class AlertListPagerAdapter extends FragmentPagerAdapter implements ViewP
 
     @Override
     public void onPageSelected(int position) {
-        AlertListFragment fragment = (AlertListFragment) mRegisteredFragments.get(position);
-        if (fragment != null) {
-            fragment.updateSubtitle();
+        AlertListContract.View view = (AlertListContract.View) mRegisteredFragments.get(position);
+        if (view != null) {
+            view.updateSubtitle();
         }
     }
 }

@@ -25,7 +25,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -40,26 +39,20 @@ import android.widget.TextView;
 import com.android.volley.VolleyError;
 import com.ofalvai.bpinfo.R;
 import com.ofalvai.bpinfo.model.Alert;
-import com.ofalvai.bpinfo.model.Route;
 import com.ofalvai.bpinfo.model.RouteType;
 import com.ofalvai.bpinfo.ui.alert.AlertDetailFragment;
 import com.ofalvai.bpinfo.ui.settings.SettingsActivity;
 import com.ofalvai.bpinfo.util.EmptyRecyclerView;
 import com.ofalvai.bpinfo.util.FabricUtils;
 import com.ofalvai.bpinfo.util.SimpleDividerItemDecoration;
-import com.ofalvai.bpinfo.util.UiUtils;
 import com.ofalvai.bpinfo.util.Utils;
-import com.wefika.flowlayout.FlowLayout;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.ofalvai.bpinfo.util.LogUtils.LOGD;
-
-public class AlertListFragment extends Fragment
-        implements AlertListContract.View, AlertFilterFragment.AlertFilterListener {
+public class AlertListFragment extends Fragment implements AlertListContract.View,
+        AlertFilterFragment.AlertFilterListener {
 
     private static final String TAG = "AlertListFragment";
 
@@ -113,7 +106,6 @@ public class AlertListFragment extends Fragment
 
         if (savedInstanceState != null) {
             mAlertListType = (AlertListType) savedInstanceState.getSerializable(KEY_ALERT_LIST_TYPE);
-
             restoredFilter = (HashSet<RouteType>) savedInstanceState.getSerializable(KEY_ACTIVE_FILTER);
         }
 
@@ -201,7 +193,7 @@ public class AlertListFragment extends Fragment
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_item_filter_alerts:
-                displayFilter();
+                displayFilterDialog();
                 break;
             case R.id.menu_item_settings:
                 startActivity(SettingsActivity.newIntent(getContext()));
@@ -217,18 +209,10 @@ public class AlertListFragment extends Fragment
         mPresenter.updateIfNeeded();
     }
 
-    private void initRefresh() {
-        setUpdating(true);
-
-        mPresenter.fetchAlertList();
-        mPresenter.fetchNotice();
-
-        mPresenter.setLastUpdate();
-    }
-
     /**
      * Updates the Toolbar's subtitle to the number of current items in the RecyclerView's Adapter
      */
+    @Override
     public void updateSubtitle() {
         if (mAlertAdapter != null && isAdded()) {
             int count = mAlertAdapter.getItemCount();
@@ -238,15 +222,6 @@ public class AlertListFragment extends Fragment
                 activity.getSupportActionBar().setSubtitle(subtitle);
             }
         }
-    }
-
-    private void displayFilter() {
-        mFilterFragment = AlertFilterFragment.newInstance(this,
-                mPresenter.getFilter(), mAlertListType);
-        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        mFilterFragment.show(transaction, FILTER_DIALOG_TAG);
-
-        FabricUtils.logFilterDialogOpened();
     }
 
     @Override
@@ -266,7 +241,7 @@ public class AlertListFragment extends Fragment
             setErrorView(false, null);
 
             if (mAlertAdapter == null) {
-                mAlertAdapter = new AlertAdapter(alerts);
+                mAlertAdapter = new AlertAdapter(alerts, getContext(), this);
                 if (mAlertRecyclerView != null) {
                     mAlertRecyclerView.setAdapter(mAlertAdapter);
                 }
@@ -362,6 +337,35 @@ public class AlertListFragment extends Fragment
         mNoticeView.setVisibility(View.GONE);
     }
 
+    @Override
+    public void displayAlertDetail(@NonNull Alert alert) {
+        AlertDetailFragment alertDetailFragment = AlertDetailFragment.newInstance(alert);
+        alertDetailFragment.show(getActivity().getSupportFragmentManager(), alertDetailFragment.getTag());
+    }
+
+    @Override
+    public AlertListType getAlertListType() {
+        return mAlertListType;
+    }
+
+    private void initRefresh() {
+        setUpdating(true);
+
+        mPresenter.fetchAlertList();
+        mPresenter.fetchNotice();
+
+        mPresenter.setLastUpdate();
+    }
+
+    private void displayFilterDialog() {
+        mFilterFragment = AlertFilterFragment.newInstance(this,
+                mPresenter.getFilter(), mAlertListType);
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        mFilterFragment.show(transaction, FILTER_DIALOG_TAG);
+
+        FabricUtils.logFilterDialogOpened();
+    }
+
     /**
      * Displays or hides the error view. If displaying, it also sets the retry button's event listener
      * and the error message.
@@ -444,117 +448,6 @@ public class AlertListFragment extends Fragment
                 mFilterWarningView.setText(completeString);
                 mFilterWarningView.setVisibility(View.VISIBLE);
             }
-        }
-    }
-
-
-    private class AlertHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-        private final TextView mTitleTextView;
-
-        private final TextView mDateTextView;
-
-        private final FlowLayout mRouteIconsWrapper;
-
-        private final TextView mRecentTextView;
-
-        private Alert mAlert;
-
-        /**
-         * List of currently displayed route icons. This list is needed in order to find visually
-         * duplicate route data, and not to display them twice.
-         */
-        private final List<Route> mDisplayedRoutes = new ArrayList<>();
-
-        public AlertHolder(View itemView) {
-            super(itemView);
-
-            mTitleTextView = (TextView) itemView.findViewById(R.id.list_item_alert_description);
-            mDateTextView = (TextView) itemView.findViewById(R.id.list_item_alert_date);
-            mRouteIconsWrapper = (FlowLayout) itemView.findViewById(R.id.list_item_alert_route_icons_wrapper);
-            mRecentTextView = (TextView) itemView.findViewById(R.id.list_item_alert_recent);
-
-            itemView.setOnClickListener(this);
-        }
-
-        public void bindAlert(@NonNull Alert alert) {
-            mAlert = alert;
-
-            // Title (header text)
-            mTitleTextView.setText(alert.getHeader());
-
-            // Start - end dates
-            String dateString = UiUtils.alertDateFormatter(
-                    getActivity(), mAlert.getStart(), mAlert.getEnd()
-            );
-            mDateTextView.setText(dateString);
-
-            // Route icons
-            // First, removing any previously added icons
-            mRouteIconsWrapper.removeAllViews();
-            mDisplayedRoutes.clear();
-
-            // There are alerts without affected routes, eg. announcements
-            if (alert.getRouteIds() != null) {
-                for (Route route : alert.getAffectedRoutes()) {
-                    // Some affected routes are visually identical to others in the list, no need
-                    // to diplay them again.
-                    if (!Utils.isRouteVisuallyDuplicate(route, mDisplayedRoutes)) {
-                        mDisplayedRoutes.add(route);
-                        UiUtils.addRouteIcon(getActivity(), mRouteIconsWrapper, route);
-
-                        if (route.getType() == RouteType._OTHER_) {
-                            LOGD(TAG, "Unknown route type: " + route.getShortName() + "(" + route.getId() + ")");
-                        }
-                    }
-                }
-            }
-
-            if (mAlertListType == AlertListType.ALERTS_TODAY) {
-                mRecentTextView.setVisibility(Utils.isAlertRecent(alert) ? View.VISIBLE : View.GONE);
-            } else {
-                mRecentTextView.setVisibility(View.GONE);
-            }
-        }
-
-        @Override
-        public void onClick(View v) {
-            //Intent intent = AlertDetailActivity.newIntent(getContext(), mAlert);
-            //startActivity(intent);
-
-            AlertDetailFragment alertDetailFragment = AlertDetailFragment.newInstance(mAlert);
-            alertDetailFragment.show(getActivity().getSupportFragmentManager(), alertDetailFragment.getTag());
-        }
-    }
-
-    private class AlertAdapter extends RecyclerView.Adapter<AlertHolder> {
-
-        private List<Alert> mAlerts;
-
-        public AlertAdapter(List<Alert> alerts) {
-            mAlerts = alerts;
-        }
-
-        public void updateAlertData(List<Alert> alerts) {
-            mAlerts = alerts;
-        }
-
-        @Override
-        public AlertHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
-            View view = layoutInflater.inflate(R.layout.list_item_alert, parent, false);
-            return new AlertHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(AlertHolder holder, int position) {
-            Alert alert = mAlerts.get(position);
-            holder.bindAlert(alert);
-        }
-
-        @Override
-        public int getItemCount() {
-            return mAlerts.size();
         }
     }
 }
