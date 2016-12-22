@@ -21,7 +21,6 @@ import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.BottomSheetDialogFragment;
@@ -47,25 +46,28 @@ import org.sufficientlysecure.htmltextview.HtmlTextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class AlertDetailFragment extends BottomSheetDialogFragment {
     private static final String ARG_ALERT_OBJECT = "alert_object";
 
     private Alert mAlert;
 
-    @Nullable
-    private TextView mTitleTextView;
+    @BindView(R.id.alert_detail_title)
+    TextView mTitleTextView;
 
-    @Nullable
-    private TextView mDateTextView;
+    @BindView((R.id.alert_detail_date))
+    TextView mDateTextView;
 
-    @Nullable
-    private FlowLayout mRouteIconsLayout;
+    @BindView(R.id.alert_detail_route_icons_wrapper)
+    FlowLayout mRouteIconsLayout;
 
-    @Nullable
-    private FixedHtmlTextView mDescriptionTextView;
+    @BindView(R.id.alert_detail_description)
+    FixedHtmlTextView mDescriptionTextView;
 
-    @Nullable
-    private TextView mUrlTextView;
+    @BindView(R.id.alert_detail_url)
+    TextView mUrlTextView;
 
     /**
      * List of currently displayed route icons. This list is needed in order to find visually
@@ -114,6 +116,46 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
         FabricUtils.logAlertContentView(mAlert);
     }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_alert_detail, container, false);
+        ButterKnife.bind(this, view);
+
+        mTitleTextView.setText(mAlert.getHeader());
+
+        String dateString = UiUtils.alertDateFormatter(getActivity(), mAlert.getStart(), mAlert.getEnd());
+        mDateTextView.setText(dateString);
+
+        // There are alerts without affected routes, eg. announcements
+        if (mAlert.getRouteIds() != null) {
+            for (Route route : mAlert.getAffectedRoutes()) {
+                // Some affected routes are visually identical to others in the list, no need
+                // to diplay them again.
+                if (!Utils.isRouteVisuallyDuplicate(route, mDisplayedRoutes)) {
+                    mDisplayedRoutes.add(route);
+                    UiUtils.addRouteIcon(getActivity(), mRouteIconsLayout, route);
+                }
+            }
+        }
+
+        mDescriptionTextView.setHtmlFromString(mAlert.getDescription(), new HtmlTextView.LocalImageGetter());
+
+        mUrlTextView.setPaintFlags(mUrlTextView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        mUrlTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mAlert.getUrl() != null) {
+                    Uri url = Uri.parse(mAlert.getUrl());
+                    UiUtils.openCustomTab(getActivity(), url);
+                    FabricUtils.logAlertUrlClick(mAlert);
+                }
+            }
+        });
+
+        return view;
+    }
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -137,72 +179,6 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
         if (window != null) {
             window.setLayout(actualWidth, ViewGroup.LayoutParams.MATCH_PARENT);
         }
-
-
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_alert_detail, container, false);
-        mTitleTextView = (TextView) view.findViewById(R.id.alert_detail_title);
-        mDateTextView = (TextView) view.findViewById(R.id.alert_detail_date);
-        mRouteIconsLayout = (FlowLayout) view.findViewById(R.id.alert_detail_route_icons_wrapper);
-        mDescriptionTextView = (FixedHtmlTextView) view.findViewById(R.id.alert_detail_description);
-        mUrlTextView = (TextView) view.findViewById(R.id.alert_detail_url);
-
-        if (mTitleTextView != null)
-
-        {
-            mTitleTextView.setText(mAlert.getHeader());
-        }
-
-        if (mDateTextView != null)
-
-        {
-            String dateString = UiUtils.alertDateFormatter(getActivity(), mAlert.getStart(), mAlert.getEnd());
-            mDateTextView.setText(dateString);
-        }
-
-        if (mRouteIconsLayout != null)
-
-        {
-            // There are alerts without affected routes, eg. announcements
-            if (mAlert.getRouteIds() != null) {
-                for (Route route : mAlert.getAffectedRoutes()) {
-                    // Some affected routes are visually identical to others in the list, no need
-                    // to diplay them again.
-                    if (!Utils.isRouteVisuallyDuplicate(route, mDisplayedRoutes)) {
-                        mDisplayedRoutes.add(route);
-                        UiUtils.addRouteIcon(getActivity(), mRouteIconsLayout, route);
-                    }
-                }
-            }
-        }
-
-        if (mDescriptionTextView != null)
-
-        {
-            mDescriptionTextView.setHtmlFromString(mAlert.getDescription(), new HtmlTextView.LocalImageGetter());
-        }
-
-        if (mUrlTextView != null)
-
-        {
-            mUrlTextView.setPaintFlags(mUrlTextView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-            mUrlTextView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mAlert.getUrl() != null) {
-                        Uri url = Uri.parse(mAlert.getUrl());
-                        UiUtils.openCustomTab(getActivity(), url);
-                        FabricUtils.logAlertUrlClick(mAlert);
-                    }
-                }
-            });
-        }
-
-        return view;
     }
 
     private class AlertDetailCallback extends BottomSheetBehavior.BottomSheetCallback {
