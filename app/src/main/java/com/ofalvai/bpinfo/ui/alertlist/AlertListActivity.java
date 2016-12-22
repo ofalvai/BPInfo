@@ -25,39 +25,42 @@ import android.support.v7.widget.Toolbar;
 
 import com.ofalvai.bpinfo.R;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+import static com.ofalvai.bpinfo.R.id.toolbar;
+
 public class AlertListActivity extends AppCompatActivity {
 
-    @Nullable
-    private ViewPager mViewPager;
+    @BindView(R.id.alert_list_pager)
+    ViewPager mViewPager;
+
+    @BindView(R.id.tabs)
+    TabLayout mTabLayout;
+
+    @BindView(toolbar)
+    Toolbar mToolbar;
 
     @Nullable
     private AlertListPagerAdapter mAlertListPagerAdapter;
 
-    @Nullable
-    private TabLayout mTabLayout;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_alert_list);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        if (toolbar != null) {
-            setSupportActionBar(toolbar);
+        ButterKnife.bind(this);
+
+        if (mToolbar != null) {
+            setSupportActionBar(mToolbar);
         }
 
         mAlertListPagerAdapter = new AlertListPagerAdapter(getSupportFragmentManager(), this);
 
-        mViewPager = (ViewPager) findViewById(R.id.alert_list_pager);
+        mViewPager.setAdapter(mAlertListPagerAdapter);
+        mViewPager.addOnPageChangeListener(mAlertListPagerAdapter);
 
-        if (mViewPager != null) {
-            mViewPager.setAdapter(mAlertListPagerAdapter);
-            mViewPager.addOnPageChangeListener(mAlertListPagerAdapter);
-        }
-
-        mTabLayout = (TabLayout) findViewById(R.id.tabs);
-        if (mTabLayout != null && mViewPager != null && mViewPager.getAdapter() != null) {
+        if (mViewPager.getAdapter() != null) {
             mTabLayout.setupWithViewPager(mViewPager, false);
         }
     }
