@@ -51,6 +51,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class AlertListFragment extends Fragment implements AlertListContract.View,
         AlertFilterFragment.AlertFilterListener {
 
@@ -67,30 +70,31 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
     @Nullable
     private AlertListContract.Presenter mPresenter;
 
-    private AlertListType mAlertListType;
-
-    @Nullable
-    private EmptyRecyclerView mAlertRecyclerView;
-
     @Nullable
     private AlertAdapter mAlertAdapter;
 
-    @Nullable
-    private SwipeRefreshLayout mSwipeRefreshLayout;
-
-    @Nullable
-    private LinearLayout mErrorLayout;
+    private AlertListType mAlertListType;
 
     @Nullable
     private AlertFilterFragment mFilterFragment;
 
-    @Nullable
-    private TextView mFilterWarningView;
+    @BindView(R.id.alerts_recycler_view)
+    EmptyRecyclerView mAlertRecyclerView;
 
-    @Nullable
-    private TextView mEmptyView;
+    @BindView(R.id.alerts_swipe_refresh_layout)
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
-    private TextView mNoticeView;
+    @BindView(R.id.error_with_action)
+    LinearLayout mErrorLayout;
+
+    @BindView(R.id.alert_list_filter_active_message)
+    TextView mFilterWarningView;
+
+    @BindView(R.id.empty_view)
+    TextView mEmptyView;
+
+    @BindView(R.id.alert_list_notice)
+    TextView mNoticeView;
 
     public static AlertListFragment newInstance(@NonNull AlertListType type) {
         AlertListFragment fragment = new AlertListFragment();
@@ -123,30 +127,20 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
         setHasOptionsMenu(true);
 
         View view = inflater.inflate(R.layout.fragment_alert_list, container, false);
+        ButterKnife.bind(this, view);
 
-        mErrorLayout = (LinearLayout) view.findViewById(R.id.error_with_action);
-        mFilterWarningView = (TextView) view.findViewById(R.id.alert_list_filter_active_message);
-        mEmptyView = (TextView) view.findViewById(R.id.empty_view);
-        mNoticeView = (TextView) view.findViewById(R.id.alert_list_notice);
+        mAlertRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mAlertRecyclerView.addItemDecoration(
+                new SimpleDividerItemDecoration(getActivity()));
+        mAlertRecyclerView.setEmptyView(mEmptyView);
 
-        mAlertRecyclerView = (EmptyRecyclerView) view.findViewById(R.id.alerts_recycler_view);
-        if (mAlertRecyclerView != null) {
-            mAlertRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-            mAlertRecyclerView.addItemDecoration(
-                    new SimpleDividerItemDecoration(getActivity()));
-            mAlertRecyclerView.setEmptyView(mEmptyView);
-        }
-
-        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.alerts_swipe_refresh_layout);
-        if (mSwipeRefreshLayout != null) {
-            mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                @Override
-                public void onRefresh() {
-                    initRefresh();
-                    FabricUtils.logManualRefresh();
-                }
-            });
-        }
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                initRefresh();
+                FabricUtils.logManualRefresh();
+            }
+        });
 
         // If this fragment got recreated while the filter dialog was open, we need to update
         // the listener reference
@@ -242,16 +236,11 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
 
             if (mAlertAdapter == null) {
                 mAlertAdapter = new AlertAdapter(alerts, getContext(), this);
-                if (mAlertRecyclerView != null) {
-                    mAlertRecyclerView.setAdapter(mAlertAdapter);
-                }
+                mAlertRecyclerView.setAdapter(mAlertAdapter);
             } else {
                 mAlertAdapter.updateAlertData(alerts);
                 mAlertAdapter.notifyDataSetChanged();
-
-                if (mAlertRecyclerView != null) {
-                    mAlertRecyclerView.smoothScrollToPosition(0);
-                }
+                mAlertRecyclerView.smoothScrollToPosition(0);
             }
 
             // Only update the subtitle if the fragment is visible (and not preloading by ViewPager)
@@ -292,9 +281,7 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
 
     @Override
     public void setUpdating(final boolean updating) {
-        if (mSwipeRefreshLayout != null) {
-            mSwipeRefreshLayout.setRefreshing(updating);
-        }
+        mSwipeRefreshLayout.setRefreshing(updating);
     }
 
     @Override
@@ -302,18 +289,16 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
         if (isAdded()) {
             setUpdating(false);
 
-            if (mSwipeRefreshLayout != null) {
-                Snackbar snackbar =
-                        Snackbar.make(mSwipeRefreshLayout, R.string.error_no_connection, Snackbar.LENGTH_LONG);
+            Snackbar snackbar =
+                    Snackbar.make(mSwipeRefreshLayout, R.string.error_no_connection, Snackbar.LENGTH_LONG);
 
-                snackbar.setAction(R.string.label_retry, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        initRefresh();
-                    }
-                });
-                snackbar.show();
-            }
+            snackbar.setAction(R.string.label_retry, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    initRefresh();
+                }
+            });
+            snackbar.show();
         }
     }
 
@@ -376,43 +361,28 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
         if (state) {
             setUpdating(false);
 
-            if (mAlertRecyclerView != null) {
-                mAlertRecyclerView.setVisibility(View.GONE);
+            mAlertRecyclerView.setVisibility(View.GONE);
+            mEmptyView.setVisibility(View.GONE);
+
+            TextView errorMessageView = (TextView) mErrorLayout.findViewById(R.id.error_message);
+            Button refreshButton = (Button) mErrorLayout.findViewById(R.id.error_action_button);
+
+            if (!refreshButton.hasOnClickListeners()) {
+                refreshButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        initRefresh();
+                    }
+                });
             }
+            refreshButton.setText(getString(R.string.label_retry));
 
-            if (mEmptyView != null) {
-                mEmptyView.setVisibility(View.GONE);
-            }
-
-            if (mErrorLayout != null) {
-                TextView errorMessageView = (TextView) mErrorLayout.findViewById(R.id.error_message);
-                Button refreshButton = (Button) mErrorLayout.findViewById(R.id.error_action_button);
-
-                if (!refreshButton.hasOnClickListeners()) {
-                    refreshButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            initRefresh();
-                        }
-                    });
-                }
-                refreshButton.setText(getString(R.string.label_retry));
-
-                mErrorLayout.setVisibility(View.VISIBLE);
-                errorMessageView.setText(errorMessage);
-            }
+            mErrorLayout.setVisibility(View.VISIBLE);
+            errorMessageView.setText(errorMessage);
         } else {
-            if (mAlertRecyclerView != null) {
-                mAlertRecyclerView.setVisibility(View.VISIBLE);
-            }
-
-            if (mEmptyView != null) {
-                mEmptyView.setVisibility(View.VISIBLE);
-            }
-
-            if (mErrorLayout != null) {
-                mErrorLayout.setVisibility(View.GONE);
-            }
+            mAlertRecyclerView.setVisibility(View.VISIBLE);
+            mEmptyView.setVisibility(View.VISIBLE);
+            mErrorLayout.setVisibility(View.GONE);
         }
     }
 
