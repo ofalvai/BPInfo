@@ -17,19 +17,26 @@ import com.wefika.flowlayout.FlowLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static com.ofalvai.bpinfo.util.LogUtils.LOGD;
 
 public class AlertHolder extends RecyclerView.ViewHolder {
 
     private final String TAG = "AlertHolder";
 
-    private final TextView mTitleTextView;
+    @BindView(R.id.list_item_alert_description)
+    TextView mTitleTextView;
 
-    private final TextView mDateTextView;
+    @BindView(R.id.list_item_alert_date)
+    TextView mDateTextView;
 
-    private final FlowLayout mRouteIconsWrapper;
+    @BindView(R.id.list_item_alert_route_icons_wrapper)
+    FlowLayout mRouteIconsWrapper;
 
-    private final TextView mRecentTextView;
+    @BindView(R.id.list_item_alert_recent)
+    TextView mRecentTextView;
 
     private final AlertListType mAlertListType;
 
@@ -43,11 +50,7 @@ public class AlertHolder extends RecyclerView.ViewHolder {
 
     public AlertHolder(View itemView, AlertListType alertListType) {
         super(itemView);
-
-        mTitleTextView = (TextView) itemView.findViewById(R.id.list_item_alert_description);
-        mDateTextView = (TextView) itemView.findViewById(R.id.list_item_alert_date);
-        mRouteIconsWrapper = (FlowLayout) itemView.findViewById(R.id.list_item_alert_route_icons_wrapper);
-        mRecentTextView = (TextView) itemView.findViewById(R.id.list_item_alert_recent);
+        ButterKnife.bind(this, itemView);
         mAlertListType = alertListType;
     }
 
