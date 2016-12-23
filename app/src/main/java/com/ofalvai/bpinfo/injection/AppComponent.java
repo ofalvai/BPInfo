@@ -17,7 +17,7 @@
 package com.ofalvai.bpinfo.injection;
 
 import com.ofalvai.bpinfo.BpInfoApplication;
-import com.ofalvai.bpinfo.api.FutarApiClient;
+import com.ofalvai.bpinfo.api.bkkfutar.FutarApiClient;
 import com.ofalvai.bpinfo.api.NoticeClient;
 import com.ofalvai.bpinfo.ui.alertlist.AlertListPresenter;
 import com.ofalvai.bpinfo.ui.settings.SettingsActivity;
