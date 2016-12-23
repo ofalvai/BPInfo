@@ -33,6 +33,8 @@ import com.ofalvai.bpinfo.BpInfoApplication;
 import com.ofalvai.bpinfo.BuildConfig;
 import com.ofalvai.bpinfo.Config;
 import com.ofalvai.bpinfo.R;
+import com.ofalvai.bpinfo.api.AlertProvider;
+import com.ofalvai.bpinfo.api.AlertRequestParams;
 import com.ofalvai.bpinfo.model.Alert;
 import com.ofalvai.bpinfo.model.Route;
 import com.ofalvai.bpinfo.model.RouteType;
@@ -53,7 +55,7 @@ import javax.inject.Inject;
 import static com.ofalvai.bpinfo.util.LogUtils.LOGI;
 import static com.ofalvai.bpinfo.util.LogUtils.LOGW;
 
-public class FutarApiClient {
+public class FutarApiClient implements AlertProvider {
     private static final String TAG = "FutarApiClient";
 
     private static final String QUERY_API_KEY = BuildConfig.APPLICATION_ID;
@@ -97,6 +99,41 @@ public class FutarApiClient {
         BpInfoApplication.injector.inject(this);
     }
 
+    @Override
+    public void fetchAlertList(@NonNull final AlertListListener listener,
+                               @NonNull final AlertRequestParams params) {
+        mLanguageCode = params.mLanguageCode;
+
+        Uri uri = buildUri(params.mAlertListType);
+
+        LOGI(TAG, "API request: " + uri.toString());
+
+        JsonObjectRequest request = new JsonObjectRequest(
+                uri.toString(),
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        onResponseCallback(listener, response, params.mAlertListType);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        onErrorCallback(listener, error);
+                    }
+                }
+        );
+
+        mRequestQueue.add(request);
+    }
+
+    @Override
+    public void fetchAlert(@NonNull String id, @NonNull AlertListener listener,
+                           @NonNull AlertRequestParams params) {
+
+    }
+
     @NonNull
     private Uri buildUri(@NonNull AlertListType alertListType) {
         Uri.Builder builder = Uri.parse(Config.FUTAR_API_BASE_URL).buildUpon()
@@ -128,39 +165,10 @@ public class FutarApiClient {
         return builder.build();
     }
 
-    public void fetchAlertList(@NonNull final FutarApiListener listener,
-                               @NonNull String languageCode,
-                               @NonNull final AlertListType alertListType) {
-        mLanguageCode = languageCode;
-
-        Uri uri = buildUri(alertListType);
-
-        LOGI(TAG, "API request: " + uri.toString());
-
-        JsonObjectRequest request = new JsonObjectRequest(
-                uri.toString(),
-                null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        onResponseCallback(listener, response, alertListType);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        onErrorCallback(listener, error);
-                    }
-                }
-        );
-
-        mRequestQueue.add(request);
-    }
-
     /**
      * Parses alerts and routes, then sends the parsed objects to the listener.
      */
-    private void onResponseCallback(@NonNull FutarApiListener listener, JSONObject response,
+    private void onResponseCallback(@NonNull AlertListListener listener, JSONObject response,
                                     @NonNull AlertListType alertListType) {
         List<Alert> alerts = new ArrayList<>();
         Map<String, Route> routes;
@@ -176,10 +184,10 @@ public class FutarApiClient {
             listener.onError(ex);
         }
 
-        listener.onAlertResponse(alerts);
+        listener.onAlertListResponse(alerts);
     }
 
-    private void onErrorCallback(@NonNull FutarApiListener listener, VolleyError error) {
+    private void onErrorCallback(@NonNull AlertListListener listener, VolleyError error) {
         listener.onError(error);
     }
 

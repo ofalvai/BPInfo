@@ -16,33 +16,16 @@
 
 package com.ofalvai.bpinfo.api;
 
-import android.support.annotation.NonNull;
+import com.ofalvai.bpinfo.ui.alertlist.AlertListType;
 
-import com.ofalvai.bpinfo.model.Alert;
+public class AlertRequestParams {
 
-import java.util.List;
+    public AlertListType mAlertListType;
 
-public interface AlertProvider {
+    public String mLanguageCode;
 
-    void fetchAlertList(@NonNull AlertListListener listener,
-                        @NonNull AlertRequestParams params);
-
-    void fetchAlert(@NonNull String id,
-                    @NonNull AlertListener listener,
-                    @NonNull AlertRequestParams params);
-
-    interface AlertListListener {
-
-        void onAlertListResponse(List<Alert> alerts);
-
-        void onError(Exception ex);
+    public AlertRequestParams(AlertListType alertListType, String languageCode) {
+        mAlertListType = alertListType;
+        mLanguageCode = languageCode;
     }
-
-    interface AlertListener {
-
-        void onAlertResponse(Alert alert);
-
-        void onError(Exception ex);
-    }
-
 }

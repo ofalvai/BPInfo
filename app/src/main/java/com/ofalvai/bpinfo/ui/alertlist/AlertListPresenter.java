@@ -27,9 +27,10 @@ import com.crashlytics.android.Crashlytics;
 import com.ofalvai.bpinfo.BpInfoApplication;
 import com.ofalvai.bpinfo.Config;
 import com.ofalvai.bpinfo.R;
-import com.ofalvai.bpinfo.api.bkkfutar.AlertSearchContract;
-import com.ofalvai.bpinfo.api.bkkfutar.FutarApiClient;
+import com.ofalvai.bpinfo.api.AlertProvider;
+import com.ofalvai.bpinfo.api.AlertRequestParams;
 import com.ofalvai.bpinfo.api.NoticeClient;
+import com.ofalvai.bpinfo.api.bkkfutar.AlertSearchContract;
 import com.ofalvai.bpinfo.model.Alert;
 import com.ofalvai.bpinfo.model.Route;
 import com.ofalvai.bpinfo.model.RouteType;
@@ -50,11 +51,11 @@ import java.util.Set;
 import javax.inject.Inject;
 
 public class AlertListPresenter extends BasePresenter<AlertListContract.View>
-        implements FutarApiClient.FutarApiListener, NoticeClient.NoticeListener,
+        implements AlertProvider.AlertListListener, NoticeClient.NoticeListener,
         AlertListContract.Presenter {
 
     @Inject
-    FutarApiClient mFutarApiClient;
+    AlertProvider mAlertProvider;
 
     @Inject NoticeClient mNoticeClient;
 
@@ -91,7 +92,7 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
     @Override
     public void fetchAlertList() {
         if (Utils.hasNetworkConnection(mContext)) {
-            mFutarApiClient.fetchAlertList(this, getCurrentLanguageCode(), mAlertListType);
+            mAlertProvider.fetchAlertList(this, getAlertRequestParams());
         } else if (mUnfilteredAlerts == null) {
             // Nothing was displayed previously, showing a full error view
             getView().displayNetworkError(new NoConnectionError());
@@ -160,7 +161,7 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
      * 2. Filter the list by the currently active filter
      */
     @Override
-    public void onAlertResponse(@NonNull List<Alert> alerts) {
+    public void onAlertListResponse(List<Alert> alerts) {
         mUnfilteredAlerts = alerts;
 
         // Sort: descending by alert start time
@@ -262,6 +263,10 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
     @Override
     public void onNoNotice() {
         getView().removeNotice();
+    }
+
+    private AlertRequestParams getAlertRequestParams() {
+        return new AlertRequestParams(mAlertListType, getCurrentLanguageCode());
     }
 
 }
