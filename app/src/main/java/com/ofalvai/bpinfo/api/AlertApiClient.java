@@ -22,7 +22,7 @@ import com.ofalvai.bpinfo.model.Alert;
 
 import java.util.List;
 
-public interface AlertProvider {
+public interface AlertApiClient {
 
     void fetchAlertList(@NonNull AlertListListener listener,
                         @NonNull AlertRequestParams params);

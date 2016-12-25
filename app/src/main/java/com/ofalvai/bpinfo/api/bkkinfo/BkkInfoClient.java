@@ -23,7 +23,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.ofalvai.bpinfo.api.AlertProvider;
+import com.ofalvai.bpinfo.api.AlertApiClient;
 import com.ofalvai.bpinfo.api.AlertRequestParams;
 import com.ofalvai.bpinfo.model.Alert;
 import com.ofalvai.bpinfo.model.Route;
@@ -39,7 +39,7 @@ import java.util.List;
 
 import static com.ofalvai.bpinfo.util.LogUtils.LOGI;
 
-public class BkkInfoClient implements AlertProvider {
+public class BkkInfoClient implements AlertApiClient {
     private static final String TAG = "BkkInfoClient";
 
     private static final String BKKINFO_API_BASE_URL = "http://bkk.hu/apps/bkkinfo/json.php";

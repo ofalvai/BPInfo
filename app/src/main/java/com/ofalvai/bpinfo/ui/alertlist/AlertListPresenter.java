@@ -27,7 +27,7 @@ import com.crashlytics.android.Crashlytics;
 import com.ofalvai.bpinfo.BpInfoApplication;
 import com.ofalvai.bpinfo.Config;
 import com.ofalvai.bpinfo.R;
-import com.ofalvai.bpinfo.api.AlertProvider;
+import com.ofalvai.bpinfo.api.AlertApiClient;
 import com.ofalvai.bpinfo.api.AlertRequestParams;
 import com.ofalvai.bpinfo.api.NoticeClient;
 import com.ofalvai.bpinfo.api.bkkfutar.AlertSearchContract;
@@ -53,12 +53,12 @@ import javax.inject.Inject;
 import static com.ofalvai.bpinfo.util.LogUtils.LOGE;
 
 public class AlertListPresenter extends BasePresenter<AlertListContract.View>
-        implements AlertProvider.AlertListListener, NoticeClient.NoticeListener,
+        implements AlertApiClient.AlertListListener, NoticeClient.NoticeListener,
         AlertListContract.Presenter {
     private static final String TAG = "AlertListPresenter";
 
     @Inject
-    AlertProvider mAlertProvider;
+    AlertApiClient mAlertApiClient;
 
     @Inject NoticeClient mNoticeClient;
 
@@ -95,7 +95,7 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
     @Override
     public void fetchAlertList() {
         if (Utils.hasNetworkConnection(mContext)) {
-            mAlertProvider.fetchAlertList(this, getAlertRequestParams());
+            mAlertApiClient.fetchAlertList(this, getAlertRequestParams());
         } else if (mUnfilteredAlerts == null) {
             // Nothing was displayed previously, showing a full error view
             getView().displayNetworkError(new NoConnectionError());
@@ -124,9 +124,9 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
 
     @Override
     public void fetchAlert(String alertId) {
-        mAlertProvider.fetchAlert(
+        mAlertApiClient.fetchAlert(
                 alertId,
-                new AlertProvider.AlertListener() {
+                new AlertApiClient.AlertListener() {
                     @Override
                     public void onAlertResponse(Alert alert) {
                         getView().displayAlertDetail(alert);

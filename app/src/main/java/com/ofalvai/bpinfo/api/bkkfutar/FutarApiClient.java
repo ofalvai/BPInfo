@@ -33,7 +33,7 @@ import com.ofalvai.bpinfo.BpInfoApplication;
 import com.ofalvai.bpinfo.BuildConfig;
 import com.ofalvai.bpinfo.Config;
 import com.ofalvai.bpinfo.R;
-import com.ofalvai.bpinfo.api.AlertProvider;
+import com.ofalvai.bpinfo.api.AlertApiClient;
 import com.ofalvai.bpinfo.api.AlertRequestParams;
 import com.ofalvai.bpinfo.model.Alert;
 import com.ofalvai.bpinfo.model.Route;
@@ -55,7 +55,7 @@ import javax.inject.Inject;
 import static com.ofalvai.bpinfo.util.LogUtils.LOGI;
 import static com.ofalvai.bpinfo.util.LogUtils.LOGW;
 
-public class FutarApiClient implements AlertProvider {
+public class FutarApiClient implements AlertApiClient {
     private static final String TAG = "FutarApiClient";
 
     private static final String QUERY_API_KEY = BuildConfig.APPLICATION_ID;
