@@ -42,7 +42,11 @@ import static com.ofalvai.bpinfo.util.LogUtils.LOGI;
 public class BkkInfoClient implements AlertApiClient {
     private static final String TAG = "BkkInfoClient";
 
-    private static final String BKKINFO_API_BASE_URL = "http://bkk.hu/apps/bkkinfo/json.php";
+    private static final String BKKINFO_API_BASE_URL = "http://bkk.hu/apps/bkkinfo/";
+
+    private static final String BKKINFO_API_ENDPOINT_HU = "json.php";
+
+    private static final String BKKINFO_API_ENDPOINT_EN = "json_en.php";
 
     private static final String PARAM_ALERT_LIST = "?lista";
 
@@ -62,9 +66,7 @@ public class BkkInfoClient implements AlertApiClient {
 
     @Override
     public void fetchAlertList(final @NonNull AlertListListener listener, @NonNull AlertRequestParams params) {
-        final Uri url = Uri.parse(BKKINFO_API_BASE_URL).buildUpon()
-                .appendEncodedPath(PARAM_ALERT_LIST)
-                .build();
+        final Uri url = buildUrl(params);
 
         LOGI(TAG, "API request: " + url.toString());
 
@@ -97,6 +99,16 @@ public class BkkInfoClient implements AlertApiClient {
     public void fetchAlert(@NonNull String id, @NonNull AlertListener listener,
                            @NonNull AlertRequestParams params) {
 
+    }
+
+    private Uri buildUrl(AlertRequestParams params) {
+        String language = params.mLanguageCode.equals("hu") ? BKKINFO_API_ENDPOINT_HU :
+                BKKINFO_API_ENDPOINT_EN;
+
+        return Uri.parse(BKKINFO_API_BASE_URL).buildUpon()
+                .appendEncodedPath(language)
+                .appendEncodedPath(PARAM_ALERT_LIST)
+                .build();
     }
 
     @NonNull
