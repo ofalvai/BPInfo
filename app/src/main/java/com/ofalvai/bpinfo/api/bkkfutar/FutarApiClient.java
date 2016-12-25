@@ -81,6 +81,13 @@ public class FutarApiClient implements AlertProvider {
 
     private final RequestQueue mRequestQueue;
 
+    /**
+     * There's only one call in the API to get both the list and the details about alerts,
+     * so we have to store them after the first call.
+     */
+    @Nullable
+    private List<Alert> mAlerts;
+
     @Nullable
     private String mLanguageCode;
 
@@ -131,7 +138,18 @@ public class FutarApiClient implements AlertProvider {
     @Override
     public void fetchAlert(@NonNull String id, @NonNull AlertListener listener,
                            @NonNull AlertRequestParams params) {
-
+        if (mAlerts == null) {
+            throw new RuntimeException("fetchAlert() was called before fetchAlertList()");
+            // TODO: this might be a problem when recreating only the AlertDetailFragment
+        } else {
+            for (Alert alert : mAlerts) {
+                if (alert.getId().equals(id)) {
+                    listener.onAlertResponse(alert);
+                    return;
+                }
+            }
+            listener.onError(new Exception("Alert not found"));
+        }
     }
 
     @NonNull
@@ -170,21 +188,20 @@ public class FutarApiClient implements AlertProvider {
      */
     private void onResponseCallback(@NonNull AlertListListener listener, JSONObject response,
                                     @NonNull AlertListType alertListType) {
-        List<Alert> alerts = new ArrayList<>();
         Map<String, Route> routes;
+        mAlerts = new ArrayList<>();
         try {
             routes = parseRoutes(response);
-            alerts = parseAlerts(response, alertListType);
+            mAlerts = parseAlerts(response, alertListType);
 
-            for (Alert alert : alerts) {
+            for (Alert alert : mAlerts) {
                 List<Route> affectedRoutes = getAffectedRoutesForAlert(alert, routes);
                 alert.setAffectedRoutes(affectedRoutes);
             }
         } catch (Exception ex) {
             listener.onError(ex);
         }
-
-        listener.onAlertListResponse(alerts);
+        listener.onAlertListResponse(mAlerts);
     }
 
     private void onErrorCallback(@NonNull AlertListListener listener, VolleyError error) {

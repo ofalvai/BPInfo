@@ -322,6 +322,10 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
         mNoticeView.setVisibility(View.GONE);
     }
 
+    public void getAlertDetail(String alertId) {
+        mPresenter.fetchAlert(alertId);
+    }
+
     @Override
     public void displayAlertDetail(@NonNull Alert alert) {
         AlertDetailFragment alertDetailFragment = AlertDetailFragment.newInstance(alert);

@@ -52,11 +52,18 @@ public interface AlertListContract {
         void removeNotice();
 
         AlertListType getAlertListType();
+
+        /**
+         * This is called by the adapter to get the details of an Alert
+         */
+        void getAlertDetail(@NonNull String alertId);
     }
 
     interface Presenter extends MvpPresenter<View> {
 
         void fetchAlertList();
+
+        void fetchAlert(String alertId);
 
         void getAlertList();
 

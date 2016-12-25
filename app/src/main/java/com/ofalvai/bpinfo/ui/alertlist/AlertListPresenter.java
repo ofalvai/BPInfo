@@ -120,6 +120,25 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
     }
 
     @Override
+    public void fetchAlert(String alertId) {
+        mAlertProvider.fetchAlert(
+                alertId,
+                new AlertProvider.AlertListener() {
+                    @Override
+                    public void onAlertResponse(Alert alert) {
+                        getView().displayAlertDetail(alert);
+                    }
+
+                    @Override
+                    public void onError(Exception ex) {
+                        // TODO: this listener is temporary
+                    }
+                },
+                getAlertRequestParams()
+        );
+    }
+
+    @Override
     public void setLastUpdate() {
         mLastUpdate = new DateTime();
     }

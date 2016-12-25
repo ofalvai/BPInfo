@@ -55,7 +55,7 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertHolder> {
             @Override
             public void onClick(View v) {
                 Alert alert = mAlerts.get(holder.getAdapterPosition());
-                mView.displayAlertDetail(alert);
+                mView.getAlertDetail(alert.getId());
             }
         });
 
