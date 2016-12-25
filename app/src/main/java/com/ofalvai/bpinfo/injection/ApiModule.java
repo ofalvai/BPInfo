@@ -17,11 +17,14 @@
 package com.ofalvai.bpinfo.injection;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.ofalvai.bpinfo.R;
 import com.ofalvai.bpinfo.api.AlertApiClient;
 import com.ofalvai.bpinfo.api.NoticeClient;
+import com.ofalvai.bpinfo.api.bkkfutar.FutarApiClient;
 import com.ofalvai.bpinfo.api.bkkinfo.BkkInfoClient;
 
 import javax.inject.Singleton;
@@ -44,9 +47,18 @@ public class ApiModule {
 
     @Provides
     @Singleton
-    AlertApiClient provideAlertApiClient(RequestQueue requestQueue) {
-        //return new FutarApiClient(requestQueue);
-        return new BkkInfoClient(requestQueue);
+    AlertApiClient provideAlertApiClient(RequestQueue requestQueue,
+                                         SharedPreferences sharedPreferences, Context context) {
+        String keyBkkFutar = context.getString(R.string.pref_key_data_source_futar);
+        String keyBkkInfo = context.getString(R.string.pref_key_data_source_bkk_info);
+        String keyCurrent = sharedPreferences.
+                getString(context.getString(R.string.pref_key_data_source), keyBkkInfo);
+
+        if (keyCurrent.equals(keyBkkFutar)) {
+            return new FutarApiClient(requestQueue);
+        } else {
+            return new BkkInfoClient(requestQueue);
+        }
     }
 
     @Provides

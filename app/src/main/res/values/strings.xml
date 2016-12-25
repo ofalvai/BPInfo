@@ -62,6 +62,10 @@
     <string name="pref_language_hu">Hungarian</string>
     <string name="pref_language_en">English</string>
 
+    <string name="pref_key_language_auto" translatable="false">auto</string>
+    <string name="pref_key_language_en" translatable="false">en</string>
+    <string name="pref_key_language_hu" translatable="false">hu</string>
+
     <string-array name="pref_language_list_titles">
         <item>@string/pref_language_auto</item>
         <item>@string/pref_language_hu</item>
@@ -73,6 +77,24 @@
         <item>@string/pref_key_language_hu</item>
         <item>@string/pref_key_language_en</item>
     </string-array>
+
+    <string name="pref_data_source_futar">BKK FUTÁR</string>
+    <string name="pref_data_source_bkk_info">BKK INFO</string>
+
+    <string name="pref_key_data_source_futar" translatable="false">bkk_futar</string>
+    <string name="pref_key_data_source_bkk_info" translatable="false">bkk_info</string>
+
+    <string-array name="pref_data_source_list_titles">
+        <item>@string/pref_data_source_futar</item>
+        <item>@string/pref_data_source_bkk_info</item>
+    </string-array>
+
+    <string-array name="pref_data_source_list_values">
+        <item>@string/pref_key_data_source_futar</item>
+        <item>@string/pref_key_data_source_bkk_info</item>
+    </string-array>
+
+
 
     <string name="menu_settings">Settings</string>
     <string name="pref_category_general">General</string>
@@ -97,9 +119,6 @@
     <string name="pref_key_debug_mode" translatable="false">pref_key_debug_mode</string>
     <string name="debug_mode_on">Debug mode enabled</string>
     <string name="debog_mode_off">Debug mode disabled</string>
-    <string name="pref_key_language_auto" translatable="false">auto</string>
-    <string name="pref_key_language_en" translatable="false">en</string>
-    <string name="pref_key_language_hu" translatable="false">hu</string>
     <string name="email_bkk_mailto" translatable="false">mailto:futar@bkk.hu</string>
     <string name="email_bkk_body">To whom it may concern,\n\nI would like to report a problem in the data returned by the FUTÁR API:\n\nSincerely,\n</string>
     <string name="email_bkk_subject">FUTÁR API bugreport</string>
@@ -114,5 +133,7 @@
     <string name="tab_title_future">Soon</string>
     <string name="dialog_notice_title">Notice</string>
     <string name="dialog_notice_positive_button">OK</string>
+    <string name="pref_title_data_source">Data source</string>
+    <string name="pref_key_data_source" translatable="false">data_source</string>
 
 </resources>

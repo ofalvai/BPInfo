@@ -133,6 +133,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
         setupBugreportClickListener();
 
         bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_language)));
+        bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_data_source)));
 
     }
 
@@ -176,6 +177,20 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
             Toast.makeText(this, text, Toast.LENGTH_LONG).show();
 
             FabricUtils.logDebugMode(String.valueOf(state));
+        } else if (key.equals(getString(R.string.pref_key_data_source))) {
+            // TODO: temporary dialog
+            new AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.pref_language_dialog_title))
+                    .setMessage(getString(R.string.pref_language_dialog_message))
+                    .setNegativeButton(getString(R.string.pref_language_dialog_negative_button), null)
+                    .setPositiveButton(getString(R.string.pref_language_dialog_positive_button),
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    ProcessPhoenix.triggerRebirth(getApplicationContext());
+                                }
+                            })
+                    .show();
         }
     }
 

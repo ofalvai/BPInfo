@@ -21,6 +21,13 @@
         android:key="@string/pref_key_category_general">
 
         <ListPreference
+            android:title="@string/pref_title_data_source"
+            android:key="@string/pref_key_data_source"
+            android:defaultValue="@string/pref_key_data_source_futar"
+            android:entries="@array/pref_data_source_list_titles"
+            android:entryValues="@array/pref_data_source_list_values" />
+
+        <ListPreference
             android:title="@string/pref_title_language"
             android:key="@string/pref_key_language"
             android:defaultValue="@string/pref_key_language_auto"
