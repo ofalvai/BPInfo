@@ -128,18 +128,18 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
         mDateTextView.setText(dateString);
 
         // There are alerts without affected routes, eg. announcements
-        if (mAlert.getRouteIds() != null) {
-            for (Route route : mAlert.getAffectedRoutes()) {
-                // Some affected routes are visually identical to others in the list, no need
-                // to diplay them again.
-                if (!Utils.isRouteVisuallyDuplicate(route, mDisplayedRoutes)) {
-                    mDisplayedRoutes.add(route);
-                    UiUtils.addRouteIcon(getActivity(), mRouteIconsLayout, route);
-                }
+        for (Route route : mAlert.getAffectedRoutes()) {
+            // Some affected routes are visually identical to others in the list, no need
+            // to diplay them again.
+            if (!Utils.isRouteVisuallyDuplicate(route, mDisplayedRoutes)) {
+                mDisplayedRoutes.add(route);
+                UiUtils.addRouteIcon(getActivity(), mRouteIconsLayout, route);
             }
         }
 
-        mDescriptionTextView.setHtmlFromString(mAlert.getDescription(), new HtmlTextView.LocalImageGetter());
+        if (mAlert.getDescription() != null) {
+            mDescriptionTextView.setHtmlFromString(mAlert.getDescription(), new HtmlTextView.LocalImageGetter());
+        }
 
         mUrlTextView.setPaintFlags(mUrlTextView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         mUrlTextView.setOnClickListener(new View.OnClickListener() {

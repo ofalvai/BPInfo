@@ -14,7 +14,7 @@ import java.util.Set;
 public class FabricUtils {
 
     private static String alertHasNoRoutes(Alert alert) {
-        return alert.getRouteIds().isEmpty() ? "true" : "false";
+        return alert.getAffectedRoutes().isEmpty() ? "true" : "false";
     }
 
     public static void logAlertContentView(@Nullable Alert alert) {

@@ -85,8 +85,9 @@ public class FutarApiClient implements AlertApiClient {
      * There's only one call in the API to get both the list and the details about alerts,
      * so we have to store them after the first call.
      */
-    @Nullable
-    private List<Alert> mAlerts;
+    private List<Alert> mAlertsToday = new ArrayList<>();
+
+    private List<Alert> mAlertsFuture = new ArrayList<>();
 
     @Nullable
     private String mLanguageCode;
@@ -132,17 +133,33 @@ public class FutarApiClient implements AlertApiClient {
     @Override
     public void fetchAlert(@NonNull String id, @NonNull AlertListener listener,
                            @NonNull AlertRequestParams params) {
-        if (mAlerts == null) {
-            throw new RuntimeException("fetchAlert() was called before fetchAlertList()");
-            // TODO: this might be a problem when recreating only the AlertDetailFragment
-        } else {
-            for (Alert alert : mAlerts) {
-                if (alert.getId().equals(id)) {
-                    listener.onAlertResponse(alert);
-                    return;
+        // TODO: temporary if-else until refactoring both ApiClients
+        if (params.mAlertListType.equals(AlertListType.ALERTS_TODAY)) {
+            if (mAlertsToday == null) {
+                throw new RuntimeException("fetchAlert() was called before fetchAlertList()");
+                // TODO: this might be a problem when recreating only the AlertDetailFragment
+            } else {
+                for (Alert alert : mAlertsToday) {
+                    if (alert.getId().equals(id)) {
+                        listener.onAlertResponse(alert);
+                        return;
+                    }
                 }
+                listener.onError(new Exception("Alert not found"));
             }
-            listener.onError(new Exception("Alert not found"));
+        } else {
+            if (mAlertsFuture == null) {
+                throw new RuntimeException("fetchAlert() was called before fetchAlertList()");
+                // TODO: this might be a problem when recreating only the AlertDetailFragment
+            } else {
+                for (Alert alert : mAlertsFuture) {
+                    if (alert.getId().equals(id)) {
+                        listener.onAlertResponse(alert);
+                        return;
+                    }
+                }
+                listener.onError(new Exception("Alert not found"));
+            }
         }
     }
 
@@ -183,19 +200,36 @@ public class FutarApiClient implements AlertApiClient {
     private void onResponseCallback(@NonNull AlertListListener listener, JSONObject response,
                                     @NonNull AlertListType alertListType) {
         Map<String, Route> routes;
-        mAlerts = new ArrayList<>();
-        try {
-            routes = parseRoutes(response);
-            mAlerts = parseAlerts(response, alertListType);
 
-            for (Alert alert : mAlerts) {
-                List<Route> affectedRoutes = getAffectedRoutesForAlert(alert, routes);
-                alert.setAffectedRoutes(affectedRoutes);
+        // TODO: temporary if-else until refactoring both ApiClients
+        if (alertListType.equals(AlertListType.ALERTS_TODAY)) {
+            try {
+                routes = parseRoutes(response);
+                mAlertsToday = parseAlerts(response, alertListType);
+
+                for (Alert alert : mAlertsToday) {
+                    List<Route> affectedRoutes = getAffectedRoutesForAlert(alert, routes);
+                    alert.setAffectedRoutes(affectedRoutes);
+                }
+            } catch (Exception ex) {
+                listener.onError(ex);
             }
-        } catch (Exception ex) {
-            listener.onError(ex);
+            listener.onAlertListResponse(mAlertsToday);
+        } else {
+            try {
+                routes = parseRoutes(response);
+                mAlertsFuture = parseAlerts(response, alertListType);
+
+                for (Alert alert : mAlertsFuture) {
+                    List<Route> affectedRoutes = getAffectedRoutesForAlert(alert, routes);
+                    alert.setAffectedRoutes(affectedRoutes);
+                }
+            } catch (Exception ex) {
+                listener.onError(ex);
+            }
+            listener.onAlertListResponse(mAlertsFuture);
         }
-        listener.onAlertListResponse(mAlerts);
+
     }
 
     private void onErrorCallback(@NonNull AlertListListener listener, VolleyError error) {

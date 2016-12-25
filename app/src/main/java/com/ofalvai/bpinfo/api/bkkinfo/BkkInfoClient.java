@@ -28,6 +28,7 @@ import com.ofalvai.bpinfo.api.AlertRequestParams;
 import com.ofalvai.bpinfo.model.Alert;
 import com.ofalvai.bpinfo.model.Route;
 import com.ofalvai.bpinfo.model.RouteType;
+import com.ofalvai.bpinfo.ui.alertlist.AlertListType;
 import com.ofalvai.bpinfo.util.Utils;
 
 import org.json.JSONArray;
@@ -52,7 +53,7 @@ public class BkkInfoClient implements AlertApiClient {
 
     private static final String PARAM_ALERT_DETAIL = "id";
 
-    private static final String BKKINFO_DETAIL_WEBVIEW_URL = "http://bkk.hu/apps/bkkinfo/iframe.php";
+    private static final String BKKINFO_DETAIL_WEBVIEW_URL = "http://bkk.hu/apps/bkkinfo/iframe.php"; //TODO: not responsive
 
     private RequestQueue mRequestQueue;
 
@@ -65,7 +66,7 @@ public class BkkInfoClient implements AlertApiClient {
     }
 
     @Override
-    public void fetchAlertList(final @NonNull AlertListListener listener, @NonNull AlertRequestParams params) {
+    public void fetchAlertList(final @NonNull AlertListListener listener, final @NonNull AlertRequestParams params) {
         final Uri url = buildUrl(params);
 
         LOGI(TAG, "API request: " + url.toString());
@@ -78,6 +79,12 @@ public class BkkInfoClient implements AlertApiClient {
                     public void onResponse(JSONObject response) {
                         try {
                             List<Alert> alerts = parseAlerts(response);
+                            // TODO: temporary if-else until refactoring both ApiClients
+                            if (params.mAlertListType.equals(AlertListType.ALERTS_TODAY)) {
+                                mAlertsToday = alerts;
+                            } else {
+                                mAlertsFuture = alerts;
+                            }
                             listener.onAlertListResponse(alerts);
                         } catch (Exception ex) {
                             listener.onError(ex);
@@ -98,7 +105,18 @@ public class BkkInfoClient implements AlertApiClient {
     @Override
     public void fetchAlert(@NonNull String id, @NonNull AlertListener listener,
                            @NonNull AlertRequestParams params) {
-
+        if (mAlertsToday == null) {
+            throw new RuntimeException("fetchAlert() was called before fetchAlertList()");
+            // TODO: this might be a problem when recreating only the AlertDetailFragment
+        } else {
+            for (Alert alert : mAlertsToday) {
+                if (alert.getId().equals(id)) {
+                    listener.onAlertResponse(alert);
+                    return;
+                }
+            }
+            listener.onError(new Exception("Alert not found"));
+        }
     }
 
     private Uri buildUrl(AlertRequestParams params) {
