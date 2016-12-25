@@ -95,12 +95,6 @@ public class FutarApiClient implements AlertProvider {
 
     @Inject Context mContext;
 
-    public interface FutarApiListener {
-        void onAlertResponse(@NonNull List<Alert> alerts);
-
-        void onError(@NonNull Exception ex);
-    }
-
     public FutarApiClient(RequestQueue requestQueue) {
         mRequestQueue = requestQueue;
         BpInfoApplication.injector.inject(this);
@@ -260,6 +254,7 @@ public class FutarApiClient implements AlertProvider {
         long end;
         try {
             // There are alerts with unknown ends, represented by null
+            // TODO: alertNode.isNull(AlertContract.ALERT_END)
             end = alertNode.getLong(AlertContract.ALERT_END);
         } catch (JSONException ex) {
             end = 0;

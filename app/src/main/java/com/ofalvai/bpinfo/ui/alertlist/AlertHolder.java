@@ -88,17 +88,15 @@ public class AlertHolder extends RecyclerView.ViewHolder {
         mDisplayedRoutes.clear();
 
         // There are alerts without affected routes, eg. announcements
-        if (alert.getRouteIds() != null) {
-            for (Route route : alert.getAffectedRoutes()) {
-                // Some affected routes are visually identical to others in the list, no need
-                // to diplay them again.
-                if (!Utils.isRouteVisuallyDuplicate(route, mDisplayedRoutes)) {
-                    mDisplayedRoutes.add(route);
-                    UiUtils.addRouteIcon(context, mRouteIconsWrapper, route);
+        for (Route route : alert.getAffectedRoutes()) {
+            // Some affected routes are visually identical to others in the list, no need
+            // to diplay them again.
+            if (!Utils.isRouteVisuallyDuplicate(route, mDisplayedRoutes)) {
+                mDisplayedRoutes.add(route);
+                UiUtils.addRouteIcon(context, mRouteIconsWrapper, route);
 
-                    if (route.getType() == RouteType._OTHER_) {
-                        LOGD(TAG, "Unknown route type: " + route.getShortName() + "(" + route.getId() + ")");
-                    }
+                if (route.getType() == RouteType._OTHER_) {
+                    LOGD(TAG, "Unknown route type: " + route.getShortName() + "(" + route.getId() + ")");
                 }
             }
         }

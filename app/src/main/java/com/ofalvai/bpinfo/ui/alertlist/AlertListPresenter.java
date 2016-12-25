@@ -50,9 +50,12 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
+import static com.ofalvai.bpinfo.util.LogUtils.LOGE;
+
 public class AlertListPresenter extends BasePresenter<AlertListContract.View>
         implements AlertProvider.AlertListListener, NoticeClient.NoticeListener,
         AlertListContract.Presenter {
+    private static final String TAG = "AlertListPresenter";
 
     @Inject
     AlertProvider mAlertProvider;
@@ -197,6 +200,8 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
 
     @Override
     public void onError(@NonNull Exception ex) {
+        LOGE(TAG, ex.toString());
+
         if (mUnfilteredAlerts != null) {
             mUnfilteredAlerts.clear();
         }

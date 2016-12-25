@@ -19,6 +19,9 @@ package com.ofalvai.bpinfo.model;
 import java.io.Serializable;
 
 public class Route implements Serializable {
+
+    // TODO: nullable fields
+
     private String id;
 
     private String shortName;
@@ -31,6 +34,7 @@ public class Route implements Serializable {
 
     private String URL;
 
+    // TODO: Color object instead of raw hex string
     private String color;
 
     private String textColor;

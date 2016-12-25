@@ -22,12 +22,17 @@ import java.util.List;
 
 public class Alert implements Serializable {
 
+    // TODO: nullable fields
+
     private String id;
 
     private long start;
 
     private long end;
 
+    /**
+     * Last modification of Alert
+     */
     private long timestamp;
 
     private List<String> stopIds;
