@@ -33,7 +33,17 @@ public interface AlertListContract {
     interface View extends MvpView {
         void displayAlerts(@NonNull List<Alert> alerts);
 
+        /**
+         * Displays the alert detail view with some existing data
+         * @param alert data from a list item
+         */
         void displayAlertDetail(@NonNull Alert alert);
+
+        /**
+         * Updates the alert detail view with the full alert data
+         * @param alert data coming from the alert detail API call
+         */
+        void updateAlertDetail(@NonNull Alert alert);
 
         void displayNetworkError(@NonNull VolleyError error);
 
@@ -54,9 +64,9 @@ public interface AlertListContract {
         AlertListType getAlertListType();
 
         /**
-         * This is called by the adapter to get the details of an Alert
+         * This is called by the adapter to launch the alert detail view
          */
-        void getAlertDetail(@NonNull String alertId);
+        void launchAlertDetail(@NonNull Alert alert);
     }
 
     interface Presenter extends MvpPresenter<View> {

@@ -144,7 +144,7 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
                 new AlertApiClient.AlertListener() {
                     @Override
                     public void onAlertResponse(Alert alert) {
-                        getView().displayAlertDetail(alert);
+                        getView().updateAlertDetail(alert);
                     }
 
                     @Override

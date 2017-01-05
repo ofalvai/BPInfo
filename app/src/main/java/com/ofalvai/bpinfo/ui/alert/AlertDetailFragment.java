@@ -50,6 +50,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class AlertDetailFragment extends BottomSheetDialogFragment {
+
+    public static final String FRAGMENT_TAG = "alert_detail";
+
     private static final String ARG_ALERT_OBJECT = "alert_object";
 
     private Alert mAlert;
@@ -122,36 +125,7 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
         View view = inflater.inflate(R.layout.fragment_alert_detail, container, false);
         ButterKnife.bind(this, view);
 
-        mTitleTextView.setText(mAlert.getHeader());
-
-        String dateString = UiUtils.alertDateFormatter(getActivity(), mAlert.getStart(), mAlert.getEnd());
-        mDateTextView.setText(dateString);
-
-        // There are alerts without affected routes, eg. announcements
-        for (Route route : mAlert.getAffectedRoutes()) {
-            // Some affected routes are visually identical to others in the list, no need
-            // to diplay them again.
-            if (!Utils.isRouteVisuallyDuplicate(route, mDisplayedRoutes)) {
-                mDisplayedRoutes.add(route);
-                UiUtils.addRouteIcon(getActivity(), mRouteIconsLayout, route);
-            }
-        }
-
-        if (mAlert.getDescription() != null) {
-            mDescriptionTextView.setHtmlFromString(mAlert.getDescription(), new HtmlTextView.LocalImageGetter());
-        }
-
-        mUrlTextView.setPaintFlags(mUrlTextView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-        mUrlTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mAlert.getUrl() != null) {
-                    Uri url = Uri.parse(mAlert.getUrl());
-                    UiUtils.openCustomTab(getActivity(), url);
-                    FabricUtils.logAlertUrlClick(mAlert);
-                }
-            }
-        });
+        updateAlert(mAlert);
 
         return view;
     }
@@ -179,6 +153,41 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
         if (window != null) {
             window.setLayout(actualWidth, ViewGroup.LayoutParams.MATCH_PARENT);
         }
+    }
+
+    public void updateAlert(final Alert alert) {
+        mAlert = alert;
+
+        mTitleTextView.setText(alert.getHeader());
+
+        String dateString = UiUtils.alertDateFormatter(getActivity(), alert.getStart(), alert.getEnd());
+        mDateTextView.setText(dateString);
+
+        // There are alerts without affected routes, eg. announcements
+        for (Route route : alert.getAffectedRoutes()) {
+            // Some affected routes are visually identical to others in the list, no need
+            // to diplay them again.
+            if (!Utils.isRouteVisuallyDuplicate(route, mDisplayedRoutes)) {
+                mDisplayedRoutes.add(route);
+                UiUtils.addRouteIcon(getActivity(), mRouteIconsLayout, route);
+            }
+        }
+
+        if (alert.getDescription() != null) {
+            mDescriptionTextView.setHtmlFromString(alert.getDescription(), new HtmlTextView.LocalImageGetter());
+        }
+
+        mUrlTextView.setPaintFlags(mUrlTextView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        mUrlTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (alert.getUrl() != null) {
+                    Uri url = Uri.parse(alert.getUrl());
+                    UiUtils.openCustomTab(getActivity(), url);
+                    FabricUtils.logAlertUrlClick(alert);
+                }
+            }
+        });
     }
 
     private class AlertDetailCallback extends BottomSheetBehavior.BottomSheetCallback {

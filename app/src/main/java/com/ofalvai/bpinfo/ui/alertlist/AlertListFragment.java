@@ -21,6 +21,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -331,14 +332,29 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
         mNoticeView.setVisibility(View.GONE);
     }
 
-    public void getAlertDetail(String alertId) {
-        mPresenter.fetchAlert(alertId);
+    public void launchAlertDetail(Alert alert) {
+        displayAlertDetail(alert);
+
+        mPresenter.fetchAlert(alert.getId());
     }
 
     @Override
     public void displayAlertDetail(@NonNull Alert alert) {
         AlertDetailFragment alertDetailFragment = AlertDetailFragment.newInstance(alert);
-        alertDetailFragment.show(getActivity().getSupportFragmentManager(), alertDetailFragment.getTag());
+        alertDetailFragment.show(getActivity().getSupportFragmentManager(), AlertDetailFragment.FRAGMENT_TAG);
+    }
+
+    @Override
+    public void updateAlertDetail(@NonNull Alert alert) {
+        FragmentManager manager = getActivity().getSupportFragmentManager();
+        AlertDetailFragment fragment = (AlertDetailFragment)
+                manager.findFragmentByTag(AlertDetailFragment.FRAGMENT_TAG);
+
+        // It's possible that the presenter calls this method instantly, when the selected
+        // API client returns local data
+        if (fragment != null) {
+            fragment.updateAlert(alert);
+        }
     }
 
     @Override
