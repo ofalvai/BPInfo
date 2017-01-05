@@ -16,13 +16,17 @@
 
 package com.ofalvai.bpinfo.api.bkkinfo;
 
+import android.graphics.Color;
 import android.net.Uri;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.crashlytics.android.Crashlytics;
 import com.ofalvai.bpinfo.api.AlertApiClient;
 import com.ofalvai.bpinfo.api.AlertListMessage;
 import com.ofalvai.bpinfo.api.AlertRequestParams;
@@ -179,8 +183,12 @@ public class BkkInfoClient implements AlertApiClient {
 
         JSONArray activeAlertsList = response.getJSONArray("active");
         for (int i = 0; i < activeAlertsList.length(); i++) {
-            JSONObject alertNode = activeAlertsList.getJSONObject(i);
-            alerts.add(parseAlert(alertNode));
+            try {
+                JSONObject alertNode = activeAlertsList.getJSONObject(i);
+                alerts.add(parseAlert(alertNode));
+            } catch (JSONException ex) {
+                Crashlytics.log(Log.WARN, TAG, "Alert parse: failed to parse:\n" + ex.toString());
+            }
         }
 
         return alerts;
@@ -193,14 +201,22 @@ public class BkkInfoClient implements AlertApiClient {
         // Future alerts are in two groups: near-future and far-future
         JSONArray soonAlertList = response.getJSONArray("soon");
         for (int i = 0; i < soonAlertList.length(); i++) {
-            JSONObject alertNode = soonAlertList.getJSONObject(i);
-            alerts.add(parseAlert(alertNode));
+            try {
+                JSONObject alertNode = soonAlertList.getJSONObject(i);
+                alerts.add(parseAlert(alertNode));
+            } catch (JSONException ex) {
+                Crashlytics.log(Log.WARN, TAG, "Alert parse: failed to parse:\n" + ex.toString());
+            }
         }
 
         JSONArray futureAlertList = response.getJSONArray("future");
         for (int i = 0; i < futureAlertList.length(); i++) {
-            JSONObject alertNode = futureAlertList.getJSONObject(i);
-            alerts.add(parseAlert(alertNode));
+            try {
+                JSONObject alertNode = futureAlertList.getJSONObject(i);
+                alerts.add(parseAlert(alertNode));
+            } catch (JSONException ex) {
+                Crashlytics.log(Log.WARN, TAG, "Alert parse: failed to parse:\n" + ex.toString());
+            }
         }
 
         return alerts;
@@ -324,9 +340,10 @@ public class BkkInfoClient implements AlertApiClient {
             JSONArray concreteRoutes = routeNode.getJSONArray("jaratok");
             for (int j = 0; j < concreteRoutes.length(); j++) {
                 String shortName = concreteRoutes.getString(j);
-                String[] colors = parseRouteColors(type);
+                int[] colors = parseRouteColors(type);
 
-                Route route = new Route(null, shortName, null, null, type, null, colors[0], colors[1]);
+                // There's no ID returned by the API, using shortName instead
+                Route route = new Route(shortName, shortName, null, null, type, colors[0], colors[1]);
                 routes.add(route);
             }
         }
@@ -347,10 +364,10 @@ public class BkkInfoClient implements AlertApiClient {
             String shortName = routeNode.getString("szam");
             String description = routeNode.getString("utvonal");
             RouteType routeType = parseRouteType(routeNode.getString("tipus"));
-            String color = routeNode.getString("szin");
-            String textColor = routeNode.getString("betu");
+            int color = Color.parseColor("#" + routeNode.getString("szin"));
+            int textColor = Color.parseColor("#" + routeNode.getString("betu"));
 
-            Route route = new Route(id, shortName, null, description, routeType, null, color, textColor);
+            Route route = new Route(id, shortName, null, description, routeType, color, textColor);
             routes.add(route);
         }
         return routes;
@@ -381,9 +398,10 @@ public class BkkInfoClient implements AlertApiClient {
      * doesn't return them in the response.
      * Note that the alert detail response contains color values, so the alert detail parsing
      * doesn't need to call this.
-     * @return  Array of colors: background, foreground
+     * @return  Array of color-ints: background, foreground
      */
-    private String[] parseRouteColors(RouteType type) {
+    @ColorInt
+    private int[] parseRouteColors(RouteType type) {
         String defaultBackground = "EEEEEE";
         String defaultText = "BBBBBB";
 
@@ -426,6 +444,16 @@ public class BkkInfoClient implements AlertApiClient {
                 break;
         }
 
-        return new String[] { background, text };
+        int backgroundColor;
+        int textColor;
+        try {
+            backgroundColor = Color.parseColor("#" + background);
+            textColor = Color.parseColor("#" + text);
+        } catch (IllegalArgumentException ex) {
+            backgroundColor = Color.parseColor("#" + defaultBackground);
+            textColor = Color.parseColor("#" + defaultText);
+        }
+
+        return new int[] { backgroundColor, textColor};
     }
 }

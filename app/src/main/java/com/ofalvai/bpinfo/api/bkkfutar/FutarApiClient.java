@@ -263,7 +263,7 @@ public class FutarApiClient implements AlertApiClient {
                     alertList.add(alert);
                 }
             } catch (JSONException ex) {
-                Crashlytics.log(Log.WARN, TAG, "Alert parse: failed to parse");
+                Crashlytics.log(Log.WARN, TAG, "Alert parse: failed to parse:\n" + ex.toString());
             }
         }
 
