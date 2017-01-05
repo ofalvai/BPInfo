@@ -16,37 +16,53 @@
 
 package com.ofalvai.bpinfo.model;
 
+import android.support.annotation.ColorInt;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import java.io.Serializable;
 
 public class Route implements Serializable {
 
-    // TODO: nullable fields
-
+    @NonNull
     private String id;
 
+    /**
+     * Usually the route number (eg. 74, M3, 7E), sometimes its name (eg. Funicular)
+     */
+    @Nullable
     private String shortName;
 
+    /**
+     * Longer name of the route, when the short name is not obvious (eg. replacement routes)
+     */
+    @Nullable
     private String longName;
 
+    /**
+     * Currently the terminal stops of the route
+     */
+    @Nullable
     private String description;
 
+    @NonNull
     private RouteType type;
 
-    private String URL;
+    /**
+     * Background color of the rectangle around the label
+     */
+    @ColorInt
+    private int color;
 
-    // TODO: Color object instead of raw hex string
-    private String color;
+    @ColorInt
+    private int textColor;
 
-    private String textColor;
-
-    public Route(String id, String shortName, String longName, String description, RouteType type,
-                 String URL, String color, String textColor) {
+    public Route(String id, String shortName, String longName, String description, RouteType type, @ColorInt int color, @ColorInt int textColor) {
         this.id = id;
         this.shortName = shortName;
         this.longName = longName;
         this.description = description;
         this.type = type;
-        this.URL = URL;
         this.color = color;
         this.textColor = textColor;
     }
@@ -91,27 +107,21 @@ public class Route implements Serializable {
         this.type = type;
     }
 
-    public String getURL() {
-        return URL;
-    }
-
-    public void setURL(String URL) {
-        this.URL = URL;
-    }
-
-    public String getColor() {
+    @ColorInt
+    public int getColor() {
         return color;
     }
 
-    public void setColor(String color) {
+    public void setColor(@ColorInt int color) {
         this.color = color;
     }
 
-    public String getTextColor() {
+    @ColorInt
+    public int getTextColor() {
         return textColor;
     }
 
-    public void setTextColor(String textColor) {
+    public void setTextColor(@ColorInt int textColor) {
         this.textColor = textColor;
     }
 }

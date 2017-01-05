@@ -133,7 +133,7 @@ public class UiUtils {
         TextView iconView = new TextView(iconContextTheme);
 
         iconView.setText(route.getShortName());
-        iconView.setTextColor(Color.parseColor("#" + route.getTextColor()));
+        iconView.setTextColor(route.getTextColor());
         root.addView(iconView);
 
         // Layout attributes defined in R.style.RouteIcon were ignored before attaching the view to
@@ -150,8 +150,7 @@ public class UiUtils {
         // Setting a custom colored rounded background drawable as background
         Drawable iconBackground = context.getResources().getDrawable(R.drawable.rounded_corner_5dp);
         if (iconBackground != null) {
-            ColorFilter colorFilter = new LightingColorFilter(Color.rgb(1, 1, 1),
-                    Color.parseColor("#" + route.getColor()));
+            ColorFilter colorFilter = new LightingColorFilter(Color.rgb(1, 1, 1), route.getColor());
             iconBackground.mutate().setColorFilter(colorFilter);
             iconView.setBackground(iconBackground);
         }

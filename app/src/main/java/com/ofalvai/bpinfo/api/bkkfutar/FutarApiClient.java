@@ -18,6 +18,7 @@ package com.ofalvai.bpinfo.api.bkkfutar;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -377,17 +378,10 @@ public class FutarApiClient implements AlertApiClient {
 
         RouteType type = parseRouteType(routeNode.getString(RouteContract.ROUTE_TYPE));
 
-        String url;
-        try {
-            url = routeNode.getString(RouteContract.ROUTE_URL);
-        } catch (JSONException ex) {
-            url = null;
-        }
+        int color = Color.parseColor("#" + routeNode.getString(RouteContract.ROUTE_COLOR));
+        int textColor = Color.parseColor("#" + routeNode.getString(RouteContract.ROUTE_TEXT_COLOR));
 
-        String color = routeNode.getString(RouteContract.ROUTE_COLOR);
-        String textColor = routeNode.getString(RouteContract.ROUTE_TEXT_COLOR);
-
-        return new Route(id, shortName, longName, description, type, url, color, textColor);
+        return new Route(id, shortName, longName, description, type, color, textColor);
     }
 
     @NonNull
