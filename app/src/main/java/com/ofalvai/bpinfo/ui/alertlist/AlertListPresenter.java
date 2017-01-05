@@ -28,6 +28,7 @@ import com.ofalvai.bpinfo.BpInfoApplication;
 import com.ofalvai.bpinfo.Config;
 import com.ofalvai.bpinfo.R;
 import com.ofalvai.bpinfo.api.AlertApiClient;
+import com.ofalvai.bpinfo.api.AlertListMessage;
 import com.ofalvai.bpinfo.api.AlertRequestParams;
 import com.ofalvai.bpinfo.api.NoticeClient;
 import com.ofalvai.bpinfo.api.bkkfutar.AlertSearchContract;
@@ -37,6 +38,8 @@ import com.ofalvai.bpinfo.model.RouteType;
 import com.ofalvai.bpinfo.ui.base.BasePresenter;
 import com.ofalvai.bpinfo.util.Utils;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.json.JSONException;
@@ -86,6 +89,18 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
         mAlertListType = alertListType;
 
         BpInfoApplication.injector.inject(this);
+    }
+
+    @Override
+    public void attachView(AlertListContract.View view) {
+        super.attachView(view);
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        EventBus.getDefault().unregister(this);
     }
 
     /**
@@ -196,6 +211,15 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
         List<Alert> filteredAlerts = filter(mActiveFilter, mUnfilteredAlerts);
 
         getView().displayAlerts(filteredAlerts);
+    }
+
+    @Subscribe
+    public void onAlertListEvent(AlertListMessage message) {
+        if (mAlertListType.equals(AlertListType.ALERTS_TODAY)) {
+            onAlertListResponse(message.todayAlerts);
+        } else {
+            onAlertListResponse(message.futureAlerts);
+        }
     }
 
     @Override

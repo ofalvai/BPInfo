@@ -203,6 +203,15 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
         mPresenter.updateIfNeeded();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        if (mPresenter != null) {
+            mPresenter.detachView();
+        }
+    }
+
     /**
      * Updates the Toolbar's subtitle to the number of current items in the RecyclerView's Adapter
      */

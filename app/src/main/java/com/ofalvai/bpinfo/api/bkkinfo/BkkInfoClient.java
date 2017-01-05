@@ -24,13 +24,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.ofalvai.bpinfo.api.AlertApiClient;
+import com.ofalvai.bpinfo.api.AlertListMessage;
 import com.ofalvai.bpinfo.api.AlertRequestParams;
 import com.ofalvai.bpinfo.model.Alert;
 import com.ofalvai.bpinfo.model.Route;
 import com.ofalvai.bpinfo.model.RouteType;
-import com.ofalvai.bpinfo.ui.alertlist.AlertListType;
 import com.ofalvai.bpinfo.util.Utils;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -61,12 +62,16 @@ public class BkkInfoClient implements AlertApiClient {
 
     private List<Alert> mAlertsFuture = new ArrayList<>();
 
+    private boolean mRequestInProgress = false;
+
     public BkkInfoClient(RequestQueue requestQueue) {
         mRequestQueue = requestQueue;
     }
 
     @Override
     public void fetchAlertList(final @NonNull AlertListListener listener, final @NonNull AlertRequestParams params) {
+        if (mRequestInProgress) return;
+
         final Uri url = buildUrl(params);
 
         LOGI(TAG, "API request: " + url.toString());
@@ -78,16 +83,14 @@ public class BkkInfoClient implements AlertApiClient {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            List<Alert> alerts = parseAlerts(response);
-                            // TODO: temporary if-else until refactoring both ApiClients
-                            if (params.mAlertListType.equals(AlertListType.ALERTS_TODAY)) {
-                                mAlertsToday = alerts;
-                            } else {
-                                mAlertsFuture = alerts;
-                            }
-                            listener.onAlertListResponse(alerts);
+                            mAlertsToday = parseTodayAlerts(response);
+                            mAlertsFuture = parseFutureAlerts(response);
+
+                            EventBus.getDefault().post(new AlertListMessage(mAlertsToday, mAlertsFuture));
                         } catch (Exception ex) {
                             listener.onError(ex);
+                        } finally {
+                            mRequestInProgress = false;
                         }
                     }
                 },
@@ -99,6 +102,7 @@ public class BkkInfoClient implements AlertApiClient {
                 }
         );
 
+        mRequestInProgress = true;
         mRequestQueue.add(request);
     }
 
@@ -130,12 +134,31 @@ public class BkkInfoClient implements AlertApiClient {
     }
 
     @NonNull
-    private List<Alert> parseAlerts(JSONObject response) throws JSONException {
+    private List<Alert> parseTodayAlerts(JSONObject response) throws JSONException {
         List<Alert> alerts = new ArrayList<>();
 
         JSONArray activeAlertsList = response.getJSONArray("active");
         for (int i = 0; i < activeAlertsList.length(); i++) {
             JSONObject alertNode = activeAlertsList.getJSONObject(i);
+            alerts.add(parseAlert(alertNode));
+        }
+
+        return alerts;
+    }
+
+    @NonNull
+    private List<Alert> parseFutureAlerts(JSONObject response) throws JSONException {
+        List<Alert> alerts = new ArrayList<>();
+
+        JSONArray soonAlertList = response.getJSONArray("soon");
+        for (int i = 0; i < soonAlertList.length(); i++) {
+            JSONObject alertNode = soonAlertList.getJSONObject(i);
+            alerts.add(parseAlert(alertNode));
+        }
+
+        JSONArray futureAlertList = response.getJSONArray("future");
+        for (int i = 0; i < futureAlertList.length(); i++) {
+            JSONObject alertNode = futureAlertList.getJSONObject(i);
             alerts.add(parseAlert(alertNode));
         }
 
