@@ -57,7 +57,7 @@ import javax.inject.Inject;
 import static com.ofalvai.bpinfo.util.LogUtils.LOGE;
 
 public class AlertListPresenter extends BasePresenter<AlertListContract.View>
-        implements AlertApiClient.AlertListListener, NoticeClient.NoticeListener,
+        implements NoticeClient.NoticeListener,
         AlertListContract.Presenter {
     private static final String TAG = "AlertListPresenter";
 
@@ -111,7 +111,7 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
     @Override
     public void fetchAlertList() {
         if (Utils.hasNetworkConnection(mContext)) {
-            mAlertApiClient.fetchAlertList(this, getAlertRequestParams());
+            mAlertApiClient.fetchAlertList(getAlertRequestParams());
         } else if (mUnfilteredAlerts == null) {
             // Nothing was displayed previously, showing a full error view
             getView().displayNetworkError(new NoConnectionError());
@@ -142,7 +142,7 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
     public void fetchAlert(String alertId) {
         mAlertApiClient.fetchAlert(
                 alertId,
-                new AlertApiClient.AlertListener() {
+                new AlertApiClient.AlertDetailListener() {
                     @Override
                     public void onAlertResponse(Alert alert) {
                         getView().updateAlertDetail(alert);
@@ -194,28 +194,18 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
         return mActiveFilter;
     }
 
-    @Subscribe
-    public void onAlertListEvent(AlertListMessage message) {
-        if (mAlertListType.equals(AlertListType.ALERTS_TODAY)) {
-            onAlertListResponse(message.todayAlerts);
-        } else if (mAlertListType.equals(AlertListType.ALERTS_FUTURE)){
-            onAlertListResponse(message.futureAlerts);
-        }
-    }
-
-    @Subscribe
-    public void onAlertListErrorEvent(AlertListErrorMessage message) {
-        onError(message.mException);
-    }
-
     /**
      * Transforms the list of returned alerts in the following order:
      * 1. Sort the list by the alerts' start time
      * 2. Filter the list by the currently active filter
      */
-    @Override
-    public void onAlertListResponse(List<Alert> alerts) {
-        mUnfilteredAlerts = alerts;
+    @Subscribe
+    public void onAlertListEvent(AlertListMessage message) {
+        if (mAlertListType.equals(AlertListType.ALERTS_TODAY)) {
+            mUnfilteredAlerts = message.todayAlerts;
+        } else if (mAlertListType.equals(AlertListType.ALERTS_FUTURE)){
+            mUnfilteredAlerts = message.futureAlerts;
+        }
 
         // Sort: descending by alert start time
         Collections.sort(mUnfilteredAlerts, new Utils.AlertStartTimestampComparator());
@@ -229,8 +219,9 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
         getView().displayAlerts(filteredAlerts);
     }
 
-    @Override
-    public void onError(@NonNull Exception ex) {
+    @Subscribe
+    public void onAlertListErrorEvent(AlertListErrorMessage message) {
+        final Exception ex = message.mException;
         LOGE(TAG, ex.toString());
 
         if (mUnfilteredAlerts != null) {

@@ -111,8 +111,7 @@ public class FutarApiClient implements AlertApiClient {
     }
 
     @Override
-    public void fetchAlertList(@NonNull final AlertListListener listener,
-                               @NonNull AlertRequestParams params) {
+    public void fetchAlertList(@NonNull AlertRequestParams params) {
         mLanguageCode = params.mLanguageCode;
 
         Uri uri = buildUri();
@@ -147,7 +146,7 @@ public class FutarApiClient implements AlertApiClient {
     }
 
     @Override
-    public void fetchAlert(@NonNull String id, @NonNull AlertListener listener,
+    public void fetchAlert(@NonNull String id, @NonNull AlertDetailListener listener,
                            @NonNull AlertRequestParams params) {
         if (mAlertsToday == null || mAlertsFuture == null) {
             listener.onError(new Exception("fetchAlert() was called before fetchAlertList()"));
@@ -187,14 +186,6 @@ public class FutarApiClient implements AlertApiClient {
 
         if (!isDebugMode) {
             String startTimestamp = String.valueOf(new DateTime().getMillis() / 1000L);
-            //if (alertListType == AlertListType.ALERTS_TODAY) {
-            //} else if (alertListType == AlertListType.ALERTS_FUTURE) {
-            //    DateTime now = new DateTime().withTimeAtStartOfDay();
-            //    DateTime tomorrow = now.plusDays(1).withTimeAtStartOfDay();
-            //    startTimestamp = String.valueOf(tomorrow.getMillis() / 1000L);
-            //} else {
-            //    LOGW(TAG, "No alert list type provided, startTimestamp will be empty");
-            //}
             builder.appendQueryParameter("start", startTimestamp);
         }
 

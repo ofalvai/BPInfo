@@ -20,25 +20,18 @@ import android.support.annotation.NonNull;
 
 import com.ofalvai.bpinfo.model.Alert;
 
-import java.util.List;
-
 public interface AlertApiClient {
 
-    void fetchAlertList(@NonNull AlertListListener listener,
-                        @NonNull AlertRequestParams params);
+    // EventBus is used for alert list calls instead of a callback interface,
+    // because both API clients are complicated due to API quirks.
+    void fetchAlertList(@NonNull AlertRequestParams params);
 
     void fetchAlert(@NonNull String id,
-                    @NonNull AlertListener listener,
+                    @NonNull AlertDetailListener listener,
                     @NonNull AlertRequestParams params);
 
-    interface AlertListListener {
 
-        void onAlertListResponse(List<Alert> alerts);
-
-        void onError(Exception ex);
-    }
-
-    interface AlertListener {
+    interface AlertDetailListener {
 
         void onAlertResponse(Alert alert);
 

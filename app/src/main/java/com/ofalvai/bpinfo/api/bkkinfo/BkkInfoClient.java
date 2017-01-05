@@ -28,6 +28,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.crashlytics.android.Crashlytics;
 import com.ofalvai.bpinfo.api.AlertApiClient;
+import com.ofalvai.bpinfo.api.AlertListErrorMessage;
 import com.ofalvai.bpinfo.api.AlertListMessage;
 import com.ofalvai.bpinfo.api.AlertRequestParams;
 import com.ofalvai.bpinfo.model.Alert;
@@ -79,7 +80,7 @@ public class BkkInfoClient implements AlertApiClient {
     }
 
     @Override
-    public void fetchAlertList(final @NonNull AlertListListener listener, final @NonNull AlertRequestParams params) {
+    public void fetchAlertList(final @NonNull AlertRequestParams params) {
         // If a request is in progress, we don't proceed. The response callback will notify every subscriber
         if (mRequestInProgress) return;
 
@@ -93,13 +94,13 @@ public class BkkInfoClient implements AlertApiClient {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        onAlertListResponse(listener, response);
+                        onAlertListResponse(response);
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        listener.onError(error);
+                        EventBus.getDefault().post(new AlertListErrorMessage(error));
                     }
                 }
         );
@@ -109,7 +110,7 @@ public class BkkInfoClient implements AlertApiClient {
     }
 
     @Override
-    public void fetchAlert(@NonNull String id, final @NonNull AlertListener listener,
+    public void fetchAlert(@NonNull String id, final @NonNull AlertDetailListener listener,
                            @NonNull AlertRequestParams params) {
         Uri url = buildAlertDetailUrl(params, id);
 
@@ -155,20 +156,20 @@ public class BkkInfoClient implements AlertApiClient {
                 .build();
     }
 
-    private void onAlertListResponse(AlertListListener listener, JSONObject response) {
+    private void onAlertListResponse(JSONObject response) {
         try {
             mAlertsToday = parseTodayAlerts(response);
             mAlertsFuture = parseFutureAlerts(response);
 
             EventBus.getDefault().post(new AlertListMessage(mAlertsToday, mAlertsFuture));
         } catch (Exception ex) {
-            listener.onError(ex);
+            EventBus.getDefault().post(new AlertListErrorMessage(ex));
         } finally {
             mRequestInProgress = false;
         }
     }
 
-    private void onAlertDetailResponse(AlertListener listener, JSONObject response) {
+    private void onAlertDetailResponse(AlertDetailListener listener, JSONObject response) {
         try {
             Alert alert = parseAlertDetail(response);
             listener.onAlertResponse(alert);
