@@ -58,11 +58,17 @@ public class BkkInfoClient implements AlertApiClient {
 
     private RequestQueue mRequestQueue;
 
+    /**
+     * This client performs only one alert list API call, because the API is structured in a way
+     * that both current and future data is returned at the same time, sometimes even mixed together.
+     * If multiple alert list requests are called, only the first will perform the request, and
+     * later notify all of its EventBus subscribers.
+     */
+    private boolean mRequestInProgress = false;
+
     private List<Alert> mAlertsToday = new ArrayList<>();
 
     private List<Alert> mAlertsFuture = new ArrayList<>();
-
-    private boolean mRequestInProgress = false;
 
     public BkkInfoClient(RequestQueue requestQueue) {
         mRequestQueue = requestQueue;
@@ -70,6 +76,7 @@ public class BkkInfoClient implements AlertApiClient {
 
     @Override
     public void fetchAlertList(final @NonNull AlertListListener listener, final @NonNull AlertRequestParams params) {
+        // If a request is in progress, we don't proceed. The response callback will notify every subscriber
         if (mRequestInProgress) return;
 
         final Uri url = buildAlertListUrl(params);
@@ -82,16 +89,7 @@ public class BkkInfoClient implements AlertApiClient {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        try {
-                            mAlertsToday = parseTodayAlerts(response);
-                            mAlertsFuture = parseFutureAlerts(response);
-
-                            EventBus.getDefault().post(new AlertListMessage(mAlertsToday, mAlertsFuture));
-                        } catch (Exception ex) {
-                            listener.onError(ex);
-                        } finally {
-                            mRequestInProgress = false;
-                        }
+                        onAlertListResponse(listener, response);
                     }
                 },
                 new Response.ErrorListener() {
@@ -119,12 +117,7 @@ public class BkkInfoClient implements AlertApiClient {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        try {
-                            Alert alert = parseAlertDetail(response);
-                            listener.onAlertResponse(alert);
-                        } catch (Exception ex) {
-                            listener.onError(ex);
-                        }
+                        onAlertDetailResponse(listener, response);
                     }
                 },
                 new Response.ErrorListener() {
@@ -139,23 +132,45 @@ public class BkkInfoClient implements AlertApiClient {
     }
 
     private Uri buildAlertListUrl(AlertRequestParams params) {
-        String language = params.mLanguageCode.equals("hu") ? BKKINFO_API_ENDPOINT_HU :
+        String endpoint = params.mLanguageCode.equals("hu") ? BKKINFO_API_ENDPOINT_HU :
                 BKKINFO_API_ENDPOINT_EN;
 
         return Uri.parse(BKKINFO_API_BASE_URL).buildUpon()
-                .appendEncodedPath(language)
+                .appendEncodedPath(endpoint)
                 .appendEncodedPath(PARAM_ALERT_LIST)
                 .build();
     }
 
     private Uri buildAlertDetailUrl(AlertRequestParams params, String alertId) {
-        String language = params.mLanguageCode.equals("hu") ? BKKINFO_API_ENDPOINT_HU :
+        String endpoint = params.mLanguageCode.equals("hu") ? BKKINFO_API_ENDPOINT_HU :
                 BKKINFO_API_ENDPOINT_EN;
 
         return Uri.parse(BKKINFO_API_BASE_URL).buildUpon()
-                .appendEncodedPath(language)
+                .appendEncodedPath(endpoint)
                 .appendQueryParameter(PARAM_ALERT_DETAIL, alertId)
                 .build();
+    }
+
+    private void onAlertListResponse(AlertListListener listener, JSONObject response) {
+        try {
+            mAlertsToday = parseTodayAlerts(response);
+            mAlertsFuture = parseFutureAlerts(response);
+
+            EventBus.getDefault().post(new AlertListMessage(mAlertsToday, mAlertsFuture));
+        } catch (Exception ex) {
+            listener.onError(ex);
+        } finally {
+            mRequestInProgress = false;
+        }
+    }
+
+    private void onAlertDetailResponse(AlertListener listener, JSONObject response) {
+        try {
+            Alert alert = parseAlertDetail(response);
+            listener.onAlertResponse(alert);
+        } catch (Exception ex) {
+            listener.onError(ex);
+        }
     }
 
     @NonNull
@@ -175,6 +190,7 @@ public class BkkInfoClient implements AlertApiClient {
     private List<Alert> parseFutureAlerts(JSONObject response) throws JSONException {
         List<Alert> alerts = new ArrayList<>();
 
+        // Future alerts are in two groups: near-future and far-future
         JSONArray soonAlertList = response.getJSONArray("soon");
         for (int i = 0; i < soonAlertList.length(); i++) {
             JSONObject alertNode = soonAlertList.getJSONObject(i);
@@ -190,6 +206,11 @@ public class BkkInfoClient implements AlertApiClient {
         return alerts;
     }
 
+    /**
+     * Parses alert details found in the alert list API response
+     * This structure is different than the alert detail API response
+     */
+    @NonNull
     private Alert parseAlert(JSONObject alertNode) throws JSONException {
         String id = alertNode.getString("id");
 
@@ -224,10 +245,14 @@ public class BkkInfoClient implements AlertApiClient {
         affectedRoutes = parseAffectedRoutes(routesArray);
 
         Alert alert =  new Alert(id, start, end, timestamp, null, null, url, header, description);
-        alert.setAffectedRoutes(affectedRoutes);
+        alert.setAffectedRoutes(affectedRoutes); //TODO: alert class refactor
         return alert;
     }
 
+    /**
+     * Parses alert details found in the alert detail API response
+     * This structure is different than the alert list API response
+     */
     private Alert parseAlertDetail(JSONObject response) throws JSONException {
         String id = response.getString("id");
 
@@ -249,8 +274,9 @@ public class BkkInfoClient implements AlertApiClient {
         String url = getUrl(id);
 
         String header;
+        // The API returns a header of 3 parts separated by "|" characters. We need the last part.
         String rawHeader = response.getString("targy");
-        String[] rawHeaderParts = rawHeader.split("\\|"); //TODO
+        String[] rawHeaderParts = rawHeader.split("\\|");
         header = Utils.capitalizeString(rawHeaderParts[2].trim());
 
         String description;
@@ -263,8 +289,10 @@ public class BkkInfoClient implements AlertApiClient {
             JSONObject optionsNode = routeNode.getJSONObject("opciok");
 
             if (!optionsNode.isNull("szabad_szoveg")) {
-                String routeText = optionsNode.getJSONArray("szabad_szoveg").getString(0); //TODO
-                descriptionBuilder.append(routeText);
+                JSONArray routeTextArray = optionsNode.getJSONArray("szabad_szoveg");
+                for (int j = 0; j < routeTextArray.length(); j++) {
+                    descriptionBuilder.append(routeTextArray.getString(j));
+                }
             }
         }
         description = descriptionBuilder.toString();
@@ -274,7 +302,7 @@ public class BkkInfoClient implements AlertApiClient {
         affectedRoutes = parseDetailedAffectedRoutes(routesArray);
 
         Alert alert = new Alert(id, start, end, timestamp, null, null, url, header, description);
-        alert.setAffectedRoutes(affectedRoutes);
+        alert.setAffectedRoutes(affectedRoutes); //TODO: Alert class refactor
         return alert;
     }
 
@@ -282,9 +310,13 @@ public class BkkInfoClient implements AlertApiClient {
         return BKKINFO_DETAIL_WEBVIEW_URL + "?id=" + alertId;
     }
 
+    /**
+     * Parses affected routes found in the alert list API response
+     * This structure is different than the alert detail API response
+     */
     @NonNull
     private List<Route> parseAffectedRoutes(JSONArray routesArray) throws JSONException {
-        // The API lists multiple affected routes grouped by their type
+        // The API lists multiple affected routes grouped by their vehicle type (bus, tram, etc.)
         List<Route> routes = new ArrayList<>();
         for (int i = 0; i < routesArray.length(); i++) {
             JSONObject routeNode = routesArray.getJSONObject(i);
@@ -303,6 +335,10 @@ public class BkkInfoClient implements AlertApiClient {
         return routes;
     }
 
+    /**
+     * Parses affected routes found in the alert detail API response
+     * This structure is different than the alert list API response
+     */
     @NonNull
     private List<Route> parseDetailedAffectedRoutes(JSONArray routesArray) throws JSONException {
         List<Route> routes = new ArrayList<>();
@@ -343,9 +379,10 @@ public class BkkInfoClient implements AlertApiClient {
     }
 
     /**
-     * Returns the background and foreground colors of the route, because this API doesn't return
-     * them in the response.
-     * @param type
+     * Returns the background and foreground colors of the route, because the alert list API
+     * doesn't return them in the response.
+     * Note that the alert detail response contains color values, so the alert detail parsing
+     * doesn't need to call this.
      * @return  Array of colors: background, foreground
      */
     private String[] parseRouteColors(RouteType type) {
