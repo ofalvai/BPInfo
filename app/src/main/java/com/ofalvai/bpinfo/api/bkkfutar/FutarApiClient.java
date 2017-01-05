@@ -35,6 +35,8 @@ import com.ofalvai.bpinfo.BuildConfig;
 import com.ofalvai.bpinfo.Config;
 import com.ofalvai.bpinfo.R;
 import com.ofalvai.bpinfo.api.AlertApiClient;
+import com.ofalvai.bpinfo.api.AlertListErrorMessage;
+import com.ofalvai.bpinfo.api.AlertListMessage;
 import com.ofalvai.bpinfo.api.AlertRequestParams;
 import com.ofalvai.bpinfo.model.Alert;
 import com.ofalvai.bpinfo.model.Route;
@@ -42,6 +44,7 @@ import com.ofalvai.bpinfo.model.RouteType;
 import com.ofalvai.bpinfo.ui.alertlist.AlertListType;
 import com.ofalvai.bpinfo.util.Utils;
 
+import org.greenrobot.eventbus.EventBus;
 import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -55,7 +58,6 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import static com.ofalvai.bpinfo.util.LogUtils.LOGI;
-import static com.ofalvai.bpinfo.util.LogUtils.LOGW;
 
 public class FutarApiClient implements AlertApiClient {
     private static final String TAG = "FutarApiClient";
@@ -110,10 +112,10 @@ public class FutarApiClient implements AlertApiClient {
 
     @Override
     public void fetchAlertList(@NonNull final AlertListListener listener,
-                               @NonNull final AlertRequestParams params) {
+                               @NonNull AlertRequestParams params) {
         mLanguageCode = params.mLanguageCode;
 
-        Uri uri = buildUri(params.mAlertListType);
+        Uri uri = buildUri();
 
         LOGI(TAG, "API request: " + uri.toString());
 
@@ -123,13 +125,20 @@ public class FutarApiClient implements AlertApiClient {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        onResponseCallback(listener, response, params.mAlertListType);
+                        try {
+                            mRoutes = parseRoutes(response);
+                            mAlertsToday = parseAlerts(response, AlertListType.ALERTS_TODAY);
+                            mAlertsFuture = parseAlerts(response, AlertListType.ALERTS_FUTURE);
+                            EventBus.getDefault().post(new AlertListMessage(mAlertsToday, mAlertsFuture));
+                        } catch (Exception ex) {
+                            EventBus.getDefault().post(new AlertListErrorMessage(ex));
+                        }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        onErrorCallback(listener, error);
+                        EventBus.getDefault().post(new AlertListErrorMessage(error));
                     }
                 }
         );
@@ -140,12 +149,10 @@ public class FutarApiClient implements AlertApiClient {
     @Override
     public void fetchAlert(@NonNull String id, @NonNull AlertListener listener,
                            @NonNull AlertRequestParams params) {
-        // TODO: temporary if-else until refactoring both ApiClients
-        if (params.mAlertListType.equals(AlertListType.ALERTS_TODAY)) {
-            if (mAlertsToday == null) {
-                throw new RuntimeException("fetchAlert() was called before fetchAlertList()");
-                // TODO: this might be a problem when recreating only the AlertDetailFragment
-            } else {
+        if (mAlertsToday == null || mAlertsFuture == null) {
+            listener.onError(new Exception("fetchAlert() was called before fetchAlertList()"));
+        } else {
+            if (params.mAlertListType.equals(AlertListType.ALERTS_TODAY)) {
                 for (Alert alert : mAlertsToday) {
                     if (alert.getId().equals(id)) {
                         listener.onAlertResponse(alert);
@@ -153,11 +160,6 @@ public class FutarApiClient implements AlertApiClient {
                     }
                 }
                 listener.onError(new Exception("Alert not found"));
-            }
-        } else {
-            if (mAlertsFuture == null) {
-                throw new RuntimeException("fetchAlert() was called before fetchAlertList()");
-                // TODO: this might be a problem when recreating only the AlertDetailFragment
             } else {
                 for (Alert alert : mAlertsFuture) {
                     if (alert.getId().equals(id)) {
@@ -171,7 +173,7 @@ public class FutarApiClient implements AlertApiClient {
     }
 
     @NonNull
-    private Uri buildUri(@NonNull AlertListType alertListType) {
+    private Uri buildUri() {
         Uri.Builder builder = Uri.parse(Config.FUTAR_API_BASE_URL).buildUpon()
                 .appendEncodedPath(AlertSearchContract.API_ENDPOINT)
                 .appendQueryParameter("key", QUERY_API_KEY)
@@ -184,51 +186,19 @@ public class FutarApiClient implements AlertApiClient {
                 mContext.getString(R.string.pref_key_debug_mode), false);
 
         if (!isDebugMode) {
-            String startTimestamp = "";
-
-            if (alertListType == AlertListType.ALERTS_TODAY) {
-                startTimestamp = String.valueOf(new DateTime().getMillis() / 1000L);
-            } else if (alertListType == AlertListType.ALERTS_FUTURE) {
-                DateTime now = new DateTime().withTimeAtStartOfDay();
-                DateTime tomorrow = now.plusDays(1).withTimeAtStartOfDay();
-                startTimestamp = String.valueOf(tomorrow.getMillis() / 1000L);
-            } else {
-                LOGW(TAG, "No alert list type provided, startTimestamp will be empty");
-            }
+            String startTimestamp = String.valueOf(new DateTime().getMillis() / 1000L);
+            //if (alertListType == AlertListType.ALERTS_TODAY) {
+            //} else if (alertListType == AlertListType.ALERTS_FUTURE) {
+            //    DateTime now = new DateTime().withTimeAtStartOfDay();
+            //    DateTime tomorrow = now.plusDays(1).withTimeAtStartOfDay();
+            //    startTimestamp = String.valueOf(tomorrow.getMillis() / 1000L);
+            //} else {
+            //    LOGW(TAG, "No alert list type provided, startTimestamp will be empty");
+            //}
             builder.appendQueryParameter("start", startTimestamp);
         }
 
         return builder.build();
-    }
-
-    /**
-     * Parses alerts and routes, then sends the parsed objects to the listener.
-     */
-    private void onResponseCallback(@NonNull AlertListListener listener, JSONObject response,
-                                    @NonNull AlertListType alertListType) {
-        // TODO: temporary if-else until refactoring both ApiClients
-        if (alertListType.equals(AlertListType.ALERTS_TODAY)) {
-            try {
-                mRoutes = parseRoutes(response);
-                mAlertsToday = parseAlerts(response, alertListType);
-            } catch (Exception ex) {
-                listener.onError(ex);
-            }
-            listener.onAlertListResponse(mAlertsToday);
-        } else {
-            try {
-                mRoutes = parseRoutes(response);
-                mAlertsFuture = parseAlerts(response, alertListType);
-            } catch (Exception ex) {
-                listener.onError(ex);
-            }
-            listener.onAlertListResponse(mAlertsFuture);
-        }
-
-    }
-
-    private void onErrorCallback(@NonNull AlertListListener listener, VolleyError error) {
-        listener.onError(error);
     }
 
     @NonNull

@@ -28,6 +28,7 @@ import com.ofalvai.bpinfo.BpInfoApplication;
 import com.ofalvai.bpinfo.Config;
 import com.ofalvai.bpinfo.R;
 import com.ofalvai.bpinfo.api.AlertApiClient;
+import com.ofalvai.bpinfo.api.AlertListErrorMessage;
 import com.ofalvai.bpinfo.api.AlertListMessage;
 import com.ofalvai.bpinfo.api.AlertRequestParams;
 import com.ofalvai.bpinfo.api.NoticeClient;
@@ -200,6 +201,11 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
         } else if (mAlertListType.equals(AlertListType.ALERTS_FUTURE)){
             onAlertListResponse(message.futureAlerts);
         }
+    }
+
+    @Subscribe
+    public void onAlertListErrorEvent(AlertListErrorMessage message) {
+        onError(message.mException);
     }
 
     /**
