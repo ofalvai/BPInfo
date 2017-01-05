@@ -72,7 +72,7 @@ public class BkkInfoClient implements AlertApiClient {
     public void fetchAlertList(final @NonNull AlertListListener listener, final @NonNull AlertRequestParams params) {
         if (mRequestInProgress) return;
 
-        final Uri url = buildUrl(params);
+        final Uri url = buildAlertListUrl(params);
 
         LOGI(TAG, "API request: " + url.toString());
 
@@ -107,29 +107,54 @@ public class BkkInfoClient implements AlertApiClient {
     }
 
     @Override
-    public void fetchAlert(@NonNull String id, @NonNull AlertListener listener,
+    public void fetchAlert(@NonNull String id, final @NonNull AlertListener listener,
                            @NonNull AlertRequestParams params) {
-        if (mAlertsToday == null) {
-            throw new RuntimeException("fetchAlert() was called before fetchAlertList()");
-            // TODO: this might be a problem when recreating only the AlertDetailFragment
-        } else {
-            for (Alert alert : mAlertsToday) {
-                if (alert.getId().equals(id)) {
-                    listener.onAlertResponse(alert);
-                    return;
+        Uri url = buildAlertDetailUrl(params, id);
+
+        LOGI(TAG, "API request: " + url.toString());
+
+        JsonObjectRequest request = new JsonObjectRequest(
+                url.toString(),
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            Alert alert = parseAlertDetail(response);
+                            listener.onAlertResponse(alert);
+                        } catch (Exception ex) {
+                            listener.onError(ex);
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        listener.onError(error);
+                    }
                 }
-            }
-            listener.onError(new Exception("Alert not found"));
-        }
+        );
+
+        mRequestQueue.add(request);
     }
 
-    private Uri buildUrl(AlertRequestParams params) {
+    private Uri buildAlertListUrl(AlertRequestParams params) {
         String language = params.mLanguageCode.equals("hu") ? BKKINFO_API_ENDPOINT_HU :
                 BKKINFO_API_ENDPOINT_EN;
 
         return Uri.parse(BKKINFO_API_BASE_URL).buildUpon()
                 .appendEncodedPath(language)
                 .appendEncodedPath(PARAM_ALERT_LIST)
+                .build();
+    }
+
+    private Uri buildAlertDetailUrl(AlertRequestParams params, String alertId) {
+        String language = params.mLanguageCode.equals("hu") ? BKKINFO_API_ENDPOINT_HU :
+                BKKINFO_API_ENDPOINT_EN;
+
+        return Uri.parse(BKKINFO_API_BASE_URL).buildUpon()
+                .appendEncodedPath(language)
+                .appendQueryParameter(PARAM_ALERT_DETAIL, alertId)
                 .build();
     }
 
@@ -203,6 +228,56 @@ public class BkkInfoClient implements AlertApiClient {
         return alert;
     }
 
+    private Alert parseAlertDetail(JSONObject response) throws JSONException {
+        String id = response.getString("id");
+
+        long start = 0;
+        if (!response.isNull("kezdEpoch")) {
+            start = response.getLong("kezdEpoch");
+        }
+
+        long end = 0;
+        if (!response.isNull("vegeEpoch")) {
+            end = response.getLong("vegeEpoch");
+        }
+
+        long timestamp = 0;
+        if (!response.isNull("modEpoch")) {
+            timestamp = response.getLong("modEpoch");
+        }
+
+        String url = getUrl(id);
+
+        String header;
+        String rawHeader = response.getString("targy");
+        String[] rawHeaderParts = rawHeader.split("\\|"); //TODO
+        header = Utils.capitalizeString(rawHeaderParts[2].trim());
+
+        String description;
+        StringBuilder descriptionBuilder = new StringBuilder();
+        descriptionBuilder.append(response.getString("feed"));
+
+        JSONArray routesNode = Utils.jsonObjectToArray(response.getJSONObject("jaratok"));
+        for (int i = 0; i < routesNode.length(); i++) {
+            JSONObject routeNode = routesNode.getJSONObject(i);
+            JSONObject optionsNode = routeNode.getJSONObject("opciok");
+
+            if (!optionsNode.isNull("szabad_szoveg")) {
+                String routeText = optionsNode.getJSONArray("szabad_szoveg").getString(0); //TODO
+                descriptionBuilder.append(routeText);
+            }
+        }
+        description = descriptionBuilder.toString();
+
+        List<Route> affectedRoutes;
+        JSONArray routesArray = Utils.jsonObjectToArray(response.getJSONObject("jarat_adatok"));
+        affectedRoutes = parseDetailedAffectedRoutes(routesArray);
+
+        Alert alert = new Alert(id, start, end, timestamp, null, null, url, header, description);
+        alert.setAffectedRoutes(affectedRoutes);
+        return alert;
+    }
+
     private String getUrl(String alertId) {
         return BKKINFO_DETAIL_WEBVIEW_URL + "?id=" + alertId;
     }
@@ -224,6 +299,25 @@ public class BkkInfoClient implements AlertApiClient {
                 Route route = new Route(null, shortName, null, null, type, null, colors[0], colors[1]);
                 routes.add(route);
             }
+        }
+        return routes;
+    }
+
+    @NonNull
+    private List<Route> parseDetailedAffectedRoutes(JSONArray routesArray) throws JSONException {
+        List<Route> routes = new ArrayList<>();
+        for (int i = 0; i < routesArray.length(); i++) {
+            JSONObject routeNode = routesArray.getJSONObject(i);
+
+            String id = routeNode.getString("forte");
+            String shortName = routeNode.getString("szam");
+            String description = routeNode.getString("utvonal");
+            RouteType routeType = parseRouteType(routeNode.getString("tipus"));
+            String color = routeNode.getString("szin");
+            String textColor = routeNode.getString("betu");
+
+            Route route = new Route(id, shortName, null, description, routeType, null, color, textColor);
+            routes.add(route);
         }
         return routes;
     }

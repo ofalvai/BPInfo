@@ -149,7 +149,8 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
 
                     @Override
                     public void onError(Exception ex) {
-                        // TODO: this listener is temporary
+                        //TODO
+                        LOGE(TAG, ex.toString());
                     }
                 },
                 getAlertRequestParams()
@@ -192,6 +193,15 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
         return mActiveFilter;
     }
 
+    @Subscribe
+    public void onAlertListEvent(AlertListMessage message) {
+        if (mAlertListType.equals(AlertListType.ALERTS_TODAY)) {
+            onAlertListResponse(message.todayAlerts);
+        } else if (mAlertListType.equals(AlertListType.ALERTS_FUTURE)){
+            onAlertListResponse(message.futureAlerts);
+        }
+    }
+
     /**
      * Transforms the list of returned alerts in the following order:
      * 1. Sort the list by the alerts' start time
@@ -211,15 +221,6 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
         List<Alert> filteredAlerts = filter(mActiveFilter, mUnfilteredAlerts);
 
         getView().displayAlerts(filteredAlerts);
-    }
-
-    @Subscribe
-    public void onAlertListEvent(AlertListMessage message) {
-        if (mAlertListType.equals(AlertListType.ALERTS_TODAY)) {
-            onAlertListResponse(message.todayAlerts);
-        } else {
-            onAlertListResponse(message.futureAlerts);
-        }
     }
 
     @Override
