@@ -57,7 +57,9 @@ public class Route implements Serializable {
     @ColorInt
     private int textColor;
 
-    public Route(String id, String shortName, String longName, String description, RouteType type, @ColorInt int color, @ColorInt int textColor) {
+    public Route(@NonNull String id, @Nullable String shortName, @Nullable String longName,
+                 @Nullable String description, @NonNull RouteType type, @ColorInt int color,
+                 @ColorInt int textColor) {
         this.id = id;
         this.shortName = shortName;
         this.longName = longName;
@@ -67,6 +69,7 @@ public class Route implements Serializable {
         this.textColor = textColor;
     }
 
+    @NonNull
     public String getId() {
         return id;
     }
@@ -75,35 +78,39 @@ public class Route implements Serializable {
         this.id = id;
     }
 
+    @Nullable
     public String getShortName() {
         return shortName;
     }
 
-    public void setShortName(String shortName) {
+    public void setShortName(@Nullable String shortName) {
         this.shortName = shortName;
     }
 
+    @Nullable
     public String getLongName() {
         return longName;
     }
 
-    public void setLongName(String longName) {
+    public void setLongName(@Nullable String longName) {
         this.longName = longName;
     }
 
+    @Nullable
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(@Nullable String description) {
         this.description = description;
     }
 
+    @NonNull
     public RouteType getType() {
         return type;
     }
 
-    public void setType(RouteType type) {
+    public void setType(@NonNull RouteType type) {
         this.type = type;
     }
 
