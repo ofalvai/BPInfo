@@ -157,6 +157,8 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
 
     public void updateAlert(final Alert alert) {
         mAlert = alert;
+        mDisplayedRoutes.clear();
+        mRouteIconsLayout.removeAllViews();
 
         mTitleTextView.setText(alert.getHeader());
 

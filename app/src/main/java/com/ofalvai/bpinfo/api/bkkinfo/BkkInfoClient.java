@@ -244,8 +244,7 @@ public class BkkInfoClient implements AlertApiClient {
         JSONArray routesArray = alertNode.getJSONArray("jaratokByFajta");
         affectedRoutes = parseAffectedRoutes(routesArray);
 
-        Alert alert =  new Alert(id, start, end, timestamp, null, null, url, header, description);
-        alert.setAffectedRoutes(affectedRoutes); //TODO: alert class refactor
+        Alert alert =  new Alert(id, start, end, timestamp, url, header, description, affectedRoutes);
         return alert;
     }
 
@@ -301,8 +300,7 @@ public class BkkInfoClient implements AlertApiClient {
         JSONArray routesArray = Utils.jsonObjectToArray(response.getJSONObject("jarat_adatok"));
         affectedRoutes = parseDetailedAffectedRoutes(routesArray);
 
-        Alert alert = new Alert(id, start, end, timestamp, null, null, url, header, description);
-        alert.setAffectedRoutes(affectedRoutes); //TODO: Alert class refactor
+        Alert alert = new Alert(id, start, end, timestamp, url, header, description, affectedRoutes);
         return alert;
     }
 

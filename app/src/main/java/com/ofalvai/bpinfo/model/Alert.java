@@ -16,56 +16,68 @@
 
 package com.ofalvai.bpinfo.model;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Alert implements Serializable {
 
-    // TODO: nullable fields
-
+    @NonNull
     private String id;
 
+    /**
+     * Start of the alert in miliseconds since the UNIX epoch
+     */
     private long start;
 
+    /**
+     * End of the alert in miliseconds since the UNIX epoch
+     * Might be 0, which means the end is not known yet.
+     */
     private long end;
 
     /**
-     * Last modification of Alert
+     * Last modification of alert data
      */
     private long timestamp;
 
-    private List<String> stopIds;
-
-    private List<String> routeIds;
-
+    /**
+     * Points to the alert's detail page at the mobile version of BKK Info
+     */
+    @Nullable
     private String url;
 
+    /**
+     * One line title of the alert (diversion, replacement, construction, etc.)
+     */
+    @Nullable
     private String header;
 
+    /**
+     * HTML description of the alert
+     */
+    @Nullable
     private String description;
 
+    @NonNull
     private List<Route> affectedRoutes;
 
-    public void setAffectedRoutes(List<Route> affectedRoutes) {
-        this.affectedRoutes = affectedRoutes;
-    }
-
-    public Alert(String id, long start, long end, long timestamp, List<String> stopIds,
-                 List<String> routeIds, String url, String header, String description) {
+    public Alert(@NonNull String id, long start, long end, long timestamp, @Nullable String url,
+                 @Nullable String header, @Nullable String description,
+                 @NonNull List<Route> affectedRoutes) {
         this.id = id;
         this.start = start;
         this.end = end;
         this.timestamp = timestamp;
-        this.stopIds = stopIds;
-        this.routeIds = routeIds;
         this.url = url;
         this.header = header;
         this.description = description;
-
-        this.affectedRoutes = new ArrayList<>();
+        this.affectedRoutes = affectedRoutes;
     }
 
+    @NonNull
     public String getId() {
         return id;
     }
@@ -98,47 +110,39 @@ public class Alert implements Serializable {
         this.timestamp = timestamp;
     }
 
-    public List<String> getStopIds() {
-        return stopIds;
-    }
-
-    public void setStopIds(List<String> stopIds) {
-        this.stopIds = stopIds;
-    }
-
-    public List<String> getRouteIds() {
-        return routeIds;
-    }
-
-    public void setRouteIds(List<String> routeIds) {
-        this.routeIds = routeIds;
-    }
-
+    @Nullable
     public String getUrl() {
         return url;
     }
 
-    public void setUrl(String url) {
+    public void setUrl(@Nullable String url) {
         this.url = url;
     }
 
+    @Nullable
     public String getHeader() {
         return header;
     }
 
-    public void setHeader(String header) {
+    public void setHeader(@Nullable String header) {
         this.header = header;
     }
 
+    @Nullable
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(@Nullable String description) {
         this.description = description;
     }
 
+    @NonNull
     public List<Route> getAffectedRoutes() {
         return affectedRoutes;
+    }
+
+    public void setAffectedRoutes(@NonNull List<Route> affectedRoutes) {
+        this.affectedRoutes = affectedRoutes;
     }
 }

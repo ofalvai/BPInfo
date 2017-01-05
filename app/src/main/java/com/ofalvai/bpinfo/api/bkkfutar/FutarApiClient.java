@@ -47,6 +47,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -88,6 +89,11 @@ public class FutarApiClient implements AlertApiClient {
     private List<Alert> mAlertsToday = new ArrayList<>();
 
     private List<Alert> mAlertsFuture = new ArrayList<>();
+
+    /**
+     * Map of all parsed routes. This is used to set every alert's affected routes by ID.
+     */
+    private Map<String, Route> mRoutes = new HashMap<>();
 
     @Nullable
     private String mLanguageCode;
@@ -199,31 +205,19 @@ public class FutarApiClient implements AlertApiClient {
      */
     private void onResponseCallback(@NonNull AlertListListener listener, JSONObject response,
                                     @NonNull AlertListType alertListType) {
-        Map<String, Route> routes;
-
         // TODO: temporary if-else until refactoring both ApiClients
         if (alertListType.equals(AlertListType.ALERTS_TODAY)) {
             try {
-                routes = parseRoutes(response);
+                mRoutes = parseRoutes(response);
                 mAlertsToday = parseAlerts(response, alertListType);
-
-                for (Alert alert : mAlertsToday) {
-                    List<Route> affectedRoutes = getAffectedRoutesForAlert(alert, routes);
-                    alert.setAffectedRoutes(affectedRoutes);
-                }
             } catch (Exception ex) {
                 listener.onError(ex);
             }
             listener.onAlertListResponse(mAlertsToday);
         } else {
             try {
-                routes = parseRoutes(response);
+                mRoutes = parseRoutes(response);
                 mAlertsFuture = parseAlerts(response, alertListType);
-
-                for (Alert alert : mAlertsFuture) {
-                    List<Route> affectedRoutes = getAffectedRoutesForAlert(alert, routes);
-                    alert.setAffectedRoutes(affectedRoutes);
-                }
             } catch (Exception ex) {
                 listener.onError(ex);
             }
@@ -259,20 +253,17 @@ public class FutarApiClient implements AlertApiClient {
             Alert alert;
             try {
                 alert = parseAlert(alertNode);
+
+                // Time ranges in the API response are messed up. We need to filter out alerts that are
+                // before/after the time range we want.
+                DateTime alertStartTime = new DateTime(alert.getStart() * 1000L);
+                if (alertListType == AlertListType.ALERTS_TODAY && alertStartTime.isBeforeNow()) {
+                    alertList.add(alert);
+                } else if (alertListType == AlertListType.ALERTS_FUTURE && alertStartTime.isAfterNow()) {
+                    alertList.add(alert);
+                }
             } catch (JSONException ex) {
-                alert = new Alert(null, 0, 0, 0, null, null, null, null, null);
-
                 Crashlytics.log(Log.WARN, TAG, "Alert parse: failed to parse");
-
-            }
-
-            // Time ranges in the API response are messed up. We need to filter out alerts that are
-            // before/after the time range we want.
-            DateTime alertStartTime = new DateTime(alert.getStart() * 1000L);
-            if (alertListType == AlertListType.ALERTS_TODAY && alertStartTime.isBeforeNow()) {
-                alertList.add(alert);
-            } else if (alertListType == AlertListType.ALERTS_FUTURE && alertStartTime.isAfterNow()) {
-                alertList.add(alert);
             }
         }
 
@@ -285,22 +276,14 @@ public class FutarApiClient implements AlertApiClient {
 
         String id = alertNode.getString(AlertContract.ALERT_ID);
         long start = alertNode.getLong(AlertContract.ALERT_START);
-        long end;
-        try {
+        long end = 0;
+
+        if (!alertNode.isNull(AlertContract.ALERT_END)) {
             // There are alerts with unknown ends, represented by null
-            // TODO: alertNode.isNull(AlertContract.ALERT_END)
             end = alertNode.getLong(AlertContract.ALERT_END);
-        } catch (JSONException ex) {
-            end = 0;
         }
 
         long timestamp = alertNode.getLong(AlertContract.ALERT_TIMESTAMP);
-
-        JSONArray stopIdsNode = alertNode.getJSONArray(AlertContract.ALERT_STOP_IDS);
-        List<String> stopIds = Utils.jsonArrayToStringList(stopIdsNode);
-
-        JSONArray routeIdsNode = alertNode.getJSONArray(AlertContract.ALERT_ROUTE_IDS);
-        List<String> routeIds = Utils.jsonArrayToStringList(routeIdsNode);
 
         JSONObject urlNode = alertNode.getJSONObject(AlertContract.ALERT_URL);
 
@@ -327,23 +310,22 @@ public class FutarApiClient implements AlertApiClient {
         String description;
         JSONObject descriptionNode = alertNode.getJSONObject(AlertContract.ALERT_DESC);
         JSONObject translationsNode2 = descriptionNode.getJSONObject(AlertContract.ALERT_DESC_TRANSLATIONS);
-        try {
+        if (!translationsNode2.isNull(mLanguageCode)) {
             // Trying to get the specific language's translation
             // It might be null or completely missing from the response
             description = translationsNode2.getString(mLanguageCode);
-
-            if (description == null || description.equals("null")) {
-                throw new JSONException("description field is null");
-            }
-        } catch (JSONException ex) {
+        } else {
             // Falling back to the "someTranslation" field
             description = descriptionNode.getString(AlertSearchContract.LANG_SOME);
 
             Crashlytics.log(Log.WARN, TAG, "Alert parse: description translation missing");
-
         }
 
-        return new Alert(id, start, end, timestamp, stopIds, routeIds, url, header, description);
+        JSONArray routeIdsNode = alertNode.getJSONArray(AlertContract.ALERT_ROUTE_IDS);
+        List<String> routeIds = Utils.jsonArrayToStringList(routeIdsNode);
+        List<Route> affectedRoutes = getRoutesByIds(routeIds);
+
+        return new Alert(id, start, end, timestamp, url, header, description, affectedRoutes);
     }
 
     @NonNull
@@ -423,14 +405,18 @@ public class FutarApiClient implements AlertApiClient {
      * but this method returns a list of affected routes from the parsed routes
      */
     @NonNull
-    private List<Route> getAffectedRoutesForAlert(@NonNull Alert alert, @NonNull Map<String, Route> routes) {
+    private List<Route> getRoutesByIds(@NonNull List<String> routeIds) {
         List<Route> affectedRoutes = new ArrayList<>();
 
-        for (String routeId : alert.getRouteIds()) {
-            Route route = routes.get(routeId);
+        if (mRoutes == null || mRoutes.isEmpty()) {
+            return affectedRoutes;
+        }
+
+        for (String routeId : routeIds) {
+            Route route = mRoutes.get(routeId);
             if (route == null) {
                 // Replacement routes are filtered out at the parse stage,
-                // getting a route by the returned routeId might be null.
+                // getting a route by the returned routeId might be null, which is ok.
                 continue;
             }
             affectedRoutes.add(route);
