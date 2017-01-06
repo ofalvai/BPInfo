@@ -49,17 +49,21 @@ import static com.ofalvai.bpinfo.util.LogUtils.LOGI;
 public class BkkInfoClient implements AlertApiClient {
     private static final String TAG = "BkkInfoClient";
 
-    private static final String BKKINFO_API_BASE_URL = "http://bkk.hu/apps/bkkinfo/";
+    private static final String API_BASE_URL = "http://bkk.hu/apps/bkkinfo/";
 
-    private static final String BKKINFO_API_ENDPOINT_HU = "json.php";
+    private static final String API_ENDPOINT_HU = "json.php";
 
-    private static final String BKKINFO_API_ENDPOINT_EN = "json_en.php";
+    private static final String API_ENDPOINT_EN = "json_en.php";
 
     private static final String PARAM_ALERT_LIST = "?lista";
 
     private static final String PARAM_ALERT_DETAIL = "id";
 
-    private static final String BKKINFO_DETAIL_WEBVIEW_URL = "http://bkk.hu/apps/bkkinfo/iframe.php"; //TODO: not responsive
+    private static final String DETAIL_WEBVIEW_BASE_URL = "http://m.bkkinfo.hu/alert.php";
+
+    private static final String DETAIL_WEBVIEW_PARAM_ID = "id";
+
+
 
     private RequestQueue mRequestQueue;
 
@@ -137,20 +141,20 @@ public class BkkInfoClient implements AlertApiClient {
     }
 
     private Uri buildAlertListUrl(AlertRequestParams params) {
-        String endpoint = params.mLanguageCode.equals("hu") ? BKKINFO_API_ENDPOINT_HU :
-                BKKINFO_API_ENDPOINT_EN;
+        String endpoint = params.mLanguageCode.equals("hu") ? API_ENDPOINT_HU :
+                API_ENDPOINT_EN;
 
-        return Uri.parse(BKKINFO_API_BASE_URL).buildUpon()
+        return Uri.parse(API_BASE_URL).buildUpon()
                 .appendEncodedPath(endpoint)
                 .appendEncodedPath(PARAM_ALERT_LIST)
                 .build();
     }
 
     private Uri buildAlertDetailUrl(AlertRequestParams params, String alertId) {
-        String endpoint = params.mLanguageCode.equals("hu") ? BKKINFO_API_ENDPOINT_HU :
-                BKKINFO_API_ENDPOINT_EN;
+        String endpoint = params.mLanguageCode.equals("hu") ? API_ENDPOINT_HU :
+                API_ENDPOINT_EN;
 
-        return Uri.parse(BKKINFO_API_BASE_URL).buildUpon()
+        return Uri.parse(API_BASE_URL).buildUpon()
                 .appendEncodedPath(endpoint)
                 .appendQueryParameter(PARAM_ALERT_DETAIL, alertId)
                 .build();
@@ -320,7 +324,7 @@ public class BkkInfoClient implements AlertApiClient {
     }
 
     private String getUrl(String alertId) {
-        return BKKINFO_DETAIL_WEBVIEW_URL + "?id=" + alertId;
+        return DETAIL_WEBVIEW_BASE_URL + "?" + DETAIL_WEBVIEW_PARAM_ID + "=" + alertId;
     }
 
     /**
