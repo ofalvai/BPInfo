@@ -16,6 +16,8 @@
 
 package com.ofalvai.bpinfo.api.bkkinfo;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.support.annotation.ColorInt;
@@ -27,6 +29,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.crashlytics.android.Crashlytics;
+import com.ofalvai.bpinfo.BpInfoApplication;
+import com.ofalvai.bpinfo.R;
 import com.ofalvai.bpinfo.api.AlertApiClient;
 import com.ofalvai.bpinfo.api.AlertListErrorMessage;
 import com.ofalvai.bpinfo.api.AlertListMessage;
@@ -37,12 +41,15 @@ import com.ofalvai.bpinfo.model.RouteType;
 import com.ofalvai.bpinfo.util.Utils;
 
 import org.greenrobot.eventbus.EventBus;
+import org.joda.time.DateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import static com.ofalvai.bpinfo.util.LogUtils.LOGI;
 
@@ -63,7 +70,11 @@ public class BkkInfoClient implements AlertApiClient {
 
     private static final String DETAIL_WEBVIEW_PARAM_ID = "id";
 
+    @Inject
+    SharedPreferences mSharedPreferences;
 
+    @Inject
+    Context mContext;
 
     private RequestQueue mRequestQueue;
 
@@ -81,6 +92,7 @@ public class BkkInfoClient implements AlertApiClient {
 
     public BkkInfoClient(RequestQueue requestQueue) {
         mRequestQueue = requestQueue;
+        BpInfoApplication.injector.inject(this);
     }
 
     @Override
@@ -190,7 +202,16 @@ public class BkkInfoClient implements AlertApiClient {
         for (int i = 0; i < activeAlertsList.length(); i++) {
             try {
                 JSONObject alertNode = activeAlertsList.getJSONObject(i);
-                alerts.add(parseAlert(alertNode));
+                Alert alert = parseAlert(alertNode);
+
+                // Some alerts are still listed a few minutes after they ended, we need to hide them,
+                // but still show them if debug mode is enabled
+                boolean isDebugMode = mSharedPreferences.getBoolean(
+                        mContext.getString(R.string.pref_key_debug_mode), false);
+                DateTime alertEndTime = new DateTime(alert.getEnd() * 1000L);
+                if (alertEndTime.isAfterNow() || alert.getEnd() == 0 || isDebugMode) {
+                    alerts.add(parseAlert(alertNode));
+                }
             } catch (JSONException ex) {
                 Crashlytics.log(Log.WARN, TAG, "Alert parse: failed to parse:\n" + ex.toString());
             }

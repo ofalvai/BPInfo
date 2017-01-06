@@ -19,6 +19,7 @@ package com.ofalvai.bpinfo.injection;
 import com.ofalvai.bpinfo.BpInfoApplication;
 import com.ofalvai.bpinfo.api.bkkfutar.FutarApiClient;
 import com.ofalvai.bpinfo.api.NoticeClient;
+import com.ofalvai.bpinfo.api.bkkinfo.BkkInfoClient;
 import com.ofalvai.bpinfo.ui.alertlist.AlertListPresenter;
 import com.ofalvai.bpinfo.ui.settings.SettingsActivity;
 
@@ -43,4 +44,6 @@ public interface AppComponent {
     void inject(FutarApiClient futarApiClient);
 
     void inject(NoticeClient noticeClient);
+
+    void inject(BkkInfoClient bkkInfoClient);
 }
