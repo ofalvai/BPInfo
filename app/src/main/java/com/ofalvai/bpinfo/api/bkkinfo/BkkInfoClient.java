@@ -439,8 +439,8 @@ public class BkkInfoClient implements AlertApiClient {
         String text;
         switch (type) {
             case BUS:
-                if (shortName.startsWith("9")) {
-                    // Night bus
+                if (shortName.matches("/9[0-9][0-9][A-Z]?/")) {
+                    // Night bus numbers start from 900, and might contain one extra letter
                     background = "1E1E1E";
                     text = "FFFFFF";
                 } else {
