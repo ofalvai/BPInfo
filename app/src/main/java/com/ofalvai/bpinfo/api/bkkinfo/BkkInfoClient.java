@@ -343,7 +343,7 @@ public class BkkInfoClient implements AlertApiClient {
             JSONArray concreteRoutes = routeNode.getJSONArray("jaratok");
             for (int j = 0; j < concreteRoutes.length(); j++) {
                 String shortName = concreteRoutes.getString(j);
-                int[] colors = parseRouteColors(type);
+                int[] colors = parseRouteColors(type, shortName);
 
                 // There's no ID returned by the API, using shortName instead
                 Route route = new Route(shortName, shortName, null, null, type, colors[0], colors[1]);
@@ -389,7 +389,7 @@ public class BkkInfoClient implements AlertApiClient {
             case "metro":
                 return RouteType.SUBWAY;
             case "libego":
-                return RouteType._OTHER_; //TODO
+                return RouteType.CHAIRLIFT;
             default:
                 return RouteType._OTHER_;
         }
@@ -401,10 +401,16 @@ public class BkkInfoClient implements AlertApiClient {
      * doesn't return them in the response.
      * Note that the alert detail response contains color values, so the alert detail parsing
      * doesn't need to call this.
+     * @param type Parsed type of the route. Most of the time this is enough to match the colors
+     * @param shortName Parsed short name (line number) of the route. This is needed because some
+     *                  route types have different colors for each route (eg. subway, ferry).
      * @return  Array of color-ints: background, foreground
      */
     @ColorInt
-    private int[] parseRouteColors(RouteType type) {
+    private int[] parseRouteColors(RouteType type, String shortName) {
+        // Color values based on this list of routes:
+        // http://online.winmenetrend.hu/budapest/latest/lines
+
         String defaultBackground = "EEEEEE";
         String defaultText = "BBBBBB";
 
@@ -412,17 +418,61 @@ public class BkkInfoClient implements AlertApiClient {
         String text;
         switch (type) {
             case BUS:
-                background = "009FE3";
-                text = "FFFFFF";
+                if (shortName.startsWith("9")) {
+                    // Night bus
+                    background = "1E1E1E";
+                    text = "FFFFFF";
+                } else {
+                    // Regular bus
+                    background = "009FE3";
+                    text = "FFFFFF";
+                }
                 break;
             case FERRY:
-                background = "D60080";
-                text = "FFFFFF";
+                switch (shortName) {
+                    case "D2":
+                        background = "FF1609";
+                        text = "FFFFFF";
+                        break;
+                    case "D11":
+                        background = "D60080";
+                        text = "FFFFFF";
+                        break;
+                    case "D14":
+                        background = "D60080";
+                        text = "FFFFFF";
+                        break;
+                    default:
+                        background = defaultBackground;
+                        text = defaultText;
+                }
                 break;
             case RAIL:
-                // TODO: color depends on the route name
-                background = defaultBackground;
-                text = defaultText;
+                switch (shortName) {
+                    case "H5":
+                        background = "821066";
+                        text = "FFFFFF";
+                        break;
+                    case "H6":
+                        background = "824B00";
+                        text = "FFFFFF";
+                        break;
+                    case "H7":
+                        background = "EE7203";
+                        text = "FFFFFF";
+                        break;
+                    case "H8":
+                        background = "ED677E";
+                        text = "FFFFFF";
+                        break;
+                    case "H9":
+                        background = "ED677E";
+                        text = "FFFFFF";
+                        break;
+                    default:
+                        background = defaultBackground;
+                        text = defaultText;
+                }
                 break;
             case TRAM:
                 background = "FFD800";
@@ -433,9 +483,31 @@ public class BkkInfoClient implements AlertApiClient {
                 text = "FFFFFF";
                 break;
             case SUBWAY:
-                // TODO: color depends on the route name
-                background = defaultBackground;
-                text = defaultText;
+                switch (shortName) {
+                    case "M1":
+                        background = "FFD800";
+                        text = "000000";
+                        break;
+                    case "M2":
+                        background = "E41F18";
+                        text = "FFFFFF";
+                        break;
+                    case "M3":
+                        background = "005CA5";
+                        text = "FFFFFF";
+                        break;
+                    case "M4":
+                        background = "4CA22F";
+                        text = "FFFFFF";
+                        break;
+                    default:
+                        background = defaultBackground;
+                        text = defaultText;
+                }
+                break;
+            case CHAIRLIFT:
+                background = "009155";
+                text = "000000";
                 break;
             case _OTHER_:
                 background = defaultBackground;

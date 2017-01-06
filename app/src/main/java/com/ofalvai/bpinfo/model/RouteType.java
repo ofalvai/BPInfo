@@ -23,6 +23,7 @@ public enum RouteType {
     TRAM,
     TROLLEYBUS,
     SUBWAY,
+    CHAIRLIFT,
 
     _OTHER_
 }
