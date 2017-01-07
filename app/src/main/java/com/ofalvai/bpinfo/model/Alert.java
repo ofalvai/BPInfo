@@ -64,6 +64,11 @@ public class Alert implements Serializable {
     @NonNull
     private List<Route> affectedRoutes;
 
+    /**
+     * Whether the alert object contains all required information, or a second API call is needed
+     */
+    private boolean partial = false;
+
     public Alert(@NonNull String id, long start, long end, long timestamp, @Nullable String url,
                  @Nullable String header, @Nullable String description,
                  @NonNull List<Route> affectedRoutes) {
@@ -144,5 +149,13 @@ public class Alert implements Serializable {
 
     public void setAffectedRoutes(@NonNull List<Route> affectedRoutes) {
         this.affectedRoutes = affectedRoutes;
+    }
+
+    public boolean isPartial() {
+        return partial;
+    }
+
+    public void setPartial(boolean partial) {
+        this.partial = partial;
     }
 }

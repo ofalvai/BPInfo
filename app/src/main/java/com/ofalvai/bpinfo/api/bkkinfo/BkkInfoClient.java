@@ -278,17 +278,13 @@ public class BkkInfoClient implements AlertApiClient {
 
         String header = Utils.capitalizeString(alertNode.getString("elnevezes"));
 
-        String description = null;
-        JSONObject optionNode = alertNode.getJSONObject("opcio");
-        if (!optionNode.isNull("szabad_szoveg")) {
-            description = optionNode.getString("szabad_szoveg");
-        }
-
         List<Route> affectedRoutes;
         JSONArray routesArray = alertNode.getJSONArray("jaratokByFajta");
         affectedRoutes = parseAffectedRoutes(routesArray);
 
-        return new Alert(id, start, end, timestamp, url, header, description, affectedRoutes);
+        Alert alert = new Alert(id, start, end, timestamp, url, header, null, affectedRoutes);
+        alert.setPartial(true); // Description is missing, needs a second API call
+        return alert;
     }
 
     /**

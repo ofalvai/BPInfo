@@ -34,7 +34,9 @@ public interface AlertListContract {
         void displayAlerts(@NonNull List<Alert> alerts);
 
         /**
-         * Displays the alert detail view with some existing data
+         * Displays the alert detail view.
+         * If the alert object contains all required information, there's no need to call
+         * updateAlertDetail() later, otherwise Alert.partial must be set to true.
          * @param alert data from a list item
          */
         void displayAlertDetail(@NonNull Alert alert);

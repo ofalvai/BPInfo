@@ -25,6 +25,7 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.widget.ContentLoadingProgressBar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,6 +72,9 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
 
     @BindView(R.id.alert_detail_url)
     TextView mUrlTextView;
+
+    @BindView(R.id.alert_detail_progress_bar)
+    ContentLoadingProgressBar mProgressBar;
 
     /**
      * List of currently displayed route icons. This list is needed in order to find visually
@@ -125,7 +129,11 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
         View view = inflater.inflate(R.layout.fragment_alert_detail, container, false);
         ButterKnife.bind(this, view);
 
-        updateAlert(mAlert);
+        displayAlert(mAlert);
+
+        if (!mAlert.isPartial()) {
+            mProgressBar.hide();
+        }
 
         return view;
     }
@@ -160,6 +168,12 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
         mDisplayedRoutes.clear();
         mRouteIconsLayout.removeAllViews();
 
+        displayAlert(alert);
+
+        mProgressBar.hide();
+    }
+
+    private void displayAlert(final Alert alert) {
         mTitleTextView.setText(alert.getHeader());
 
         String dateString = UiUtils.alertDateFormatter(getActivity(), alert.getStart(), alert.getEnd());

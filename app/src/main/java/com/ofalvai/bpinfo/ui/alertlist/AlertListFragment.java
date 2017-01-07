@@ -350,8 +350,8 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
         AlertDetailFragment fragment = (AlertDetailFragment)
                 manager.findFragmentByTag(AlertDetailFragment.FRAGMENT_TAG);
 
-        // It's possible that the presenter calls this method instantly, when the selected
-        // API client returns local data
+        // It's possible that the presenter calls this method instantly, when the fragment is not
+        // yet attached.
         if (fragment != null) {
             fragment.updateAlert(alert);
         }
