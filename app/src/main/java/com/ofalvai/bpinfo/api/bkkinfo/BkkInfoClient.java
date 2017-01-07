@@ -176,6 +176,8 @@ public class BkkInfoClient implements AlertApiClient {
         try {
             mAlertsToday = parseTodayAlerts(response);
             mAlertsFuture = parseFutureAlerts(response);
+            BkkInfoClient.fixFutureAlertsInTodayList(mAlertsToday, mAlertsFuture);
+
 
             EventBus.getDefault().post(new AlertListMessage(mAlertsToday, mAlertsFuture));
         } catch (Exception ex) {
@@ -551,5 +553,17 @@ public class BkkInfoClient implements AlertApiClient {
         }
 
         return new int[] { backgroundColor, textColor};
+    }
+
+    /**
+     * Alerts scheduled for the current day (and not yet started) appear in the current alerts list.
+     * We need to find them and move to the future alerts list
+     */
+    private static void fixFutureAlertsInTodayList(List<Alert> alertsToday, List<Alert> alertsFuture) {
+        for (Alert alert : alertsToday) {
+            if (new DateTime(alert.getStart()).isAfterNow()) {
+                alertsFuture.add(alert);
+            }
+        }
     }
 }
