@@ -155,42 +155,16 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
         if (key.equals(getString(R.string.pref_key_language))) {
             String languageValue = sharedPreferences.getString(key, "default");
             FabricUtils.logLanguageChange(languageValue);
-
-            new AlertDialog.Builder(this)
-                    .setTitle(getString(R.string.pref_language_dialog_title))
-                    .setMessage(getString(R.string.pref_language_dialog_message))
-                    .setNegativeButton(getString(R.string.pref_language_dialog_negative_button), null)
-                    .setPositiveButton(getString(R.string.pref_language_dialog_positive_button),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                ProcessPhoenix.triggerRebirth(getApplicationContext());
-                            }
-                        })
-                    .show();
+            showLanguageRestartDialog();
         }
         // Debug mode
         else if (key.equals(getString(R.string.pref_key_debug_mode))) {
             boolean state = mSharedPreferences.getBoolean(key, false);
             String text = state ? getString(R.string.debug_mode_on) : getString(R.string.debog_mode_off);
-
             Toast.makeText(this, text, Toast.LENGTH_LONG).show();
-
             FabricUtils.logDebugMode(String.valueOf(state));
         } else if (key.equals(getString(R.string.pref_key_data_source))) {
-            // TODO: temporary dialog
-            new AlertDialog.Builder(this)
-                    .setTitle(getString(R.string.pref_language_dialog_title))
-                    .setMessage(getString(R.string.pref_language_dialog_message))
-                    .setNegativeButton(getString(R.string.pref_language_dialog_negative_button), null)
-                    .setPositiveButton(getString(R.string.pref_language_dialog_positive_button),
-                            new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    ProcessPhoenix.triggerRebirth(getApplicationContext());
-                                }
-                            })
-                    .show();
+            showDataSourceRestartDialog();
         }
     }
 
@@ -254,5 +228,35 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
         } else {
             LOGW(TAG, "Preference '" + preferenceKey + "' not found");
         }
+    }
+
+    private void showLanguageRestartDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.pref_language_dialog_title))
+                .setMessage(getString(R.string.pref_language_dialog_message))
+                .setNegativeButton(getString(R.string.pref_language_dialog_negative_button), null)
+                .setPositiveButton(getString(R.string.pref_language_dialog_positive_button),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                ProcessPhoenix.triggerRebirth(getApplicationContext());
+                            }
+                        })
+                .show();
+    }
+
+    private void showDataSourceRestartDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.pref_data_source_dialog_title))
+                .setMessage(getString(R.string.pref_data_source_dialog_message))
+                .setNegativeButton(getString(R.string.pref_data_source_dialog_negative_button), null)
+                .setPositiveButton(getString(R.string.pref_data_source_dialog_positive_button),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                ProcessPhoenix.triggerRebirth(getApplicationContext());
+                            }
+                        })
+                .show();
     }
 }

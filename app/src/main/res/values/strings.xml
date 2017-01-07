@@ -115,6 +115,10 @@
     <string name="pref_language_dialog_message">In order to use the new language, the app needs to be restarted.</string>
     <string name="pref_language_dialog_positive_button">Restart</string>
     <string name="pref_language_dialog_negative_button">Later</string>
+    <string name="pref_data_source_dialog_title">Restart needed</string>
+    <string name="pref_data_source_dialog_message">In order to use the new data source, the app needs to be restarted.</string>
+    <string name="pref_data_source_dialog_positive_button">Restart</string>
+    <string name="pref_data_source_dialog_negative_button">Later</string>
     <string name="pref_key_category_other" translatable="false">category_about</string>
     <string name="pref_key_debug_mode" translatable="false">pref_key_debug_mode</string>
     <string name="debug_mode_on">Debug mode enabled</string>
