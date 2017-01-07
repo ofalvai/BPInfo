@@ -126,7 +126,7 @@
     <string name="email_bkk_mailto" translatable="false">mailto:futar@bkk.hu</string>
     <string name="email_bkk_body">To whom it may concern,\n\nI would like to report a problem in the data returned by the FUTÁR API:\n\nSincerely,\n</string>
     <string name="email_bkk_subject">FUTÁR API bugreport</string>
-    <string name="title_activity_licences">Licences</string>
+    <string name="title_activity_licences">Licenses</string>
     <string name="alert_label_recent">RECENT</string>
     <string name="title_activity_about">About</string>
     <string name="about_label_licences">Open source licenses</string>

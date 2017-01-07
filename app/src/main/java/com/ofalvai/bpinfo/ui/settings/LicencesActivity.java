@@ -34,7 +34,7 @@ public class LicencesActivity extends AppCompatActivity {
 
         WebView webView = (WebView) findViewById(R.id.webview_licences);
         if (webView != null) {
-            webView.loadUrl("file:///android_asset/licences.html");
+            webView.loadUrl("file:///android_asset/licenses.html");
         }
     }
 
