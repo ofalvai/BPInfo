@@ -333,6 +333,7 @@ public class BkkInfoClient implements AlertApiClient {
             if (!optionsNode.isNull("szabad_szoveg")) {
                 JSONArray routeTextArray = optionsNode.getJSONArray("szabad_szoveg");
                 for (int j = 0; j < routeTextArray.length(); j++) {
+                    descriptionBuilder.append("<br />");
                     descriptionBuilder.append(routeTextArray.getString(j));
                 }
             }
