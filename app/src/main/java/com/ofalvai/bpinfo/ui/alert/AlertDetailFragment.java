@@ -16,6 +16,10 @@
 
 package com.ofalvai.bpinfo.ui.alert;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ValueAnimator;
 import android.app.Dialog;
 import android.graphics.Paint;
 import android.net.Uri;
@@ -25,6 +29,7 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -168,9 +173,62 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
         mDisplayedRoutes.clear();
         mRouteIconsLayout.removeAllViews();
 
+        // Updating views
         displayAlert(alert);
 
-        mProgressBar.hide();
+        // View animations
+        // For some reason, ObjectAnimator doesn't work here (skips animation states, just shows the
+        // last frame), we need to use ValueAnimators.
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.setDuration(300);
+        animatorSet.setInterpolator(new FastOutSlowInInterpolator());
+
+        // We can't measure the TextView's height before a layout happens because of the setText() call
+        // Note: even though displayAlert() was called earlier, the TextView's height is still 0.
+        int heightEstimate = mDescriptionTextView.getLineHeight() *
+                mDescriptionTextView.getLineCount() + 10;
+
+        ValueAnimator descriptionHeight = ValueAnimator.ofInt(mDescriptionTextView.getHeight(), heightEstimate);
+        descriptionHeight.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                mDescriptionTextView.getLayoutParams().height = (int) animation.getAnimatedValue();
+                mDescriptionTextView.requestLayout();
+            }
+        });
+        descriptionHeight.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mDescriptionTextView.setAlpha(1.0f);
+                mDescriptionTextView.setVisibility(View.VISIBLE);
+            }
+        });
+
+        ValueAnimator descriptionAlpha = ValueAnimator.ofFloat(0, 1.0f);
+        descriptionAlpha.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                mDescriptionTextView.setAlpha((float) animation.getAnimatedValue());
+            }
+        });
+
+        ValueAnimator progressHeight = ValueAnimator.ofInt(mProgressBar.getHeight(), 0);
+        progressHeight.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                mProgressBar.getLayoutParams().height = (int) animation.getAnimatedValue();
+                mProgressBar.requestLayout();
+            }
+        });
+        progressHeight.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mProgressBar.hide();
+            }
+        });
+
+        animatorSet.playTogether(progressHeight, descriptionHeight, descriptionAlpha);
+        animatorSet.start();
     }
 
     private void displayAlert(final Alert alert) {
