@@ -78,8 +78,8 @@
         <item>@string/pref_key_language_en</item>
     </string-array>
 
-    <string name="pref_data_source_futar">BKK FUTÁR</string>
-    <string name="pref_data_source_bkk_info">BKK INFO</string>
+    <string name="pref_data_source_futar" translatable="false">BKK FUTÁR</string>
+    <string name="pref_data_source_bkk_info" translatable="false">BKK INFO</string>
 
     <string name="pref_key_data_source_futar" translatable="false">bkk_futar</string>
     <string name="pref_key_data_source_bkk_info" translatable="false">bkk_info</string>
