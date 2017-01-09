@@ -24,8 +24,10 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.crashlytics.android.Crashlytics;
@@ -55,7 +57,14 @@ import javax.inject.Inject;
 import static com.ofalvai.bpinfo.util.LogUtils.LOGI;
 
 public class BkkInfoClient implements AlertApiClient {
+
     private static final String TAG = "BkkInfoClient";
+
+    /**
+     * The API is so slow we have to increase the default Volley timeout.
+     * Response time increases the most when there's an alert with many affected routes.
+     */
+    private static final int TIMEOUT_MS = 5000;
 
     private static final String API_BASE_URL = "http://bkk.hu/apps/bkkinfo/";
 
@@ -121,6 +130,7 @@ public class BkkInfoClient implements AlertApiClient {
                     }
                 }
         );
+        request.setRetryPolicy(getRetryPolicy());
 
         mRequestInProgress = true;
         mRequestQueue.add(request);
@@ -149,6 +159,7 @@ public class BkkInfoClient implements AlertApiClient {
                     }
                 }
         );
+        request.setRetryPolicy(getRetryPolicy());
 
         mRequestQueue.add(request);
     }
@@ -574,5 +585,16 @@ public class BkkInfoClient implements AlertApiClient {
                 alertsFuture.add(alert);
             }
         }
+    }
+
+    /**
+     * Returns a retry policy with increased timeout
+     */
+    private static RetryPolicy getRetryPolicy() {
+        return new DefaultRetryPolicy(
+                TIMEOUT_MS,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        );
     }
 }
