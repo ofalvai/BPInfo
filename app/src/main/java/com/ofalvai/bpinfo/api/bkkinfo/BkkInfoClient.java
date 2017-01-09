@@ -527,7 +527,7 @@ public class BkkInfoClient implements AlertApiClient {
                         text = "FFFFFF";
                         break;
                     case "M4":
-                        background = "4CA22F";
+                        background = "19A949";
                         text = "FFFFFF";
                         break;
                     default:
