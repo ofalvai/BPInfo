@@ -140,11 +140,22 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             mAlert = (Alert) getArguments().getSerializable(ARG_ALERT_OBJECT);
         }
 
+        if (savedInstanceState != null) {
+            mAlert = (Alert) savedInstanceState.getSerializable(ARG_ALERT_OBJECT);
+        }
+
         FabricUtils.logAlertContentView(mAlert);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putSerializable(ARG_ALERT_OBJECT, mAlert);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
