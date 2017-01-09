@@ -47,6 +47,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -321,9 +322,9 @@ public class BkkInfoClient implements AlertApiClient {
         StringBuilder descriptionBuilder = new StringBuilder();
         descriptionBuilder.append(response.getString("feed"));
 
-        JSONArray routesNode = Utils.jsonObjectToArray(response.getJSONObject("jaratok"));
-        for (int i = 0; i < routesNode.length(); i++) {
-            JSONObject routeNode = routesNode.getJSONObject(i);
+        JSONArray routesArray = Utils.jsonObjectToArray(response.getJSONObject("jaratok"));
+        for (int i = 0; i < routesArray.length(); i++) {
+            JSONObject routeNode = routesArray.getJSONObject(i);
             JSONObject optionsNode = routeNode.getJSONObject("opciok");
 
             if (!optionsNode.isNull("szabad_szoveg")) {
@@ -337,8 +338,11 @@ public class BkkInfoClient implements AlertApiClient {
         description = descriptionBuilder.toString();
 
         List<Route> affectedRoutes;
-        JSONArray routesArray = Utils.jsonObjectToArray(response.getJSONObject("jarat_adatok"));
-        affectedRoutes = parseDetailedAffectedRoutes(routesArray);
+        JSONObject routeDetailsNode = response.getJSONObject("jarat_adatok");
+        Iterator<String> affectedRouteIds = response.getJSONObject("jaratok").keys();
+        // Some routes in routeDetailsNode are not affected by the alert, but alternative
+        // recommended routes. The real affected routes' IDs are in "jaratok"
+        affectedRoutes = parseDetailedAffectedRoutes(routeDetailsNode, affectedRouteIds);
 
         return new Alert(id, start, end, timestamp, url, header, description, affectedRoutes);
     }
@@ -376,12 +380,19 @@ public class BkkInfoClient implements AlertApiClient {
     /**
      * Parses affected routes found in the alert detail API response
      * This structure is different than the alert list API response
+     * @param routesNode Details of routes. Some of them are not affected by the alert, only
+     *                   recommended alternative routes
+     * @param affectedRouteIds IDs of only the affected routes
      */
     @NonNull
-    private List<Route> parseDetailedAffectedRoutes(JSONArray routesArray) throws JSONException {
+    private List<Route> parseDetailedAffectedRoutes(JSONObject routesNode,
+                                                    Iterator<String> affectedRouteIds)
+            throws JSONException {
         List<Route> routes = new ArrayList<>();
-        for (int i = 0; i < routesArray.length(); i++) {
-            JSONObject routeNode = routesArray.getJSONObject(i);
+
+        while (affectedRouteIds.hasNext()) {
+            String routeId = affectedRouteIds.next();
+            JSONObject routeNode = routesNode.getJSONObject(routeId);
 
             String id = routeNode.getString("forte");
             String shortName = routeNode.getString("szam");
@@ -393,6 +404,7 @@ public class BkkInfoClient implements AlertApiClient {
             Route route = new Route(id, shortName, null, description, routeType, color, textColor);
             routes.add(route);
         }
+
         return routes;
     }
 
