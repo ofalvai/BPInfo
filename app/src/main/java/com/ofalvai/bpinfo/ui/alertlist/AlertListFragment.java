@@ -48,6 +48,7 @@ import com.ofalvai.bpinfo.util.FabricUtils;
 import com.ofalvai.bpinfo.util.SimpleDividerItemDecoration;
 import com.ofalvai.bpinfo.util.Utils;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -130,6 +131,8 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
         View view = inflater.inflate(R.layout.fragment_alert_list, container, false);
         ButterKnife.bind(this, view);
 
+        mAlertAdapter = new AlertAdapter(new ArrayList<Alert>(), getActivity(), this);
+        mAlertRecyclerView.setAdapter(mAlertAdapter);
         mAlertRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mAlertRecyclerView.addItemDecoration(
                 new SimpleDividerItemDecoration(getActivity()));
