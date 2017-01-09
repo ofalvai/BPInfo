@@ -139,5 +139,6 @@
     <string name="dialog_notice_positive_button">OK</string>
     <string name="pref_title_data_source">Data source</string>
     <string name="pref_key_data_source" translatable="false">data_source</string>
+    <string name="error_alert_detail_load">Failed to load alert details</string>
 
 </resources>

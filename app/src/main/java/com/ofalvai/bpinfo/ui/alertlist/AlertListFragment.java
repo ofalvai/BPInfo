@@ -340,7 +340,7 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
 
     @Override
     public void displayAlertDetail(@NonNull Alert alert) {
-        AlertDetailFragment alertDetailFragment = AlertDetailFragment.newInstance(alert);
+        AlertDetailFragment alertDetailFragment = AlertDetailFragment.newInstance(alert, mPresenter);
         alertDetailFragment.show(getActivity().getSupportFragmentManager(), AlertDetailFragment.FRAGMENT_TAG);
     }
 
@@ -354,6 +354,19 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
         // yet attached.
         if (fragment != null) {
             fragment.updateAlert(alert);
+        }
+    }
+
+    @Override
+    public void displayAlertDetailError() {
+        FragmentManager manager = getActivity().getSupportFragmentManager();
+        AlertDetailFragment fragment = (AlertDetailFragment)
+                manager.findFragmentByTag(AlertDetailFragment.FRAGMENT_TAG);
+
+        // It's possible that the presenter calls this method instantly, when the fragment is not
+        // yet attached.
+        if (fragment != null) {
+            fragment.onAlertUpdateFailed();
         }
     }
 

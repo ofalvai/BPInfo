@@ -15,43 +15,43 @@
   ~    limitations under the License.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout android:id="@+id/error_with_action"
+              xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:tools="http://schemas.android.com/tools"
-              android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
+              android:orientation="vertical"
               android:padding="16dp"
-              android:id="@+id/error_with_action"
               android:visibility="gone"
               tools:visibility="visible">
 
     <ImageView
+        android:id="@+id/error_icon"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:id="@+id/error_icon"
         android:layout_gravity="center_horizontal"
-        android:background="@drawable/ic_error_icon"
         android:layout_marginTop="16dp"
+        android:background="@drawable/ic_error_icon"
         android:contentDescription="@string/error_list_display"/>
 
     <TextView
+        android:id="@+id/error_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="Sample error message"
-        android:id="@+id/error_message"
         android:layout_gravity="center_horizontal"
-        android:textSize="@dimen/text_size_title"
         android:layout_margin="16dp"
+        android:gravity="center"
         android:textColor="@color/colorSecondaryText"
-        android:gravity="center" />
+        android:textSize="@dimen/text_size_title"
+        tools:text="Sample error message"/>
 
     <Button
+        android:id="@+id/error_action_button"
+        style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Retry"
-        android:id="@+id/error_action_button"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="16dp"
-        style="?android:attr/buttonStyleSmall"
+        android:text="Retry"
         tools:ignore="HardcodedText"/>
 </LinearLayout>

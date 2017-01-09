@@ -25,6 +25,7 @@ import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.BottomSheetDialogFragment;
@@ -36,11 +37,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ofalvai.bpinfo.R;
 import com.ofalvai.bpinfo.model.Alert;
 import com.ofalvai.bpinfo.model.Route;
+import com.ofalvai.bpinfo.ui.alertlist.AlertListContract;
 import com.ofalvai.bpinfo.util.FabricUtils;
 import com.ofalvai.bpinfo.util.FixedHtmlTextView;
 import com.ofalvai.bpinfo.util.UiUtils;
@@ -54,6 +58,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class AlertDetailFragment extends BottomSheetDialogFragment {
 
@@ -62,6 +67,9 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
     private static final String ARG_ALERT_OBJECT = "alert_object";
 
     private Alert mAlert;
+
+    @Nullable
+    private AlertListContract.Presenter mPresenter;
 
     @BindView(R.id.alert_detail_title)
     TextView mTitleTextView;
@@ -81,6 +89,15 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
     @BindView(R.id.alert_detail_progress_bar)
     ContentLoadingProgressBar mProgressBar;
 
+    @BindView(R.id.error_with_action)
+    LinearLayout mErrorLayout;
+
+    @BindView(R.id.error_message)
+    TextView mErrorMessage;
+
+    @BindView(R.id.error_action_button)
+    Button mErrorButton;
+
     /**
      * List of currently displayed route icons. This list is needed in order to find visually
      * duplicate route data, and not to display them twice.
@@ -90,8 +107,10 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
     private final BottomSheetBehavior.BottomSheetCallback mBottomSheetBehaviorCallback =
             new AlertDetailCallback();
 
-    public static AlertDetailFragment newInstance(@NonNull Alert alert) {
+    public static AlertDetailFragment newInstance(@NonNull Alert alert,
+                                                  @NonNull AlertListContract.Presenter presenter) {
         AlertDetailFragment fragment = new AlertDetailFragment();
+        fragment.mPresenter = presenter;
         Bundle args = new Bundle();
         args.putSerializable(ARG_ALERT_OBJECT, alert);
         fragment.setArguments(args);
@@ -229,6 +248,22 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
 
         animatorSet.playTogether(progressHeight, descriptionHeight, descriptionAlpha);
         animatorSet.start();
+    }
+
+    public void onAlertUpdateFailed() {
+        mProgressBar.hide();
+        mErrorMessage.setText(R.string.error_alert_detail_load);
+        mErrorButton.setText(R.string.label_retry);
+        mErrorLayout.setVisibility(View.VISIBLE);
+    }
+
+    @OnClick(R.id.error_action_button)
+    void clickErrorRetry() {
+        if (mPresenter != null) {
+            mErrorLayout.setVisibility(View.GONE);
+            mProgressBar.show();
+            mPresenter.fetchAlert(mAlert.getId());
+        }
     }
 
     private void displayAlert(final Alert alert) {

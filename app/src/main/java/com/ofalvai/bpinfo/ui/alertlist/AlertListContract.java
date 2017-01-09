@@ -53,6 +53,8 @@ public interface AlertListContract {
 
         void displayGeneralError();
 
+        void displayAlertDetailError();
+
         void setUpdating(boolean state);
 
         void updateSubtitle();

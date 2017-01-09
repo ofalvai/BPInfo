@@ -150,8 +150,9 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
 
                     @Override
                     public void onError(Exception ex) {
-                        //TODO
+                        getView().displayAlertDetailError();
                         LOGE(TAG, ex.toString());
+                        Crashlytics.logException(ex);
                     }
                 },
                 getAlertRequestParams()
