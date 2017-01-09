@@ -27,7 +27,7 @@
     <string name="error_network">Hálózati hiba</string>
     <string name="error_communication">Kommunikációs hiba</string>
     <string name="label_retry">Újra</string>
-    <string name="alert_detail_label">Részletek</string>
+    <string name="alert_detail_label">További részletek</string>
     <string name="date_today">Ma </string>
     <string name="date_yesterday">Tegnap</string>
     <string name="date_tomorrow">Holnap</string>

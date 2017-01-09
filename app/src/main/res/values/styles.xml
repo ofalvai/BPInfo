@@ -38,7 +38,10 @@
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
         <item name="android:background">@drawable/link_text_background</item>
-        <item name="android:padding">4dp</item>
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:paddingRight">4dp</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">2dp</item>
     </style>
 
     <style name="RouteIcon">

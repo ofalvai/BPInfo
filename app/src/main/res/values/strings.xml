@@ -26,7 +26,7 @@
     <string name="error_network">Network error</string>
     <string name="error_communication">Communication error</string>
     <string name="label_retry">Retry</string>
-    <string name="alert_detail_label">Details</string>
+    <string name="alert_detail_label">More details</string>
     <string name="date_today">Today</string>
     <string name="date_yesterday">Yesterday</string>
     <string name="date_tomorrow">Tomorrow</string>

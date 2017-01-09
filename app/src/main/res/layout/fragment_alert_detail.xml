@@ -43,10 +43,10 @@
 
         <android.support.v4.widget.ContentLoadingProgressBar
             android:id="@+id/alert_detail_progress_bar"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:indeterminate="true"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"/>
+            android:indeterminate="true"/>
 
         <TextView
             android:id="@+id/alert_detail_date"
@@ -65,7 +65,7 @@
             android:paddingTop="8dp">
         </com.wefika.flowlayout.FlowLayout>
 
-        <include layout="@layout/error_with_action" />
+        <include layout="@layout/error_with_action"/>
 
         <com.ofalvai.bpinfo.util.FixedHtmlTextView
             android:id="@+id/alert_detail_description"
@@ -82,11 +82,10 @@
             style="@style/LinkLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingBottom="50dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="-4dp"
             android:text="@string/alert_detail_label"
             android:textSize="16sp"/>
-
     </LinearLayout>
-
 
 </android.support.v4.widget.NestedScrollView>
