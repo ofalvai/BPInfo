@@ -472,23 +472,8 @@ public class BkkInfoClient implements AlertApiClient {
                 }
                 break;
             case FERRY:
-                switch (shortName) {
-                    case "D2":
-                        background = "FF1609";
-                        text = "FFFFFF";
-                        break;
-                    case "D11":
-                        background = "D60080";
-                        text = "FFFFFF";
-                        break;
-                    case "D14":
-                        background = "D60080";
-                        text = "FFFFFF";
-                        break;
-                    default:
-                        background = defaultBackground;
-                        text = defaultText;
-                }
+                background = "E50475";
+                text = "FFFFFF";
                 break;
             case RAIL:
                 switch (shortName) {
@@ -532,7 +517,7 @@ public class BkkInfoClient implements AlertApiClient {
                         text = "000000";
                         break;
                     case "M2":
-                        background = "E41F18";
+                        background = "FF1609";
                         text = "FFFFFF";
                         break;
                     case "M3":
