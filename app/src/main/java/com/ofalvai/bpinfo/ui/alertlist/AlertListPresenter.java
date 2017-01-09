@@ -72,7 +72,7 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
     @Inject
     Context mContext;
 
-    private AlertListType mAlertListType;
+    private final AlertListType mAlertListType;
 
     /**
      * List of alerts returned by the client, before filtering by RouteTypes

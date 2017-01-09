@@ -28,8 +28,6 @@ interface RouteContract {
 
     String ROUTE_TYPE = "type";
 
-    String ROUTE_URL = "url";
-
     String ROUTE_COLOR = "color";
 
     String ROUTE_TEXT_COLOR = "textColor";

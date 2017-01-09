@@ -166,7 +166,9 @@ public class Utils {
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean isRouteVisuallyDuplicate(@NonNull Route routeToTest, @NonNull List<Route> routes) {
         for (Route route : routes) {
-            if (route.getShortName().equals(routeToTest.getShortName()) &&
+            if (route.getShortName() == null) {
+                continue;
+            } else if (route.getShortName().equals(routeToTest.getShortName()) &&
                     route.getType().equals(routeToTest.getType())) {
                 return true;
             }

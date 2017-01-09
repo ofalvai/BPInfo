@@ -55,7 +55,7 @@ public class NoticeClient implements Response.ErrorListener {
 
     private static final String TAG = "NoticeClient";
 
-    private RequestQueue mRequestQueue;
+    private final RequestQueue mRequestQueue;
 
     @Inject Context mContext;
 

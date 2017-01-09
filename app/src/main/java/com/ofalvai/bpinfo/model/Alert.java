@@ -87,7 +87,7 @@ public class Alert implements Serializable {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(@NonNull String id) {
         this.id = id;
     }
 

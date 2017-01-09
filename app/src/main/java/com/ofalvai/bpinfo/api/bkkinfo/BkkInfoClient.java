@@ -86,7 +86,7 @@ public class BkkInfoClient implements AlertApiClient {
     @Inject
     Context mContext;
 
-    private RequestQueue mRequestQueue;
+    private final RequestQueue mRequestQueue;
 
     /**
      * This client performs only one alert list API call, because the API is structured in a way

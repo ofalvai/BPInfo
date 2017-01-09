@@ -26,8 +26,6 @@ interface AlertContract {
 
     String ALERT_TIMESTAMP = "timestamp";
 
-    String ALERT_STOP_IDS = "stopIds";
-
     String ALERT_ROUTE_IDS = "routeIds";
 
     String ALERT_URL = "url";

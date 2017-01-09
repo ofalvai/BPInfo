@@ -67,12 +67,6 @@
             </intent-filter>
         </activity>
 
-        <!-- Alert Detail (currently not used as an activity) -->
-        <activity
-            android:name=".ui.alert.AlertDetailActivity"
-            android:parentActivityName=".ui.alertlist.AlertListActivity">
-        </activity>
-
         <!-- Settings -->
         <activity
             android:name=".ui.settings.SettingsActivity"

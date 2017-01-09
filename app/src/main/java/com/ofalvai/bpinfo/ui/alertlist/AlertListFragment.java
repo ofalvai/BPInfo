@@ -69,7 +69,6 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
 
     private static final String NOTICE_DIALOG_TAG = "notice_dialog";
 
-    @Nullable
     private AlertListContract.Presenter mPresenter;
 
     @Nullable
@@ -337,7 +336,7 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
         mNoticeView.setVisibility(View.GONE);
     }
 
-    public void launchAlertDetail(Alert alert) {
+    public void launchAlertDetail(@NonNull Alert alert) {
         displayAlertDetail(alert);
 
         mPresenter.fetchAlert(alert.getId());

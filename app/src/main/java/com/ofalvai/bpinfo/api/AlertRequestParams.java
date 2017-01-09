@@ -20,9 +20,9 @@ import com.ofalvai.bpinfo.ui.alertlist.AlertListType;
 
 public class AlertRequestParams {
 
-    public AlertListType mAlertListType;
+    public final AlertListType mAlertListType;
 
-    public String mLanguageCode;
+    public final String mLanguageCode;
 
     public AlertRequestParams(AlertListType alertListType, String languageCode) {
         mAlertListType = alertListType;

@@ -22,9 +22,9 @@ import java.util.List;
 
 public class AlertListMessage {
 
-    public List<Alert> todayAlerts;
+    public final List<Alert> todayAlerts;
 
-    public List<Alert> futureAlerts;
+    public final List<Alert> futureAlerts;
 
     public AlertListMessage(List<Alert> todayAlerts, List<Alert> futureAlerts) {
         this.todayAlerts = todayAlerts;

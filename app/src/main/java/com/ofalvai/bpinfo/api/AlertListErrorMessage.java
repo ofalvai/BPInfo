@@ -18,7 +18,7 @@ package com.ofalvai.bpinfo.api;
 
 public class AlertListErrorMessage {
 
-    public Exception mException;
+    public final Exception mException;
 
     public AlertListErrorMessage(Exception exception) {
         this.mException = exception;

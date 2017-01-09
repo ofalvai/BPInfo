@@ -179,7 +179,9 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
         // By default, the BottomSheetDialog changes the statusbar's color to black.
         // Found this solution here: https://code.google.com/p/android/issues/detail?id=202691
         BottomSheetDialog dialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
-        dialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
         return dialog;
     }
 

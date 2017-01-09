@@ -31,9 +31,9 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertHolder> {
 
     private List<Alert> mAlerts;
 
-    private Context mContext;
+    private final Context mContext;
 
-    private AlertListContract.View mView;
+    private final AlertListContract.View mView;
 
     public AlertAdapter(List<Alert> alerts, Context context, AlertListContract.View view) {
         mAlerts = alerts;

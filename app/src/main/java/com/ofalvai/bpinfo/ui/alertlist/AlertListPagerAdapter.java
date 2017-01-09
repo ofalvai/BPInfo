@@ -14,10 +14,10 @@ public class AlertListPagerAdapter extends FragmentPagerAdapter implements ViewP
 
     private static final int FRAGMENT_COUNT = 2;
 
-    private Context mContext;
+    private final Context mContext;
 
     // http://stackoverflow.com/a/15261142/745637
-    private SparseArray<Fragment> mRegisteredFragments = new SparseArray<>();
+    private final SparseArray<Fragment> mRegisteredFragments = new SparseArray<>();
 
     public AlertListPagerAdapter(FragmentManager fm, Context context) {
         super(fm);

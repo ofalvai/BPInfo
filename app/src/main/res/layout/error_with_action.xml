@@ -43,7 +43,8 @@
         android:gravity="center"
         android:textColor="@color/colorSecondaryText"
         android:textSize="@dimen/text_size_title"
-        tools:text="Sample error message"/>
+        tools:text="Sample error message"
+        tools:ignore="SelectableText"/>
 
     <Button
         android:id="@+id/error_action_button"
