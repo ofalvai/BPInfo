@@ -323,6 +323,8 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager()
                         .beginTransaction();
                 fragment.show(transaction, NOTICE_DIALOG_TAG);
+
+                FabricUtils.logNoticeDialogView();
             }
         });
     }

@@ -95,7 +95,7 @@
 
         <!-- Licences -->
         <activity
-        android:name=".ui.settings.LicencesActivity"
+        android:name=".ui.settings.LicensesActivity"
         android:label="@string/title_activity_licences"
         android:parentActivityName=".ui.settings.AboutActivity">
             <meta-data

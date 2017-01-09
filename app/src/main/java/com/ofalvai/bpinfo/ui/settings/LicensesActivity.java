@@ -25,7 +25,7 @@ import android.webkit.WebView;
 
 import com.ofalvai.bpinfo.R;
 
-public class LicencesActivity extends AppCompatActivity {
+public class LicensesActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +40,7 @@ public class LicencesActivity extends AppCompatActivity {
 
     @NonNull
     public static Intent newIntent(Context context) {
-        return new Intent(context, LicencesActivity.class);
+        return new Intent(context, LicensesActivity.class);
     }
 
 

@@ -164,6 +164,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
             Toast.makeText(this, text, Toast.LENGTH_LONG).show();
             FabricUtils.logDebugMode(String.valueOf(state));
         } else if (key.equals(getString(R.string.pref_key_data_source))) {
+            String dataSourceLabel = sharedPreferences.getString(key, "default");
+            FabricUtils.logDataSourceChange(dataSourceLabel);
             showDataSourceRestartDialog();
         }
     }

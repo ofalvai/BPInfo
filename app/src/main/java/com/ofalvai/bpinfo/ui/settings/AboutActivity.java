@@ -40,7 +40,7 @@ public class AboutActivity extends AppCompatActivity {
         if (licencesTextView != null) {
             licencesTextView.setPaintFlags(licencesTextView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
-            final Intent licencesIntent = LicencesActivity.newIntent(this);
+            final Intent licencesIntent = LicensesActivity.newIntent(this);
             licencesTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

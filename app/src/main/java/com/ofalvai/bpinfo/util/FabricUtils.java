@@ -69,4 +69,13 @@ public class FabricUtils {
                 .putCustomAttribute("Filter other", routeTypes.contains(RouteType._OTHER_) ? "true" : "false")
         );
     }
+
+    public static void logNoticeDialogView() {
+        Answers.getInstance().logCustom(new CustomEvent("Notice dialog view"));
+    }
+
+    public static void logDataSourceChange(String selectedDataSourceLabel) {
+        Answers.getInstance().logCustom(new CustomEvent("Data source changed")
+            .putCustomAttribute("New data source", selectedDataSourceLabel));
+    }
 }
