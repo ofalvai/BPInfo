@@ -30,4 +30,6 @@
     <color name="colorNoticeBackground">#eeeeee</color>
     <color name="colorNoticeBorder">#bdbdbd</color>
 
+    <color name="colorProgressBar">#3989F8</color>
+
 </resources>
