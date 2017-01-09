@@ -434,7 +434,6 @@ public class BkkInfoClient implements AlertApiClient {
             case "libego":
                 return RouteType.CHAIRLIFT;
             case "hev":
-                // TODO: this is just a guess yet
                 return RouteType.RAIL;
             default:
                 return RouteType._OTHER_;
