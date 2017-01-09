@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/colorPrimaryText"
             android:textIsSelectable="true"
-            android:textSize="24sp"
+            android:textSize="20sp"
             tools:text="Alert title"/>
 
         <android.support.v4.widget.ContentLoadingProgressBar
