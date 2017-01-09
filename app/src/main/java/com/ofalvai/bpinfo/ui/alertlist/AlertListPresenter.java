@@ -304,7 +304,9 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
 
     @Override
     public void onNoticeResponse(String noticeText) {
-        getView().displayNotice(noticeText);
+        if (isViewAttached()) {
+            getView().displayNotice(noticeText);
+        }
     }
 
     @Override
