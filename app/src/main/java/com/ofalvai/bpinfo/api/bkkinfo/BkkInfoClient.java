@@ -377,7 +377,7 @@ public class BkkInfoClient implements AlertApiClient {
 
             JSONArray concreteRoutes = routeNode.getJSONArray("jaratok");
             for (int j = 0; j < concreteRoutes.length(); j++) {
-                String shortName = concreteRoutes.getString(j);
+                String shortName = concreteRoutes.getString(j).trim();
                 int[] colors = parseRouteColors(type, shortName);
 
                 // There's no ID returned by the API, using shortName instead
