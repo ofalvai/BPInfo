@@ -51,6 +51,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 import javax.inject.Inject;
 
@@ -566,9 +567,14 @@ public class BkkInfoClient implements AlertApiClient {
      * We need to find them and move to the future alerts list
      */
     private static void fixFutureAlertsInTodayList(List<Alert> alertsToday, List<Alert> alertsFuture) {
-        for (Alert alert : alertsToday) {
-            if (new DateTime(alert.getStart()).isAfterNow()) {
+        // Avoiding ConcurrentModificationException when removing from alertsToday
+        ListIterator<Alert> todayIterator = alertsToday.listIterator();
+        while (todayIterator.hasNext()) {
+            Alert alert = todayIterator.next();
+            DateTime startTime = new DateTime(alert.getStart() * 1000L);
+            if (startTime.isAfterNow()) {
                 alertsFuture.add(alert);
+                todayIterator.remove();
             }
         }
     }

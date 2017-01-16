@@ -28,18 +28,18 @@ public class Alert implements Serializable {
     private String id;
 
     /**
-     * Start of the alert in miliseconds since the UNIX epoch
+     * Start of the alert in seconds since the UNIX epoch
      */
     private long start;
 
     /**
-     * End of the alert in miliseconds since the UNIX epoch
+     * End of the alert in seconds since the UNIX epoch
      * Might be 0, which means the end is not known yet.
      */
     private long end;
 
     /**
-     * Last modification of alert data
+     * Last modification of alert data in seconds since the UNIX epoch
      */
     private long timestamp;
 
