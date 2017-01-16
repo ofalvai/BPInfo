@@ -163,11 +163,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
             String text = state ? getString(R.string.debug_mode_on) : getString(R.string.debog_mode_off);
             Toast.makeText(this, text, Toast.LENGTH_LONG).show();
             FabricUtils.logDebugMode(String.valueOf(state));
-        } else if (key.equals(getString(R.string.pref_key_data_source))) {
-            String dataSourceLabel = sharedPreferences.getString(key, "default");
-            FabricUtils.logDataSourceChange(dataSourceLabel);
-            showDataSourceRestartDialog();
         }
+
+        // Data source change is handled in AlertListPresenter with a change listener
     }
 
     @Override
@@ -238,21 +236,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
                 .setMessage(getString(R.string.pref_language_dialog_message))
                 .setNegativeButton(getString(R.string.pref_language_dialog_negative_button), null)
                 .setPositiveButton(getString(R.string.pref_language_dialog_positive_button),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                ProcessPhoenix.triggerRebirth(getApplicationContext());
-                            }
-                        })
-                .show();
-    }
-
-    private void showDataSourceRestartDialog() {
-        new AlertDialog.Builder(this)
-                .setTitle(getString(R.string.pref_data_source_dialog_title))
-                .setMessage(getString(R.string.pref_data_source_dialog_message))
-                .setNegativeButton(getString(R.string.pref_data_source_dialog_negative_button), null)
-                .setPositiveButton(getString(R.string.pref_data_source_dialog_positive_button),
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {

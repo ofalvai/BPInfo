@@ -18,11 +18,15 @@ package com.ofalvai.bpinfo.ui.alertlist;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.widget.Toast;
 
 import com.android.volley.NoConnectionError;
+import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
 import com.crashlytics.android.Crashlytics;
 import com.ofalvai.bpinfo.BpInfoApplication;
 import com.ofalvai.bpinfo.Config;
@@ -33,6 +37,8 @@ import com.ofalvai.bpinfo.api.AlertListMessage;
 import com.ofalvai.bpinfo.api.AlertRequestParams;
 import com.ofalvai.bpinfo.api.NoticeClient;
 import com.ofalvai.bpinfo.api.bkkfutar.AlertSearchContract;
+import com.ofalvai.bpinfo.api.bkkfutar.FutarApiClient;
+import com.ofalvai.bpinfo.api.bkkinfo.BkkInfoClient;
 import com.ofalvai.bpinfo.model.Alert;
 import com.ofalvai.bpinfo.model.Route;
 import com.ofalvai.bpinfo.model.RouteType;
@@ -57,8 +63,8 @@ import javax.inject.Inject;
 import static com.ofalvai.bpinfo.util.LogUtils.LOGE;
 
 public class AlertListPresenter extends BasePresenter<AlertListContract.View>
-        implements NoticeClient.NoticeListener,
-        AlertListContract.Presenter {
+        implements NoticeClient.NoticeListener, AlertListContract.Presenter,
+        SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "AlertListPresenter";
 
     @Inject
@@ -96,12 +102,16 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
     public void attachView(AlertListContract.View view) {
         super.attachView(view);
         EventBus.getDefault().register(this);
+        PreferenceManager.getDefaultSharedPreferences(mContext)
+                .registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
     public void detachView() {
         super.detachView();
         EventBus.getDefault().unregister(this);
+        PreferenceManager.getDefaultSharedPreferences(mContext)
+                .unregisterOnSharedPreferenceChangeListener(this);
     }
 
     /**
@@ -318,4 +328,38 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
         return new AlertRequestParams(mAlertListType, getCurrentLanguageCode());
     }
 
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        String dataSourceKey = mContext.getString(R.string.pref_key_data_source);
+        if (key.equals(dataSourceKey)) {
+            reinitApiClient(sharedPreferences, dataSourceKey);
+            fetchAlertList();
+            Toast.makeText(mContext, R.string.data_source_changed_refreshed, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    /**
+     * Reacts to changing the data source in Settings, and sets mAlertApiClient to a new
+     * AlertApiClient instance according to the new setting.
+     * Not the most elegant solution, but we can't ask Dagger for a new instance, because it's
+     * annotated as a Singleton. And rebuilding the dependency graph would be too complicated.
+     */
+    private void reinitApiClient(SharedPreferences sharedPreferences, String dataSourceKey) {
+        String newDataSourceValue = sharedPreferences.getString(
+                dataSourceKey,
+                mContext.getString(R.string.pref_data_source_bkk_info)
+        );
+
+        RequestQueue requestQueue = Volley.newRequestQueue(mContext);
+
+        String futarDataSourceValue = mContext.getString(R.string.pref_key_data_source_futar);
+        String bkkinfoDataSourceValue = mContext.getString(R.string.pref_key_data_source_bkk_info);
+        if (newDataSourceValue.equals(futarDataSourceValue)) {
+            mAlertApiClient = new FutarApiClient(requestQueue);
+        } else if (newDataSourceValue.equals(bkkinfoDataSourceValue)) {
+            mAlertApiClient = new BkkInfoClient(requestQueue);
+        } else {
+            LOGE(TAG, "Can't handle data source change");
+        }
+    }
 }
