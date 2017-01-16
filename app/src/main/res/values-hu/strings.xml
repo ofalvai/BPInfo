@@ -74,10 +74,6 @@
     <string name="pref_language_dialog_message">Az új nyelv érvénybe lépéséhez újra kell indítani az appot.</string>
     <string name="pref_language_dialog_positive_button">Újraindítás</string>
     <string name="pref_language_dialog_negative_button">Később</string>
-    <string name="pref_data_source_dialog_title">Újraindítás szükséges</string>
-    <string name="pref_data_source_dialog_message">Az új adatforrás érvénybe lépéséhez újra kell indítani az appot.</string>
-    <string name="pref_data_source_dialog_positive_button">Újraindítás</string>
-    <string name="pref_data_source_dialog_negative_button">Később</string>
     <string name="debog_mode_off">Debug mód kikapcsolva</string>
     <string name="debug_mode_on">Debug mód bekapcsolva</string>
     <string name="email_bkk_subject">FUTÁR API hibajelentés</string>
@@ -95,5 +91,6 @@
     <string name="dialog_notice_positive_button">OK</string>
     <string name="pref_title_data_source">Adatok forrása</string>
     <string name="error_alert_detail_load">Nem sikerült a részletek betöltése</string>
+    <string name="data_source_changed_refreshed">Forgalmi változás adatok frissítve</string>
 
 </resources>
