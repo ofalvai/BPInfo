@@ -13,86 +13,70 @@
   ~    See the License for the specific language governing permissions and
   ~    limitations under the License.
   -->
-
-<LinearLayout
+<android.support.v4.widget.SwipeRefreshLayout
+    android:id="@+id/alerts_swipe_refresh_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/alerts_swipe_refresh_layout"
+    <!-- SwipeRefreshLayout can contain only one child -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <!-- SwipeRefreshLayout can contain only one child -->
-        <LinearLayout
+        <TextView
+            android:id="@+id/alert_list_filter_active_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:background="@color/colorAccent"
+            android:paddingBottom="8dp"
+            android:paddingLeft="@dimen/toolbar_horizontal_margin"
+            android:paddingRight="@dimen/toolbar_horizontal_margin"
+            android:paddingTop="8dp"
+            android:text="@string/filter_message"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:visibility="gone"
+            tools:visibility="visible"/>
 
-            <TextView
-                android:id="@+id/alert_list_filter_active_message"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/colorAccent"
-                android:paddingBottom="8dp"
-                android:paddingLeft="@dimen/toolbar_horizontal_margin"
-                android:paddingRight="@dimen/toolbar_horizontal_margin"
-                android:paddingTop="8dp"
-                android:text="@string/filter_message"
-                android:textColor="@android:color/white"
-                android:textSize="14sp"
-                android:visibility="gone"
-                tools:visibility="visible"/>
+        <TextView
+            android:id="@+id/alert_list_notice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/notice_background"
+            android:clickable="true"
+            android:ellipsize="end"
+            android:lines="2"
+            android:paddingBottom="8dp"
+            android:paddingLeft="@dimen/toolbar_horizontal_margin"
+            android:paddingRight="@dimen/toolbar_horizontal_margin"
+            android:paddingTop="8dp"
+            android:visibility="gone"
+            tools:text="Notice form backend\nMax 2 lines."
+            tools:visibility="visible"/>
 
-            <TextView
-                android:id="@+id/alert_list_notice"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/notice_background"
-                android:clickable="true"
-                android:ellipsize="end"
-                android:lines="2"
-                android:paddingBottom="8dp"
-                android:paddingLeft="@dimen/toolbar_horizontal_margin"
-                android:paddingRight="@dimen/toolbar_horizontal_margin"
-                android:paddingTop="8dp"
-                android:visibility="gone"
-                tools:text="Notice form backend\nMax 2 lines."
-                tools:visibility="visible"/>
+        <include layout="@layout/error_with_action"/>
 
-            <include layout="@layout/error_with_action"/>
+        <include layout="@layout/list_item_empty"/>
 
-            <include layout="@layout/list_item_empty"/>
+        <com.ofalvai.bpinfo.util.EmptyRecyclerView
+            android:id="@+id/alerts_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="@dimen/list_extra_padding"
+            android:paddingRight="@dimen/list_extra_padding"
+            android:scrollbars="vertical"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:context=".ui.alertlist.AlertListFragment"
+            tools:listitem="@layout/list_item_alert">
+        </com.ofalvai.bpinfo.util.EmptyRecyclerView>
 
-            <com.ofalvai.bpinfo.util.EmptyRecyclerView
-                android:id="@+id/alerts_recycler_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingLeft="@dimen/list_extra_padding"
-                android:paddingRight="@dimen/list_extra_padding"
-                android:scrollbars="vertical"
-                tools:context=".ui.alertlist.AlertListFragment"
-                tools:listitem="@layout/list_item_alert">
-            </com.ofalvai.bpinfo.util.EmptyRecyclerView>
+    </LinearLayout>
 
-        </LinearLayout>
-
-    </android.support.v4.widget.SwipeRefreshLayout>
-
-
-    <android.support.v4.widget.NestedScrollView
-        android:id="@+id/alert_list_bottom_sheet"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
-
-    </android.support.v4.widget.NestedScrollView>
-
-</LinearLayout>
+</android.support.v4.widget.SwipeRefreshLayout>
 
 
 

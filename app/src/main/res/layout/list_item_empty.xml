@@ -18,22 +18,22 @@
 <merge
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/empty_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/alert_list_empty"
-        android:visibility="gone"
         android:layout_gravity="center_horizontal"
-        android:textSize="@dimen/text_size_title"
         android:layout_margin="16dp"
-        android:paddingTop="48dp"
-        android:textColor="@color/colorSecondaryText"
         android:gravity="center"
+        android:paddingTop="48dp"
+        android:text="@string/alert_list_empty"
+        android:textColor="@color/colorSecondaryText"
+        android:textSize="@dimen/text_size_title"
+        android:visibility="gone"
         tools:visibility="visible"/>
 
 </merge>
