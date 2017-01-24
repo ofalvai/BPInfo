@@ -54,6 +54,16 @@
             android:title="@string/pref_title_send_bugreport"
             android:summary="@string/pref_description_send_bugreport"
             android:key="@string/pref_key_send_bugreport">
+
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="@string/email_developer_mailto">
+
+                <!--suppress AndroidElementNotAllowed -->
+                <extra android:name="android.intent.extra.SUBJECT"
+                       android:value="@string/email_developer_subject" />
+            </intent>
+
         </PreferenceScreen>
 
         <PreferenceScreen

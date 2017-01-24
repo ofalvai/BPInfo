@@ -42,8 +42,6 @@ import com.ofalvai.bpinfo.util.FabricUtils;
 
 import javax.inject.Inject;
 
-import static com.ofalvai.bpinfo.util.LogUtils.LOGW;
-
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
  * handset devices, settings are presented as a single list. On tablets,
@@ -128,8 +126,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
         addPreferencesFromResource(R.xml.pref_general);
         PreferenceManager.setDefaultValues(this, R.xml.pref_general, false);
 
-        setupBugreportClickListener();
-
         bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_language)));
         bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_data_source)));
 
@@ -204,27 +200,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
         if (actionBar != null) {
             // Show the Up button in the action bar.
             actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-    }
-
-    /**
-     *
-     * This should be called after the preferences have been added from XML.
-     */
-    private void setupBugreportClickListener() {
-        String preferenceKey = getString(R.string.pref_key_send_bugreport);
-        Preference preference = getPreferenceManager().findPreference(preferenceKey);
-
-        if (preference != null) {
-            preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-
-                    return true;
-                }
-            });
-        } else {
-            LOGW(TAG, "Preference '" + preferenceKey + "' not found");
         }
     }
 

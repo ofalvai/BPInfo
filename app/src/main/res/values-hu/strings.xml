@@ -78,6 +78,7 @@
     <string name="debug_mode_on">Debug mód bekapcsolva</string>
     <string name="email_bkk_subject">FUTÁR API hibajelentés</string>
     <string name="email_bkk_body">Tisztelt BKK!\n\nA nyilvános FUTÁR API által visszaadott adatokban az alábbi problémát szeretném jelenteni:\n\nÜdvözlettel:\n</string>
+    <string name="email_developer_subject">BPInfo visszajelzés</string>
     <string name="title_activity_licences">Licencek</string>
     <string name="alert_label_recent">FRISS</string>
     <string name="title_activity_about">Névjegy</string>
