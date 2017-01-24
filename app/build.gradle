@@ -57,7 +57,6 @@ android {
 
         resConfigs "en", "hu"
         resValue "string", "APP_VERSION", version_name
-        buildConfigField "String", "INSTABUG_TOKEN", "\"${localConfig.instaBugToken}\""
         buildConfigField "String", "BACKEND_URL", "\"${localConfig.backendUrl}\""
         manifestPlaceholders = [fabricApiKey: localConfig.fabricApiKey]
 
@@ -112,7 +111,6 @@ dependencies {
     compile 'org.sufficientlysecure:html-textview:1.6'
     compile 'net.danlew:android.joda:2.9.4.1'
     compile 'com.jakewharton:process-phoenix:1.1.1'
-    compile 'com.instabug.library:instabug:2+'
     compile('com.crashlytics.sdk.android:crashlytics:2.6.2@aar') {
         transitive = true;
     }

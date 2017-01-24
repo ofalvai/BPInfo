@@ -24,13 +24,6 @@
 -keep class org.joda.time.** { *; }
 -keep interface org.joda.time.** { *; }
 
-## Instabug
--dontwarn org.apache.http.**
--dontwarn android.net.http.AndroidHttpClient
--dontwarn com.google.android.gms.**
--dontwarn com.android.volley.toolbox.**
--dontwarn com.instabug.**
-
 ## Fabric
 -keepattributes *Annotation*
 -keepattributes SourceFile,LineNumberTable

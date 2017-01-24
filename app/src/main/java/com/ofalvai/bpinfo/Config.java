@@ -43,8 +43,6 @@ public class Config {
 
     public static final String SOURCE_CODE_URL = "https://github.com/ofalvai/BPInfo";
 
-    public static final String INSTABUG_TOKEN = BuildConfig.INSTABUG_TOKEN;
-
     public static final String BACKEND_URL = BuildConfig.BACKEND_URL;
 
     public static final String BACKEND_NOTICE_PATH = "notices.json";

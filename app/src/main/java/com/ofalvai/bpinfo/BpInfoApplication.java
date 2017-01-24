@@ -22,9 +22,6 @@ import android.content.res.Configuration;
 
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.answers.Answers;
-import com.instabug.library.Feature;
-import com.instabug.library.IBGInvocationEvent;
-import com.instabug.library.Instabug;
 import com.ofalvai.bpinfo.injection.ApiModule;
 import com.ofalvai.bpinfo.injection.AppComponent;
 import com.ofalvai.bpinfo.injection.AppModule;
@@ -64,8 +61,6 @@ public class BpInfoApplication extends Application {
 
         JodaTimeAndroid.init(this);
 
-        initInstaBug();
-
         Fabric.with(this, new Crashlytics(), new Answers());
     }
 
@@ -102,15 +97,5 @@ public class BpInfoApplication extends Application {
         config.locale = newLocale;
 
         getResources().updateConfiguration(config, null);
-    }
-
-    private void initInstaBug() {
-        new Instabug.Builder(this, Config.INSTABUG_TOKEN)
-                .setInvocationEvent(IBGInvocationEvent.IBGInvocationEventNone)
-                .setEmailFieldRequired(false)
-                .setInAppMessagingState(Feature.State.DISABLED)
-                .setWillTakeScreenshot(false)
-                .setCrashReportingState(Feature.State.DISABLED)
-                .build();
     }
 }
