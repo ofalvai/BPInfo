@@ -25,6 +25,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.text.Html;
 
+import com.ofalvai.bpinfo.BpInfoApplication;
 import com.ofalvai.bpinfo.R;
 
 public class NoticeFragment extends DialogFragment {
@@ -70,5 +71,11 @@ public class NoticeFragment extends DialogFragment {
     public void onSaveInstanceState(Bundle outState) {
         outState.putCharSequence(KEY_NOTICE_TEXT, mNoticeText);
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        BpInfoApplication.getRefWatcher(getContext()).watch(this);
     }
 }

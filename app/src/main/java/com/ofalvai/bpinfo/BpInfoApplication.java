@@ -17,6 +17,7 @@
 package com.ofalvai.bpinfo;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 
@@ -26,6 +27,8 @@ import com.ofalvai.bpinfo.injection.ApiModule;
 import com.ofalvai.bpinfo.injection.AppComponent;
 import com.ofalvai.bpinfo.injection.AppModule;
 import com.ofalvai.bpinfo.injection.DaggerAppComponent;
+import com.squareup.leakcanary.LeakCanary;
+import com.squareup.leakcanary.RefWatcher;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -42,6 +45,8 @@ public class BpInfoApplication extends Application {
 
     @Inject SharedPreferences mSharedPreferences;
 
+    private RefWatcher mRefWatcher;
+
     private void initDagger() {
         injector = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
@@ -52,6 +57,13 @@ public class BpInfoApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return;
+        }
+        mRefWatcher = LeakCanary.install(this);
 
         initDagger();
 
@@ -73,6 +85,11 @@ public class BpInfoApplication extends Application {
         super.onConfigurationChanged(newConfig);
 
         setLanguage();
+    }
+
+    public static RefWatcher getRefWatcher(Context context) {
+        BpInfoApplication application = (BpInfoApplication) context.getApplicationContext();
+        return application.mRefWatcher;
     }
 
     /**

@@ -41,6 +41,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.ofalvai.bpinfo.BpInfoApplication;
 import com.ofalvai.bpinfo.R;
 import com.ofalvai.bpinfo.model.Alert;
 import com.ofalvai.bpinfo.model.Route;
@@ -198,6 +199,12 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
         if (window != null) {
             window.setLayout(actualWidth, ViewGroup.LayoutParams.MATCH_PARENT);
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        BpInfoApplication.getRefWatcher(getContext()).watch(this);
     }
 
     public void updateAlert(final Alert alert) {

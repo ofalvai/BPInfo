@@ -155,12 +155,16 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
                 new AlertApiClient.AlertDetailListener() {
                     @Override
                     public void onAlertResponse(Alert alert) {
-                        getView().updateAlertDetail(alert);
+                        if (getView() != null) {
+                            getView().updateAlertDetail(alert);
+                        }
                     }
 
                     @Override
                     public void onError(Exception ex) {
-                        getView().displayAlertDetailError();
+                        if (getView() != null) {
+                            getView().displayAlertDetailError();
+                        }
                         LOGE(TAG, ex.toString());
                         Crashlytics.logException(ex);
                     }

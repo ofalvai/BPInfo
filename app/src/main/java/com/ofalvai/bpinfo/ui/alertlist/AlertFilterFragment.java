@@ -24,6 +24,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 
+import com.ofalvai.bpinfo.BpInfoApplication;
 import com.ofalvai.bpinfo.R;
 import com.ofalvai.bpinfo.model.RouteType;
 import com.ofalvai.bpinfo.util.FabricUtils;
@@ -139,6 +140,12 @@ public class AlertFilterFragment extends DialogFragment {
         if (savedInstanceState != null) {
             mAlertListType = (AlertListType) savedInstanceState.getSerializable(KEY_ALERT_LIST_TYPE);
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        BpInfoApplication.getRefWatcher(getContext()).watch(this);
     }
 
     /**
