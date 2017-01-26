@@ -436,6 +436,8 @@ public class BkkInfoClient implements AlertApiClient {
                 return RouteType.CHAIRLIFT;
             case "hev":
                 return RouteType.RAIL;
+            case "siklo":
+                return RouteType.FUNICULAR;
             default:
                 return RouteType._OTHER_;
         }
@@ -484,7 +486,7 @@ public class BkkInfoClient implements AlertApiClient {
                         text = "FFFFFF";
                         break;
                     case "H6":
-                        background = "824B00";
+                        background = "884200";
                         text = "FFFFFF";
                         break;
                     case "H7":
@@ -537,6 +539,10 @@ public class BkkInfoClient implements AlertApiClient {
                 break;
             case CHAIRLIFT:
                 background = "009155";
+                text = "000000";
+                break;
+            case FUNICULAR:
+                background = "884200";
                 text = "000000";
                 break;
             case _OTHER_:
