@@ -424,6 +424,9 @@ public class BkkInfoClient implements AlertApiClient {
         switch (routeTypeString) {
             case "busz":
                 return RouteType.BUS;
+            case "ejszakai":
+                // Night buses are parsed as buses. Their colors are corrected in parseRouteColors()
+                return RouteType.BUS;
             case "hajo":
                 return RouteType.FERRY;
             case "villamos":
@@ -465,8 +468,9 @@ public class BkkInfoClient implements AlertApiClient {
         String text;
         switch (type) {
             case BUS:
-                if (shortName.matches("/9[0-9][0-9][A-Z]?/")) {
-                    // Night bus numbers start from 900, and might contain one extra letter
+                if (shortName.matches("^9[0-9][0-9][A-Z]?$")) {
+                    // Night bus numbers start from 900, and might contain one extra letter after
+                    // the 3 digits.
                     background = "1E1E1E";
                     text = "FFFFFF";
                 } else {
