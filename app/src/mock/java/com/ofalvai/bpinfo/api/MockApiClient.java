@@ -1,7 +1,9 @@
 package com.ofalvai.bpinfo.api;
 
 import android.graphics.Color;
+import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.ofalvai.bpinfo.model.Alert;
 import com.ofalvai.bpinfo.model.Route;
@@ -15,7 +17,27 @@ import java.util.List;
 
 public class MockApiClient implements AlertApiClient {
 
+    private static final String TAG = "MockApiClient";
+
     private static final List<Alert> TEST_ALERTS = new ArrayList<>();
+
+    private static final int SIMULATE_DELAY_MS = 1000;
+
+    /**
+     * Simulating different data with each request. Test data is modified in changeState()
+     */
+    private static final boolean SIMULATE_CHANGES = true;
+
+    /**
+     * Current state index of test data, if SIMULATE_CHANGES is set to true.
+     */
+    private static int mTestDataState = 0;
+
+    /**
+     * As with the real API clients, this client gets called by both alert lists in parallel.
+     * We need to return data only once.
+     */
+    private volatile boolean mRequestInProgress = false;
 
     public MockApiClient() {
         makeTestAlerts();
@@ -23,7 +45,24 @@ public class MockApiClient implements AlertApiClient {
 
     @Override
     public void fetchAlertList(@NonNull AlertRequestParams params) {
+        if (mRequestInProgress) return;
+        mRequestInProgress = true;
+
+        if (SIMULATE_CHANGES) {
+            changeState();
+        }
+        Log.i(TAG, "Mock API request");
+
         EventBus.getDefault().post(new AlertListMessage(TEST_ALERTS, TEST_ALERTS));
+
+        // Simulating delayed response. Without this, mRequestInProgress would be reset to false
+        // before the second request calls this method.
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mRequestInProgress = false;
+            }
+        }, SIMULATE_DELAY_MS);
     }
 
     @Override
@@ -179,7 +218,7 @@ public class MockApiClient implements AlertApiClient {
 
         TEST_ALERTS.add(new Alert(
                 "test-xxx",
-                0,
+                1485467157,
                 0,
                 0,
                 null,
@@ -190,7 +229,7 @@ public class MockApiClient implements AlertApiClient {
 
         TEST_ALERTS.add(new Alert(
                 "test-xxx",
-                0,
+                1485567157,
                 0,
                 0,
                 null,
@@ -201,7 +240,7 @@ public class MockApiClient implements AlertApiClient {
 
         TEST_ALERTS.add(new Alert(
                 "test-xxx",
-                0,
+                1485667157,
                 0,
                 0,
                 null,
@@ -212,7 +251,7 @@ public class MockApiClient implements AlertApiClient {
 
         TEST_ALERTS.add(new Alert(
                 "test-xxx",
-                0,
+                1485767157,
                 0,
                 0,
                 null,
@@ -223,7 +262,7 @@ public class MockApiClient implements AlertApiClient {
 
         TEST_ALERTS.add(new Alert(
                 "test-xxx",
-                0,
+                1485867157,
                 0,
                 0,
                 null,
@@ -231,5 +270,37 @@ public class MockApiClient implements AlertApiClient {
                 "Ebben most minden benne van!",
                 new ArrayList<>(Arrays.asList(ferry11, chairlift, funicular, rail5))
         ));
+    }
+
+    private void changeState() {
+        switch (mTestDataState) {
+            case 0:
+                mTestDataState++;
+                break;
+            case 1:
+                List<Route> routes = new ArrayList<>();
+                routes.addAll(TEST_ALERTS.get(0).getAffectedRoutes());
+                routes.addAll(TEST_ALERTS.get(1).getAffectedRoutes());
+                routes.addAll(TEST_ALERTS.get(2).getAffectedRoutes());
+
+                Alert newAlert = new Alert(
+                        "BKK_????",
+                        System.currentTimeMillis(),
+                        0,
+                        System.currentTimeMillis(),
+                        null,
+                        "Új elem",
+                        "Új elem",
+                        routes
+                );
+                TEST_ALERTS.add(newAlert);
+
+                mTestDataState++;
+                break;
+            case 2:
+                TEST_ALERTS.remove(TEST_ALERTS.size() - 1);
+
+                mTestDataState = 0;
+        }
     }
 }
