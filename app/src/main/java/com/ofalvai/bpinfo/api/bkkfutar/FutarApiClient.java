@@ -62,6 +62,24 @@ import static com.ofalvai.bpinfo.util.LogUtils.LOGI;
 public class FutarApiClient implements AlertApiClient {
     private static final String TAG = "FutarApiClient";
 
+    private final RequestQueue mRequestQueue;
+
+    /**
+     * There's only one call in the API to get both the list and the details about alerts,
+     * so we have to store them after the first call.
+     */
+    private List<Alert> mAlertsToday = new ArrayList<>();
+
+    private List<Alert> mAlertsFuture = new ArrayList<>();
+
+    /**
+     * This client performs only one alert list API call, because the API is structured in a way
+     * that both current and future data is returned at the same time, sometimes even mixed together.
+     * If multiple alert list requests are called, only the first will perform the request, and
+     * later notify all of its EventBus subscribers.
+     */
+    private boolean mRequestInProgress = false;
+
     private static final String QUERY_API_KEY = BuildConfig.APPLICATION_ID;
 
     private static final String QUERY_API_VERSION = "3";
@@ -83,16 +101,6 @@ public class FutarApiClient implements AlertApiClient {
     // But it's better than having no language selection at all.
     private static final String LANG_PARAM = "&lang=";
 
-    private final RequestQueue mRequestQueue;
-
-    /**
-     * There's only one call in the API to get both the list and the details about alerts,
-     * so we have to store them after the first call.
-     */
-    private List<Alert> mAlertsToday = new ArrayList<>();
-
-    private List<Alert> mAlertsFuture = new ArrayList<>();
-
     /**
      * Map of all parsed routes. This is used to set every alert's affected routes by ID.
      */
@@ -112,6 +120,9 @@ public class FutarApiClient implements AlertApiClient {
 
     @Override
     public void fetchAlertList(@NonNull AlertRequestParams params) {
+        // If a request is in progress, we don't proceed. The response callback will notify every subscriber
+        if (mRequestInProgress) return;
+
         mLanguageCode = params.mLanguageCode;
 
         Uri uri = buildUri();
@@ -131,6 +142,8 @@ public class FutarApiClient implements AlertApiClient {
                             EventBus.getDefault().post(new AlertListMessage(mAlertsToday, mAlertsFuture));
                         } catch (Exception ex) {
                             EventBus.getDefault().post(new AlertListErrorMessage(ex));
+                        } finally {
+                            mRequestInProgress = false;
                         }
                     }
                 },
@@ -142,6 +155,7 @@ public class FutarApiClient implements AlertApiClient {
                 }
         );
 
+        mRequestInProgress = true;
         mRequestQueue.add(request);
     }
 
