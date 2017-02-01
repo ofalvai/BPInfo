@@ -95,7 +95,9 @@ android {
 
 ribbonizer {
     builder { variant, iconFile ->
-        if (variant.buildType.name == "debug") {
+        if (variant.flavorName == "mock") {
+            return yellowRibbonFilter(variant, iconFile)
+        } else if (variant.buildType.name == "debug") {
             return grayRibbonFilter(variant, iconFile)
         }
     }
