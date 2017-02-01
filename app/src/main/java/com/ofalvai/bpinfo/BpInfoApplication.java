@@ -50,7 +50,7 @@ public class BpInfoApplication extends Application {
     private void initDagger() {
         injector = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
-                .apiModule(new ApiModule())
+                .apiModule(new ApiModule()) //depends on selected build flavor (prod/mock)
                 .build();
     }
 

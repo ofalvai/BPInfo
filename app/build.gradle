@@ -85,6 +85,11 @@ android {
         regular {
             minSdkVersion 16
         }
+        prod {
+        }
+        mock {
+            applicationIdSuffix ".mock"
+        }
     }
 }
 
@@ -121,7 +126,6 @@ dependencies {
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     testCompile 'junit:junit:4.12'
-
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2') {
         // Necessary if your app targets Marshmallow (since Espresso
         // hasn't moved to Marshmallow yet)
