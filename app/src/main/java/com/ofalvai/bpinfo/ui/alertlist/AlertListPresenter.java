@@ -230,6 +230,7 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
 
         // Filter by route type
         List<Alert> filteredAlerts = filter(mActiveFilter, mUnfilteredAlerts);
+        //List<Alert> filteredAlerts = mUnfilteredAlerts;
 
         getView().displayAlerts(filteredAlerts);
     }
@@ -264,7 +265,7 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
     @NonNull
     private List<Alert> filter(@Nullable Set<RouteType> types, @NonNull List<Alert> alerts) {
         if (types == null || types.isEmpty()) {
-            return alerts;
+            return new ArrayList<>(alerts);
         }
 
         List<Alert> filtered = new ArrayList<>();

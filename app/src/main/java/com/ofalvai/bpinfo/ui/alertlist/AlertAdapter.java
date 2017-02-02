@@ -17,6 +17,9 @@
 package com.ofalvai.bpinfo.ui.alertlist;
 
 import android.content.Context;
+import android.os.Handler;
+import android.support.v7.util.DiffUtil;
+import android.support.v7.util.ListUpdateCallback;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +28,7 @@ import android.view.ViewGroup;
 import com.ofalvai.bpinfo.R;
 import com.ofalvai.bpinfo.model.Alert;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AlertAdapter extends RecyclerView.Adapter<AlertHolder> {
@@ -41,8 +45,72 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertHolder> {
         mView = view;
     }
 
-    public void updateAlertData(List<Alert> alerts) {
-        mAlerts = alerts;
+    public void updateAlertData(final List<Alert> alerts) {
+        //mAlerts = alerts;
+        //notifyDataSetChanged();
+
+
+        final List<Alert> oldAlerts = new ArrayList<>(mAlerts);
+
+        new Runnable() {
+            @Override
+            public void run() {
+                final DiffUtil.DiffResult diff = DiffUtil.calculateDiff(new DiffUtil.Callback() {
+                    @Override
+                    public int getOldListSize() {
+                        return oldAlerts.size();
+                    }
+
+                    @Override
+                    public int getNewListSize() {
+                        return alerts.size();
+                    }
+
+                    @Override
+                    public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                        return oldAlerts.get(oldItemPosition).getId().equals(alerts.get(newItemPosition).getId());
+                    }
+
+                    @Override
+                    public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                        return oldAlerts.get(oldItemPosition).equals(alerts.get(newItemPosition));
+                    }
+                });
+
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mAlerts = alerts;
+                        diff.dispatchUpdatesTo(AlertAdapter.this);
+                        diff.dispatchUpdatesTo(new ListUpdateCallback() {
+                            @Override
+                            public void onInserted(int position, int count) {
+                                AlertListFragment alertListFragment = (AlertListFragment) mView;
+                                alertListFragment.mAlertRecyclerView.smoothScrollToPosition(0);
+                            }
+
+                            @Override
+                            public void onRemoved(int position, int count) {
+
+                            }
+
+                            @Override
+                            public void onMoved(int fromPosition, int toPosition) {
+
+                            }
+
+                            @Override
+                            public void onChanged(int position, int count, Object payload) {
+
+                            }
+                        });
+                        //notifyDataSetChanged();
+                    }
+                });
+
+            }
+        }.run();
+
     }
 
     @Override

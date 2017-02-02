@@ -26,6 +26,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -132,6 +133,7 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
         ButterKnife.bind(this, view);
 
         mAlertAdapter = new AlertAdapter(new ArrayList<Alert>(), getActivity(), this);
+        mAlertAdapter.registerAdapterDataObserver(new SubtitleUpdateDataObserver());
         mAlertRecyclerView.setAdapter(mAlertAdapter);
         mAlertRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mAlertRecyclerView.addItemDecoration(
@@ -227,6 +229,7 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
      */
     @Override
     public void updateSubtitle() {
+        //TODO: observerrel az adapterre csatolni
         if (mAlertAdapter != null && isAdded()) {
             int count = mAlertAdapter.getItemCount();
             String subtitle = getResources().getQuantityString(R.plurals.actionbar_subtitle_alert_count, count, count);
@@ -251,21 +254,21 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
         // the UI thread attaching the fragment to the activity. In that case getResources() or
         // getString() would throw an exception.
         if (isAdded()) {
-            setErrorView(false, null);
+            //setErrorView(false, null);
 
             if (mAlertAdapter == null) {
                 mAlertAdapter = new AlertAdapter(alerts, getContext(), this);
+                mAlertAdapter.registerAdapterDataObserver(new SubtitleUpdateDataObserver());
                 mAlertRecyclerView.setAdapter(mAlertAdapter);
             } else {
                 mAlertAdapter.updateAlertData(alerts);
-                mAlertAdapter.notifyDataSetChanged();
-                mAlertRecyclerView.smoothScrollToPosition(0);
+                //mAlertAdapter.notifyDataSetChanged();
             }
 
             // Only update the subtitle if the fragment is visible (and not preloading by ViewPager)
-            if (getUserVisibleHint()) {
-                updateSubtitle();
-            }
+            //if (getUserVisibleHint()) {
+            //    updateSubtitle();
+            //}
 
             setUpdating(false);
         }
@@ -434,7 +437,7 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
             errorMessageView.setText(errorMessage);
         } else {
             mAlertRecyclerView.setVisibility(View.VISIBLE);
-            mEmptyView.setVisibility(View.VISIBLE);
+            mEmptyView.setVisibility(View.VISIBLE); //TODO: ez így jó?
             mErrorLayout.setVisibility(View.GONE);
         }
     }
@@ -471,6 +474,44 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
                 mFilterWarningView.setText(completeString);
                 mFilterWarningView.setVisibility(View.VISIBLE);
             }
+        }
+    }
+
+    class SubtitleUpdateDataObserver extends RecyclerView.AdapterDataObserver {
+        @Override
+        public void onChanged() {
+            updateSubtitle();
+            //mAlertRecyclerView.smoothScrollToPosition(0);
+        }
+
+        @Override
+        public void onItemRangeChanged(int positionStart, int itemCount) {
+            updateSubtitle();
+            //mAlertRecyclerView.smoothScrollToPosition(0);
+        }
+
+        @Override
+        public void onItemRangeChanged(int positionStart, int itemCount, Object payload) {
+            updateSubtitle();
+            //mAlertRecyclerView.smoothScrollToPosition(0);
+        }
+
+        @Override
+        public void onItemRangeInserted(int positionStart, int itemCount) {
+            updateSubtitle();
+            //mAlertRecyclerView.smoothScrollToPosition(0);
+        }
+
+        @Override
+        public void onItemRangeRemoved(int positionStart, int itemCount) {
+            updateSubtitle();
+            //mAlertRecyclerView.smoothScrollToPosition(0);
+        }
+
+        @Override
+        public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
+            updateSubtitle();
+            //mAlertRecyclerView.smoothScrollToPosition(0);
         }
     }
 }

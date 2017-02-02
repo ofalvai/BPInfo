@@ -270,6 +270,19 @@ public class MockApiClient implements AlertApiClient {
                 "Ebben most minden benne van!",
                 new ArrayList<>(Arrays.asList(ferry11, chairlift, funicular, rail5))
         ));
+
+        for (int i = 0; i < 10; i++) {
+            TEST_ALERTS.add(new Alert(
+                    "test-xxx",
+                    1485567157,
+                    0,
+                    0,
+                    null,
+                    "Ez egy villamos",
+                    "Ez egy mock alert, meglátjuk megy-e",
+                    new ArrayList<>(Arrays.asList(tram60))
+            ));
+        }
     }
 
     private void changeState() {
@@ -302,5 +315,7 @@ public class MockApiClient implements AlertApiClient {
 
                 mTestDataState = 0;
         }
+        Log.d(TAG, "New mock data state: " + mTestDataState);
     }
+
 }
