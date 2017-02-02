@@ -48,7 +48,14 @@ public class AlertFilterFragment extends DialogFragment {
     private Set<RouteType> mSelectedRouteTypes = new HashSet<>();
 
     public interface AlertFilterListener {
+
         void onFilterChanged(@NonNull Set<RouteType> selectedTypes);
+
+        /**
+         * If the listener keeps a reference to this Fragment, it needs to know when to release
+         * that reference.
+         */
+        void onFilterDismissed();
     }
 
     @Nullable

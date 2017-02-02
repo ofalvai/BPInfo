@@ -13,54 +13,54 @@
   ~    See the License for the specific language governing permissions and
   ~    limitations under the License.
   -->
-<android.support.v4.widget.SwipeRefreshLayout
-    android:id="@+id/alerts_swipe_refresh_layout"
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.alertlist.AlertListActivity">
 
-    <!-- SwipeRefreshLayout can contain only one child -->
-    <LinearLayout
+    <TextView
+        android:id="@+id/alert_list_filter_active_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:background="@color/colorAccent"
+        android:paddingBottom="8dp"
+        android:paddingLeft="@dimen/toolbar_horizontal_margin"
+        android:paddingRight="@dimen/toolbar_horizontal_margin"
+        android:paddingTop="8dp"
+        android:text="@string/filter_message"
+        android:textColor="@android:color/white"
+        android:textSize="14sp"
+        android:visibility="gone"
+        tools:visibility="visible"/>
 
-        <TextView
-            android:id="@+id/alert_list_filter_active_message"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorAccent"
-            android:paddingBottom="8dp"
-            android:paddingLeft="@dimen/toolbar_horizontal_margin"
-            android:paddingRight="@dimen/toolbar_horizontal_margin"
-            android:paddingTop="8dp"
-            android:text="@string/filter_message"
-            android:textColor="@android:color/white"
-            android:textSize="14sp"
-            android:visibility="gone"
-            tools:visibility="visible"/>
+    <TextView
+        android:id="@+id/alert_list_notice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/notice_background"
+        android:clickable="true"
+        android:ellipsize="end"
+        android:lines="2"
+        android:paddingBottom="8dp"
+        android:paddingLeft="@dimen/toolbar_horizontal_margin"
+        android:paddingRight="@dimen/toolbar_horizontal_margin"
+        android:paddingTop="8dp"
+        android:visibility="gone"
+        tools:text="Notice form backend\nMax 2 lines."
+        tools:visibility="visible"/>
 
-        <TextView
-            android:id="@+id/alert_list_notice"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/notice_background"
-            android:clickable="true"
-            android:ellipsize="end"
-            android:lines="2"
-            android:paddingBottom="8dp"
-            android:paddingLeft="@dimen/toolbar_horizontal_margin"
-            android:paddingRight="@dimen/toolbar_horizontal_margin"
-            android:paddingTop="8dp"
-            android:visibility="gone"
-            tools:text="Notice form backend\nMax 2 lines."
-            tools:visibility="visible"/>
+    <include layout="@layout/error_with_action"/>
 
-        <include layout="@layout/error_with_action"/>
+    <include layout="@layout/list_item_empty"/>
 
-        <include layout="@layout/list_item_empty"/>
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/alerts_swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <com.ofalvai.bpinfo.util.EmptyRecyclerView
             android:id="@+id/alerts_recycler_view"
@@ -74,9 +74,9 @@
             tools:listitem="@layout/list_item_alert">
         </com.ofalvai.bpinfo.util.EmptyRecyclerView>
 
-    </LinearLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
-</android.support.v4.widget.SwipeRefreshLayout>
+</LinearLayout>
 
 
 

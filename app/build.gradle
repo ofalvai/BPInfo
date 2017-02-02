@@ -18,13 +18,13 @@ apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
 apply plugin: 'com.github.gfx.ribbonizer'
 apply plugin: 'io.fabric'
+apply plugin: 'com.google.gms.google-services'
 
 // Create a variable called keystorePropertiesFile, and initialize it to your
 // keystore.properties file, in the rootProject folder.
 def keystorePropertiesFile = rootProject.file("keystore.properties")
 def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-
 
 // This file contains private information, create your own by renaming
 // localconfig.example.properties in the project folder
@@ -49,7 +49,7 @@ android {
         applicationId "com.ofalvai.bpinfo"
         signingConfig signingConfigs.config
 
-        minSdkVersion 16 // Don't forget to change in the flavors too!
+        minSdkVersion 16
         targetSdkVersion 25
 
         versionCode version_code.toInteger()
@@ -79,12 +79,6 @@ android {
         }
     }
     productFlavors {
-        fastBuild {
-            minSdkVersion 21
-        }
-        regular {
-            minSdkVersion 16
-        }
         prod {
         }
         mock {
@@ -105,29 +99,27 @@ ribbonizer {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    apt 'com.google.dagger:dagger-compiler:2.8'
-    compile 'com.android.support:appcompat-v7:25.1.0'
-    compile 'com.android.support:support-v4:25.1.0'
-    compile 'com.android.support:recyclerview-v7:25.1.0'
-    compile 'com.android.support:design:25.1.0'
-    compile 'com.android.support:customtabs:25.1.0'
-    compile 'com.android.support:support-annotations:25.1.0'
+    compile 'com.android.support:appcompat-v7:25.1.1'
+    compile 'com.android.support:recyclerview-v7:25.1.1'
+    compile 'com.android.support:design:25.1.1'
+    compile 'com.android.support:customtabs:25.1.1'
+    compile 'com.android.support:support-annotations:25.1.1'
     compile 'com.android.volley:volley:1.0.0'
     compile 'com.wefika:flowlayout:0.4.1'
     compile 'com.google.dagger:dagger:2.8'
     compile 'org.sufficientlysecure:html-textview:1.6'
     compile 'net.danlew:android.joda:2.9.4.1'
     compile 'com.jakewharton:process-phoenix:1.1.1'
-    compile('com.crashlytics.sdk.android:crashlytics:2.6.2@aar') {
-        transitive = true;
-    }
     compile 'com.jakewharton:butterknife:8.4.0'
     compile 'org.greenrobot:eventbus:3.0.0'
+    compile 'com.google.firebase:firebase-core:10.0.1'
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.6@aar') {
+        transitive = true;
+    }
+    apt 'com.google.dagger:dagger-compiler:2.8'
     apt 'com.jakewharton:butterknife-compiler:8.4.0'
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
-    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
-    testCompile 'junit:junit:4.12'
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2') {
         // Necessary if your app targets Marshmallow (since Espresso
         // hasn't moved to Marshmallow yet)
@@ -143,5 +135,7 @@ dependencies {
         // hasn't moved to Marshmallow yet)
         exclude group: 'com.android.support', module: 'support-annotations'
     }
+    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+    testCompile 'junit:junit:4.12'
     androidTestCompile 'org.hamcrest:hamcrest-library:1.3'
 }
