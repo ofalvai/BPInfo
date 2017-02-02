@@ -26,6 +26,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -131,12 +132,7 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
         View view = inflater.inflate(R.layout.fragment_alert_list, container, false);
         ButterKnife.bind(this, view);
 
-        mAlertAdapter = new AlertAdapter(new ArrayList<Alert>(), getActivity(), this);
-        mAlertRecyclerView.setAdapter(mAlertAdapter);
-        mAlertRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mAlertRecyclerView.addItemDecoration(
-                new SimpleDividerItemDecoration(getActivity()));
-        mAlertRecyclerView.setEmptyView(mEmptyView);
+        setupRecyclerView();
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -393,6 +389,34 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
     @Override
     public AlertListType getAlertListType() {
         return mAlertListType;
+    }
+
+    private void setupRecyclerView() {
+        mAlertAdapter = new AlertAdapter(new ArrayList<Alert>(), getActivity(), this);
+        mAlertRecyclerView.setAdapter(mAlertAdapter);
+
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        mAlertRecyclerView.setLayoutManager(layoutManager);
+
+        mAlertRecyclerView.addItemDecoration(
+                new SimpleDividerItemDecoration(getActivity()));
+
+        mAlertRecyclerView.setEmptyView(mEmptyView);
+
+        // Fixing overscroll effect at the bottom of the list. If a SwipeRefreshLayout is the parent
+        // of the RecyclerView, we need to disable that when the user scrolls down.
+        mAlertRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                try {
+                    int firstVisiblePosition = layoutManager.findFirstVisibleItemPosition();
+                    mSwipeRefreshLayout.setEnabled(firstVisiblePosition == 0);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     private void initRefresh() {
