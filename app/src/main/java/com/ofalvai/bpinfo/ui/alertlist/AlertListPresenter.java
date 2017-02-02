@@ -138,14 +138,11 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
     @Override
     public void getAlertList() {
         if (mUnfilteredAlerts != null) {
-            // Filter by route type
-            List<Alert> filteredAlerts = filter(mActiveFilter, mUnfilteredAlerts);
-
-            getView().displayAlerts(filteredAlerts);
+            List<Alert> processedAlerts = filterAndSort(mActiveFilter, mUnfilteredAlerts, mAlertListType);
+            getView().displayAlerts(processedAlerts);
         } else {
             fetchAlertList();
         }
-
     }
 
     @Override
@@ -222,17 +219,8 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
             mUnfilteredAlerts = message.futureAlerts;
         }
 
-        // Sort: descending by alert start time
-        Collections.sort(mUnfilteredAlerts, new Utils.AlertStartTimestampComparator());
-        if (mAlertListType == AlertListType.ALERTS_TODAY) {
-            Collections.reverse(mUnfilteredAlerts);
-        }
-
-        // Filter by route type
-        List<Alert> filteredAlerts = filter(mActiveFilter, mUnfilteredAlerts);
-        //List<Alert> filteredAlerts = mUnfilteredAlerts;
-
-        getView().displayAlerts(filteredAlerts);
+        List<Alert> processedAlerts = filterAndSort(mActiveFilter, mUnfilteredAlerts, mAlertListType);
+        getView().displayAlerts(processedAlerts);
     }
 
     @Subscribe
@@ -257,20 +245,28 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
     }
 
     /**
-     * Filters a list of Alerts matching the provided set of RouteTypes
-     * @param types RouteTypes to match
-     * @param alerts List of Alerts to filter
-     * @return Filtered list of Alerts
+     * Returns a new filtered list of Alerts matching the provided set of RouteTypes, and sorted
+     * according to the alert list type (descending/ascending)
      */
     @NonNull
-    private List<Alert> filter(@Nullable Set<RouteType> types, @NonNull List<Alert> alerts) {
+    private static List<Alert> filterAndSort(@Nullable Set<RouteType> types,
+                                             @NonNull List<Alert> alerts,
+                                             @NonNull AlertListType type) {
+        List<Alert> sorted = new ArrayList<>(alerts);
+
+        // Sort: descending by alert start time
+        Collections.sort(sorted, new Utils.AlertStartTimestampComparator());
+        if (type == AlertListType.ALERTS_TODAY) {
+            Collections.reverse(sorted);
+        }
+
         if (types == null || types.isEmpty()) {
-            return new ArrayList<>(alerts);
+            return sorted;
         }
 
         List<Alert> filtered = new ArrayList<>();
 
-        for (Alert alert : alerts) {
+        for (Alert alert : sorted) {
             for (Route route : alert.getAffectedRoutes()) {
                 if (types.contains(route.getType())) {
                     filtered.add(alert);
