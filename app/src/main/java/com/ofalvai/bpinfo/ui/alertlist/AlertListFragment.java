@@ -239,10 +239,19 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
 
     @Override
     public void onFilterChanged(@NonNull Set<RouteType> selectedTypes) {
+        // Prefent leaking the fragment
+        mFilterFragment = null;
+
         mPresenter.setFilter(selectedTypes);
         mPresenter.getAlertList();
 
         updateFilterWarning();
+    }
+
+    @Override
+    public void onFilterDismissed() {
+        // Prevents leaking the fragment
+        mFilterFragment = null;
     }
 
     @Override
