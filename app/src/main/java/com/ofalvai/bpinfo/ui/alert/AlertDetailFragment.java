@@ -26,10 +26,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.BottomSheetDialogFragment;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.view.LayoutInflater;
@@ -105,9 +103,6 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
      */
     private final List<Route> mDisplayedRoutes = new ArrayList<>();
 
-    private final BottomSheetBehavior.BottomSheetCallback mBottomSheetBehaviorCallback =
-            new AlertDetailCallback();
-
     public static AlertDetailFragment newInstance(@NonNull Alert alert,
                                                   @NonNull AlertListContract.Presenter presenter) {
         AlertDetailFragment fragment = new AlertDetailFragment();
@@ -116,26 +111,6 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
         args.putSerializable(ARG_ALERT_OBJECT, alert);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    /**
-     * Sets up the fragment as a child of a BottomSheetDialogFragment
-     */
-    @Override
-    public void setupDialog(Dialog dialog, int style) {
-        super.setupDialog(dialog, style);
-
-        View contentView = View.inflate(getActivity(), R.layout.fragment_alert_detail, null);
-        dialog.setContentView(contentView);
-
-        View parentView = (View) contentView.getParent();
-        CoordinatorLayout.LayoutParams params =
-                (CoordinatorLayout.LayoutParams) parentView.getLayoutParams();
-        CoordinatorLayout.Behavior behavior = params.getBehavior();
-
-        if (behavior != null && behavior instanceof BottomSheetBehavior) {
-            ((BottomSheetBehavior) behavior).setBottomSheetCallback(mBottomSheetBehaviorCallback);
-        }
     }
 
     @Override
@@ -162,8 +137,9 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_alert_detail, container, false);
-        ButterKnife.bind(this, view);
+        // Note: container is null because this is a subclass on DialogFragment
+        View contentView = inflater.inflate(R.layout.fragment_alert_detail, container, false);
+        ButterKnife.bind(this, contentView);
 
         displayAlert(mAlert);
 
@@ -171,7 +147,7 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
             mProgressBar.hide();
         }
 
-        return view;
+        return contentView;
     }
 
     @NonNull
@@ -317,21 +293,5 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
                 }
             }
         });
-    }
-
-    private class AlertDetailCallback extends BottomSheetBehavior.BottomSheetCallback {
-
-        @Override
-        public void onStateChanged(@NonNull View bottomSheet, int newState) {
-            if (newState == BottomSheetBehavior.STATE_HIDDEN) {
-                // Dismiss dialog fragment
-                dismiss();
-            }
-        }
-
-        @Override
-        public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-
-        }
     }
 }
