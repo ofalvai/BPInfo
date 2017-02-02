@@ -54,10 +54,18 @@ public class Utils {
         return input.substring(0, 1).toUpperCase() + input.substring(1);
     }
 
+    /**
+     * Sorts alerts first by timestamp, then by header, if two timestamps are equal.
+     */
     public static class AlertStartTimestampComparator implements Comparator<Alert> {
         @Override
         public int compare(Alert lhs, Alert rhs) {
-            return Long.valueOf(lhs.getStart()).compareTo(rhs.getStart());
+            int timestampComp = Long.valueOf(lhs.getStart()).compareTo(rhs.getStart());
+            if (timestampComp == 0 && lhs.getHeader() != null && rhs.getHeader() != null) {
+                return lhs.getHeader().compareTo(rhs.getHeader());
+            } else {
+                return timestampComp;
+            }
         }
     }
 
