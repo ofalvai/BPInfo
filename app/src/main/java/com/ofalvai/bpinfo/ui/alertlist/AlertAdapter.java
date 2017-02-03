@@ -51,6 +51,8 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertHolder> {
                                 @Nullable final ListUpdateCallback listUpdateCallback) {
         final List<Alert> oldAlerts = new ArrayList<>(mAlerts);
 
+        if (oldAlerts.equals(alerts)) return;
+
         // Running diff calculation on a worker thread, because it can be too expensive
         // Note: returns to the UI thread to update mAlerts and dispatch updates.
         Runnable diffCalculation = new Runnable() {
