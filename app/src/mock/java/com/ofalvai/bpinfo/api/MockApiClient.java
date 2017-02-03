@@ -270,7 +270,7 @@ public class MockApiClient implements AlertApiClient {
                 new ArrayList<>(Arrays.asList(ferry11, chairlift, funicular, rail5))
         ));
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 0; i++) {
             TEST_ALERTS.add(new Alert(
                     "test-xxx",
                     1485567157,
@@ -287,6 +287,10 @@ public class MockApiClient implements AlertApiClient {
     private void changeState() {
         switch (mTestDataState) {
             case 0:
+                int randomIndex = (int) Math.round(Math.random() * (TEST_ALERTS.size() - 1));
+                long randomTimestamp = (int) Math.round(Math.random() * System.currentTimeMillis());
+                Alert alert = TEST_ALERTS.get(randomIndex);
+                alert.setStart(randomTimestamp);
                 mTestDataState++;
                 break;
             case 1:
