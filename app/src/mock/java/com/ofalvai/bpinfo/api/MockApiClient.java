@@ -21,7 +21,7 @@ public class MockApiClient implements AlertApiClient {
 
     private static final List<Alert> TEST_ALERTS = new ArrayList<>();
 
-    private static final int SIMULATE_DELAY_MS = 1000;
+    private static final int SIMULATE_DELAY_MS = 500;
 
     /**
      * Simulating different data with each request. Test data is modified in changeState()
@@ -53,13 +53,12 @@ public class MockApiClient implements AlertApiClient {
         }
         Log.i(TAG, "Mock API request");
 
-        EventBus.getDefault().post(new AlertListMessage(TEST_ALERTS, TEST_ALERTS));
-
         // Simulating delayed response. Without this, mRequestInProgress would be reset to false
         // before the second request calls this method.
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                EventBus.getDefault().post(new AlertListMessage(TEST_ALERTS, TEST_ALERTS));
                 mRequestInProgress = false;
             }
         }, SIMULATE_DELAY_MS);
@@ -271,14 +270,14 @@ public class MockApiClient implements AlertApiClient {
                 new ArrayList<>(Arrays.asList(ferry11, chairlift, funicular, rail5))
         ));
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 5; i++) {
             TEST_ALERTS.add(new Alert(
                     "test-xxx",
                     1485567157,
                     0,
                     0,
                     null,
-                    "Ez egy villamos",
+                    "Ez egy villamos " + i,
                     "Ez egy mock alert, meglátjuk megy-e",
                     new ArrayList<>(Arrays.asList(tram60))
             ));
