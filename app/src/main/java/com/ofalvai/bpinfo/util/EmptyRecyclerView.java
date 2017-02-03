@@ -70,20 +70,20 @@ public class EmptyRecyclerView extends RecyclerView {
     public void setAdapter(Adapter adapter) {
         final Adapter oldAdapter = getAdapter();
         if (oldAdapter != null) {
-            //oldAdapter.unregisterAdapterDataObserver(observer);
+            oldAdapter.unregisterAdapterDataObserver(observer);
         }
 
         super.setAdapter(adapter);
 
         if (adapter != null) {
-            //adapter.registerAdapterDataObserver(observer);
+            adapter.registerAdapterDataObserver(observer);
         }
 
-        //checkIfEmpty();
+        checkIfEmpty();
     }
 
     public void setEmptyView(View emptyView) {
         this.emptyView = emptyView;
-        //checkIfEmpty();
+        checkIfEmpty();
     }
 }

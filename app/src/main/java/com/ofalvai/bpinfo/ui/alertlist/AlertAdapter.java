@@ -18,6 +18,8 @@ package com.ofalvai.bpinfo.ui.alertlist;
 
 import android.content.Context;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.util.ListUpdateCallback;
 import android.support.v7.widget.RecyclerView;
@@ -45,72 +47,33 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertHolder> {
         mView = view;
     }
 
-    public void updateAlertData(final List<Alert> alerts) {
-        //mAlerts = alerts;
-        //notifyDataSetChanged();
-
-
+    public void updateAlertData(final List<Alert> alerts,
+                                @Nullable final ListUpdateCallback listUpdateCallback) {
         final List<Alert> oldAlerts = new ArrayList<>(mAlerts);
 
-        new Runnable() {
+        // Running diff calculation on a worker thread, because it can be too expensive
+        // Note: returns to the UI thread to update mAlerts and dispatch updates.
+        Runnable diffCalculation = new Runnable() {
             @Override
             public void run() {
-                final DiffUtil.DiffResult diff = DiffUtil.calculateDiff(new DiffUtil.Callback() {
-                    @Override
-                    public int getOldListSize() {
-                        return oldAlerts.size();
-                    }
+                AlertDiffCallback callback = new AlertDiffCallback(oldAlerts, alerts);
+                final DiffUtil.DiffResult diff = DiffUtil.calculateDiff(callback);
 
-                    @Override
-                    public int getNewListSize() {
-                        return alerts.size();
-                    }
-
-                    @Override
-                    public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                        return oldAlerts.get(oldItemPosition).getId().equals(alerts.get(newItemPosition).getId());
-                    }
-
-                    @Override
-                    public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                        return oldAlerts.get(oldItemPosition).equals(alerts.get(newItemPosition));
-                    }
-                });
-
-                new Handler().post(new Runnable() {
+                // Returning to the UI thread to apply the diff
+                new Handler(mContext.getMainLooper()).post(new Runnable() {
                     @Override
                     public void run() {
                         mAlerts = alerts;
                         diff.dispatchUpdatesTo(AlertAdapter.this);
-                        diff.dispatchUpdatesTo(new ListUpdateCallback() {
-                            @Override
-                            public void onInserted(int position, int count) {
-                                AlertListFragment alertListFragment = (AlertListFragment) mView;
-                                alertListFragment.mAlertRecyclerView.smoothScrollToPosition(0);
-                            }
-
-                            @Override
-                            public void onRemoved(int position, int count) {
-
-                            }
-
-                            @Override
-                            public void onMoved(int fromPosition, int toPosition) {
-
-                            }
-
-                            @Override
-                            public void onChanged(int position, int count, Object payload) {
-
-                            }
-                        });
-                        //notifyDataSetChanged();
+                        if (listUpdateCallback != null) {
+                            diff.dispatchUpdatesTo(listUpdateCallback);
+                        }
                     }
                 });
-
             }
-        }.run();
+        };
 
+        new Thread(diffCalculation).start();
     }
 
     @Override
@@ -139,5 +102,39 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertHolder> {
     @Override
     public int getItemCount() {
         return mAlerts.size();
+    }
+
+    private class AlertDiffCallback extends DiffUtil.Callback {
+
+        @NonNull
+        private final List<Alert> mOldAlerts;
+
+        @NonNull
+        private final List<Alert> mNewAlerts;
+
+        public AlertDiffCallback(@NonNull List<Alert> oldAlerts, @NonNull List<Alert> newAlerts) {
+            mOldAlerts = oldAlerts;
+            mNewAlerts = newAlerts;
+        }
+
+        @Override
+        public int getOldListSize() {
+            return mOldAlerts.size();
+        }
+
+        @Override
+        public int getNewListSize() {
+            return mNewAlerts.size();
+        }
+
+        @Override
+        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+            return mOldAlerts.get(oldItemPosition).getId().equals(mNewAlerts.get(newItemPosition).getId());
+        }
+
+        @Override
+        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+            return mOldAlerts.get(oldItemPosition).equals(mNewAlerts.get(newItemPosition));
+        }
     }
 }

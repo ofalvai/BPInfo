@@ -25,6 +25,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.util.ListUpdateCallback;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -223,8 +224,9 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
      */
     @Override
     public void updateSubtitle() {
-        //TODO: observerrel az adapterre csatolni
-        if (mAlertAdapter != null && isAdded()) {
+        // Update subtitle only if the fragment is attached and visible to the user (not preloaded
+        // by ViewPager)
+        if (mAlertAdapter != null && isAdded() && getUserVisibleHint()) {
             int count = mAlertAdapter.getItemCount();
             String subtitle = getResources().getQuantityString(R.plurals.actionbar_subtitle_alert_count, count, count);
             AppCompatActivity activity = (AppCompatActivity) getActivity();
@@ -257,21 +259,11 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
         // the UI thread attaching the fragment to the activity. In that case getResources() or
         // getString() would throw an exception.
         if (isAdded()) {
-            //setErrorView(false, null);
+            setErrorView(false, null);
 
-            if (mAlertAdapter == null) {
-                mAlertAdapter = new AlertAdapter(alerts, getContext(), this);
-                mAlertAdapter.registerAdapterDataObserver(new SubtitleUpdateDataObserver());
-                mAlertRecyclerView.setAdapter(mAlertAdapter);
-            } else {
-                mAlertAdapter.updateAlertData(alerts);
-                //mAlertAdapter.notifyDataSetChanged();
+            if (mAlertAdapter != null) {
+                mAlertAdapter.updateAlertData(alerts, new AlertListUpdateCallback());
             }
-
-            // Only update the subtitle if the fragment is visible (and not preloading by ViewPager)
-            //if (getUserVisibleHint()) {
-            //    updateSubtitle();
-            //}
 
             setUpdating(false);
         }
@@ -395,7 +387,6 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
     private void setupRecyclerView() {
         mAlertAdapter = new AlertAdapter(new ArrayList<Alert>(), getActivity(), this);
         mAlertRecyclerView.setAdapter(mAlertAdapter);
-        mAlertAdapter.registerAdapterDataObserver(new SubtitleUpdateDataObserver());
 
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mAlertRecyclerView.setLayoutManager(layoutManager);
@@ -450,7 +441,6 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
             setUpdating(false);
 
             mAlertRecyclerView.setVisibility(View.GONE);
-            mEmptyView.setVisibility(View.GONE);
 
             TextView errorMessageView = (TextView) mErrorLayout.findViewById(R.id.error_message);
             Button refreshButton = (Button) mErrorLayout.findViewById(R.id.error_action_button);
@@ -469,7 +459,6 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
             errorMessageView.setText(errorMessage);
         } else {
             mAlertRecyclerView.setVisibility(View.VISIBLE);
-            mEmptyView.setVisibility(View.VISIBLE); //TODO: ez így jó?
             mErrorLayout.setVisibility(View.GONE);
         }
     }
@@ -509,41 +498,38 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
         }
     }
 
-    class SubtitleUpdateDataObserver extends RecyclerView.AdapterDataObserver {
+    /**
+     * Scrolls to top and calls updateSubtitle() after the Alert list changed visually.
+     */
+    private class AlertListUpdateCallback implements ListUpdateCallback {
         @Override
-        public void onChanged() {
+        public void onInserted(int position, int count) {
             updateSubtitle();
-            //mAlertRecyclerView.smoothScrollToPosition(0);
+            mAlertRecyclerView.smoothScrollToPosition(0);
         }
 
         @Override
-        public void onItemRangeChanged(int positionStart, int itemCount) {
+        public void onRemoved(int position, int count) {
             updateSubtitle();
-            //mAlertRecyclerView.smoothScrollToPosition(0);
+
+            // For some reason, the usual RecyclerView.smoothScrollToPosition(0) doesn't work here,
+            // the list scrolls to the bottom, instead of the top.
+            if (mAlertRecyclerView.getLayoutManager() instanceof LinearLayoutManager) {
+                LinearLayoutManager manager = (LinearLayoutManager) mAlertRecyclerView.getLayoutManager();
+                manager.scrollToPosition(0);
+            }
         }
 
         @Override
-        public void onItemRangeChanged(int positionStart, int itemCount, Object payload) {
+        public void onMoved(int fromPosition, int toPosition) {
             updateSubtitle();
-            //mAlertRecyclerView.smoothScrollToPosition(0);
+            mAlertRecyclerView.smoothScrollToPosition(0);
         }
 
         @Override
-        public void onItemRangeInserted(int positionStart, int itemCount) {
+        public void onChanged(int position, int count, Object payload) {
             updateSubtitle();
-            //mAlertRecyclerView.smoothScrollToPosition(0);
-        }
-
-        @Override
-        public void onItemRangeRemoved(int positionStart, int itemCount) {
-            updateSubtitle();
-            //mAlertRecyclerView.smoothScrollToPosition(0);
-        }
-
-        @Override
-        public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
-            updateSubtitle();
-            //mAlertRecyclerView.smoothScrollToPosition(0);
+            mAlertRecyclerView.smoothScrollToPosition(0);
         }
     }
 }
