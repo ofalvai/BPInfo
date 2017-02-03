@@ -26,6 +26,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.util.ListUpdateCallback;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -48,7 +49,6 @@ import com.ofalvai.bpinfo.ui.alert.AlertDetailFragment;
 import com.ofalvai.bpinfo.ui.settings.SettingsActivity;
 import com.ofalvai.bpinfo.util.EmptyRecyclerView;
 import com.ofalvai.bpinfo.util.FabricUtils;
-import com.ofalvai.bpinfo.util.SimpleDividerItemDecoration;
 import com.ofalvai.bpinfo.util.Utils;
 
 import java.util.ArrayList;
@@ -391,8 +391,9 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mAlertRecyclerView.setLayoutManager(layoutManager);
 
-        mAlertRecyclerView.addItemDecoration(
-                new SimpleDividerItemDecoration(getActivity()));
+        final DividerItemDecoration decoration = new DividerItemDecoration(getContext(),
+                layoutManager.getOrientation());
+        mAlertRecyclerView.addItemDecoration(decoration);
 
         mAlertRecyclerView.setEmptyView(mEmptyView);
 
