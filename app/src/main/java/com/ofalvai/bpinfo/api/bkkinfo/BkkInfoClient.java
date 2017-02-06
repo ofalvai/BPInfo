@@ -213,6 +213,9 @@ public class BkkInfoClient implements AlertApiClient {
     private List<Alert> parseTodayAlerts(JSONObject response) throws JSONException {
         List<Alert> alerts = new ArrayList<>();
 
+        boolean isDebugMode = mSharedPreferences.getBoolean(
+                mContext.getString(R.string.pref_key_debug_mode), false);
+
         JSONArray activeAlertsList = response.getJSONArray("active");
         for (int i = 0; i < activeAlertsList.length(); i++) {
             try {
@@ -221,8 +224,6 @@ public class BkkInfoClient implements AlertApiClient {
 
                 // Some alerts are still listed a few minutes after they ended, we need to hide them,
                 // but still show them if debug mode is enabled
-                boolean isDebugMode = mSharedPreferences.getBoolean(
-                        mContext.getString(R.string.pref_key_debug_mode), false);
                 DateTime alertEndTime = new DateTime(alert.getEnd() * 1000L);
                 if (alertEndTime.isAfterNow() || alert.getEnd() == 0 || isDebugMode) {
                     alerts.add(parseAlert(alertNode));

@@ -38,6 +38,7 @@ import android.widget.Toast;
 import com.jakewharton.processphoenix.ProcessPhoenix;
 import com.ofalvai.bpinfo.BpInfoApplication;
 import com.ofalvai.bpinfo.R;
+import com.ofalvai.bpinfo.ui.alertlist.AlertListActivity;
 import com.ofalvai.bpinfo.util.FabricUtils;
 
 import javax.inject.Inject;
@@ -158,8 +159,17 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
             Toast.makeText(this, text, Toast.LENGTH_LONG).show();
             FabricUtils.logDebugMode(String.valueOf(state));
         }
+        // Data source
+        else if (key.equals(getString(R.string.pref_key_data_source))) {
+            Toast.makeText(this, R.string.data_source_changed_refreshed, Toast.LENGTH_SHORT).show();
 
-        // Data source change is handled in AlertListPresenter with a change listener
+            // Recreating AlertListActivity. This relies on BpInfoApplication's preference listener,
+            // which can rebuild the Dagger dependency graph so that the new Activity (and its
+            // Fragments' presenters) will use the new data source
+            Intent intent = new Intent(this, AlertListActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |  Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            this.startActivity(intent);
+        }
     }
 
     @Override

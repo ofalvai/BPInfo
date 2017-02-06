@@ -20,6 +20,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.preference.PreferenceManager;
 
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.answers.Answers;
@@ -39,7 +40,7 @@ import javax.inject.Inject;
 import io.fabric.sdk.android.Fabric;
 
 
-public class BpInfoApplication extends Application {
+public class BpInfoApplication extends Application implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     public static AppComponent injector;
 
@@ -57,6 +58,9 @@ public class BpInfoApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .registerOnSharedPreferenceChangeListener(this);
 
         if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.
@@ -85,6 +89,19 @@ public class BpInfoApplication extends Application {
         super.onConfigurationChanged(newConfig);
 
         setLanguage();
+    }
+
+    /**
+     * Listening for data source preference change to rebuild the Dagger object graph in order to
+     * provide a new AlertApiClient. Recreating the Activity (and Presenters with injected fields)
+     * is done in another listener in SettingsActivity.
+     */
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        String dataSourceKey = getString(R.string.pref_key_data_source);
+        if (key.equals(dataSourceKey)) {
+            initDagger();
+        }
     }
 
     public static RefWatcher getRefWatcher(Context context) {
