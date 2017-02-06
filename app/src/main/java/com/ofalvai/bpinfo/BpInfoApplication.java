@@ -20,6 +20,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.os.StrictMode;
 import android.preference.PreferenceManager;
 
 import com.crashlytics.android.Crashlytics;
@@ -59,15 +60,17 @@ public class BpInfoApplication extends Application implements SharedPreferences.
     public void onCreate() {
         super.onCreate();
 
-        PreferenceManager.getDefaultSharedPreferences(this)
-                .registerOnSharedPreferenceChangeListener(this);
-
         if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.
             // You should not init your app in this process.
             return;
         }
         mRefWatcher = LeakCanary.install(this);
+
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .registerOnSharedPreferenceChangeListener(this);
+
+        initStrictMode();
 
         initDagger();
 
@@ -131,5 +134,23 @@ public class BpInfoApplication extends Application implements SharedPreferences.
         config.locale = newLocale;
 
         getResources().updateConfiguration(config, null);
+    }
+
+    private void initStrictMode() {
+        if (BuildConfig.DEBUG) {
+            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+                    .detectAll()
+                    .penaltyFlashScreen()
+                    .penaltyLog()
+                    .build());
+
+            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+                    //.detectLeakedSqlLiteObjects()
+                    //.detectLeakedClosableObjects()
+                    .detectActivityLeaks()
+                    .detectLeakedRegistrationObjects()
+                    .penaltyLog()
+                    .build());
+        }
     }
 }
