@@ -226,7 +226,7 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
     public void updateSubtitle() {
         // Update subtitle only if the fragment is attached and visible to the user (not preloaded
         // by ViewPager)
-        if (mAlertAdapter != null && isAdded() && getUserVisibleHint()) {
+        if (mAlertAdapter != null && isAdded()) {
             int count = mAlertAdapter.getItemCount();
             String subtitle = getResources().getQuantityString(R.plurals.actionbar_subtitle_alert_count, count, count);
             AppCompatActivity activity = (AppCompatActivity) getActivity();
