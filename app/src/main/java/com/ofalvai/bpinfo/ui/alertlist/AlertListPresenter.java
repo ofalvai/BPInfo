@@ -237,11 +237,11 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
             getView().displayNetworkError(error);
         } else if (ex instanceof JSONException) {
             getView().displayDataError();
+            Crashlytics.logException(ex);
         } else {
             getView().displayGeneralError();
+            Crashlytics.logException(ex);
         }
-
-        Crashlytics.logException(ex);
     }
 
     /**
