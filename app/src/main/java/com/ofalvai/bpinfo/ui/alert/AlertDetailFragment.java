@@ -282,16 +282,18 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
             mDescriptionTextView.setHtmlFromString(alert.getDescription(), new HtmlTextView.LocalImageGetter());
         }
 
-        mUrlTextView.setPaintFlags(mUrlTextView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-        mUrlTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (alert.getUrl() != null) {
+        if (alert.getUrl() == null) {
+            mUrlTextView.setVisibility(View.GONE);
+        } else {
+            mUrlTextView.setPaintFlags(mUrlTextView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+            mUrlTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
                     Uri url = Uri.parse(alert.getUrl());
                     UiUtils.openCustomTab(getActivity(), url);
                     FabricUtils.logAlertUrlClick(alert);
                 }
-            }
-        });
+            });
+        }
     }
 }

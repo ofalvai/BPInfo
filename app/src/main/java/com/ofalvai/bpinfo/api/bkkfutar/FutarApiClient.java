@@ -263,7 +263,10 @@ public class FutarApiClient implements AlertApiClient {
 
         JSONObject urlNode = alertNode.getJSONObject(AlertContract.ALERT_URL);
 
-        String url = urlNode.getString(AlertSearchContract.LANG_SOME) + LANG_PARAM + mLanguageCode;
+        String url = null;
+        if (!urlNode.isNull(AlertSearchContract.LANG_SOME)) {
+            url = urlNode.getString(AlertSearchContract.LANG_SOME) + LANG_PARAM + mLanguageCode;
+        }
 
         String header;
         JSONObject headerNode = alertNode.getJSONObject(AlertContract.ALERT_HEADER);
