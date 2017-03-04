@@ -100,11 +100,11 @@ ribbonizer {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:25.1.1'
-    compile 'com.android.support:recyclerview-v7:25.1.1'
-    compile 'com.android.support:design:25.1.1'
-    compile 'com.android.support:customtabs:25.1.1'
-    compile 'com.android.support:support-annotations:25.1.1'
+    compile 'com.android.support:appcompat-v7:25.2.0'
+    compile 'com.android.support:recyclerview-v7:25.2.0'
+    compile 'com.android.support:design:25.2.0'
+    compile 'com.android.support:customtabs:25.2.0'
+    compile 'com.android.support:support-annotations:25.2.0'
     compile 'com.android.volley:volley:1.0.0'
     compile 'com.wefika:flowlayout:0.4.1'
     compile 'com.google.dagger:dagger:2.8'
