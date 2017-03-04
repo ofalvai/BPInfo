@@ -505,13 +505,18 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
     private class AlertListUpdateCallback implements ListUpdateCallback {
         @Override
         public void onInserted(int position, int count) {
-            updateSubtitle();
+            // Only update the toolbar if this fragment is currently selected in the ViewPager
+            if (getUserVisibleHint()) {
+                updateSubtitle();
+            }
             mAlertRecyclerView.smoothScrollToPosition(0);
         }
 
         @Override
         public void onRemoved(int position, int count) {
-            updateSubtitle();
+            if (getUserVisibleHint()) {
+                updateSubtitle();
+            }
 
             // For some reason, the usual RecyclerView.smoothScrollToPosition(0) doesn't work here,
             // the list scrolls to the bottom, instead of the top.
@@ -523,13 +528,17 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
 
         @Override
         public void onMoved(int fromPosition, int toPosition) {
-            updateSubtitle();
+            if (getUserVisibleHint()) {
+                updateSubtitle();
+            }
             mAlertRecyclerView.smoothScrollToPosition(0);
         }
 
         @Override
         public void onChanged(int position, int count, Object payload) {
-            updateSubtitle();
+            if (getUserVisibleHint()) {
+                updateSubtitle();
+            }
             mAlertRecyclerView.smoothScrollToPosition(0);
         }
     }
