@@ -53,26 +53,35 @@
         tools:text="Notice form backend\nMax 2 lines."
         tools:visibility="visible"/>
 
-    <include layout="@layout/error_with_action"/>
-
-    <include layout="@layout/list_item_empty"/>
-
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/alerts_swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.ofalvai.bpinfo.util.EmptyRecyclerView
-            android:id="@+id/alerts_recycler_view"
+        <!-- SwipeRefreshLayout can contain only one child -->
+        <!-- Also, we need the error and empty views to be inside the SwipeRefreshLayout,
+             because otherwise the layout's height would be 0 in case of an empty list -->
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingLeft="@dimen/list_extra_padding"
-            android:paddingRight="@dimen/list_extra_padding"
-            android:scrollbars="vertical"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            tools:context=".ui.alertlist.AlertListFragment"
-            tools:listitem="@layout/list_item_alert">
-        </com.ofalvai.bpinfo.util.EmptyRecyclerView>
+            android:layout_height="match_parent">
+
+            <include layout="@layout/error_with_action"/>
+
+            <include layout="@layout/list_item_empty"/>
+
+            <com.ofalvai.bpinfo.util.EmptyRecyclerView
+                android:id="@+id/alerts_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="@dimen/list_extra_padding"
+                android:paddingRight="@dimen/list_extra_padding"
+                android:scrollbars="vertical"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                tools:context=".ui.alertlist.AlertListFragment"
+                tools:listitem="@layout/list_item_alert">
+            </com.ofalvai.bpinfo.util.EmptyRecyclerView>
+
+        </LinearLayout>
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
