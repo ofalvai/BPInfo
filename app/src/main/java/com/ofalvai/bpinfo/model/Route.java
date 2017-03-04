@@ -22,7 +22,7 @@ import android.support.annotation.Nullable;
 
 import java.io.Serializable;
 
-public class Route implements Serializable {
+public class Route implements Serializable, Comparable<Route> {
 
     @NonNull
     private String id;
@@ -67,6 +67,11 @@ public class Route implements Serializable {
         this.type = type;
         this.color = color;
         this.textColor = textColor;
+    }
+
+    @Override
+    public int compareTo(@NonNull Route o) {
+        return this.id.compareTo(o.id);
     }
 
     @NonNull

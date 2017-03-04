@@ -49,6 +49,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -417,6 +418,8 @@ public class BkkInfoClient implements AlertApiClient {
             Route route = new Route(id, shortName, null, description, routeType, color, textColor);
             routes.add(route);
         }
+
+        Collections.sort(routes);
 
         return routes;
     }
