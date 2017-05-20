@@ -15,7 +15,6 @@
  */
 
 apply plugin: 'com.android.application'
-apply plugin: 'android-apt'
 apply plugin: 'com.github.gfx.ribbonizer'
 apply plugin: 'io.fabric'
 apply plugin: 'com.google.gms.google-services'
@@ -44,7 +43,7 @@ android {
         }
     }
     compileSdkVersion 25
-    buildToolsVersion '25.0.2'
+    buildToolsVersion '26.0.0-rc2'
 
     defaultConfig {
         applicationId "com.ofalvai.bpinfo"
@@ -79,11 +78,16 @@ android {
             resValue "string", "PACKAGE_NAME_REAL", "com.ofalvai.bpinfo"
         }
     }
+
+    flavorDimensions "data"
+
     productFlavors {
         prod {
+            dimension "data"
         }
         mock {
             applicationIdSuffix ".mock"
+            dimension "data"
         }
     }
 }
@@ -117,8 +121,8 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.6.6@aar') {
         transitive = true;
     }
-    apt 'com.google.dagger:dagger-compiler:2.8'
-    apt 'com.jakewharton:butterknife-compiler:8.4.0'
+    annotationProcessor  'com.google.dagger:dagger-compiler:2.8'
+    annotationProcessor  'com.jakewharton:butterknife-compiler:8.4.0'
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2') {
