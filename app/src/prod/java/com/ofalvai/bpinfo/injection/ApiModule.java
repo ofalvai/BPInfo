@@ -51,8 +51,9 @@ public class ApiModule {
                                          SharedPreferences sharedPreferences, Context context) {
         String keyBkkFutar = context.getString(R.string.pref_key_data_source_futar);
         String keyBkkInfo = context.getString(R.string.pref_key_data_source_bkk_info);
+        String keyDefault = context.getString(R.string.pref_key_data_source_default);
         String keyCurrent = sharedPreferences.
-                getString(context.getString(R.string.pref_key_data_source), keyBkkInfo);
+                getString(context.getString(R.string.pref_key_data_source), keyDefault);
 
         if (keyCurrent.equals(keyBkkFutar)) {
             return new FutarApiClient(requestQueue);

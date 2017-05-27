@@ -84,6 +84,8 @@
     <string name="pref_key_data_source_futar" translatable="false">bkk_futar</string>
     <string name="pref_key_data_source_bkk_info" translatable="false">bkk_info</string>
 
+    <string name="pref_key_data_source_default" translatable="false">@string/pref_key_data_source_bkk_info</string>
+
     <string-array name="pref_data_source_list_titles">
         <item>@string/pref_data_source_futar</item>
         <item>@string/pref_data_source_bkk_info</item>

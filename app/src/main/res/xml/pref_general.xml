@@ -23,7 +23,7 @@
         <ListPreference
             android:title="@string/pref_title_data_source"
             android:key="@string/pref_key_data_source"
-            android:defaultValue="@string/pref_key_data_source_futar"
+            android:defaultValue="@string/pref_key_data_source_default"
             android:entries="@array/pref_data_source_list_titles"
             android:entryValues="@array/pref_data_source_list_values" />
 
