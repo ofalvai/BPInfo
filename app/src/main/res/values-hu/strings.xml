@@ -83,7 +83,7 @@
     <string name="alert_label_recent">FRISS</string>
     <string name="title_activity_about">Névjegy</string>
     <string name="about_label_licences">Nyílt forrású licencek</string>
-    <string name="about_label_source_code">Forráskód GitHub-on</string>
+    <string name="about_label_source_code">Forráskód GitHubon</string>
     <string name="pref_description_about">Verzió, licencek</string>
     <string name="pref_title_about">Névjegy</string>
     <string name="tab_title_today">Most</string>
