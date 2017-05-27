@@ -31,7 +31,8 @@ keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 def localConfig = new Properties()
 localConfig.load(new FileInputStream(project.file("localconfig.properties")))
 
-// Other variables are declared in gradle.properties
+def appVersionCode = 11
+def appVersionName = "1.3.3"
 
 android {
     signingConfigs {
@@ -52,11 +53,11 @@ android {
         minSdkVersion 16
         targetSdkVersion 25
 
-        versionCode version_code.toInteger()
-        versionName version_name
+        versionCode appVersionCode
+        versionName appVersionName
 
         resConfigs "en", "hu"
-        resValue "string", "APP_VERSION", version_name
+        resValue "string", "APP_VERSION", appVersionName
         buildConfigField "String", "BACKEND_URL", "\"${localConfig.backendUrl}\""
         manifestPlaceholders = [fabricApiKey: localConfig.fabricApiKey]
 
