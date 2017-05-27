@@ -19,6 +19,7 @@ apply plugin: 'com.github.gfx.ribbonizer'
 apply plugin: 'io.fabric'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.jakewharton.hugo'
+apply plugin: 'com.google.firebase.firebase-perf'
 
 // Create a variable called keystorePropertiesFile, and initialize it to your
 // keystore.properties file, in the rootProject folder.
@@ -44,7 +45,7 @@ android {
         }
     }
     compileSdkVersion 25
-    buildToolsVersion '26.0.0-rc2'
+    buildToolsVersion '25.0.3'
 
     defaultConfig {
         applicationId "com.ofalvai.bpinfo"
@@ -119,6 +120,7 @@ dependencies {
     compile 'com.jakewharton:butterknife:8.5.1'
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'com.google.firebase:firebase-core:10.2.6'
+    compile 'com.google.firebase:firebase-perf:10.2.6'
     compile('com.crashlytics.sdk.android:crashlytics:2.6.6@aar') {
         transitive = true
     }
