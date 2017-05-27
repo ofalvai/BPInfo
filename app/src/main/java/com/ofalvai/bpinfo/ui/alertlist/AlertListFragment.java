@@ -201,7 +201,10 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
     public void onStart() {
         super.onStart();
 
-        mPresenter.updateIfNeeded();
+        boolean updating = mPresenter.updateIfNeeded();
+        if (updating && Utils.hasNetworkConnection(getContext())) {
+            setUpdating(true);
+        }
     }
 
     @Override
@@ -294,11 +297,6 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
         if (isAdded()) {
             setErrorView(true, getString(R.string.error_list_display));
         }
-    }
-
-    @Override
-    public void setUpdating(final boolean updating) {
-        mSwipeRefreshLayout.setRefreshing(updating);
     }
 
     @Override
@@ -420,6 +418,10 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
         mPresenter.fetchNotice();
 
         mPresenter.setLastUpdate();
+    }
+
+    private void setUpdating(boolean updating) {
+        mSwipeRefreshLayout.setRefreshing(updating);
     }
 
     private void displayFilterDialog() {

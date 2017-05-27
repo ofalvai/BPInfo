@@ -55,8 +55,6 @@ public interface AlertListContract {
 
         void displayAlertDetailError();
 
-        void setUpdating(boolean state);
-
         void updateSubtitle();
 
         void displayNoNetworkWarning();
@@ -81,7 +79,10 @@ public interface AlertListContract {
 
         void getAlertList();
 
-        void updateIfNeeded();
+        /**
+         * @return true if needed (will call fetch methods automatically)
+         */
+        boolean updateIfNeeded();
 
         void setLastUpdate();
 

@@ -168,11 +168,14 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
      * Initiates a list update if enough time has passed since the last update
      */
     @Override
-    public void updateIfNeeded() {
+    public boolean updateIfNeeded() {
         Period updatePeriod = new Period().withSeconds(Config.REFRESH_THRESHOLD_SEC);
         if (mLastUpdate != null && mLastUpdate.plus(updatePeriod).isBeforeNow()) {
             fetchAlertList();
             fetchNotice();
+            return true;
+        } else {
+            return false;
         }
     }
 
