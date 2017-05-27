@@ -202,4 +202,9 @@ public class Utils {
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
+
+    public static String getContentDescriptionForRoute(Context context, Route route) {
+        String routeType = routeTypeToString(context, route.getType());
+        return routeType + " " + route.getShortName();
+    }
 }

@@ -134,6 +134,7 @@ public class UiUtils {
 
         iconView.setText(route.getShortName());
         iconView.setTextColor(route.getTextColor());
+        iconView.setContentDescription(Utils.getContentDescriptionForRoute(context, route));
         root.addView(iconView);
 
         // Layout attributes defined in R.style.RouteIcon were ignored before attaching the view to
