@@ -484,8 +484,13 @@ public class BkkInfoClient implements AlertApiClient {
                 }
                 break;
             case FERRY:
-                background = "E50475";
-                text = "FFFFFF";
+                if (shortName.equals("D12")) {
+                    background = "9A1915";
+                    text = "FFFFFF";
+                } else {
+                    background = "E50475";
+                    text = "FFFFFF";
+                }
                 break;
             case RAIL:
                 switch (shortName) {
