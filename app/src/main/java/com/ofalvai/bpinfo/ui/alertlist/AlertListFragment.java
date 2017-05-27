@@ -444,6 +444,7 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
             setUpdating(false);
 
             mAlertRecyclerView.setVisibility(View.GONE);
+            mEmptyView.setVisibility(View.GONE);
 
             TextView errorMessageView = (TextView) mErrorLayout.findViewById(R.id.error_message);
             Button refreshButton = (Button) mErrorLayout.findViewById(R.id.error_action_button);
@@ -462,6 +463,7 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
             errorMessageView.setText(errorMessage);
         } else {
             mAlertRecyclerView.setVisibility(View.VISIBLE);
+            mEmptyView.setVisibility(View.VISIBLE);
             mErrorLayout.setVisibility(View.GONE);
         }
     }
