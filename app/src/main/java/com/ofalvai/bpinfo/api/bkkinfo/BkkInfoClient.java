@@ -507,11 +507,11 @@ public class BkkInfoClient implements AlertApiClient {
                         text = "FFFFFF";
                         break;
                     case "H8":
-                        background = "ED677E";
+                        background = "FF6677";
                         text = "FFFFFF";
                         break;
                     case "H9":
-                        background = "ED677E";
+                        background = "FF6677";
                         text = "FFFFFF";
                         break;
                     default:
