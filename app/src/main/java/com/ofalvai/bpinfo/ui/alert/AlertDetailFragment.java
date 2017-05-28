@@ -45,7 +45,6 @@ import com.ofalvai.bpinfo.model.Alert;
 import com.ofalvai.bpinfo.model.Route;
 import com.ofalvai.bpinfo.ui.alertlist.AlertListContract;
 import com.ofalvai.bpinfo.util.FabricUtils;
-import com.ofalvai.bpinfo.util.FixedHtmlTextView;
 import com.ofalvai.bpinfo.util.UiUtils;
 import com.ofalvai.bpinfo.util.Utils;
 import com.wefika.flowlayout.FlowLayout;
@@ -80,7 +79,7 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
     FlowLayout mRouteIconsLayout;
 
     @BindView(R.id.alert_detail_description)
-    FixedHtmlTextView mDescriptionTextView;
+    HtmlTextView mDescriptionTextView;
 
     @BindView(R.id.alert_detail_url)
     TextView mUrlTextView;
@@ -279,7 +278,7 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
         }
 
         if (alert.getDescription() != null) {
-            mDescriptionTextView.setHtmlFromString(alert.getDescription(), new HtmlTextView.LocalImageGetter());
+            mDescriptionTextView.setHtml(alert.getDescription());
         }
 
         if (alert.getUrl() == null) {
