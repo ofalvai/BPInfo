@@ -477,6 +477,10 @@ public class BkkInfoClient implements AlertApiClient {
                     // the 3 digits.
                     background = "1E1E1E";
                     text = "FFFFFF";
+                } else if(shortName.equals("I")) {
+                    // Nostalgia bus
+                    background = "FFA417";
+                    text = "FFFFFF";
                 } else {
                     // Regular bus
                     background = "009FE3";
