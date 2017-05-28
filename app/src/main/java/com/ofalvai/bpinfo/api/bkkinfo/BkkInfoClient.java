@@ -31,6 +31,9 @@ import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.crashlytics.android.Crashlytics;
+import com.google.firebase.perf.FirebasePerformance;
+import com.google.firebase.perf.metrics.AddTrace;
+import com.google.firebase.perf.metrics.Trace;
 import com.ofalvai.bpinfo.BpInfoApplication;
 import com.ofalvai.bpinfo.R;
 import com.ofalvai.bpinfo.api.AlertApiClient;
@@ -102,9 +105,12 @@ public class BkkInfoClient implements AlertApiClient {
 
     private List<Alert> mAlertsFuture = new ArrayList<>();
 
+    private Trace mAlertDetailTrace;
+
     public BkkInfoClient(RequestQueue requestQueue) {
         mRequestQueue = requestQueue;
         BpInfoApplication.injector.inject(this);
+        mAlertDetailTrace = FirebasePerformance.getInstance().newTrace("network_alert_detail_bkk");
     }
 
     @Override
@@ -164,6 +170,7 @@ public class BkkInfoClient implements AlertApiClient {
         request.setRetryPolicy(getRetryPolicy());
 
         mRequestQueue.add(request);
+        mAlertDetailTrace.start();
     }
 
     private Uri buildAlertListUrl(AlertRequestParams params) {
@@ -202,6 +209,7 @@ public class BkkInfoClient implements AlertApiClient {
     }
 
     private void onAlertDetailResponse(AlertDetailListener listener, JSONObject response) {
+        mAlertDetailTrace.stop();
         try {
             Alert alert = parseAlertDetail(response);
             listener.onAlertResponse(alert);
@@ -210,6 +218,7 @@ public class BkkInfoClient implements AlertApiClient {
         }
     }
 
+    @AddTrace(name = "parse_alert_list_bkk")
     @NonNull
     private List<Alert> parseTodayAlerts(JSONObject response) throws JSONException {
         List<Alert> alerts = new ArrayList<>();
@@ -237,6 +246,7 @@ public class BkkInfoClient implements AlertApiClient {
         return alerts;
     }
 
+    @AddTrace(name = "parse_alert_list_future_bkk")
     @NonNull
     private List<Alert> parseFutureAlerts(JSONObject response) throws JSONException {
         List<Alert> alerts = new ArrayList<>();
@@ -306,6 +316,7 @@ public class BkkInfoClient implements AlertApiClient {
      * Parses alert details found in the alert detail API response
      * This structure is different than the alert list API response
      */
+    @AddTrace(name = "parse_alert_detail_bkk")
     private Alert parseAlertDetail(JSONObject response) throws JSONException {
         String id = response.getString("id");
 

@@ -30,6 +30,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.crashlytics.android.Crashlytics;
+import com.google.firebase.perf.metrics.AddTrace;
 import com.ofalvai.bpinfo.BpInfoApplication;
 import com.ofalvai.bpinfo.BuildConfig;
 import com.ofalvai.bpinfo.Config;
@@ -206,6 +207,7 @@ public class FutarApiClient implements AlertApiClient {
         return builder.build();
     }
 
+    @AddTrace(name = "parse_alert_list_futar")
     @NonNull
     private List<Alert> parseAlerts(@NonNull JSONObject response, @NonNull AlertListType alertListType)
             throws JSONException {
@@ -246,6 +248,7 @@ public class FutarApiClient implements AlertApiClient {
         return alertList;
     }
 
+    @AddTrace(name = "parse_alert_detail_futar")
     @NonNull
     private Alert parseAlert(@NonNull JSONObject alertNode)
             throws JSONException {
@@ -307,6 +310,7 @@ public class FutarApiClient implements AlertApiClient {
         return new Alert(id, start, end, timestamp, url, header, description, affectedRoutes);
     }
 
+    @AddTrace(name = "parse_alert_routes_futar")
     @NonNull
     private Map<String, Route> parseRoutes(@NonNull JSONObject response) throws JSONException {
         Map<String, Route> routeMap = new ArrayMap<>();
