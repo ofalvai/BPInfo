@@ -87,32 +87,12 @@ public class Alert implements Serializable {
         return id;
     }
 
-    public void setId(@NonNull String id) {
-        this.id = id;
-    }
-
     public long getStart() {
         return start;
     }
 
-    public void setStart(long start) {
-        this.start = start;
-    }
-
     public long getEnd() {
         return end;
-    }
-
-    public void setEnd(long end) {
-        this.end = end;
-    }
-
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
     }
 
     @Nullable
@@ -120,17 +100,9 @@ public class Alert implements Serializable {
         return url;
     }
 
-    public void setUrl(@Nullable String url) {
-        this.url = url;
-    }
-
     @Nullable
     public String getHeader() {
         return header;
-    }
-
-    public void setHeader(@Nullable String header) {
-        this.header = header;
     }
 
     @Nullable
@@ -138,17 +110,9 @@ public class Alert implements Serializable {
         return description;
     }
 
-    public void setDescription(@Nullable String description) {
-        this.description = description;
-    }
-
     @NonNull
     public List<Route> getAffectedRoutes() {
         return affectedRoutes;
-    }
-
-    public void setAffectedRoutes(@NonNull List<Route> affectedRoutes) {
-        this.affectedRoutes = affectedRoutes;
     }
 
     public boolean isPartial() {

@@ -74,14 +74,14 @@ public class Utils {
      * It's needed because the API returns replacement routes mixed together with the affected routes.
      */
     public static boolean isRouteReplacement(@NonNull String routeId) {
-        /**
-         * Possible values and meanings:
-         * BKK_VP: VillamosPótló
-         * BKK_OP: Operatív Pótló (Metró, Villamos)
-         * BKK_TP: TroliPótló
-         * BKK_HP: HévPótló
-         * BKK_MP: MetróPótló
-         * to be continued...
+        /*
+          Possible values and meanings:
+          BKK_VP: VillamosPótló
+          BKK_OP: Operatív Pótló (Metró, Villamos)
+          BKK_TP: TroliPótló
+          BKK_HP: HévPótló
+          BKK_MP: MetróPótló
+          to be continued...
          */
         String replacementIdPattern = "BKK_(VP|OP|TP|HP|MP)[0-9A-Z]+";
 

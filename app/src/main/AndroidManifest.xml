@@ -25,14 +25,16 @@
     <application
         android:name=".BpInfoApplication"
         android:allowBackup="true"
+        android:fullBackupContent="@xml/backup_descriptor"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="false"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
 
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="${fabricApiKey}" />
+            android:value="${fabricApiKey}"/>
 
         <!-- Alert List -->
         <activity
@@ -69,12 +71,12 @@
 
         <!-- Licences -->
         <activity
-        android:name=".ui.settings.LicensesActivity"
-        android:label="@string/title_activity_licences"
-        android:parentActivityName=".ui.settings.AboutActivity">
+            android:name=".ui.settings.LicensesActivity"
+            android:label="@string/title_activity_licences"
+            android:parentActivityName=".ui.settings.AboutActivity">
             <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value=".ui.settings.AboutActivity"/>
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.settings.AboutActivity"/>
         </activity>
 
     </application>

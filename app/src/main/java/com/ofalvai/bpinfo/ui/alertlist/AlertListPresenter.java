@@ -211,8 +211,12 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
             mUnfilteredAlerts = message.futureAlerts;
         }
 
-        List<Alert> processedAlerts = filterAndSort(mActiveFilter, mUnfilteredAlerts, mAlertListType);
-        getView().displayAlerts(processedAlerts);
+        if (mUnfilteredAlerts != null) {
+            List<Alert> processedAlerts = filterAndSort(mActiveFilter, mUnfilteredAlerts, mAlertListType);
+            getView().displayAlerts(processedAlerts);
+        } else {
+            LOGE(TAG, "Unfiltered alerts is null");
+        }
     }
 
     @Subscribe

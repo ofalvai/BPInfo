@@ -23,6 +23,7 @@ import android.animation.ValueAnimator;
 import android.app.Dialog;
 import android.graphics.Paint;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -156,7 +157,9 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
         // Found this solution here: https://code.google.com/p/android/issues/detail?id=202691
         BottomSheetDialog dialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
         if (dialog.getWindow() != null) {
-            dialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                dialog.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            }
         }
         return dialog;
     }
@@ -165,9 +168,7 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
     public void onStart() {
         super.onStart();
 
-        /**
-         *  Bottom sheets on tablets should have a smaller width than the screen width.
-         */
+        // Bottom sheets on tablets should have a smaller width than the screen width.
         int width = getContext().getResources().getDimensionPixelSize(R.dimen.bottom_sheet_width);
         int actualWidth = width > 0 ? width : ViewGroup.LayoutParams.MATCH_PARENT;
         Window window = getDialog().getWindow();
