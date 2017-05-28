@@ -128,6 +128,9 @@ public class AlertFilterFragment extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dismiss();
+                        if (mFilterListener != null) {
+                            mFilterListener.onFilterDismissed();
+                        }
                     }
                 })
                 .create();
