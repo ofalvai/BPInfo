@@ -164,6 +164,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
         // Data source
         else if (key.equals(getString(R.string.pref_key_data_source))) {
             Toast.makeText(this, R.string.data_source_changed_refreshed, Toast.LENGTH_SHORT).show();
+            FabricUtils.logDataSourceChange(mSharedPreferences.getString(key, ""));
 
             // Recreating AlertListActivity. This relies on BpInfoApplication's preference listener,
             // which can rebuild the Dagger dependency graph so that the new Activity (and its
