@@ -61,7 +61,7 @@
             android:layout_centerHorizontal="true" />
 
         <TextView
-            android:id="@+id/about_licences"
+            android:id="@+id/about_licenses"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
@@ -77,7 +77,18 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="@string/about_label_source_code"
-            android:layout_below="@id/about_licences"
+            android:layout_below="@id/about_licenses"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="16dp"
+            style="@style/LinkLabel"/>
+
+        <TextView
+            android:id="@+id/about_privacy_policy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/about_label_privacy_policy"
+            android:layout_below="@id/about_source_code"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="16dp"
             style="@style/LinkLabel"/>

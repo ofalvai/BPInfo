@@ -45,5 +45,7 @@ public class Config {
 
     public static final String BACKEND_URL = BuildConfig.BACKEND_URL;
 
+    public static final String PRIVACY_POLICY_URL = BACKEND_URL + "/privacy.html";
+
     public static final String BACKEND_NOTICE_PATH = "notices.json";
 }

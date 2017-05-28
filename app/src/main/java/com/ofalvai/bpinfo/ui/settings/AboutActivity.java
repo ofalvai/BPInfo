@@ -27,40 +27,56 @@ import android.widget.TextView;
 import com.ofalvai.bpinfo.Config;
 import com.ofalvai.bpinfo.R;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class AboutActivity extends AppCompatActivity {
+
+    @BindView(R.id.about_licenses)
+    TextView mLicensesView;
+
+    @BindView(R.id.about_source_code)
+    TextView mSourceCodeView;
+
+    @BindView(R.id.about_privacy_policy)
+    TextView mPrivacyPolicyView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
+        ButterKnife.bind(this);
 
-        final TextView licencesTextView = (TextView) findViewById(R.id.about_licences);
-        final TextView sourceCodeTextView = (TextView) findViewById(R.id.about_source_code);
+        mLicensesView.setPaintFlags(mLicensesView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        mLicensesView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Intent licencesIntent = LicensesActivity.newIntent(AboutActivity.this);
+                startActivity(licencesIntent);
+            }
+        });
 
-        if (licencesTextView != null) {
-            licencesTextView.setPaintFlags(licencesTextView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        mSourceCodeView.setPaintFlags(mSourceCodeView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        mSourceCodeView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Uri sourceCodeUrl = Uri.parse(Config.SOURCE_CODE_URL);
+                final Intent sourceCodeIntent = new Intent(Intent.ACTION_VIEW);
+                sourceCodeIntent.setData(sourceCodeUrl);
+                startActivity(sourceCodeIntent);
+            }
+        });
 
-            final Intent licencesIntent = LicensesActivity.newIntent(this);
-            licencesTextView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startActivity(licencesIntent);
-                }
-            });
-        }
+        mPrivacyPolicyView.setPaintFlags(mPrivacyPolicyView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        mPrivacyPolicyView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Uri privacyPolicyUrl = Uri.parse(Config.PRIVACY_POLICY_URL);
+                final Intent privacyPolicyIntent = new Intent(Intent.ACTION_VIEW);
+                privacyPolicyIntent.setData(privacyPolicyUrl);
+                startActivity(privacyPolicyIntent);
+            }
+        });
 
-        if (sourceCodeTextView != null) {
-            sourceCodeTextView.setPaintFlags(sourceCodeTextView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-
-            Uri url = Uri.parse(Config.SOURCE_CODE_URL);
-            final Intent sourceCodeIntent = new Intent(Intent.ACTION_VIEW);
-            sourceCodeIntent.setData(url);
-            sourceCodeTextView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startActivity(sourceCodeIntent);
-                }
-            });
-        }
     }
 }

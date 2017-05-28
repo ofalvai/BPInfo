@@ -30,7 +30,7 @@ public class LicensesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_licences);
+        setContentView(R.layout.activity_licenses);
 
         WebView webView = (WebView) findViewById(R.id.webview_licences);
         if (webView != null) {
