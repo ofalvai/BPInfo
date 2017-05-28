@@ -21,11 +21,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
@@ -174,9 +176,13 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_settings, menu);
-        return true;
+        if (shouldShowDebugMode()) {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.menu_settings, menu);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -226,5 +232,19 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
                             }
                         })
                 .show();
+    }
+
+    /**
+     * Only show debug mode when development settings are enabled on the device
+     */
+    private boolean shouldShowDebugMode() {
+        int devOptions = 0;
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.JELLY_BEAN) {
+            devOptions = Settings.Secure.getInt(this.getContentResolver(), Settings.Secure.DEVELOPMENT_SETTINGS_ENABLED , 0);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            devOptions = Settings.Secure.getInt(this.getContentResolver(), Settings.Global.DEVELOPMENT_SETTINGS_ENABLED , 0);
+        }
+
+        return devOptions == 1;
     }
 }
