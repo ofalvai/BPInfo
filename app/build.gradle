@@ -31,8 +31,8 @@ keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 def localConfig = new Properties()
 localConfig.load(new FileInputStream(project.file("localconfig.properties")))
 
-def appVersionCode = 11
-def appVersionName = "1.3.3"
+def appVersionCode = 12
+def appVersionName = "1.4.0"
 
 android {
     signingConfigs {
