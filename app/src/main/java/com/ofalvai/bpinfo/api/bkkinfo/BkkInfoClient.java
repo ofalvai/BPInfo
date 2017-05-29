@@ -110,7 +110,6 @@ public class BkkInfoClient implements AlertApiClient {
     public BkkInfoClient(RequestQueue requestQueue) {
         mRequestQueue = requestQueue;
         BpInfoApplication.injector.inject(this);
-        mAlertDetailTrace = FirebasePerformance.getInstance().newTrace("network_alert_detail_bkk");
     }
 
     @Override
@@ -170,7 +169,7 @@ public class BkkInfoClient implements AlertApiClient {
         request.setRetryPolicy(getRetryPolicy());
 
         mRequestQueue.add(request);
-        mAlertDetailTrace.start();
+        createAndStartTrace("network_alert_detail_bkk");
     }
 
     private Uri buildAlertListUrl(AlertRequestParams params) {
@@ -622,5 +621,10 @@ public class BkkInfoClient implements AlertApiClient {
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
         );
+    }
+
+    private void createAndStartTrace(String name) {
+        mAlertDetailTrace = FirebasePerformance.getInstance().newTrace(name);
+        mAlertDetailTrace.start();
     }
 }
