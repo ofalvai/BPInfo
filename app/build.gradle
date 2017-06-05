@@ -15,6 +15,7 @@
  */
 
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 apply plugin: 'com.github.gfx.ribbonizer'
 apply plugin: 'io.fabric'
 apply plugin: 'com.jakewharton.hugo'
@@ -105,6 +106,7 @@ ribbonizer {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:recyclerview-v7:25.3.1'
     compile 'com.android.support:design:25.3.1'
