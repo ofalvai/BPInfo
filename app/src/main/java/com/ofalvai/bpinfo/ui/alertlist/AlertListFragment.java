@@ -46,6 +46,7 @@ import com.ofalvai.bpinfo.R;
 import com.ofalvai.bpinfo.model.Alert;
 import com.ofalvai.bpinfo.model.RouteType;
 import com.ofalvai.bpinfo.ui.alert.AlertDetailFragment;
+import com.ofalvai.bpinfo.ui.notifications.NotificationsActivity;
 import com.ofalvai.bpinfo.ui.settings.SettingsActivity;
 import com.ofalvai.bpinfo.util.EmptyRecyclerView;
 import com.ofalvai.bpinfo.util.FabricUtils;
@@ -193,6 +194,8 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
             case R.id.menu_item_settings:
                 startActivity(SettingsActivity.newIntent(getContext()));
                 break;
+            case R.id.menu_item_notifications:
+                startActivity(NotificationsActivity.newIntent(getContext()));
         }
         return true;
     }

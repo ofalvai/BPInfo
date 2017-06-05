@@ -123,6 +123,7 @@ dependencies {
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'com.google.firebase:firebase-core:10.2.6'
     compile 'com.google.firebase:firebase-perf:10.2.6'
+    compile 'com.google.firebase:firebase-messaging:10.2.6'
     compile('com.crashlytics.sdk.android:crashlytics:2.6.6@aar') {
         transitive = true
     }

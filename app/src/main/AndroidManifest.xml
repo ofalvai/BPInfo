@@ -31,7 +31,6 @@
         android:supportsRtl="false"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="${fabricApiKey}"/>
@@ -78,7 +77,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.settings.AboutActivity"/>
         </activity>
-
+        <activity android:name=".ui.notifications.NotificationsActivity">
+        </activity>
     </application>
 
 </manifest>
