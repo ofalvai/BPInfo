@@ -217,7 +217,6 @@ public class BkkInfoClient implements AlertApiClient {
         }
     }
 
-    @AddTrace(name = "parse_alert_list_bkk")
     @NonNull
     private List<Alert> parseTodayAlerts(JSONObject response) throws JSONException {
         List<Alert> alerts = new ArrayList<>();
@@ -245,7 +244,6 @@ public class BkkInfoClient implements AlertApiClient {
         return alerts;
     }
 
-    @AddTrace(name = "parse_alert_list_future_bkk")
     @NonNull
     private List<Alert> parseFutureAlerts(JSONObject response) throws JSONException {
         List<Alert> alerts = new ArrayList<>();
@@ -313,7 +311,6 @@ public class BkkInfoClient implements AlertApiClient {
      * Parses alert details found in the alert detail API response
      * This structure is different than the alert list API response
      */
-    @AddTrace(name = "parse_alert_detail_bkk")
     private Alert parseAlertDetail(JSONObject response) throws JSONException {
         String id = response.getString("id");
 
