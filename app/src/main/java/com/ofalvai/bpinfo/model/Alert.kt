@@ -1,0 +1,59 @@
+/*
+ * Copyright 2016 Olivér Falvai
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
+package com.ofalvai.bpinfo.model
+
+import java.io.Serializable
+
+data class Alert(val id: String,
+
+                 /**
+                  * Start of the alert in seconds since the UNIX epoch
+                  */
+                 val start: Long,
+
+                 /**
+                  * End of the alert in seconds since the UNIX epoch
+                  * Might be 0, which means the end is not known yet.
+                  */
+                 val end: Long,
+
+                 /**
+                  * Last modification of alert data in seconds since the UNIX epoch
+                  */
+                 val timestamp: Long,
+
+                 /**
+                  * Points to the alert's detail page at the mobile version of BKK Info
+                  */
+                 val url: String?,
+
+                 /**
+                  * One line title of the alert (diversion, replacement, construction, etc.)
+                  */
+                 val header: String?,
+
+                 /**
+                  * HTML description of the alert
+                  */
+                 val description: String?,
+
+                 val affectedRoutes: List<Route>,
+
+                 /**
+                  * Whether the alert object contains all required information, or a second API call is needed
+                  */
+                 val isPartial: Boolean = false) : Serializable

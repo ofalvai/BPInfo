@@ -306,9 +306,7 @@ public class BkkInfoClient implements AlertApiClient {
         JSONArray routesArray = alertNode.getJSONArray("jaratokByFajta");
         affectedRoutes = parseAffectedRoutes(routesArray);
 
-        Alert alert = new Alert(id, start, end, timestamp, url, header, null, affectedRoutes);
-        alert.setPartial(true); // Description is missing, needs a second API call
-        return alert;
+        return new Alert(id, start, end, timestamp, url, header, null, affectedRoutes, true);
     }
 
     /**
@@ -368,7 +366,7 @@ public class BkkInfoClient implements AlertApiClient {
         // recommended routes. The real affected routes' IDs are in "jaratok"
         affectedRoutes = parseDetailedAffectedRoutes(routeDetailsNode, affectedRouteIds);
 
-        return new Alert(id, start, end, timestamp, url, header, description, affectedRoutes);
+        return new Alert(id, start, end, timestamp, url, header, description, affectedRoutes, false);
     }
 
     private String getUrl(String alertId) {

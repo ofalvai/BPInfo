@@ -307,7 +307,7 @@ public class FutarApiClient implements AlertApiClient {
         List<String> routeIds = Utils.jsonArrayToStringList(routeIdsNode);
         List<Route> affectedRoutes = getRoutesByIds(routeIds);
 
-        return new Alert(id, start, end, timestamp, url, header, description, affectedRoutes);
+        return new Alert(id, start, end, timestamp, url, header, description, affectedRoutes, false);
     }
 
     @AddTrace(name = "parse_alert_routes_futar")
