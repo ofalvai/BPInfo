@@ -10,7 +10,9 @@ import com.google.firebase.messaging.RemoteMessage
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.ui.alertlist.AlertListActivity
 import timber.log.Timber
+import java.util.*
 
+const val DATA_KEY_ID = "id"
 const val DATA_KEY_TITLE = "title"
 const val DATA_KEY_TEXT = "text"
 const val REQUEST_CODE = 0
@@ -24,15 +26,17 @@ class AlertMessagingService : FirebaseMessagingService() {
 
         val data = remoteMessage.data
         if (data.isNotEmpty()) {
-            if (data.containsKey(DATA_KEY_TITLE) && data.containsKey(DATA_KEY_TEXT)) {
+            if (data.containsKey(DATA_KEY_TITLE) && data.containsKey(DATA_KEY_TEXT) && data.containsKey(DATA_KEY_ID)) {
+                val id = data[DATA_KEY_ID]
                 val title = data[DATA_KEY_TITLE]
                 val text = data[DATA_KEY_TEXT]
-                if (title != null && text != null) {
+                if (title != null && text != null && id != null) {
                     Timber.d("Creating notification")
+                    Timber.d("ID: $id")
                     Timber.d("Title: $title")
                     Timber.d("Text: $text")
 
-                    createNotification(title, text)
+                    createNotification(id, title, text)
                 } else {
                     Timber.d("Message data is null")
                 }
@@ -44,7 +48,7 @@ class AlertMessagingService : FirebaseMessagingService() {
         }
     }
 
-    private fun createNotification(title: String, text: String) {
+    private fun createNotification(id: String, title: String, text: String) {
         val intent = Intent(this, AlertListActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         val pendingIntent = PendingIntent.getActivity(this, REQUEST_CODE, intent, PendingIntent.FLAG_ONE_SHOT)
@@ -55,8 +59,11 @@ class AlertMessagingService : FirebaseMessagingService() {
                 .setContentText(text)
                 .setAutoCancel(true)
                 .setContentIntent(pendingIntent)
+                .setColor(resources.getColor(R.color.colorPrimary))
+                .setShowWhen(true)
+                .setWhen(Date().time)
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.notify(0, notificationBuilder.build())
+        notificationManager.notify(id.toInt(), notificationBuilder.build())
     }
 }
