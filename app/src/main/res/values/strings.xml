@@ -142,5 +142,6 @@
     <string name="error_alert_detail_load">Failed to load alert details</string>
     <string name="data_source_changed_refreshed">Data source changed</string>
     <string name="about_label_privacy_policy">Privacy policy</string>
+    <string name="menu_notifications_label">Notifications</string>
 
 </resources>
