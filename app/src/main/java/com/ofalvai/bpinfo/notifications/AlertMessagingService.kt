@@ -38,13 +38,13 @@ class AlertMessagingService : FirebaseMessagingService() {
 
                     createNotification(id, title, text)
                 } else {
-                    Timber.d("Message data is null")
+                    Timber.e("Message data is null")
                 }
             } else {
-                Timber.d("Message data is invalid")
+                Timber.e("Message data is invalid")
             }
         } else {
-            Timber.d("Message data is empty")
+            Timber.e("Message data is empty")
         }
     }
 

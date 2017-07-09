@@ -2,7 +2,7 @@ package com.ofalvai.bpinfo.notifications
 
 import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.iid.FirebaseInstanceIdService
-import com.ofalvai.bpinfo.util.LogUtils.LOGD
+import timber.log.Timber
 
 class FcmInstanceIdService: FirebaseInstanceIdService() {
 
@@ -10,6 +10,6 @@ class FcmInstanceIdService: FirebaseInstanceIdService() {
         super.onTokenRefresh()
 
         val token = FirebaseInstanceId.getInstance().token
-        LOGD("FcmInstanceIdService", "Token: $token")
+        Timber.i("Token: $token")
     }
 }
