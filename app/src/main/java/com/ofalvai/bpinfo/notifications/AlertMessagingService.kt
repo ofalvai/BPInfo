@@ -14,15 +14,6 @@ import java.util.*
 
 const val DATA_KEY_ID = "id"
 const val DATA_KEY_TITLE = "title"
-const val DATA_KEY_ROUTE_BUS = "route_bus"
-const val DATA_KEY_ROUTE_FERRY = "route_ferry"
-const val DATA_KEY_ROUTE_RAIL = "route_rail"
-const val DATA_KEY_ROUTE_TRAM = "route_tram"
-const val DATA_KEY_ROUTE_TROLLEYBUS = "route_trolleybus"
-const val DATA_KEY_ROUTE_SUBWAY = "route_subway"
-const val DATA_KEY_ROUTE_OTHER = "route_other"
-
-const val DATA_KEY_ROUTE_SEPARATOR = "|"
 
 const val REQUEST_CODE = 0
 
@@ -38,7 +29,7 @@ class AlertMessagingService : FirebaseMessagingService() {
             if (data.containsKey(DATA_KEY_TITLE) && data.containsKey(DATA_KEY_ID)) {
                 val id = data[DATA_KEY_ID]
                 val title = data[DATA_KEY_TITLE]
-                val text = makeDescription(data)
+                val text = DescriptionMaker.makeDescription(data, baseContext)
                 if (title != null && id != null) {
                     Timber.d("Creating notification")
                     Timber.d("ID: $id")
@@ -74,34 +65,5 @@ class AlertMessagingService : FirebaseMessagingService() {
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(id.toInt(), notificationBuilder.build())
-    }
-
-    private fun makeDescription(remoteData: Map<String, String>): String {
-        val sb = StringBuilder()
-
-        sb.append(makeRouteLine(remoteData[DATA_KEY_ROUTE_BUS], baseContext.getString(R.string.route_bus)))
-        sb.append(makeRouteLine(remoteData[DATA_KEY_ROUTE_FERRY], baseContext.getString(R.string.route_ferry)))
-        sb.append(makeRouteLine(remoteData[DATA_KEY_ROUTE_RAIL], baseContext.getString(R.string.route_rail)))
-        sb.append(makeRouteLine(remoteData[DATA_KEY_ROUTE_TRAM], baseContext.getString(R.string.route_tram)))
-        sb.append(makeRouteLine(remoteData[DATA_KEY_ROUTE_TROLLEYBUS], baseContext.getString(R.string.route_trolleybus)))
-        sb.append(makeRouteLine(remoteData[DATA_KEY_ROUTE_SUBWAY], baseContext.getString(R.string.route_subway)))
-        sb.append(makeRouteLine(remoteData[DATA_KEY_ROUTE_OTHER], baseContext.getString(R.string.route_other)))
-
-        return sb.toString()
-    }
-
-    private fun makeRouteLine(routeData: String?, title: String): String {
-        val sb = StringBuilder()
-        val routes: String? = routeData
-        if (routes != null && routes.isNotEmpty()) {
-            sb.append("$title: ")
-            val routeList = routes
-                    .split(DATA_KEY_ROUTE_SEPARATOR)
-                    .map { it.trim() }
-                    .joinToString(separator=", ")
-            sb.append(routeList)
-            sb.append("\n")
-        }
-        return sb.toString()
     }
 }
