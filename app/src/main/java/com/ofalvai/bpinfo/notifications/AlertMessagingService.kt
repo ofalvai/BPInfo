@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.support.v4.app.NotificationCompat
+import android.support.v4.content.ContextCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.ofalvai.bpinfo.R
@@ -59,11 +60,20 @@ class AlertMessagingService : FirebaseMessagingService() {
                 .setContentText(text)
                 .setAutoCancel(true)
                 .setContentIntent(pendingIntent)
-                .setColor(resources.getColor(R.color.colorPrimary))
+                .setColor(ContextCompat.getColor(baseContext, R.color.colorPrimary))
                 .setShowWhen(true)
                 .setWhen(Date().time)
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.notify(id.toInt(), notificationBuilder.build())
+        val notificationId = parseAlertNumericalId(id)
+        notificationManager.notify(notificationId, notificationBuilder.build())
+    }
+
+    private fun parseAlertNumericalId(id: String): Int {
+        try {
+            return id.split("-")[1].toInt()
+        } catch (ex: Exception) {
+            return -1
+        }
     }
 }
