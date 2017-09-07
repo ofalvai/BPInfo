@@ -42,4 +42,9 @@ class NotificationsActivity : AppCompatActivity(), NotificationsContract.View {
         tabLayout.addTab(tabLayout.newTab().setText("Hajó"))
         tabLayout.addTab(tabLayout.newTab().setText("Egyéb"))
     }
+
+    override fun onDestroy() {
+        presenter.detachView()
+        super.onDestroy()
+    }
 }
