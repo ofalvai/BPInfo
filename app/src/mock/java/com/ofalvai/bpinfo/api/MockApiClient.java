@@ -223,7 +223,8 @@ public class MockApiClient implements AlertApiClient {
                 null,
                 "Ez egy busz",
                 "Ez egy mock alert, meglátjuk megy-e",
-                new ArrayList<>(Arrays.asList(bus13))
+                new ArrayList<>(Arrays.asList(bus13)),
+                false
         ));
 
         TEST_ALERTS.add(new Alert(
@@ -234,7 +235,8 @@ public class MockApiClient implements AlertApiClient {
                 null,
                 "Ez egy villamos",
                 "Ez egy mock alert, meglátjuk megy-e",
-                new ArrayList<>(Arrays.asList(tram60))
+                new ArrayList<>(Arrays.asList(tram60)),
+                false
         ));
 
         TEST_ALERTS.add(new Alert(
@@ -245,7 +247,8 @@ public class MockApiClient implements AlertApiClient {
                 null,
                 "Ez egy troli",
                 "Ez egy mock alert, meglátjuk megy-e",
-                new ArrayList<>(Arrays.asList(trolley79))
+                new ArrayList<>(Arrays.asList(trolley79)),
+                false
         ));
 
         TEST_ALERTS.add(new Alert(
@@ -256,7 +259,8 @@ public class MockApiClient implements AlertApiClient {
                 null,
                 "WAT.",
                 "Ilyen is kell...",
-                new ArrayList<>(Arrays.asList(rainbow1, rainbow2, rainbow3, rainbow4, rainbow5, rainbow6, rainbow7))
+                new ArrayList<>(Arrays.asList(rainbow1, rainbow2, rainbow3, rainbow4, rainbow5, rainbow6, rainbow7)),
+                false
         ));
 
         TEST_ALERTS.add(new Alert(
@@ -267,7 +271,8 @@ public class MockApiClient implements AlertApiClient {
                 null,
                 "Na most minden egzotikusat",
                 "Ebben most minden benne van!",
-                new ArrayList<>(Arrays.asList(ferry11, chairlift, funicular, rail5))
+                new ArrayList<>(Arrays.asList(ferry11, chairlift, funicular, rail5)),
+                false
         ));
 
         for (int i = 0; i < 0; i++) {
@@ -279,7 +284,8 @@ public class MockApiClient implements AlertApiClient {
                     null,
                     "Ez egy villamos " + i,
                     "Ez egy mock alert, meglátjuk megy-e",
-                    new ArrayList<>(Arrays.asList(tram60))
+                    new ArrayList<>(Arrays.asList(tram60)),
+                    false
             ));
         }
     }
@@ -290,7 +296,8 @@ public class MockApiClient implements AlertApiClient {
                 int randomIndex = (int) Math.round(Math.random() * (TEST_ALERTS.size() - 1));
                 long randomTimestamp = (int) Math.round(Math.random() * System.currentTimeMillis());
                 Alert alert = TEST_ALERTS.get(randomIndex);
-                alert.setStart(randomTimestamp);
+                //alert.setStart(randomTimestamp);
+                // TODO: fix immutable class copy
                 mTestDataState++;
                 break;
             case 1:
@@ -307,7 +314,8 @@ public class MockApiClient implements AlertApiClient {
                         null,
                         "Új elem",
                         "Új elem",
-                        routes
+                        routes,
+                        false
                 );
                 TEST_ALERTS.add(newAlert);
 
