@@ -26,6 +26,7 @@ import com.ofalvai.bpinfo.api.AlertApiClient;
 import com.ofalvai.bpinfo.api.NoticeClient;
 import com.ofalvai.bpinfo.api.bkkfutar.FutarApiClient;
 import com.ofalvai.bpinfo.api.bkkinfo.BkkInfoClient;
+import com.ofalvai.bpinfo.api.bkkinfo.RouteListClient;
 
 import javax.inject.Singleton;
 
@@ -66,5 +67,11 @@ public class ApiModule {
     @Singleton
     NoticeClient provideNoticeClient(RequestQueue requestQueue) {
         return new NoticeClient(requestQueue);
+    }
+
+    @Provides
+    @Singleton
+    RouteListClient provideRouteListClient(RequestQueue requestQueue) {
+        return new RouteListClient(requestQueue);
     }
 }

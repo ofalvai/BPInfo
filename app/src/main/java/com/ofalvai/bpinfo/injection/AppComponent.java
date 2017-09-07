@@ -21,6 +21,7 @@ import com.ofalvai.bpinfo.api.bkkfutar.FutarApiClient;
 import com.ofalvai.bpinfo.api.NoticeClient;
 import com.ofalvai.bpinfo.api.bkkinfo.BkkInfoClient;
 import com.ofalvai.bpinfo.ui.alertlist.AlertListPresenter;
+import com.ofalvai.bpinfo.ui.notifications.NotificationsPresenter;
 import com.ofalvai.bpinfo.ui.settings.SettingsActivity;
 
 import javax.inject.Singleton;
@@ -46,4 +47,6 @@ public interface AppComponent {
     void inject(NoticeClient noticeClient);
 
     void inject(BkkInfoClient bkkInfoClient);
+
+    void inject(NotificationsPresenter notificationsPresenter);
 }

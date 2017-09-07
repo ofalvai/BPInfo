@@ -12,9 +12,9 @@ import timber.log.Timber
 
 class NotificationsActivity : AppCompatActivity(), NotificationsContract.View {
 
-    lateinit var mPresenter: NotificationsContract.Presenter
+    lateinit var presenter: NotificationsContract.Presenter
 
-    val mTabLayout: TabLayout by bindView(R.id.notifications__tabs)
+    val tabLayout: TabLayout by bindView(R.id.notifications__tabs)
 
     companion object {
         @JvmStatic
@@ -27,17 +27,19 @@ class NotificationsActivity : AppCompatActivity(), NotificationsContract.View {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notifications)
 
-        mPresenter = NotificationsPresenter()
-        mPresenter.attachView(this)
+        presenter = NotificationsPresenter()
+        presenter.attachView(this)
+
+        presenter.fetchRouteList()
 
         Timber.d("FCM token: " + FirebaseInstanceId.getInstance().token)
 
-        mTabLayout.addTab(mTabLayout.newTab().setText("Busz"))
-        mTabLayout.addTab(mTabLayout.newTab().setText("Metró"))
-        mTabLayout.addTab(mTabLayout.newTab().setText("Villamos"))
-        mTabLayout.addTab(mTabLayout.newTab().setText("Trolibusz"))
-        mTabLayout.addTab(mTabLayout.newTab().setText("HÉV"))
-        mTabLayout.addTab(mTabLayout.newTab().setText("Hajó"))
-        mTabLayout.addTab(mTabLayout.newTab().setText("Egyéb"))
+        tabLayout.addTab(tabLayout.newTab().setText("Busz"))
+        tabLayout.addTab(tabLayout.newTab().setText("Metró"))
+        tabLayout.addTab(tabLayout.newTab().setText("Villamos"))
+        tabLayout.addTab(tabLayout.newTab().setText("Trolibusz"))
+        tabLayout.addTab(tabLayout.newTab().setText("HÉV"))
+        tabLayout.addTab(tabLayout.newTab().setText("Hajó"))
+        tabLayout.addTab(tabLayout.newTab().setText("Egyéb"))
     }
 }

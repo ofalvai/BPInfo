@@ -11,6 +11,8 @@ interface NotificationsContract {
 
     interface Presenter: MvpPresenter<View> {
 
+        fun fetchRouteList()
+
     }
 
 }
