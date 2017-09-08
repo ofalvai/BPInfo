@@ -16,9 +16,9 @@ class NotificationsActivity : AppCompatActivity(), NotificationsContract.View {
 
     lateinit var presenter: NotificationsContract.Presenter
 
-    val tabLayout: TabLayout by bindView(R.id.notifications__tabs)
+    private val tabLayout: TabLayout by bindView(R.id.notifications__tabs)
 
-    val viewPager: ViewPager by bindView(R.id.notifications__viewpager)
+    private val viewPager: ViewPager by bindView(R.id.notifications__viewpager)
 
     companion object {
         @JvmStatic

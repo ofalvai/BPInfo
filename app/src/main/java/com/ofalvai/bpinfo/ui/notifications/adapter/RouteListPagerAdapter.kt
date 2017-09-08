@@ -3,13 +3,13 @@ package com.ofalvai.bpinfo.ui.notifications.adapter
 import android.content.Context
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentPagerAdapter
+import android.support.v4.app.FragmentStatePagerAdapter
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.ui.notifications.routelist.RouteListFragment
 
 class RouteListPagerAdapter(fm: FragmentManager,
                             private val context: Context
-) : FragmentPagerAdapter(fm) {
+) : FragmentStatePagerAdapter(fm) {
 
     companion object {
         const val FRAGMENT_COUNT = 7
