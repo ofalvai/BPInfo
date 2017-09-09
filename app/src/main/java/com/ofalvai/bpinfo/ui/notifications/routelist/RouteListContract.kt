@@ -14,7 +14,5 @@ interface RouteListContract {
 
     interface Presenter : MvpPresenter<View> {
 
-        fun fetchRoutes()
-
     }
 }

@@ -21,12 +21,10 @@ class NotificationsPresenter : BasePresenter<NotificationsContract.View>(),
     }
 
     override fun onRouteListResponse(routeList: List<Route>) {
-        routeList.forEach {
-            Timber.d(it.toString())
-        }
+        view?.displayRouteList(routeList)
     }
 
     override fun onRouteListError(ex: Exception) {
-        Timber.e(ex)
+        Timber.e(ex) // TODO
     }
 }
