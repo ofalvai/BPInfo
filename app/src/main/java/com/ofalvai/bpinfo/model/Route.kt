@@ -46,7 +46,9 @@ data class Route(val id: String,
                  val color: Int,
 
                  @ColorInt
-                 val textColor: Int
+                 val textColor: Int,
+
+                 val discontinued: Boolean
 ) : Serializable, Comparable<Route> {
 
     override fun compareTo(other: Route): Int {

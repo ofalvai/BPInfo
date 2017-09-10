@@ -359,7 +359,7 @@ public class FutarApiClient implements AlertApiClient {
         int color = Color.parseColor("#" + routeNode.getString(RouteContract.ROUTE_COLOR));
         int textColor = Color.parseColor("#" + routeNode.getString(RouteContract.ROUTE_TEXT_COLOR));
 
-        return new Route(id, shortName, longName, description, type, color, textColor);
+        return new Route(id, shortName, longName, description, type, color, textColor, false);
     }
 
     @NonNull

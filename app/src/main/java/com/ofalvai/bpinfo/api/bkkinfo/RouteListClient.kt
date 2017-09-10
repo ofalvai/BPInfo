@@ -39,6 +39,8 @@ class RouteListClient(private val requestQueue: RequestQueue) {
 
         const val KEY_COLOR_TEXT = "betu"
 
+        const val KEY_KEY = "kulcs"
+
         /**
          * Some routes are still kept in the list, but with a warning description.
          * We don't need these routes.
@@ -74,10 +76,10 @@ class RouteListClient(private val requestQueue: RequestQueue) {
         routeListJson.keys().forEach {
             val routeJson = routeListJson.getJSONObject(it)
             val route = parseRoute(it, routeJson)
-            routeList.add(route)
+            if (!route.discontinued) {
+                routeList.add(route)
+            }
         }
-
-        // TODO: filter out discontinued
 
         return routeList
     }
@@ -88,6 +90,7 @@ class RouteListClient(private val requestQueue: RequestQueue) {
         val backgroundColor = details?.getString(KEY_COLOR_BG) ?: DEFAULT_COLOR_BG
         val textColor = details?.getString(KEY_COLOR_TEXT) ?: DEFAULT_COLOR_TEXT
         val type = parseRouteType(details?.getString(KEY_TYPE), key.trim())
+        val discontinued = details?.getString(KEY_KEY).equals(VALUE_DISCONTINUED)
 
         return Route(
                 id = details?.getString(KEY_ID) ?: ROUTE_ID_UNKNOWN,
@@ -96,7 +99,8 @@ class RouteListClient(private val requestQueue: RequestQueue) {
                 description = details?.getString(KEY_DESC)?.replace("&nbsp;", ""),
                 type = type,
                 color = Color.parseColor("#" + backgroundColor),
-                textColor = Color.parseColor("#" + textColor)
+                textColor = Color.parseColor("#" + textColor),
+                discontinued = discontinued
         )
     }
 

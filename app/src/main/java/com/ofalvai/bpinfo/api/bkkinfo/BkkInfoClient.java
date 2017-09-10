@@ -32,7 +32,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.crashlytics.android.Crashlytics;
 import com.google.firebase.perf.FirebasePerformance;
-import com.google.firebase.perf.metrics.AddTrace;
 import com.google.firebase.perf.metrics.Trace;
 import com.ofalvai.bpinfo.BpInfoApplication;
 import com.ofalvai.bpinfo.R;
@@ -389,7 +388,16 @@ public class BkkInfoClient implements AlertApiClient {
                 int[] colors = parseRouteColors(type, shortName);
 
                 // There's no ID returned by the API, using shortName instead
-                Route route = new Route(shortName, shortName, null, null, type, colors[0], colors[1]);
+                Route route = new Route(
+                        shortName,
+                        shortName,
+                        null,
+                        null,
+                        type,
+                        colors[0],
+                        colors[1],
+                        false
+                );
                 routes.add(route);
             }
         }
@@ -420,7 +428,16 @@ public class BkkInfoClient implements AlertApiClient {
             int color = Color.parseColor("#" + routeNode.getString("szin"));
             int textColor = Color.parseColor("#" + routeNode.getString("betu"));
 
-            Route route = new Route(id, shortName, null, description, routeType, color, textColor);
+            Route route = new Route(
+                    id,
+                    shortName,
+                    null,
+                    description,
+                    routeType,
+                    color,
+                    textColor,
+                    false
+            );
             routes.add(route);
         }
 
