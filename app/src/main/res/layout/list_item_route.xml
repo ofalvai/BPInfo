@@ -3,18 +3,29 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:layout_height="48dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:background="?attr/selectableItemBackground"
+    android:orientation="horizontal"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp">
 
     <FrameLayout
         android:id="@+id/list_item_route__icon_wrapper"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:minWidth="48dp"/>
 
     <TextView
         android:id="@+id/list_item_route__description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="Route description"/>
+        android:layout_gravity="center_vertical"
+        android:ellipsize="end"
+        android:layout_marginLeft="8dp"
+        tools:text="Route description"
+        tools:ignore="SelectableText"/>
 
 </LinearLayout>

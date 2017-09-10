@@ -33,7 +33,7 @@ data class Route(val id: String,
                  val longName: String?,
 
                  /**
-                  * Currently the terminal stops of the route
+                  * Currently the terminal stops of the route. Can contain HTML formatting
                   */
                  val description: String?,
 

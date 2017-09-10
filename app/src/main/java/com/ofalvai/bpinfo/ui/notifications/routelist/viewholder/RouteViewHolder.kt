@@ -1,6 +1,7 @@
 package com.ofalvai.bpinfo.ui.notifications.routelist.viewholder
 
 import android.support.v7.widget.RecyclerView
+import android.text.Html
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
@@ -19,7 +20,7 @@ class RouteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         iconWrapperLayout.removeAllViews()
         UiUtils.addRouteIcon(itemView.context, iconWrapperLayout, route)
 
-        descriptionTextView.text = route.description
+        descriptionTextView.text = Html.fromHtml(route.description)
     }
 
 }
