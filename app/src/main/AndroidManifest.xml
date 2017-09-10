@@ -37,11 +37,11 @@
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/ic_notification_default" />
+            android:resource="@drawable/ic_notification_default"/>
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
-            android:resource="@color/colorPrimary" />
+            android:resource="@color/colorPrimary"/>
 
         <!-- Alert List -->
         <activity
@@ -85,7 +85,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.settings.AboutActivity"/>
         </activity>
-        <activity android:name=".ui.notifications.NotificationsActivity">
+
+        <!-- Notifications -->
+        <activity
+            android:name=".ui.notifications.NotificationsActivity"
+            android:label="@string/title_activity_notifications"
+            android:parentActivityName=".ui.alertlist.AlertListActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.alertlist.AlertListActivity"/>
         </activity>
 
         <service

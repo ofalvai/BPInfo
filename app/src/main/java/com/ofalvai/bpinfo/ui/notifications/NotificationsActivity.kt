@@ -4,13 +4,17 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.TabLayout
+import android.support.v4.app.NavUtils
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
+import android.view.Menu
+import android.view.MenuItem
 import com.google.firebase.iid.FirebaseInstanceId
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.model.Route
 import com.ofalvai.bpinfo.model.RouteType
 import com.ofalvai.bpinfo.ui.notifications.adapter.RouteListPagerAdapter
+import com.ofalvai.bpinfo.ui.settings.SettingsActivity
 import com.ofalvai.bpinfo.util.bindView
 import timber.log.Timber
 
@@ -35,6 +39,10 @@ class NotificationsActivity : AppCompatActivity(), NotificationsContract.View {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notifications)
 
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+
+
         presenter = NotificationsPresenter()
         presenter.attachView(this)
 
@@ -43,6 +51,22 @@ class NotificationsActivity : AppCompatActivity(), NotificationsContract.View {
         Timber.d("FCM token: " + FirebaseInstanceId.getInstance().token)
 
         setupViewPager()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_notifications, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            R.id.menu_item_settings -> {
+                startActivity(Intent(this, SettingsActivity::class.java))
+            }
+            android.R.id.home -> NavUtils.navigateUpFromSameTask(this)
+        }
+
+        return true
     }
 
     override fun onDestroy() {

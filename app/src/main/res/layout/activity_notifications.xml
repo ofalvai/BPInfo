@@ -9,10 +9,10 @@
     tools:context="com.ofalvai.bpinfo.ui.notifications.NotificationsActivity">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:text="Hello World"
-        android:background="@color/colorLinkBackground"/>
+        android:background="@android:color/darker_gray"
+        android:text="Active notifications"/>
 
     <android.support.design.widget.TabLayout
         android:id="@+id/notifications__tabs"
