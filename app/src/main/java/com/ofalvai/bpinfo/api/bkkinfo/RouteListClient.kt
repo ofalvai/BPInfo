@@ -17,6 +17,35 @@ class RouteListClient(private val requestQueue: RequestQueue) {
         fun onRouteListError(ex: Exception)
     }
 
+    companion object {
+
+        const val URL = "http://bkk.hu/apps/bkkinfo/json.php?jlista"
+
+        const val ROUTE_ID_UNKNOWN = "UNKNOWN"
+
+        const val DEFAULT_COLOR_BG = "EEEEEE"
+
+        const val DEFAULT_COLOR_TEXT = "BBBBBB"
+
+        const val KEY_ID = "id"
+
+        const val KEY_DETAILS = "adatok"
+
+        const val KEY_DESC = "leiras"
+
+        const val KEY_TYPE = "tipus"
+
+        const val KEY_COLOR_BG = "szin"
+
+        const val KEY_COLOR_TEXT = "betu"
+
+        /**
+         * Some routes are still kept in the list, but with a warning description.
+         * We don't need these routes.
+         */
+        const val VALUE_DISCONTINUED = "megszűnt"
+    }
+
     fun fetchRouteList(listener: RouteListListener) {
         val request = JsonObjectRequest(
                 URL,
@@ -48,6 +77,8 @@ class RouteListClient(private val requestQueue: RequestQueue) {
             routeList.add(route)
         }
 
+        // TODO: filter out discontinued
+
         return routeList
     }
 
@@ -56,23 +87,24 @@ class RouteListClient(private val requestQueue: RequestQueue) {
 
         val backgroundColor = details?.getString(KEY_COLOR_BG) ?: DEFAULT_COLOR_BG
         val textColor = details?.getString(KEY_COLOR_TEXT) ?: DEFAULT_COLOR_TEXT
+        val type = parseRouteType(details?.getString(KEY_TYPE), key.trim())
 
         return Route(
                 id = details?.getString(KEY_ID) ?: ROUTE_ID_UNKNOWN,
-                shortName = key,
+                shortName = key.trim(),
                 longName = null,
-                description = details?.getString(KEY_DESC),
-                type = parseRouteType(details?.getString(KEY_TYPE)),
+                description = details?.getString(KEY_DESC)?.replace("&nbsp;", ""),
+                type = type,
                 color = Color.parseColor("#" + backgroundColor),
                 textColor = Color.parseColor("#" + textColor)
         )
     }
 
-    private fun parseRouteType(routeTypeString: String?): RouteType {
-        if (routeTypeString == null) {
+    private fun parseRouteType(typeString: String?, shortName: String?): RouteType {
+        if (typeString == null) {
             return RouteType._OTHER_
         } else {
-            return when (routeTypeString) {
+            return when (typeString) {
                 "B" -> RouteType.BUS
                 "E" -> RouteType.BUS // Night bus
                 "M" -> RouteType.SUBWAY
@@ -83,32 +115,20 @@ class RouteListClient(private val requestQueue: RequestQueue) {
                 "P" -> RouteType._OTHER_ // Sétajárat
                 "L" -> RouteType._OTHER_ // RouteType.CHAIRLIFT
                 "S" -> RouteType._OTHER_ // Sikló
-                "N" -> RouteType.TRAM // Nosztalgia
+                "N" -> when (shortName) { // Nosztalgia: http://www.bkk.hu/nosztalgia/menetrendek
+//                    "SH" -> RouteType.FERRY // Sétahajó
+//                    "DH" -> RouteType.TRAM // Duna villamos
+//                    "TH" -> RouteType.TRAM // Termál villamos
+//                    "BH" -> RouteType.BUS // Nosztalgiabusz
+//                    "BP100" -> RouteType.TRAM // 4-6 nosztalgia
+//                    "NT" -> RouteType.TROLLEYBUS // Nosztalgia troli
+//                    "N74" -> RouteType.TROLLEYBUS
+//                    "N76" -> RouteType.TROLLEYBUS
+//                    "N17" -> RouteType.TRAM
+                    else -> RouteType._OTHER_
+                }
                 else -> RouteType._OTHER_
             }
         }
-    }
-
-    companion object {
-
-        const val URL = "http://bkk.hu/apps/bkkinfo/json.php?jlista"
-
-        const val ROUTE_ID_UNKNOWN = "UNKNOWN"
-
-        const val DEFAULT_COLOR_BG = "EEEEEE"
-
-        const val DEFAULT_COLOR_TEXT = "BBBBBB"
-
-        const val KEY_ID = "id"
-
-        const val KEY_DETAILS = "adatok"
-
-        const val KEY_DESC = "leiras"
-
-        const val KEY_TYPE = "tipus"
-
-        const val KEY_COLOR_BG = "szin"
-
-        const val KEY_COLOR_TEXT = "betu"
     }
 }
