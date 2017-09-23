@@ -9,6 +9,7 @@ import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.TextView
 import com.google.firebase.iid.FirebaseInstanceId
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.model.Route
@@ -25,6 +26,8 @@ class NotificationsActivity : AppCompatActivity(), NotificationsContract.View {
     private val tabLayout: TabLayout by bindView(R.id.notifications__tabs)
 
     private val viewPager: ViewPager by bindView(R.id.notifications__viewpager)
+
+    private val debugTextView: TextView by bindView(R.id.notifications__debug_text)
 
     private lateinit var pagerAdapter: RouteListPagerAdapter
 
@@ -49,6 +52,7 @@ class NotificationsActivity : AppCompatActivity(), NotificationsContract.View {
         presenter.fetchRouteList()
 
         Timber.d("FCM token: " + FirebaseInstanceId.getInstance().token)
+        debugTextView.text = FirebaseInstanceId.getInstance().token
 
         setupViewPager()
     }
