@@ -39,6 +39,7 @@ import java.util.Locale;
 import javax.inject.Inject;
 
 import io.fabric.sdk.android.Fabric;
+import timber.log.Timber;
 
 
 public class BpInfoApplication extends Application implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -81,6 +82,8 @@ public class BpInfoApplication extends Application implements SharedPreferences.
         JodaTimeAndroid.init(this);
 
         Fabric.with(this, new Crashlytics(), new Answers());
+
+        initTimber();
     }
 
     /**
@@ -151,6 +154,12 @@ public class BpInfoApplication extends Application implements SharedPreferences.
                     .detectLeakedRegistrationObjects()
                     .penaltyLog()
                     .build());
+        }
+    }
+
+    private void initTimber() {
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
         }
     }
 }

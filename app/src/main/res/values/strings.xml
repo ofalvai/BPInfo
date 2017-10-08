@@ -97,7 +97,6 @@
     </string-array>
 
 
-
     <string name="menu_settings">Settings</string>
     <string name="pref_category_general">General</string>
     <string name="pref_title_language">Language</string>
@@ -142,5 +141,7 @@
     <string name="error_alert_detail_load">Failed to load alert details</string>
     <string name="data_source_changed_refreshed">Data source changed</string>
     <string name="about_label_privacy_policy">Privacy policy</string>
+    <string name="menu_notifications_label">Notifications</string>
+    <string name="title_activity_notifications">Notifications</string>
 
 </resources>

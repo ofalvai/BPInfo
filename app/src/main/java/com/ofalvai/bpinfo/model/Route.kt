@@ -33,7 +33,7 @@ data class Route(val id: String,
                  val longName: String?,
 
                  /**
-                  * Currently the terminal stops of the route
+                  * Currently the terminal stops of the route. Can contain HTML formatting
                   */
                  val description: String?,
 
@@ -46,7 +46,10 @@ data class Route(val id: String,
                  val color: Int,
 
                  @ColorInt
-                 val textColor: Int) : Serializable, Comparable<Route> {
+                 val textColor: Int,
+
+                 val discontinued: Boolean
+) : Serializable, Comparable<Route> {
 
     override fun compareTo(other: Route): Int {
         return this.id.compareTo(other.id)
