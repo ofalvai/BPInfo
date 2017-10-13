@@ -17,9 +17,12 @@
 package com.ofalvai.bpinfo;
 
 import android.app.Application;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 
@@ -29,6 +32,7 @@ import com.ofalvai.bpinfo.injection.ApiModule;
 import com.ofalvai.bpinfo.injection.AppComponent;
 import com.ofalvai.bpinfo.injection.AppModule;
 import com.ofalvai.bpinfo.injection.DaggerAppComponent;
+import com.ofalvai.bpinfo.notifications.AlertMessagingServiceKt;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
@@ -84,6 +88,8 @@ public class BpInfoApplication extends Application implements SharedPreferences.
         Fabric.with(this, new Crashlytics(), new Answers());
 
         initTimber();
+
+        createNotificationChannels();
     }
 
     /**
@@ -161,5 +167,24 @@ public class BpInfoApplication extends Application implements SharedPreferences.
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
         }
+    }
+
+    private void createNotificationChannels() {
+        if (Build.VERSION.SDK_INT < 26) {
+            return;
+        }
+
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        CharSequence name = getString(R.string.notif_channel_alerts_title);
+        String description = getString(R.string.notif_channel_alerts_desc);
+        NotificationChannel channel = new NotificationChannel(
+                AlertMessagingServiceKt.NOTIF_CHANNEL_ID_ALERTS,
+                name,
+                NotificationManager.IMPORTANCE_DEFAULT
+        );
+        channel.setDescription(description);
+        notificationManager.createNotificationChannel(channel);
     }
 }

@@ -18,6 +18,8 @@ const val DATA_KEY_TITLE = "title"
 
 const val REQUEST_CODE = 0
 
+const val NOTIF_CHANNEL_ID_ALERTS = "channel_alerts"
+
 class AlertMessagingService : FirebaseMessagingService() {
 
     override fun onMessageReceived(remoteMessage: RemoteMessage?) {
@@ -54,7 +56,7 @@ class AlertMessagingService : FirebaseMessagingService() {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         val pendingIntent = PendingIntent.getActivity(this, REQUEST_CODE, intent, PendingIntent.FLAG_ONE_SHOT)
 
-        val notificationBuilder = NotificationCompat.Builder(this)
+        val notificationBuilder = NotificationCompat.Builder(this, NOTIF_CHANNEL_ID_ALERTS)
                 .setSmallIcon(R.drawable.ic_notification_default)
                 .setContentTitle(title)
                 .setContentText(text)

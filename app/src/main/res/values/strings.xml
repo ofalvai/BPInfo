@@ -143,5 +143,7 @@
     <string name="about_label_privacy_policy">Privacy policy</string>
     <string name="menu_notifications_label">Notifications</string>
     <string name="title_activity_notifications">Notifications</string>
+    <string name="notif_channel_alerts_title">Traffic alerts</string>
+    <string name="notif_channel_alerts_desc">Notifications about selected routes</string>
 
 </resources>
