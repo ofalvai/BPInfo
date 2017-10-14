@@ -179,7 +179,7 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        BpInfoApplication.getRefWatcher(getContext()).watch(this);
+        BpInfoApplication.Companion.getRefWatcher(getContext()).watch(this);
     }
 
     public void updateAlert(final Alert alert) {

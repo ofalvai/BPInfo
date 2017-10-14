@@ -76,6 +76,6 @@ public class NoticeFragment extends DialogFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        BpInfoApplication.getRefWatcher(getContext()).watch(this);
+        BpInfoApplication.Companion.getRefWatcher(getContext()).watch(this);
     }
 }

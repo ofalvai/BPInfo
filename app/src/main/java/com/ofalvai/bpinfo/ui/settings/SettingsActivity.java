@@ -122,7 +122,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        BpInfoApplication.injector.inject(this);
+        BpInfoApplication.Companion.getInjector().inject(this);
 
         setupActionBar();
 

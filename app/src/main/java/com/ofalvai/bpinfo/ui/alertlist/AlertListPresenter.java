@@ -88,7 +88,7 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
     public AlertListPresenter(@NonNull AlertListType alertListType) {
         mAlertListType = alertListType;
 
-        BpInfoApplication.injector.inject(this);
+        BpInfoApplication.Companion.getInjector().inject(this);
     }
 
     @Override
