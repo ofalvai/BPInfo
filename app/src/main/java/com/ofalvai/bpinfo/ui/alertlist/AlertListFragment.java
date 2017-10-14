@@ -50,7 +50,7 @@ import com.ofalvai.bpinfo.ui.notifications.NotificationsActivity;
 import com.ofalvai.bpinfo.ui.settings.SettingsActivity;
 import com.ofalvai.bpinfo.util.EmptyRecyclerView;
 import com.ofalvai.bpinfo.util.FabricUtils;
-import com.ofalvai.bpinfo.util.Utils;
+import com.ofalvai.bpinfo.util.UtilsKt;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -205,7 +205,7 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
         super.onStart();
 
         boolean updating = mPresenter.updateIfNeeded();
-        if (updating && Utils.hasNetworkConnection(getContext())) {
+        if (updating && UtilsKt.hasNetworkConnection(getContext())) {
             setUpdating(true);
         }
     }
@@ -281,7 +281,7 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
         // the UI thread attaching the fragment to the activity. In that case getResources() would
         // throw an exception.
         if (isAdded()) {
-            int errorMessageId = Utils.volleyErrorTypeHandler(error);
+            int errorMessageId = UtilsKt.toStringRes(error);
             String errorMessage = getResources().getString(errorMessageId);
 
             setErrorView(true, errorMessage);
@@ -488,7 +488,8 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
                 StringBuilder typeList = new StringBuilder();
                 final String separator = ", ";
                 for (RouteType type : selectedTypes) {
-                    typeList.append(Utils.routeTypeToString(getContext(), type));
+                    String typeName = UtilsKt.getName(type, getContext());
+                    typeList.append(typeName);
                     typeList.append(separator);
                 }
 

@@ -37,7 +37,7 @@ import com.ofalvai.bpinfo.model.Alert;
 import com.ofalvai.bpinfo.model.Route;
 import com.ofalvai.bpinfo.model.RouteType;
 import com.ofalvai.bpinfo.ui.base.BasePresenter;
-import com.ofalvai.bpinfo.util.Utils;
+import com.ofalvai.bpinfo.util.UtilsKt;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -109,7 +109,7 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
      */
     @Override
     public void fetchAlertList() {
-        if (Utils.hasNetworkConnection(mContext)) {
+        if (UtilsKt.hasNetworkConnection(mContext)) {
             mAlertApiClient.fetchAlertList(getAlertRequestParams());
         } else if (mUnfilteredAlerts == null) {
             // Nothing was displayed previously, showing a full error view
@@ -251,7 +251,7 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
         List<Alert> sorted = new ArrayList<>(alerts);
 
         // Sort: descending by alert start time
-        Collections.sort(sorted, new Utils.AlertStartTimestampComparator());
+        Collections.sort(sorted, UtilsKt.getAlertStartComparator());
         if (type == AlertListType.ALERTS_TODAY) {
             Collections.reverse(sorted);
         }

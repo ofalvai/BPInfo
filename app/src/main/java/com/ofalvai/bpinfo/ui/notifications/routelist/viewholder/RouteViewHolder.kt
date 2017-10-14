@@ -7,7 +7,7 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.model.Route
-import com.ofalvai.bpinfo.util.UiUtils
+import com.ofalvai.bpinfo.util.addRouteIcon
 import com.ofalvai.bpinfo.util.bindView
 
 class RouteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -18,7 +18,7 @@ class RouteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     fun bind(route: Route) {
         iconWrapperLayout.removeAllViews()
-        UiUtils.addRouteIcon(itemView.context, iconWrapperLayout, route)
+        addRouteIcon(itemView.context, iconWrapperLayout, route)
 
         descriptionTextView.text = Html.fromHtml(route.description)
     }

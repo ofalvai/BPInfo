@@ -42,7 +42,7 @@ import com.ofalvai.bpinfo.api.AlertRequestParams;
 import com.ofalvai.bpinfo.model.Alert;
 import com.ofalvai.bpinfo.model.Route;
 import com.ofalvai.bpinfo.model.RouteType;
-import com.ofalvai.bpinfo.util.Utils;
+import com.ofalvai.bpinfo.util.UtilsKt;
 
 import org.greenrobot.eventbus.EventBus;
 import org.joda.time.DateTime;
@@ -57,6 +57,8 @@ import java.util.List;
 import java.util.ListIterator;
 
 import javax.inject.Inject;
+
+import kotlin.text.StringsKt;
 
 import static com.ofalvai.bpinfo.util.LogUtils.LOGI;
 
@@ -297,7 +299,7 @@ public class BkkInfoClient implements AlertApiClient {
 
         String url = getUrl(id);
 
-        String header = Utils.capitalizeString(alertNode.getString("elnevezes"));
+        String header = StringsKt.capitalize(alertNode.getString("elnevezes"));
 
         List<Route> affectedRoutes;
         JSONArray routesArray = alertNode.getJSONArray("jaratokByFajta");
@@ -334,13 +336,13 @@ public class BkkInfoClient implements AlertApiClient {
         // The API returns a header of 3 parts separated by "|" characters. We need the last part.
         String rawHeader = response.getString("targy");
         String[] rawHeaderParts = rawHeader.split("\\|");
-        header = Utils.capitalizeString(rawHeaderParts[2].trim());
+        header = StringsKt.capitalize(rawHeaderParts[2].trim());
 
         String description;
         StringBuilder descriptionBuilder = new StringBuilder();
         descriptionBuilder.append(response.getString("feed"));
 
-        JSONArray routesArray = Utils.jsonObjectToArray(response.getJSONObject("jaratok"));
+        JSONArray routesArray = UtilsKt.toArray(response.getJSONObject("jaratok"));
         for (int i = 0; i < routesArray.length(); i++) {
             JSONObject routeNode = routesArray.getJSONObject(i);
             JSONObject optionsNode = routeNode.getJSONObject("opciok");

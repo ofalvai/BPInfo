@@ -26,8 +26,7 @@ import com.ofalvai.bpinfo.R;
 import com.ofalvai.bpinfo.model.Alert;
 import com.ofalvai.bpinfo.model.Route;
 import com.ofalvai.bpinfo.model.RouteType;
-import com.ofalvai.bpinfo.util.UiUtils;
-import com.ofalvai.bpinfo.util.Utils;
+import com.ofalvai.bpinfo.util.UtilsKt;
 import com.wefika.flowlayout.FlowLayout;
 
 import java.util.ArrayList;
@@ -77,9 +76,7 @@ public class AlertHolder extends RecyclerView.ViewHolder {
         mTitleTextView.setText(alert.getHeader());
 
         // Start - end dates
-        String dateString = UiUtils.alertDateFormatter(
-                context, mAlert.getStart(), mAlert.getEnd()
-        );
+        String dateString = UtilsKt.formatDate(mAlert, context);
         mDateTextView.setText(dateString);
 
         // Route icons
@@ -91,9 +88,9 @@ public class AlertHolder extends RecyclerView.ViewHolder {
         for (Route route : alert.getAffectedRoutes()) {
             // Some affected routes are visually identical to others in the list, no need
             // to diplay them again.
-            if (!Utils.isRouteVisuallyDuplicate(route, mDisplayedRoutes)) {
+            if (!UtilsKt.isRouteVisuallyDuplicate(route, mDisplayedRoutes)) {
                 mDisplayedRoutes.add(route);
-                UiUtils.addRouteIcon(context, mRouteIconsWrapper, route);
+                UtilsKt.addRouteIcon(context, mRouteIconsWrapper, route);
 
                 if (route.getType() == RouteType._OTHER_) {
                     LOGD(TAG, "Unknown route type: " + route.getShortName() + "(" + route.getId() + ")");
@@ -102,7 +99,7 @@ public class AlertHolder extends RecyclerView.ViewHolder {
         }
 
         if (mAlertListType == AlertListType.ALERTS_TODAY) {
-            mRecentTextView.setVisibility(Utils.isAlertRecent(alert) ? View.VISIBLE : View.GONE);
+            mRecentTextView.setVisibility(UtilsKt.isRecent(alert) ? View.VISIBLE : View.GONE);
         } else {
             mRecentTextView.setVisibility(View.GONE);
         }

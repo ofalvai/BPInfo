@@ -42,7 +42,7 @@ import com.ofalvai.bpinfo.model.Alert;
 import com.ofalvai.bpinfo.model.Route;
 import com.ofalvai.bpinfo.model.RouteType;
 import com.ofalvai.bpinfo.ui.alertlist.AlertListType;
-import com.ofalvai.bpinfo.util.Utils;
+import com.ofalvai.bpinfo.util.UtilsKt;
 
 import org.greenrobot.eventbus.EventBus;
 import org.joda.time.DateTime;
@@ -56,6 +56,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+
+import kotlin.text.StringsKt;
 
 import static com.ofalvai.bpinfo.util.LogUtils.LOGI;
 
@@ -222,7 +224,7 @@ public class FutarApiClient implements AlertApiClient {
         JSONObject referencesNode = dataNode.getJSONObject(AlertSearchContract.DATA_REFERENCES);
         JSONObject alertsNode = referencesNode.getJSONObject(AlertSearchContract.DATA_REFERENCES_ALERTS);
 
-        JSONArray alerts = Utils.jsonObjectToArray(alertsNode);
+        JSONArray alerts = UtilsKt.toArray(alertsNode);
 
         for (int i = 0; i < alerts.length(); i++) {
             JSONObject alertNode = alerts.getJSONObject(i);
@@ -284,7 +286,7 @@ public class FutarApiClient implements AlertApiClient {
             header = headerNode.getString(AlertSearchContract.LANG_SOME);
             Crashlytics.log(Log.WARN, TAG, "Alert parse: header translation missing");
         }
-        header = Utils.capitalizeString(header);
+        header = StringsKt.capitalize(header);
 
         String description;
         JSONObject descriptionNode = alertNode.getJSONObject(AlertContract.ALERT_DESC);
@@ -301,7 +303,7 @@ public class FutarApiClient implements AlertApiClient {
         }
 
         JSONArray routeIdsNode = alertNode.getJSONArray(AlertContract.ALERT_ROUTE_IDS);
-        List<String> routeIds = Utils.jsonArrayToStringList(routeIdsNode);
+        List<String> routeIds = UtilsKt.toStringList(routeIdsNode);
         List<Route> affectedRoutes = getRoutesByIds(routeIds);
 
         return new Alert(id, start, end, timestamp, url, header, description, affectedRoutes, false);
@@ -314,7 +316,7 @@ public class FutarApiClient implements AlertApiClient {
         JSONObject dataNode = response.getJSONObject(AlertSearchContract.DATA);
         JSONObject referencesNode = dataNode.getJSONObject(AlertSearchContract.DATA_REFERENCES);
         JSONObject routesNode = referencesNode.getJSONObject(AlertSearchContract.DATA_REFERENCES_ROUTES);
-        JSONArray routesArray = Utils.jsonObjectToArray(routesNode);
+        JSONArray routesArray = UtilsKt.toArray(routesNode);
 
         for (int i = 0; i < routesArray.length(); i++) {
             JSONObject routeNode = routesArray.getJSONObject(i);
@@ -323,7 +325,7 @@ public class FutarApiClient implements AlertApiClient {
                 route = parseRoute(routeNode);
 
                 // Replacement routes are inconsistent and unnecessary to display
-                if (!Utils.isRouteReplacement(route.getId())) {
+                if (!UtilsKt.isReplacement(route)) {
                     routeMap.put(route.getId(), route);
                 }
             } catch (JSONException ex) {

@@ -46,8 +46,7 @@ import com.ofalvai.bpinfo.model.Alert;
 import com.ofalvai.bpinfo.model.Route;
 import com.ofalvai.bpinfo.ui.alertlist.AlertListContract;
 import com.ofalvai.bpinfo.util.FabricUtils;
-import com.ofalvai.bpinfo.util.UiUtils;
-import com.ofalvai.bpinfo.util.Utils;
+import com.ofalvai.bpinfo.util.UtilsKt;
 import com.wefika.flowlayout.FlowLayout;
 
 import org.sufficientlysecure.htmltextview.HtmlTextView;
@@ -265,16 +264,16 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
     private void displayAlert(final Alert alert) {
         mTitleTextView.setText(alert.getHeader());
 
-        String dateString = UiUtils.alertDateFormatter(getActivity(), alert.getStart(), alert.getEnd());
+        String dateString = UtilsKt.formatDate(alert, getActivity());
         mDateTextView.setText(dateString);
 
         // There are alerts without affected routes, eg. announcements
         for (Route route : alert.getAffectedRoutes()) {
             // Some affected routes are visually identical to others in the list, no need
             // to diplay them again.
-            if (!Utils.isRouteVisuallyDuplicate(route, mDisplayedRoutes)) {
+            if (!UtilsKt.isRouteVisuallyDuplicate(route, mDisplayedRoutes)) {
                 mDisplayedRoutes.add(route);
-                UiUtils.addRouteIcon(getActivity(), mRouteIconsLayout, route);
+                UtilsKt.addRouteIcon(getActivity(), mRouteIconsLayout, route);
             }
         }
 
@@ -290,7 +289,7 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
                 @Override
                 public void onClick(View v) {
                     Uri url = Uri.parse(alert.getUrl());
-                    UiUtils.openCustomTab(getActivity(), url);
+                    UtilsKt.openCustomTab(getActivity(), url);
                     FabricUtils.logAlertUrlClick(alert);
                 }
             });
