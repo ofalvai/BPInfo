@@ -14,8 +14,11 @@
  *    limitations under the License.
  */
 
-package com.ofalvai.bpinfo.ui.base;
+package com.ofalvai.bpinfo.ui.base
 
-public interface MvpView {
+interface MvpPresenter<V : MvpView> {
 
+    fun attachView(view: V)
+
+    fun detachView()
 }

@@ -14,11 +14,29 @@
  *    limitations under the License.
  */
 
-package com.ofalvai.bpinfo.ui.base;
+package com.ofalvai.bpinfo.ui.base
 
-public interface MvpPresenter<V extends MvpView> {
+open class BasePresenter<V : MvpView> : MvpPresenter<V> {
 
-    void attachView(V view);
+    var view: V? = null
+        private set
 
-    void detachView();
+    val isViewAttached: Boolean
+        get() = view != null
+
+    override fun attachView(view: V) {
+        this.view = view
+    }
+
+    override fun detachView() {
+        this.view = null
+    }
+
+    fun checkViewAttached() {
+        if (!isViewAttached) {
+            throw MvpViewNotAttachedException()
+        }
+    }
+
+    protected class MvpViewNotAttachedException : RuntimeException("Please call Presenter.attachView(MvpView) before" + " requesting data to the Presenter")
 }
