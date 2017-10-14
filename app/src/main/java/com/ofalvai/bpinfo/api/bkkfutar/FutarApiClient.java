@@ -58,8 +58,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import kotlin.text.StringsKt;
-
-import static com.ofalvai.bpinfo.util.LogUtils.LOGI;
+import timber.log.Timber;
 
 public class FutarApiClient implements AlertApiClient {
     private static final String TAG = "FutarApiClient";
@@ -129,7 +128,7 @@ public class FutarApiClient implements AlertApiClient {
 
         Uri uri = buildUri();
 
-        LOGI(TAG, "API request: " + uri.toString());
+        Timber.i("API request: " + uri.toString());
 
         JsonObjectRequest request = new JsonObjectRequest(
                 uri.toString(),

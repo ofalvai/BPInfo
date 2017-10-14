@@ -35,7 +35,7 @@ import org.json.JSONObject;
 
 import javax.inject.Inject;
 
-import static com.ofalvai.bpinfo.util.LogUtils.LOGE;
+import timber.log.Timber;
 
 /**
  * Fetches messages (notices) from our own backend. This is used to inform the users when the API is
@@ -91,7 +91,7 @@ public class NoticeClient implements Response.ErrorListener {
     @Override
     public void onErrorResponse(VolleyError error) {
         // We don't display anything on the UI because this feature is meant to be silent
-        LOGE(TAG, error.toString());
+        Timber.e(error.toString());
         Crashlytics.logException(error);
     }
 
@@ -126,7 +126,7 @@ public class NoticeClient implements Response.ErrorListener {
             }
         } catch (Exception ex) {
             // We don't display anything on the UI because this feature is meant to be silent
-            LOGE(TAG, ex.toString());
+            Timber.e(ex.toString());
             Crashlytics.logException(ex);
         }
     }

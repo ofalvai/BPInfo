@@ -32,15 +32,13 @@ import com.ofalvai.bpinfo.util.FabricUtils;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.ofalvai.bpinfo.util.LogUtils.LOGD;
+import timber.log.Timber;
 
 /**
  * A DialogFragment containing a multi-choice list of RouteTypes.
  * The class maintains the selected RouteTypes.
  */
 public class AlertFilterFragment extends DialogFragment {
-
-    private static final String TAG = "AlertFilterFragment";
 
     private static final String KEY_ALERT_LIST_TYPE = "alert_list_type";
 
@@ -192,38 +190,6 @@ public class AlertFilterFragment extends DialogFragment {
         return type;
     }
 
-    /**
-     * Returns the corresponding menu item index to the RouteType value.
-     * The order is based on R.array.route_types
-     */
-    private int routeTypeToIndex(RouteType type) {
-        int index;
-        switch(type) {
-            case SUBWAY:
-                index = 0;
-                break;
-            case TRAM:
-                index = 1;
-                break;
-            case TROLLEYBUS:
-                index = 2;
-                break;
-            case BUS:
-                index = 3;
-                break;
-            case RAIL:
-                index = 4;
-                break;
-            case FERRY:
-                index = 5;
-                break;
-            default:
-                index = -1;
-        }
-
-        return index;
-    }
-
     private void onItemClick(int which, boolean isChecked) {
         RouteType type = indexToRouteType(which);
 
@@ -238,7 +204,7 @@ public class AlertFilterFragment extends DialogFragment {
                 }
             }
         } else {
-            LOGD(TAG, "Unable to find a RouteType to index " + which);
+            Timber.d("Unable to find a RouteType to index " + which);
         }
     }
 
@@ -257,7 +223,7 @@ public class AlertFilterFragment extends DialogFragment {
             if (type != null) {
                 checkedItems[i] = mSelectedRouteTypes != null && mSelectedRouteTypes.contains(type);
             } else {
-                LOGD(TAG, "Unable to find a RouteType to index " + i);
+                Timber.d("Unable to find a RouteType to index " + i);
             }
         }
 

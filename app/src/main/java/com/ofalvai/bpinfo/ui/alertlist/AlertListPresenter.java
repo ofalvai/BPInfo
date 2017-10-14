@@ -54,7 +54,7 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-import static com.ofalvai.bpinfo.util.LogUtils.LOGE;
+import timber.log.Timber;
 
 public class AlertListPresenter extends BasePresenter<AlertListContract.View>
         implements NoticeClient.NoticeListener, AlertListContract.Presenter {
@@ -151,7 +151,7 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
                         if (getView() != null) {
                             getView().displayAlertDetailError();
                         }
-                        LOGE(TAG, ex.toString());
+                        Timber.e(ex.toString());
                         Crashlytics.logException(ex);
                     }
                 },
@@ -215,14 +215,14 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
             List<Alert> processedAlerts = filterAndSort(mActiveFilter, mUnfilteredAlerts, mAlertListType);
             getView().displayAlerts(processedAlerts);
         } else {
-            LOGE(TAG, "Unfiltered alerts is null");
+            Timber.e("Unfiltered alerts is null");
         }
     }
 
     @Subscribe
     public void onAlertListErrorEvent(AlertListErrorMessage message) {
         final Exception ex = message.mException;
-        LOGE(TAG, ex.toString());
+        Timber.e(ex.toString());
 
         if (mUnfilteredAlerts != null) {
             mUnfilteredAlerts.clear();

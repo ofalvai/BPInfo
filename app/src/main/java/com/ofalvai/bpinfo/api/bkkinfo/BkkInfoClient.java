@@ -59,8 +59,7 @@ import java.util.ListIterator;
 import javax.inject.Inject;
 
 import kotlin.text.StringsKt;
-
-import static com.ofalvai.bpinfo.util.LogUtils.LOGI;
+import timber.log.Timber;
 
 public class BkkInfoClient implements AlertApiClient {
 
@@ -120,7 +119,7 @@ public class BkkInfoClient implements AlertApiClient {
 
         final Uri url = buildAlertListUrl(params);
 
-        LOGI(TAG, "API request: " + url.toString());
+        Timber.i("API request: " + url.toString());
 
         JsonObjectRequest request = new JsonObjectRequest(
                 url.toString(),
@@ -149,7 +148,7 @@ public class BkkInfoClient implements AlertApiClient {
                            @NonNull AlertRequestParams params) {
         Uri url = buildAlertDetailUrl(params, id);
 
-        LOGI(TAG, "API request: " + url.toString());
+        Timber.i("API request: " + url.toString());
 
         JsonObjectRequest request = new JsonObjectRequest(
                 url.toString(),

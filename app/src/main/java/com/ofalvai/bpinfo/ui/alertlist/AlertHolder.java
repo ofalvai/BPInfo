@@ -34,12 +34,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static com.ofalvai.bpinfo.util.LogUtils.LOGD;
+import timber.log.Timber;
 
 public class AlertHolder extends RecyclerView.ViewHolder {
-
-    private final String TAG = "AlertHolder";
 
     @BindView(R.id.list_item_alert_description)
     TextView mTitleTextView;
@@ -93,7 +90,7 @@ public class AlertHolder extends RecyclerView.ViewHolder {
                 UtilsKt.addRouteIcon(context, mRouteIconsWrapper, route);
 
                 if (route.getType() == RouteType._OTHER_) {
-                    LOGD(TAG, "Unknown route type: " + route.getShortName() + "(" + route.getId() + ")");
+                    Timber.d("Unknown route type: " + route.getShortName() + "(" + route.getId() + ")");
                 }
             }
         }
