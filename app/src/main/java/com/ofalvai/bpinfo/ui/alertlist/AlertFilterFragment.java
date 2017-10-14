@@ -115,7 +115,7 @@ public class AlertFilterFragment extends DialogFragment {
                         if (mFilterListener != null && mSelectedRouteTypes != null) {
                             mFilterListener.onFilterChanged(mSelectedRouteTypes);
 
-                            FabricUtils.logFilterApplied(mSelectedRouteTypes);
+                            FabricUtils.INSTANCE.logFilterApplied(mSelectedRouteTypes);
                         }
                     }
                 })

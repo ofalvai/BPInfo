@@ -124,7 +124,7 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
             mAlert = (Alert) savedInstanceState.getSerializable(ARG_ALERT_OBJECT);
         }
 
-        FabricUtils.logAlertContentView(mAlert);
+        FabricUtils.INSTANCE.logAlertContentView(mAlert);
     }
 
     @Override
@@ -290,7 +290,7 @@ public class AlertDetailFragment extends BottomSheetDialogFragment {
                 public void onClick(View v) {
                     Uri url = Uri.parse(alert.getUrl());
                     UtilsKt.openCustomTab(getActivity(), url);
-                    FabricUtils.logAlertUrlClick(alert);
+                    FabricUtils.INSTANCE.logAlertUrlClick(alert);
                 }
             });
         }

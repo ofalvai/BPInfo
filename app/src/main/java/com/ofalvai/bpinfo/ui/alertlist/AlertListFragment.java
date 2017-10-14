@@ -140,7 +140,7 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
             @Override
             public void onRefresh() {
                 initRefresh();
-                FabricUtils.logManualRefresh();
+                FabricUtils.INSTANCE.logManualRefresh();
             }
         });
 
@@ -332,7 +332,7 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
                         .beginTransaction();
                 fragment.show(transaction, NOTICE_DIALOG_TAG);
 
-                FabricUtils.logNoticeDialogView();
+                FabricUtils.INSTANCE.logNoticeDialogView();
             }
         });
     }
@@ -433,7 +433,7 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
         mFilterFragment.show(transaction, FILTER_DIALOG_TAG);
 
-        FabricUtils.logFilterDialogOpened();
+        FabricUtils.INSTANCE.logFilterDialogOpened();
     }
 
     /**

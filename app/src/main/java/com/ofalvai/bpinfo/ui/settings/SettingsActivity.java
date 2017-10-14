@@ -151,7 +151,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
         // Language
         if (key.equals(getString(R.string.pref_key_language))) {
             String languageValue = sharedPreferences.getString(key, "default");
-            FabricUtils.logLanguageChange(languageValue);
+            FabricUtils.INSTANCE.logLanguageChange(languageValue);
             showLanguageRestartDialog();
         }
         // Debug mode
@@ -159,12 +159,12 @@ public class SettingsActivity extends AppCompatPreferenceActivity implements Sha
             boolean state = mSharedPreferences.getBoolean(key, false);
             String text = state ? getString(R.string.debug_mode_on) : getString(R.string.debog_mode_off);
             Toast.makeText(this, text, Toast.LENGTH_LONG).show();
-            FabricUtils.logDebugMode(String.valueOf(state));
+            FabricUtils.INSTANCE.logDebugMode(String.valueOf(state));
         }
         // Data source
         else if (key.equals(getString(R.string.pref_key_data_source))) {
             Toast.makeText(this, R.string.data_source_changed_refreshed, Toast.LENGTH_SHORT).show();
-            FabricUtils.logDataSourceChange(mSharedPreferences.getString(key, ""));
+            FabricUtils.INSTANCE.logDataSourceChange(mSharedPreferences.getString(key, ""));
 
             // Recreating AlertListActivity. This relies on BpInfoApplication's preference listener,
             // which can rebuild the Dagger dependency graph so that the new Activity (and its
