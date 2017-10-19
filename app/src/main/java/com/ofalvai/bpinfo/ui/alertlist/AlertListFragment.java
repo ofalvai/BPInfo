@@ -222,7 +222,7 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        BpInfoApplication.Companion.getRefWatcher(getContext()).watch(this);
+        BpInfoApplication.getRefWatcher(getContext()).watch(this);
     }
 
     /**

@@ -64,7 +64,7 @@ public class NoticeClient implements Response.ErrorListener {
     public NoticeClient(RequestQueue requestQueue) {
         mRequestQueue = requestQueue;
 
-        BpInfoApplication.Companion.getInjector().inject(this);
+        BpInfoApplication.injector.inject(this);
     }
 
     public void fetchNotice(@NonNull final NoticeListener noticeListener, @NonNull final String languageCode) {

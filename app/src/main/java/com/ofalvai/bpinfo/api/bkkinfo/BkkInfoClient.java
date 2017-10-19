@@ -109,7 +109,7 @@ public class BkkInfoClient implements AlertApiClient {
 
     public BkkInfoClient(RequestQueue requestQueue) {
         mRequestQueue = requestQueue;
-        BpInfoApplication.Companion.getInjector().inject(this);
+        BpInfoApplication.injector.inject(this);
     }
 
     @Override

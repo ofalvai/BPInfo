@@ -116,7 +116,7 @@ public class FutarApiClient implements AlertApiClient {
 
     public FutarApiClient(RequestQueue requestQueue) {
         mRequestQueue = requestQueue;
-        BpInfoApplication.Companion.getInjector().inject(this);
+        BpInfoApplication.injector.inject(this);
     }
 
     @Override

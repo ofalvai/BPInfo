@@ -43,6 +43,18 @@ import javax.inject.Inject
 
 class BpInfoApplication : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
+    companion object {
+
+        @JvmStatic
+        lateinit var injector: AppComponent
+
+        @JvmStatic
+        fun getRefWatcher(context: Context): RefWatcher? {
+            val application = context.applicationContext as BpInfoApplication
+            return application.mRefWatcher
+        }
+    }
+
     @Inject
     lateinit var mSharedPreferences: SharedPreferences
 
@@ -171,15 +183,5 @@ class BpInfoApplication : Application(), SharedPreferences.OnSharedPreferenceCha
         )
         channel.description = description
         notificationManager.createNotificationChannel(channel)
-    }
-
-    companion object {
-
-        lateinit var injector: AppComponent
-
-        fun getRefWatcher(context: Context): RefWatcher? {
-            val application = context.applicationContext as BpInfoApplication
-            return application.mRefWatcher
-        }
     }
 }

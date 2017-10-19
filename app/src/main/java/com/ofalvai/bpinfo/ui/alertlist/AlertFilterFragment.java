@@ -152,7 +152,7 @@ public class AlertFilterFragment extends DialogFragment {
         if (mFilterListener != null) {
             mFilterListener.onFilterDismissed();
         }
-        BpInfoApplication.Companion.getRefWatcher(getContext()).watch(this);
+        BpInfoApplication.getRefWatcher(getContext()).watch(this);
         super.onDestroyView();
 
     }
