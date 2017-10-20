@@ -13,7 +13,7 @@ import com.ofalvai.bpinfo.model.Route
 import com.ofalvai.bpinfo.model.RouteType
 import com.ofalvai.bpinfo.ui.notifications.routelist.adapter.RouteAdapter
 import com.ofalvai.bpinfo.util.EmptyRecyclerView
-import com.ofalvai.bpinfo.util.bindView
+import kotterknife.bindView
 
 class RouteListFragment : Fragment(), RouteListContract.View {
 

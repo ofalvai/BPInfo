@@ -8,7 +8,7 @@ import android.widget.TextView
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.model.Route
 import com.ofalvai.bpinfo.util.addRouteIcon
-import com.ofalvai.bpinfo.util.bindView
+import kotterknife.bindView
 
 class RouteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 

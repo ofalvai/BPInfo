@@ -133,6 +133,7 @@ dependencies {
     compile "com.google.firebase:firebase-perf:$firebaseVersion"
     compile "com.google.firebase:firebase-messaging:$firebaseVersion"
     compile 'com.jakewharton.timber:timber:4.5.1'
+    compile 'com.jakewharton:kotterknife:0.1.0-SNAPSHOT'
     compile('com.crashlytics.sdk.android:crashlytics:2.6.6@aar') {
         transitive = true
     }

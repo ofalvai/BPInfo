@@ -16,7 +16,7 @@ import com.ofalvai.bpinfo.model.Route
 import com.ofalvai.bpinfo.model.RouteType
 import com.ofalvai.bpinfo.ui.notifications.adapter.RouteListPagerAdapter
 import com.ofalvai.bpinfo.ui.settings.SettingsActivity
-import com.ofalvai.bpinfo.util.bindView
+import kotterknife.bindView
 import timber.log.Timber
 
 class NotificationsActivity : AppCompatActivity(), NotificationsContract.View {
