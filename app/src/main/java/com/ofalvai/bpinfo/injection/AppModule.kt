@@ -14,16 +14,14 @@
  *    limitations under the License.
  */
 
-package com.ofalvai.bpinfo.injection;
+package com.ofalvai.bpinfo.injection
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-
-import javax.inject.Singleton;
-
-import dagger.Module;
-import dagger.Provides;
+import android.content.Context
+import android.content.SharedPreferences
+import android.preference.PreferenceManager
+import dagger.Module
+import dagger.Provides
+import javax.inject.Singleton
 
 
 /**
@@ -31,23 +29,18 @@ import dagger.Provides;
  */
 
 @Module
-public class AppModule {
-    private final Context mContext;
+class AppModule(private val mContext: Context) {
 
-    public AppModule(Context context) {
-        mContext = context;
+    @Provides
+    @Singleton
+    internal fun providesAppContext(): Context {
+        return mContext
     }
 
     @Provides
     @Singleton
-    Context providesAppContext() {
-        return mContext;
-    }
-
-    @Provides
-    @Singleton
-    SharedPreferences providesSharedPreferences(Context context) {
-        return PreferenceManager.getDefaultSharedPreferences(context);
+    internal fun providesSharedPreferences(context: Context): SharedPreferences {
+        return PreferenceManager.getDefaultSharedPreferences(context)
     }
 
 }
