@@ -30,7 +30,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.crashlytics.android.Crashlytics;
-import com.ofalvai.bpinfo.BpInfoApplication;
 import com.ofalvai.bpinfo.BuildConfig;
 import com.ofalvai.bpinfo.Config;
 import com.ofalvai.bpinfo.R;
@@ -110,13 +109,16 @@ public class FutarApiClient implements AlertApiClient {
     @Nullable
     private String mLanguageCode;
 
-    @Inject SharedPreferences mSharedPreferences;
+    private final SharedPreferences mSharedPreferences;
 
-    @Inject Context mContext;
+    private final Context mContext;
 
-    public FutarApiClient(RequestQueue requestQueue) {
+    @Inject
+    public FutarApiClient(RequestQueue requestQueue, SharedPreferences sharedPreferences,
+                          Context context) {
         mRequestQueue = requestQueue;
-        BpInfoApplication.injector.inject(this);
+        mSharedPreferences = sharedPreferences;
+        mContext = context;
     }
 
     @Override

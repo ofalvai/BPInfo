@@ -57,16 +57,17 @@ public class ApiModule {
                 getString(context.getString(R.string.pref_key_data_source), keyDefault);
 
         if (keyCurrent.equals(keyBkkFutar)) {
-            return new FutarApiClient(requestQueue);
+            return  new FutarApiClient(requestQueue, sharedPreferences, context);
         } else {
-            return new BkkInfoClient(requestQueue);
+            return new BkkInfoClient(requestQueue, sharedPreferences, context);
         }
     }
 
     @Provides
     @Singleton
-    NoticeClient provideNoticeClient(RequestQueue requestQueue) {
-        return new NoticeClient(requestQueue);
+    NoticeClient provideNoticeClient(RequestQueue requestQueue, Context context,
+                                     SharedPreferences sharedPreferences) {
+        return new NoticeClient(requestQueue, context, sharedPreferences);
     }
 
     @Provides

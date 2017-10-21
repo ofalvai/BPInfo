@@ -53,7 +53,8 @@ public class ApiModule {
 
     @Provides
     @Singleton
-    NoticeClient provideNoticeClient(RequestQueue requestQueue) {
-        return new NoticeClient(requestQueue);
+    NoticeClient provideNoticeClient(RequestQueue requestQueue, SharedPreferences sharedPreferences,
+                                     Context context) {
+        return new NoticeClient(requestQueue, context, sharedPreferences);
     }
 }

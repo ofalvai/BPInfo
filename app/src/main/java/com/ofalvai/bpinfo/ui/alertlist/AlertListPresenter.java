@@ -58,7 +58,6 @@ import timber.log.Timber;
 
 public class AlertListPresenter extends BasePresenter<AlertListContract.View>
         implements NoticeClient.NoticeListener, AlertListContract.Presenter {
-    private static final String TAG = "AlertListPresenter";
 
     @Inject
     AlertApiClient mAlertApiClient;

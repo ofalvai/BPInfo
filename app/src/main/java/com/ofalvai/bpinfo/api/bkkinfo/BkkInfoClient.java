@@ -33,7 +33,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.crashlytics.android.Crashlytics;
 import com.google.firebase.perf.FirebasePerformance;
 import com.google.firebase.perf.metrics.Trace;
-import com.ofalvai.bpinfo.BpInfoApplication;
 import com.ofalvai.bpinfo.R;
 import com.ofalvai.bpinfo.api.AlertApiClient;
 import com.ofalvai.bpinfo.api.AlertListErrorMessage;
@@ -85,11 +84,9 @@ public class BkkInfoClient implements AlertApiClient {
 
     private static final String DETAIL_WEBVIEW_PARAM_ID = "id";
 
-    @Inject
-    SharedPreferences mSharedPreferences;
+    private final SharedPreferences mSharedPreferences;
 
-    @Inject
-    Context mContext;
+    private final Context mContext;
 
     private final RequestQueue mRequestQueue;
 
@@ -107,9 +104,12 @@ public class BkkInfoClient implements AlertApiClient {
 
     private Trace mAlertDetailTrace;
 
-    public BkkInfoClient(RequestQueue requestQueue) {
+    @Inject
+    public BkkInfoClient(RequestQueue requestQueue, SharedPreferences sharedPreferences,
+                         Context context) {
         mRequestQueue = requestQueue;
-        BpInfoApplication.injector.inject(this);
+        mSharedPreferences = sharedPreferences;
+        mContext = context;
     }
 
     @Override

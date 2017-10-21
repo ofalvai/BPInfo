@@ -20,6 +20,7 @@ plugins {
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 apply plugin: 'com.github.gfx.ribbonizer'
 apply plugin: 'io.fabric'
 apply plugin: 'com.jakewharton.hugo'

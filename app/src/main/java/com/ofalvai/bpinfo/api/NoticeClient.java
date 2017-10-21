@@ -26,7 +26,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.crashlytics.android.Crashlytics;
-import com.ofalvai.bpinfo.BpInfoApplication;
 import com.ofalvai.bpinfo.Config;
 import com.ofalvai.bpinfo.R;
 
@@ -53,18 +52,17 @@ public class NoticeClient implements Response.ErrorListener {
         void onNoNotice();
     }
 
-    private static final String TAG = "NoticeClient";
-
     private final RequestQueue mRequestQueue;
 
-    @Inject Context mContext;
+    private final Context mContext;
 
-    @Inject SharedPreferences mSharedPreferences;
+    private final SharedPreferences mSharedPreferences;
 
-    public NoticeClient(RequestQueue requestQueue) {
+    @Inject
+    public NoticeClient(RequestQueue requestQueue, Context context, SharedPreferences sharedPreferences) {
         mRequestQueue = requestQueue;
-
-        BpInfoApplication.injector.inject(this);
+        mContext = context;
+        mSharedPreferences = sharedPreferences;
     }
 
     public void fetchNotice(@NonNull final NoticeListener noticeListener, @NonNull final String languageCode) {
