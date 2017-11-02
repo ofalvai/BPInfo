@@ -36,7 +36,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
-public class AlertHolder extends RecyclerView.ViewHolder {
+class AlertHolder extends RecyclerView.ViewHolder {
 
     @BindView(R.id.list_item_alert_description)
     TextView mTitleTextView;
@@ -52,28 +52,25 @@ public class AlertHolder extends RecyclerView.ViewHolder {
 
     private final AlertListType mAlertListType;
 
-    private Alert mAlert;
-
     /**
      * List of currently displayed route icons. This list is needed in order to find visually
      * duplicate route data, and not to display them twice.
      */
     private final List<Route> mDisplayedRoutes = new ArrayList<>();
 
-    public AlertHolder(View itemView, AlertListType alertListType) {
+    AlertHolder(View itemView, AlertListType alertListType) {
         super(itemView);
         ButterKnife.bind(this, itemView);
         mAlertListType = alertListType;
     }
 
-    public void bindAlert(@NonNull Alert alert, Context context) {
-        mAlert = alert;
+    void bindAlert(@NonNull Alert alert, Context context) {
 
         // Title (header text)
         mTitleTextView.setText(alert.getHeader());
 
         // Start - end dates
-        String dateString = UtilsKt.formatDate(mAlert, context);
+        String dateString = UtilsKt.formatDate(alert, context);
         mDateTextView.setText(dateString);
 
         // Route icons

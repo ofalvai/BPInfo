@@ -136,6 +136,7 @@ fun Route.getContentDescription(context: Context): String {
  * with special replacements for special dates, times, and the API's strange notations.
  * @return  A string in the format of {startdate} {starttime} {separator} {enddate} {endtime}
  */
+@Suppress("CascadeIf")
 fun Alert.formatDate(context: Context): String {
     val startDateTime = DateTime(start * 1000L)
     val endDateTime = DateTime(end * 1000L)

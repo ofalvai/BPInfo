@@ -51,7 +51,8 @@
         android:paddingTop="8dp"
         android:visibility="gone"
         tools:text="Notice form backend\nMax 2 lines."
-        tools:visibility="visible"/>
+        tools:visibility="visible"
+        android:focusable="true" />
 
     <include layout="@layout/error_with_action"/>
 

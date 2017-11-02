@@ -84,14 +84,14 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
     @NonNull
     private Set<RouteType> mActiveFilter = new HashSet<>();
 
-    public AlertListPresenter(@NonNull AlertListType alertListType) {
+    AlertListPresenter(@NonNull AlertListType alertListType) {
         mAlertListType = alertListType;
 
         BpInfoApplication.getInjector().inject(this);
     }
 
     @Override
-    public void attachView(AlertListContract.View view) {
+    public void attachView(@NonNull AlertListContract.View view) {
         super.attachView(view);
         EventBus.getDefault().register(this);
     }

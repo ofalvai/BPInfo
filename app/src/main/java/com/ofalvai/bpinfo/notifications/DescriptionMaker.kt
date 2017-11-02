@@ -3,20 +3,19 @@ package com.ofalvai.bpinfo.notifications
 import android.content.Context
 import com.ofalvai.bpinfo.R
 
-
 class DescriptionMaker {
 
     companion object {
 
-        const val DATA_KEY_ROUTE_BUS = "route_bus"
-        const val DATA_KEY_ROUTE_FERRY = "route_ferry"
-        const val DATA_KEY_ROUTE_RAIL = "route_rail"
-        const val DATA_KEY_ROUTE_TRAM = "route_tram"
-        const val DATA_KEY_ROUTE_TROLLEYBUS = "route_trolleybus"
-        const val DATA_KEY_ROUTE_SUBWAY = "route_subway"
-        const val DATA_KEY_ROUTE_OTHER = "route_other"
+        private const val DATA_KEY_ROUTE_BUS = "route_bus"
+        private const val DATA_KEY_ROUTE_FERRY = "route_ferry"
+        private const val DATA_KEY_ROUTE_RAIL = "route_rail"
+        private const val DATA_KEY_ROUTE_TRAM = "route_tram"
+        private const val DATA_KEY_ROUTE_TROLLEYBUS = "route_trolleybus"
+        private const val DATA_KEY_ROUTE_SUBWAY = "route_subway"
+        private const val DATA_KEY_ROUTE_OTHER = "route_other"
 
-        const val DATA_KEY_ROUTE_SEPARATOR = "|"
+        private const val DATA_KEY_ROUTE_SEPARATOR = "|"
 
         /**
          * Makes the localized description of affected routes, grouped by route types.
@@ -41,10 +40,10 @@ class DescriptionMaker {
 
         private fun makeRouteList(routeData: String?, context: Context, routeType: String): String {
             val langCode = context.resources.configuration.locale.language
-            if (langCode == "hu") {
-                return makeRouteLineHu(routeData, context, routeType)
+            return if (langCode == "hu") {
+                makeRouteLineHu(routeData, context, routeType)
             } else {
-                return makeRouteLineEn(routeData, context, routeType)
+                makeRouteLineEn(routeData, context, routeType)
             }
         }
 
@@ -60,14 +59,14 @@ class DescriptionMaker {
         }
 
         private fun makeRouteLineHu(routeData: String?, context: Context, routeType: String): String {
+            @Suppress("LiftReturnOrAssignment")
             if (routeData != null && routeData.isNotEmpty()) {
                 val name = getLocalizedRouteType(context, routeType)
 
                 return routeData
                         .split(DATA_KEY_ROUTE_SEPARATOR)
                         .map { it.trim() }
-                        .map(this::numberPostfixHu)
-                        .joinToString(separator = ", ")
+                        .joinToString(separator = ", ", transform = this::numberPostfixHu)
                         .plus(" $name") // TODO: other?
             } else {
                 return ""
@@ -81,26 +80,25 @@ class DescriptionMaker {
                 sb.append("$name ")
                 val routeList = routeData
                         .split(DATA_KEY_ROUTE_SEPARATOR)
-                        .map { it.trim() }
-                        .joinToString(separator = ", ")
+                        .joinToString(separator = ", ") { it.trim() }
                 sb.append(routeList)
             }
             return sb.toString()
         }
 
         private fun numberPostfixHu(name: String): String {
-            when (name.last()) {
-                'A', 'E' -> return name
-                '1', '2', '4', '7', '9' -> return "$name-es"
-                '3', '8' -> return "$name-as"
-                '5' -> return "$name-ös"
-                '6' -> return "$name-os"
+            return when (name.last()) {
+                'A', 'E' -> name
+                '1', '2', '4', '7', '9' -> "$name-es"
+                '3', '8' -> "$name-as"
+                '5' -> "$name-ös"
+                '6' -> "$name-os"
                 '0' -> when (name.takeLast(2)) {
-                    "10", "40", "50", "70", "90" -> return "$name-es"
-                    "20", "30", "60", "80", "00" -> return "$name-as"
-                    else -> return name
+                    "10", "40", "50", "70", "90" -> "$name-es"
+                    "20", "30", "60", "80", "00" -> "$name-as"
+                    else -> name
                 }
-                else -> return name
+                else -> name
             }
         }
     }

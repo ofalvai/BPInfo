@@ -41,9 +41,6 @@ public class AlertListActivity extends AppCompatActivity {
     @BindView(toolbar)
     Toolbar mToolbar;
 
-    @Nullable
-    private AlertListPagerAdapter mAlertListPagerAdapter;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,10 +52,11 @@ public class AlertListActivity extends AppCompatActivity {
             setSupportActionBar(mToolbar);
         }
 
-        mAlertListPagerAdapter = new AlertListPagerAdapter(getSupportFragmentManager(), this);
+        AlertListPagerAdapter alertListPagerAdapter =
+                new AlertListPagerAdapter(getSupportFragmentManager(), this);
 
-        mViewPager.setAdapter(mAlertListPagerAdapter);
-        mViewPager.addOnPageChangeListener(mAlertListPagerAdapter);
+        mViewPager.setAdapter(alertListPagerAdapter);
+        mViewPager.addOnPageChangeListener(alertListPagerAdapter);
 
         if (mViewPager.getAdapter() != null) {
             mTabLayout.setupWithViewPager(mViewPager, false);

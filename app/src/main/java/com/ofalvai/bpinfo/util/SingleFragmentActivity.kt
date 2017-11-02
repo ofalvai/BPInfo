@@ -36,7 +36,5 @@ abstract class SingleFragmentActivity : AppCompatActivity() {
             fragment = createFragment()
             fm.beginTransaction().add(R.id.fragment_container, fragment).commit()
         }
-
-
     }
 }

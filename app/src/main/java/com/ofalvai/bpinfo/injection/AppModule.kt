@@ -23,7 +23,6 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 
-
 /**
  * Dagger module providing Application context, mostly for other Dagger modules
  */

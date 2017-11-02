@@ -40,7 +40,6 @@ import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
-
 class BpInfoApplication : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
     companion object {
@@ -49,7 +48,7 @@ class BpInfoApplication : Application(), SharedPreferences.OnSharedPreferenceCha
         lateinit var injector: AppComponent
 
         @JvmStatic
-        fun getRefWatcher(context: Context): RefWatcher? {
+        fun getRefWatcher(context: Context): RefWatcher {
             val application = context.applicationContext as BpInfoApplication
             return application.mRefWatcher
         }
@@ -168,7 +167,7 @@ class BpInfoApplication : Application(), SharedPreferences.OnSharedPreferenceCha
     }
 
     private fun createNotificationChannels() {
-        if (Build.VERSION.SDK_INT < 26) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             return
         }
 

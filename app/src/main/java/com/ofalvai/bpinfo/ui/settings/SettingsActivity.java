@@ -58,8 +58,6 @@ import javax.inject.Inject;
  */
 public class SettingsActivity extends AppCompatPreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private static final String TAG = "SettingsActivity";
-
     @Inject SharedPreferences mSharedPreferences;
 
     public static Intent newIntent(Context context) {

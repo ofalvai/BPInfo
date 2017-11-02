@@ -41,14 +41,14 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertHolder> {
 
     private final AlertListContract.View mView;
 
-    public AlertAdapter(List<Alert> alerts, Context context, AlertListContract.View view) {
+    AlertAdapter(List<Alert> alerts, Context context, AlertListContract.View view) {
         mAlerts = alerts;
         mContext = context;
         mView = view;
     }
 
-    public void updateAlertData(final List<Alert> alerts,
-                                @Nullable final ListUpdateCallback listUpdateCallback) {
+    void updateAlertData(final List<Alert> alerts,
+                         @Nullable final ListUpdateCallback listUpdateCallback) {
         final List<Alert> oldAlerts = new ArrayList<>(mAlerts);
 
         if (oldAlerts.equals(alerts)) return;
@@ -114,7 +114,7 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertHolder> {
         @NonNull
         private final List<Alert> mNewAlerts;
 
-        public AlertDiffCallback(@NonNull List<Alert> oldAlerts, @NonNull List<Alert> newAlerts) {
+        AlertDiffCallback(@NonNull List<Alert> oldAlerts, @NonNull List<Alert> newAlerts) {
             mOldAlerts = oldAlerts;
             mNewAlerts = newAlerts;
         }

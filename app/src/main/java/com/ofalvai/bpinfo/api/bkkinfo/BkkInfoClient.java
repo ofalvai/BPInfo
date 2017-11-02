@@ -98,10 +98,6 @@ public class BkkInfoClient implements AlertApiClient {
      */
     private boolean mRequestInProgress = false;
 
-    private List<Alert> mAlertsToday = new ArrayList<>();
-
-    private List<Alert> mAlertsFuture = new ArrayList<>();
-
     private Trace mAlertDetailTrace;
 
     @Inject
@@ -194,12 +190,11 @@ public class BkkInfoClient implements AlertApiClient {
 
     private void onAlertListResponse(JSONObject response) {
         try {
-            mAlertsToday = parseTodayAlerts(response);
-            mAlertsFuture = parseFutureAlerts(response);
-            BkkInfoClient.fixFutureAlertsInTodayList(mAlertsToday, mAlertsFuture);
+            List<Alert> alertsToday = parseTodayAlerts(response);
+            List<Alert> alertsFuture = parseFutureAlerts(response);
+            BkkInfoClient.fixFutureAlertsInTodayList(alertsToday, alertsFuture);
 
-
-            EventBus.getDefault().post(new AlertListMessage(mAlertsToday, mAlertsFuture));
+            EventBus.getDefault().post(new AlertListMessage(alertsToday, alertsFuture));
         } catch (Exception ex) {
             EventBus.getDefault().post(new AlertListErrorMessage(ex));
         } finally {
@@ -636,7 +631,7 @@ public class BkkInfoClient implements AlertApiClient {
         );
     }
 
-    private void createAndStartTrace(String name) {
+    private void createAndStartTrace(@SuppressWarnings("SameParameterValue") String name) {
         mAlertDetailTrace = FirebasePerformance.getInstance().newTrace(name);
         mAlertDetailTrace.start();
     }

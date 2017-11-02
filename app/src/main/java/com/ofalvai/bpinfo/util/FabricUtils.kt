@@ -1,6 +1,5 @@
 package com.ofalvai.bpinfo.util
 
-
 import com.crashlytics.android.answers.Answers
 import com.crashlytics.android.answers.ContentViewEvent
 import com.crashlytics.android.answers.CustomEvent

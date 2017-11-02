@@ -22,5 +22,4 @@ class RouteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         descriptionTextView.text = Html.fromHtml(route.description)
     }
-
 }

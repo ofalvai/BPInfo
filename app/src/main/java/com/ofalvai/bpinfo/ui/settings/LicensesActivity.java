@@ -32,7 +32,7 @@ public class LicensesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_licenses);
 
-        WebView webView = (WebView) findViewById(R.id.webview_licences);
+        WebView webView = findViewById(R.id.webview_licences);
         if (webView != null) {
             webView.loadUrl("file:///android_asset/licenses.html");
         }

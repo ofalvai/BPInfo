@@ -19,7 +19,7 @@ public class AlertListPagerAdapter extends FragmentPagerAdapter implements ViewP
     // http://stackoverflow.com/a/15261142/745637
     private final SparseArray<Fragment> mRegisteredFragments = new SparseArray<>();
 
-    public AlertListPagerAdapter(FragmentManager fm, Context context) {
+    AlertListPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
         mContext = context;
     }

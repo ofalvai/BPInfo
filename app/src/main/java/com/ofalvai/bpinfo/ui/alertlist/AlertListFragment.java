@@ -63,8 +63,6 @@ import butterknife.ButterKnife;
 public class AlertListFragment extends Fragment implements AlertListContract.View,
         AlertFilterFragment.AlertFilterListener {
 
-    private static final String TAG = "AlertListFragment";
-
     private static final String KEY_ACTIVE_FILTER = "active_filter";
 
     private static final String KEY_ALERT_LIST_TYPE = "alert_list_type";
@@ -448,8 +446,8 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
 
             mAlertRecyclerView.setVisibility(View.GONE);
 
-            TextView errorMessageView = (TextView) mErrorLayout.findViewById(R.id.error_message);
-            Button refreshButton = (Button) mErrorLayout.findViewById(R.id.error_action_button);
+            TextView errorMessageView = mErrorLayout.findViewById(R.id.error_message);
+            Button refreshButton = mErrorLayout.findViewById(R.id.error_action_button);
 
             if (!refreshButton.hasOnClickListeners()) {
                 refreshButton.setOnClickListener(new View.OnClickListener() {
