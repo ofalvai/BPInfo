@@ -153,7 +153,7 @@ public class AlertListFragment extends Fragment implements AlertListContract.Vie
             // Only attach to the filter fragment if it filters our type of list
             if (mFilterFragment != null && mAlertListType == mFilterFragment.getAlertListType()) {
                 mFilterFragment.setFilterListener(this);
-                mFilterFragment.setFilter(mPresenter.getFilter());
+                mFilterFragment.setSelectedRouteTypes(mPresenter.getFilter());
             }
         }
 
