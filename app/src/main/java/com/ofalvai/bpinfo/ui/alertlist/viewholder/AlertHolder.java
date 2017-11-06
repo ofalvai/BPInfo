@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package com.ofalvai.bpinfo.ui.alertlist;
+package com.ofalvai.bpinfo.ui.alertlist.viewholder;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -26,6 +26,7 @@ import com.ofalvai.bpinfo.R;
 import com.ofalvai.bpinfo.model.Alert;
 import com.ofalvai.bpinfo.model.Route;
 import com.ofalvai.bpinfo.model.RouteType;
+import com.ofalvai.bpinfo.ui.alertlist.AlertListType;
 import com.ofalvai.bpinfo.util.UtilsKt;
 import com.wefika.flowlayout.FlowLayout;
 
@@ -36,7 +37,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
-class AlertHolder extends RecyclerView.ViewHolder {
+public class AlertHolder extends RecyclerView.ViewHolder {
 
     @BindView(R.id.list_item_alert_description)
     TextView mTitleTextView;
@@ -58,13 +59,13 @@ class AlertHolder extends RecyclerView.ViewHolder {
      */
     private final List<Route> mDisplayedRoutes = new ArrayList<>();
 
-    AlertHolder(View itemView, AlertListType alertListType) {
+    public AlertHolder(View itemView, AlertListType alertListType) {
         super(itemView);
         ButterKnife.bind(this, itemView);
         mAlertListType = alertListType;
     }
 
-    void bindAlert(@NonNull Alert alert, Context context) {
+    public void bindAlert(@NonNull Alert alert, Context context) {
 
         // Title (header text)
         mTitleTextView.setText(alert.getHeader());

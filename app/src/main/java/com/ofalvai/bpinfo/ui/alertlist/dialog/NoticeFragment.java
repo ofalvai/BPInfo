@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package com.ofalvai.bpinfo.ui.alertlist;
+package com.ofalvai.bpinfo.ui.alertlist.dialog;
 
 import android.app.Dialog;
 import android.content.DialogInterface;

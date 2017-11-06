@@ -36,6 +36,7 @@ import com.jakewharton.processphoenix.ProcessPhoenix
 import com.ofalvai.bpinfo.BpInfoApplication
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.ui.alertlist.AlertListActivity
+import com.ofalvai.bpinfo.util.AppCompatPreferenceActivity
 import com.ofalvai.bpinfo.util.FabricUtils
 import javax.inject.Inject
 

@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package com.ofalvai.bpinfo.ui.alertlist;
+package com.ofalvai.bpinfo.ui.alertlist.adapter;
 
 import android.content.Context;
 import android.os.Handler;
@@ -29,6 +29,8 @@ import android.view.ViewGroup;
 
 import com.ofalvai.bpinfo.R;
 import com.ofalvai.bpinfo.model.Alert;
+import com.ofalvai.bpinfo.ui.alertlist.AlertListContract;
+import com.ofalvai.bpinfo.ui.alertlist.viewholder.AlertHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,13 +43,13 @@ public class AlertAdapter extends RecyclerView.Adapter<AlertHolder> {
 
     private final AlertListContract.View mView;
 
-    AlertAdapter(List<Alert> alerts, Context context, AlertListContract.View view) {
+    public AlertAdapter(List<Alert> alerts, Context context, AlertListContract.View view) {
         mAlerts = alerts;
         mContext = context;
         mView = view;
     }
 
-    void updateAlertData(final List<Alert> alerts,
+    public void updateAlertData(final List<Alert> alerts,
                          @Nullable final ListUpdateCallback listUpdateCallback) {
         final List<Alert> oldAlerts = new ArrayList<>(mAlerts);
 

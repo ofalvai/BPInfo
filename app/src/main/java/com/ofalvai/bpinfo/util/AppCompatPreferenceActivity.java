@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package com.ofalvai.bpinfo.ui.settings;
+package com.ofalvai.bpinfo.util;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

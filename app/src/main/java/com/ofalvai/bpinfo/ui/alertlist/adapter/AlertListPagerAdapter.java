@@ -1,4 +1,4 @@
-package com.ofalvai.bpinfo.ui.alertlist;
+package com.ofalvai.bpinfo.ui.alertlist.adapter;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
@@ -9,6 +9,9 @@ import android.util.SparseArray;
 import android.view.ViewGroup;
 
 import com.ofalvai.bpinfo.R;
+import com.ofalvai.bpinfo.ui.alertlist.AlertListContract;
+import com.ofalvai.bpinfo.ui.alertlist.AlertListFragment;
+import com.ofalvai.bpinfo.ui.alertlist.AlertListType;
 
 public class AlertListPagerAdapter extends FragmentPagerAdapter implements ViewPager.OnPageChangeListener {
 
@@ -19,7 +22,7 @@ public class AlertListPagerAdapter extends FragmentPagerAdapter implements ViewP
     // http://stackoverflow.com/a/15261142/745637
     private final SparseArray<Fragment> mRegisteredFragments = new SparseArray<>();
 
-    AlertListPagerAdapter(FragmentManager fm, Context context) {
+    public AlertListPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
         mContext = context;
     }

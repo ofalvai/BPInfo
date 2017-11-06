@@ -24,6 +24,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.ofalvai.bpinfo.R;
+import com.ofalvai.bpinfo.ui.alertlist.adapter.AlertListPagerAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
