@@ -24,6 +24,7 @@ import com.android.volley.toolbox.Volley;
 import com.ofalvai.bpinfo.api.AlertApiClient;
 import com.ofalvai.bpinfo.api.MockApiClient;
 import com.ofalvai.bpinfo.api.NoticeClient;
+import com.ofalvai.bpinfo.api.bkkinfo.RouteListClient;
 
 import javax.inject.Singleton;
 
@@ -56,5 +57,11 @@ public class ApiModule {
     NoticeClient provideNoticeClient(RequestQueue requestQueue, SharedPreferences sharedPreferences,
                                      Context context) {
         return new NoticeClient(requestQueue, context, sharedPreferences);
+    }
+
+    @Provides
+    @Singleton
+    RouteListClient provideRouteListClient(RequestQueue requestQueue) {
+        return new RouteListClient(requestQueue);
     }
 }
