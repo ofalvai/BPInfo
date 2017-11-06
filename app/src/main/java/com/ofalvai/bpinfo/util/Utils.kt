@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.LightingColorFilter
+import android.graphics.Paint
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.support.annotation.RequiresPermission
@@ -265,4 +266,8 @@ fun openCustomTab(activity: Activity, url: Uri) {
         customTabsIntent.intent.`package` = packageName
         customTabsIntent.launchUrl(activity, url)
     }
+}
+
+fun TextView.underline() {
+    this.paintFlags = this.paintFlags or Paint.UNDERLINE_TEXT_FLAG
 }
