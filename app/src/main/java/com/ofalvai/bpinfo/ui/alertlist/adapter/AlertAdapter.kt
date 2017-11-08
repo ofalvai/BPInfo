@@ -74,7 +74,7 @@ class AlertAdapter(private var alerts: List<Alert>,
 
     override fun getItemCount() = alerts.size
 
-    private inner class AlertDiffCallback(private val oldAlerts: List<Alert>,
+    private class AlertDiffCallback(private val oldAlerts: List<Alert>,
                                           private val newAlerts: List<Alert>) : DiffUtil.Callback() {
 
         override fun getOldListSize() = oldAlerts.size
