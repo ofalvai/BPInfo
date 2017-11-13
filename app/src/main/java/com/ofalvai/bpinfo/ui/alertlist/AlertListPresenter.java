@@ -112,10 +112,14 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
             mAlertApiClient.fetchAlertList(getAlertRequestParams());
         } else if (mUnfilteredAlerts == null) {
             // Nothing was displayed previously, showing a full error view
-            getView().displayNetworkError(new NoConnectionError());
+            if (getView() != null) {
+                getView().displayNetworkError(new NoConnectionError());
+            }
         } else {
             // A list was loaded previously, we don't clear that, only display a warning.
-            getView().displayNoNetworkWarning();
+            if (getView() != null) {
+                getView().displayNoNetworkWarning();
+            }
         }
     }
 
@@ -127,7 +131,9 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
     public void getAlertList() {
         if (mUnfilteredAlerts != null) {
             List<Alert> processedAlerts = filterAndSort(mActiveFilter, mUnfilteredAlerts, mAlertListType);
-            getView().displayAlerts(processedAlerts);
+            if (getView() != null) {
+                getView().displayAlerts(processedAlerts);
+            }
         } else {
             fetchAlertList();
         }
@@ -212,7 +218,9 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
 
         if (mUnfilteredAlerts != null) {
             List<Alert> processedAlerts = filterAndSort(mActiveFilter, mUnfilteredAlerts, mAlertListType);
-            getView().displayAlerts(processedAlerts);
+            if (getView() != null) {
+                getView().displayAlerts(processedAlerts);
+            }
         } else {
             Timber.e("Unfiltered alerts is null");
         }
@@ -227,15 +235,17 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
             mUnfilteredAlerts.clear();
         }
 
-        if (ex instanceof VolleyError) {
-            VolleyError error = (VolleyError) ex;
-            getView().displayNetworkError(error);
-        } else if (ex instanceof JSONException) {
-            getView().displayDataError();
-            Crashlytics.logException(ex);
-        } else {
-            getView().displayGeneralError();
-            Crashlytics.logException(ex);
+        if (getView() != null) {
+            if (ex instanceof VolleyError) {
+                VolleyError error = (VolleyError) ex;
+                getView().displayNetworkError(error);
+            } else if (ex instanceof JSONException) {
+                getView().displayDataError();
+                Crashlytics.logException(ex);
+            } else {
+                getView().displayGeneralError();
+                Crashlytics.logException(ex);
+            }
         }
     }
 
@@ -244,7 +254,7 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
      * according to the alert list type (descending/ascending)
      */
     @NonNull
-    private static List<Alert> filterAndSort(@Nullable Set<RouteType> types,
+    private List<Alert> filterAndSort(@Nullable Set<RouteType> types,
                                              @NonNull List<Alert> alerts,
                                              @NonNull AlertListType type) {
         List<Alert> sorted = new ArrayList<>(alerts);
@@ -310,14 +320,16 @@ public class AlertListPresenter extends BasePresenter<AlertListContract.View>
 
     @Override
     public void onNoticeResponse(String noticeText) {
-        if (isViewAttached()) {
+        if (getView() != null) {
             getView().displayNotice(noticeText);
         }
     }
 
     @Override
     public void onNoNotice() {
-        getView().removeNotice();
+        if (getView() != null) {
+            getView().removeNotice();
+        }
     }
 
     private AlertRequestParams getAlertRequestParams() {
