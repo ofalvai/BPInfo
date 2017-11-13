@@ -438,7 +438,7 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
             alertRecyclerView.smoothScrollToPosition(0)
         }
 
-        override fun onChanged(position: Int, count: Int, payload: Any) {
+        override fun onChanged(position: Int, count: Int, payload: Any?) {
             if (userVisibleHint) {
                 updateSubtitle()
             }
