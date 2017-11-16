@@ -14,20 +14,9 @@
  *    limitations under the License.
  */
 
-package com.ofalvai.bpinfo.api;
+package com.ofalvai.bpinfo.api
 
-import com.ofalvai.bpinfo.model.Alert;
+import com.ofalvai.bpinfo.model.Alert
 
-import java.util.List;
-
-public class AlertListMessage {
-
-    public final List<Alert> todayAlerts;
-
-    public final List<Alert> futureAlerts;
-
-    public AlertListMessage(List<Alert> todayAlerts, List<Alert> futureAlerts) {
-        this.todayAlerts = todayAlerts;
-        this.futureAlerts = futureAlerts;
-    }
-}
+class AlertListMessage(val todayAlerts: List<Alert>,
+                       val futureAlerts: List<Alert>)

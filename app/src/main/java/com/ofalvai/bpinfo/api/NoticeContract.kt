@@ -14,21 +14,20 @@
  *    limitations under the License.
  */
 
-package com.ofalvai.bpinfo.api.bkkfutar;
+package com.ofalvai.bpinfo.api
 
-interface RouteContract {
+interface NoticeContract {
 
-    String ROUTE_ID = "id";
+    companion object {
 
-    String ROUTE_SHORT_NAME = "shortName";
+        const val ID = "id"
 
-    String ROUTE_LONG_NAME = "longName";
+        const val TEXT_HU = "text_hu"
 
-    String ROUTE_DESC = "description";
+        const val TEXT_EN = "text_en"
 
-    String ROUTE_TYPE = "type";
+        const val ENABLED = "enabled"
 
-    String ROUTE_COLOR = "color";
-
-    String ROUTE_TEXT_COLOR = "textColor";
+        const val ENABLED_DEBUG = "enabled_debug"
+    }
 }

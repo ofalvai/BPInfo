@@ -14,13 +14,6 @@
  *    limitations under the License.
  */
 
-package com.ofalvai.bpinfo.api;
+package com.ofalvai.bpinfo.api
 
-public class AlertListErrorMessage {
-
-    public final Exception mException;
-
-    public AlertListErrorMessage(Exception exception) {
-        this.mException = exception;
-    }
-}
+class AlertListErrorMessage(val exception: Exception)

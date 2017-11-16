@@ -14,28 +14,22 @@
  *    limitations under the License.
  */
 
-package com.ofalvai.bpinfo.api;
+package com.ofalvai.bpinfo.api
 
-import android.support.annotation.NonNull;
+import com.ofalvai.bpinfo.model.Alert
 
-import com.ofalvai.bpinfo.model.Alert;
-
-public interface AlertApiClient {
+interface AlertApiClient {
 
     // EventBus is used for alert list calls instead of a callback interface,
     // because both API clients are complicated due to API quirks.
-    void fetchAlertList(@NonNull AlertRequestParams params);
+    fun fetchAlertList(params: AlertRequestParams)
 
-    void fetchAlert(@NonNull String id,
-                    @NonNull AlertDetailListener listener,
-                    @NonNull AlertRequestParams params);
-
+    fun fetchAlert(id: String, listener: AlertDetailListener, params: AlertRequestParams)
 
     interface AlertDetailListener {
 
-        void onAlertResponse(Alert alert);
+        fun onAlertResponse(alert: Alert)
 
-        void onError(Exception ex);
+        fun onError(ex: Exception)
     }
-
 }

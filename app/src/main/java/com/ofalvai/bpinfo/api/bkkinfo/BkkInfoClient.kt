@@ -139,13 +139,13 @@ class BkkInfoClient
 
     private fun buildAlertListUrl(params: AlertRequestParams) = Uri.parse(API_BASE_URL)
             .buildUpon()
-            .appendEncodedPath(if (params.mLanguageCode == "hu") API_ENDPOINT_HU else API_ENDPOINT_EN)
+            .appendEncodedPath(if (params.languageCode == "hu") API_ENDPOINT_HU else API_ENDPOINT_EN)
             .appendEncodedPath(PARAM_ALERT_LIST)
             .build()
 
     private fun buildAlertDetailUrl(params: AlertRequestParams, alertId: String) = Uri.parse(API_BASE_URL)
             .buildUpon()
-            .appendEncodedPath(if (params.mLanguageCode == "hu") API_ENDPOINT_HU else API_ENDPOINT_EN)
+            .appendEncodedPath(if (params.languageCode == "hu") API_ENDPOINT_HU else API_ENDPOINT_EN)
             .appendQueryParameter(PARAM_ALERT_DETAIL, alertId)
             .build()
 
@@ -291,7 +291,7 @@ class BkkInfoClient
         val header: String
         // The API returns a header of 3 parts separated by "|" characters. We need the last part.
         val rawHeader = response.getString("targy")
-        header = rawHeader.split("\\|")[2].trim().capitalize()
+        header = rawHeader.split("|")[2].trim().capitalize()
 
         val description: String
         val descriptionBuilder = StringBuilder()

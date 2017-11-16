@@ -106,7 +106,7 @@ class FutarApiClient
         // If a request is in progress, we don't proceed. The response callback will notify every subscriber
         if (requestInProgress) return
 
-        languageCode = params.mLanguageCode
+        languageCode = params.languageCode
 
         val uri = buildUri()
 
@@ -137,7 +137,7 @@ class FutarApiClient
 
     override fun fetchAlert(id: String, listener: AlertApiClient.AlertDetailListener,
                             params: AlertRequestParams) {
-        if (params.mAlertListType == AlertListType.ALERTS_TODAY) {
+        if (params.alertListType == AlertListType.ALERTS_TODAY) {
             alertsToday.find { it.id == id }?.let {
                 listener.onAlertResponse(it)
                 return

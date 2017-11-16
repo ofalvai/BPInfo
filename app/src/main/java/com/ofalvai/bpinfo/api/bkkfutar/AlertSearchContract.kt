@@ -14,27 +14,30 @@
  *    limitations under the License.
  */
 
-package com.ofalvai.bpinfo.api.bkkfutar;
+package com.ofalvai.bpinfo.api.bkkfutar
 
-interface AlertContract {
+interface AlertSearchContract {
 
-    String ALERT_ID = "id";
+    companion object {
 
-    String ALERT_START = "start";
+        const val API_ENDPOINT = "alert-search.json"
 
-    String ALERT_END = "end";
+        const val DATA = "data"
 
-    String ALERT_TIMESTAMP = "timestamp";
+        const val DATA_ENTRY = "entry"
 
-    String ALERT_ROUTE_IDS = "routeIds";
+        const val DATA_ENTRY_ALERT_IDS = "alertIds"
 
-    String ALERT_URL = "url";
+        const val DATA_REFERENCES = "references"
 
-    String ALERT_HEADER = "header";
+        const val DATA_REFERENCES_ALERTS = "alerts"
 
-    String ALERT_HEADER_TRANSLATIONS = "translations";
+        const val DATA_REFERENCES_ROUTES = "routes"
 
-    String ALERT_DESC = "description";
+        // Languages and translations throughout the API fields:
+        const val LANG_SOME = "someTranslation"
+        const val LANG_HU = "hu"
+        const val LANG_EN = "en"
+    }
 
-    String ALERT_DESC_TRANSLATIONS = "translations";
 }

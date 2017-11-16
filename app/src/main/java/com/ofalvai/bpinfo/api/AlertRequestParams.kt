@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Olivér Falvai
+ * Copyright 2016. 12. 23. Olivér Falvai
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -14,27 +14,9 @@
  *    limitations under the License.
  */
 
-package com.ofalvai.bpinfo.api.bkkfutar;
+package com.ofalvai.bpinfo.api
 
-public interface AlertSearchContract {
+import com.ofalvai.bpinfo.ui.alertlist.AlertListType
 
-    String API_ENDPOINT = "alert-search.json";
-
-    String DATA = "data";
-
-    String DATA_ENTRY = "entry";
-
-    String DATA_ENTRY_ALERT_IDS = "alertIds";
-
-    String DATA_REFERENCES = "references";
-
-    String DATA_REFERENCES_ALERTS = "alerts";
-
-    String DATA_REFERENCES_ROUTES = "routes";
-
-    // Languages and translations throughout the API fields:
-    String LANG_SOME = "someTranslation";
-    String LANG_HU = "hu";
-    String LANG_EN = "en";
-
-}
+class AlertRequestParams(val alertListType: AlertListType,
+                         val languageCode: String)

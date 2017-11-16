@@ -1,5 +1,5 @@
 /*
- * Copyright 2016. 12. 23. Olivér Falvai
+ * Copyright 2016 Olivér Falvai
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -14,18 +14,30 @@
  *    limitations under the License.
  */
 
-package com.ofalvai.bpinfo.api;
+package com.ofalvai.bpinfo.api.bkkfutar
 
-import com.ofalvai.bpinfo.ui.alertlist.AlertListType;
+internal interface AlertContract {
 
-public class AlertRequestParams {
+    companion object {
 
-    public final AlertListType mAlertListType;
+        const val ALERT_ID = "id"
 
-    public final String mLanguageCode;
+        const val ALERT_START = "start"
 
-    public AlertRequestParams(AlertListType alertListType, String languageCode) {
-        mAlertListType = alertListType;
-        mLanguageCode = languageCode;
+        const val ALERT_END = "end"
+
+        const val ALERT_TIMESTAMP = "timestamp"
+
+        const val ALERT_ROUTE_IDS = "routeIds"
+
+        const val ALERT_URL = "url"
+
+        const val ALERT_HEADER = "header"
+
+        const val ALERT_HEADER_TRANSLATIONS = "translations"
+
+        const val ALERT_DESC = "description"
+
+        const val ALERT_DESC_TRANSLATIONS = "translations"
     }
 }

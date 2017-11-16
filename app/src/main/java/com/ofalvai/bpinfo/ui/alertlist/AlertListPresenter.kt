@@ -113,7 +113,7 @@ class AlertListPresenter(private val alertListType: AlertListType)
 
                     override fun onError(ex: Exception) {
                         view?.displayAlertDetailError()
-                        Timber.e(ex.toString())
+                        Timber.e(ex)
                         Crashlytics.logException(ex)
                     }
                 },
@@ -164,9 +164,9 @@ class AlertListPresenter(private val alertListType: AlertListType)
     @Subscribe
     fun onAlertListEvent(message: AlertListMessage) {
         if (alertListType == AlertListType.ALERTS_TODAY) {
-            unfilteredAlerts = message.todayAlerts
+            unfilteredAlerts = message.todayAlerts.toMutableList()
         } else if (alertListType == AlertListType.ALERTS_FUTURE) {
-            unfilteredAlerts = message.futureAlerts
+            unfilteredAlerts = message.futureAlerts.toMutableList()
         }
 
         val processedAlerts = filterAndSort(activeFilter, unfilteredAlerts, alertListType)
@@ -177,7 +177,7 @@ class AlertListPresenter(private val alertListType: AlertListType)
     fun onAlertListErrorEvent(message: AlertListErrorMessage) {
         unfilteredAlerts.clear()
 
-        val ex = message.mException
+        val ex = message.exception
         Timber.e(ex.toString())
         when (ex) {
             is VolleyError -> view?.displayNetworkError(ex)
@@ -233,8 +233,8 @@ class AlertListPresenter(private val alertListType: AlertListType)
         }
     }
 
-    override fun onNoticeResponse(noticeText: String) {
-        view?.displayNotice(noticeText)
+    override fun onNoticeResponse(noticeBody: String) {
+        view?.displayNotice(noticeBody)
     }
 
     override fun onNoNotice() {
