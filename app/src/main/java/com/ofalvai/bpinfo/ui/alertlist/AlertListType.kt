@@ -1,9 +1,9 @@
-package com.ofalvai.bpinfo.ui.alertlist;
+package com.ofalvai.bpinfo.ui.alertlist
 
 /**
  * Possible types of alert lists in the UI. This acts as a parameter in other classes as well.
  */
-public enum AlertListType {
+enum class AlertListType {
     ALERTS_TODAY,
     ALERTS_FUTURE
 }

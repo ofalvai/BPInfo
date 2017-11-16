@@ -87,18 +87,18 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        var restoredFilter: Set<RouteType>? = null
+        var restoredFilter: MutableSet<RouteType>? = null
 
         if (savedInstanceState != null) {
             alertListType = savedInstanceState.getSerializable(KEY_ALERT_LIST_TYPE) as AlertListType
-            restoredFilter = savedInstanceState.getSerializable(KEY_ACTIVE_FILTER) as Set<RouteType>
+            restoredFilter = savedInstanceState.getSerializable(KEY_ACTIVE_FILTER) as MutableSet<RouteType>
         }
 
         presenter = AlertListPresenter(alertListType)
         presenter.attachView(this)
 
         restoredFilter?.let {
-            presenter.filter = restoredFilter
+            presenter.setFilter(restoredFilter)
         }
     }
 
@@ -115,7 +115,7 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
             // Only attach to the filter fragment if it filters our type of list
             if (filterFragment != null && alertListType == filterFragment.alertListType) {
                 filterFragment.filterListener = this
-                filterFragment.selectedRouteTypes = presenter.filter
+                filterFragment.selectedRouteTypes = presenter.getFilter()
             }
         }
 
@@ -142,7 +142,7 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
         outState!!.putSerializable(KEY_ALERT_LIST_TYPE, alertListType)
 
         // Casting to HashSet, because Set is not serializable :(
-        val filter = presenter.filter as HashSet<RouteType>?
+        val filter = presenter.getFilter() as HashSet<RouteType>?
         outState.putSerializable(KEY_ACTIVE_FILTER, filter)
     }
 
@@ -195,7 +195,7 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
     }
 
     override fun onFilterChanged(selectedTypes: MutableSet<RouteType>) {
-        presenter.filter = selectedTypes
+        presenter.setFilter(selectedTypes)
         presenter.getAlertList()
 
         updateFilterWarning()
@@ -339,7 +339,7 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
     }
 
     private fun displayFilterDialog() {
-        val initialFilter = presenter.filter ?: mutableSetOf()
+        val initialFilter = presenter.getFilter() ?: mutableSetOf()
 
         val filterFragment = AlertFilterFragment.newInstance(this, initialFilter, alertListType)
         val transaction = activity.supportFragmentManager.beginTransaction()
@@ -382,7 +382,7 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
      */
     private fun updateFilterWarning() {
         // Might be null, because it gets called by onCreate() too
-        val selectedTypes = presenter.filter ?: return
+        val selectedTypes = presenter.getFilter() ?: return
 
         if (selectedTypes.isEmpty()) {
             filterWarningView.visibility = View.GONE

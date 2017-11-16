@@ -59,7 +59,7 @@ class AlertAdapter(private var alerts: List<Alert>,
         val layoutInflater = LayoutInflater.from(context)
         val view = layoutInflater.inflate(R.layout.list_item_alert, parent, false)
 
-        val holder = AlertHolder(view, this.view.alertListType)
+        val holder = AlertHolder(view, this.view.getAlertListType())
         holder.itemView.setOnClickListener {
             val alert = alerts[holder.adapterPosition]
             this.view.launchAlertDetail(alert)

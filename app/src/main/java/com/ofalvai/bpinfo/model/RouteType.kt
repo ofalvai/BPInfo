@@ -14,9 +14,9 @@
  *    limitations under the License.
  */
 
-package com.ofalvai.bpinfo.model;
+package com.ofalvai.bpinfo.model
 
-public enum RouteType {
+enum class RouteType {
     BUS,
     FERRY,
     RAIL,

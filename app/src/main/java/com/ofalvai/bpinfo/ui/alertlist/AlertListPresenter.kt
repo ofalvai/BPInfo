@@ -152,7 +152,7 @@ class AlertListPresenter(private val alertListType: AlertListType)
         }
     }
 
-    override fun getFilter(): Set<RouteType>? {
+    override fun getFilter(): MutableSet<RouteType>? {
         return activeFilter
     }
 
