@@ -58,8 +58,8 @@ class NoticeFragment : DialogFragment() {
                 .create()
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
-        outState!!.putString(KEY_NOTICE_TEXT, noticeText)
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putString(KEY_NOTICE_TEXT, noticeText)
         super.onSaveInstanceState(outState)
     }
 

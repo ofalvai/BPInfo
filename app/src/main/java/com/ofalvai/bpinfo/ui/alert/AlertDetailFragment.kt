@@ -116,10 +116,10 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
         super.onSaveInstanceState(outState)
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Note: container is null because this is a subclass on DialogFragment
-        val view = inflater!!.inflate(R.layout.fragment_alert_detail, container, false)
+        val view = inflater.inflate(R.layout.fragment_alert_detail, container, false)
         ButterKnife.bind(this, view)
         return view
     }
@@ -129,8 +129,10 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
 
         displayAlert(alert)
 
-        if (alert != null && !alert!!.isPartial) {
-            progressBar.hide()
+        alert?.let {
+            if (!it.isPartial) {
+                progressBar.hide()
+            }
         }
     }
 
@@ -223,12 +225,14 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
         errorLayout.visibility = View.GONE
         progressBar.show()
         alert?.let {
-            listPresenter.fetchAlert(alert!!.id) // TODO
+            listPresenter.fetchAlert(it.id)
         }
     }
 
     private fun displayAlert(alert: Alert?) {
-        titleTextView.text = alert!!.header
+        if (alert == null) return
+
+        titleTextView.text = alert.header
 
         val dateString = alert.formatDate(activity)
         dateTextView.text = dateString

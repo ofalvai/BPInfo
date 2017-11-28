@@ -102,9 +102,9 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater!!.inflate(R.layout.fragment_alert_list, container, false)
+        val view = inflater.inflate(R.layout.fragment_alert_list, container, false)
         setHasOptionsMenu(true)
 
         // If this fragment got recreated while the filter dialog was open, we need to update
@@ -136,22 +136,22 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
         updateFilterWarning()
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
+    override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
-        outState!!.putSerializable(KEY_ALERT_LIST_TYPE, alertListType)
+        outState.putSerializable(KEY_ALERT_LIST_TYPE, alertListType)
 
         // Casting to HashSet, because Set is not serializable :(
         val filter = presenter.getFilter() as HashSet<RouteType>?
         outState.putSerializable(KEY_ACTIVE_FILTER, filter)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater!!.inflate(R.menu.menu_main, menu)
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_main, menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item!!.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             R.id.menu_item_filter_alerts -> displayFilterDialog()
             R.id.menu_item_settings -> startActivity(SettingsActivity.newIntent(context))
             R.id.menu_item_notifications -> startActivity(NotificationsActivity.newIntent(context))
@@ -189,7 +189,7 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
             val subtitle = resources.getQuantityString(R.plurals.actionbar_subtitle_alert_count, count, count)
             val activity = activity as AppCompatActivity
             activity.supportActionBar?.let {
-                activity.supportActionBar!!.subtitle = subtitle
+                it.subtitle = subtitle
             }
         }
     }

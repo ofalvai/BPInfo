@@ -81,8 +81,8 @@ class AlertFilterFragment : DialogFragment() {
                 .create()
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
-        outState!!.putSerializable(KEY_ALERT_LIST_TYPE, alertListType)
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putSerializable(KEY_ALERT_LIST_TYPE, alertListType)
         // Note: The selected filters are stored in the fragment and restored here with setFilter()
         super.onSaveInstanceState(outState)
     }
@@ -96,12 +96,10 @@ class AlertFilterFragment : DialogFragment() {
     }
 
     override fun onDestroyView() {
-        if (filterListener != null) {
-            filterListener!!.onFilterDismissed()
-        }
+        filterListener?.onFilterDismissed()
+
         BpInfoApplication.getRefWatcher(context).watch(this)
         super.onDestroyView()
-
     }
 
     /**
@@ -125,13 +123,9 @@ class AlertFilterFragment : DialogFragment() {
 
         if (type != null) {
             if (isChecked) {
-                if (selectedRouteTypes != null) {
-                    selectedRouteTypes!!.add(type)
-                }
+                selectedRouteTypes?.add(type)
             } else {
-                if (selectedRouteTypes != null) {
-                    selectedRouteTypes!!.remove(type)
-                }
+                selectedRouteTypes?.remove(type)
             }
         } else {
             Timber.d("Unable to find a RouteType to index " + which)

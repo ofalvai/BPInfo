@@ -548,7 +548,7 @@ class BkkInfoClient
 
     private fun createAndStartTrace(name: String) {
         alertDetailTrace = FirebasePerformance.getInstance().newTrace(name)
-        alertDetailTrace!!.start()
+        alertDetailTrace?.start()
     }
 
     /**
