@@ -29,7 +29,7 @@ import javax.inject.Singleton
  */
 
 @Singleton
-@Component(modules = arrayOf(AppModule::class, ApiModule::class))
+@Component(modules = [AppModule::class, ApiModule::class])
 interface AppComponent {
     fun inject(alertListPresenter: AlertListPresenter)
 

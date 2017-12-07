@@ -37,7 +37,6 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import butterknife.ButterKnife
-import butterknife.OnClick
 import com.ofalvai.bpinfo.BpInfoApplication
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.model.Alert
@@ -134,6 +133,14 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
                 progressBar.hide()
             }
         }
+
+        errorButton.setOnClickListener {
+            errorLayout.visibility = View.GONE
+            progressBar.show()
+            alert?.let {
+                listPresenter.fetchAlert(it.id)
+            }
+        }
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -218,15 +225,6 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
         errorMessage.setText(R.string.error_alert_detail_load)
         errorButton.setText(R.string.label_retry)
         errorLayout.visibility = View.VISIBLE
-    }
-
-    @OnClick(R.id.error_action_button)
-    internal fun clickErrorRetry() {
-        errorLayout.visibility = View.GONE
-        progressBar.show()
-        alert?.let {
-            listPresenter.fetchAlert(it.id)
-        }
     }
 
     private fun displayAlert(alert: Alert?) {

@@ -382,27 +382,13 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
      */
     private fun updateFilterWarning() {
         // Might be null, because it gets called by onCreate() too
-        val selectedTypes = presenter.getFilter() ?: return
+        val selectedTypes: MutableSet<RouteType> = presenter.getFilter() ?: return
 
         if (selectedTypes.isEmpty()) {
             filterWarningView.visibility = View.GONE
         } else {
-            // TODO: replace with TextUtils.join()
-            val typeList = StringBuilder()
-            val separator = ", "
-            for (type in selectedTypes) {
-                val typeName = type.getName(context)
-                typeList.append(typeName)
-                typeList.append(separator)
-            }
-
-            // Removing the last separator at the end of the list
-            var completeString = getString(R.string.filter_message, typeList.toString())
-            if (completeString.endsWith(separator)) {
-                completeString = completeString.substring(0, completeString.length - separator.length)
-            }
-
-            filterWarningView.text = completeString
+            val typeList = selectedTypes.joinToString(separator = ", ") { it.getName(context) }
+            filterWarningView.text = getString(R.string.filter_message, typeList)
             filterWarningView.visibility = View.VISIBLE
         }
     }

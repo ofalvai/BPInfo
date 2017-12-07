@@ -16,7 +16,7 @@
 
 package com.ofalvai.bpinfo.ui.base
 
-interface MvpPresenter<V : MvpView> {
+interface MvpPresenter<in V : MvpView> {
 
     fun attachView(view: V)
 

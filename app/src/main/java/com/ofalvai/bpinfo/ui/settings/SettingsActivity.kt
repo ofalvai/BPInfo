@@ -108,11 +108,11 @@ class SettingsActivity : AppCompatPreferenceActivity(), SharedPreferences.OnShar
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        if (shouldShowDebugMode()) {
+        return if (shouldShowDebugMode()) {
             menuInflater.inflate(R.menu.menu_settings, menu)
-            return true
+            true
         } else {
-            return false
+            false
         }
     }
 
