@@ -15,11 +15,12 @@
  */
 
 plugins {
-    id "org.sonarqube" version "2.5"
+    id "org.sonarqube" version "2.6-rc1"
 }
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 apply plugin: 'com.github.gfx.ribbonizer'
 apply plugin: 'io.fabric'
 apply plugin: 'com.jakewharton.hugo'
@@ -39,7 +40,7 @@ localConfig.load(new FileInputStream(project.file("localconfig.properties")))
 def appVersionCode = 12
 def appVersionName = "1.4.0"
 def supportLibVersion = "26.1.0"
-def firebaseVersion = "11.4.2"
+def firebaseVersion = "11.6.2"
 
 android {
     signingConfigs {
@@ -123,23 +124,24 @@ dependencies {
     compile ('com.wefika:flowlayout:0.4.1') {
         exclude group: 'com.intellij', module: 'annotations'
     }
-    compile 'com.google.dagger:dagger:2.11'
+    compile 'com.google.dagger:dagger:2.13'
     compile 'org.sufficientlysecure:html-textview:3.4'
     compile 'net.danlew:android.joda:2.9.9'
     compile 'com.jakewharton:process-phoenix:2.0.0'
     compile 'com.jakewharton:butterknife:8.8.1'
-    compile 'org.greenrobot:eventbus:3.0.0'
+    compile 'org.greenrobot:eventbus:3.1.1'
     compile "com.google.firebase:firebase-core:$firebaseVersion"
     compile "com.google.firebase:firebase-perf:$firebaseVersion"
     compile "com.google.firebase:firebase-messaging:$firebaseVersion"
-    compile 'com.jakewharton.timber:timber:4.5.1'
+    compile 'com.jakewharton.timber:timber:4.6.0'
+    compile 'com.jakewharton:kotterknife:0.1.0-SNAPSHOT'
     compile('com.crashlytics.sdk.android:crashlytics:2.6.6@aar') {
         transitive = true
     }
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.11'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.1'
-    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
+    kapt 'com.google.dagger:dagger-compiler:2.13'
+    kapt 'com.jakewharton:butterknife-compiler:8.8.1'
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.4'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2') {
         // Necessary if your app targets Marshmallow (since Espresso
         // hasn't moved to Marshmallow yet)
@@ -155,9 +157,9 @@ dependencies {
         // hasn't moved to Marshmallow yet)
         exclude group: 'com.android.support', module: 'support-annotations'
     }
-    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
+    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
     testCompile 'junit:junit:4.12'
-    testCompile "org.mockito:mockito-core:2.8.47"
+    testCompile "org.mockito:mockito-core:2.13.0"
     androidTestCompile 'org.hamcrest:hamcrest-library:1.3'
 }
 

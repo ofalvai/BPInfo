@@ -82,7 +82,8 @@ public class MockApiClient implements AlertApiClient {
                 "Budatétény vasútállomás (Campona)<br/>Diósd, Búzavirág utca",
                 RouteType.BUS,
                 Color.parseColor("#009FE3"),
-                Color.parseColor("#FFFFFF")
+                Color.parseColor("#FFFFFF"),
+                false
         );
 
         Route tram60 = new Route(
@@ -92,7 +93,8 @@ public class MockApiClient implements AlertApiClient {
                 "Városmajor<br/>Széchenyi-hegy, Gyermekvasút",
                 RouteType.TRAM,
                 Color.parseColor("#FFD800"),
-                Color.parseColor("#000000")
+                Color.parseColor("#000000"),
+                false
         );
 
         Route trolley79 = new Route(
@@ -102,7 +104,8 @@ public class MockApiClient implements AlertApiClient {
                 "Keleti pályaudvar M<br/>Kárpát utca",
                 RouteType.TROLLEYBUS,
                 Color.parseColor("#FF1609"),
-                Color.parseColor("#FFFFFF")
+                Color.parseColor("#FFFFFF"),
+                false
         );
 
         Route ferry11 = new Route(
@@ -112,7 +115,8 @@ public class MockApiClient implements AlertApiClient {
                 "Újpest, Árpád út&nbsp;- Haller utca",
                 RouteType.FERRY,
                 Color.parseColor("#E50475"),
-                Color.parseColor("#FFFFFF")
+                Color.parseColor("#FFFFFF"),
+                false
         );
 
         Route chairlift = new Route(
@@ -122,7 +126,8 @@ public class MockApiClient implements AlertApiClient {
                 "Zugliget&nbsp;- János-hegy",
                 RouteType.CHAIRLIFT,
                 Color.parseColor("#009155"),
-                Color.parseColor("#000000")
+                Color.parseColor("#000000"),
+                false
         );
 
         Route funicular = new Route(
@@ -132,7 +137,8 @@ public class MockApiClient implements AlertApiClient {
                 "???",
                 RouteType.FUNICULAR,
                 Color.parseColor("#884200"),
-                Color.parseColor("#000000")
+                Color.parseColor("#000000"),
+                false
         );
 
         Route rail5 = new Route(
@@ -142,7 +148,8 @@ public class MockApiClient implements AlertApiClient {
                 "Békásmegyer | Batthyány tér",
                 RouteType.RAIL,
                 Color.parseColor("#821066"),
-                Color.parseColor("#FFFFFF")
+                Color.parseColor("#FFFFFF"),
+                false
         );
 
         Route rainbow1 = new Route(
@@ -152,7 +159,8 @@ public class MockApiClient implements AlertApiClient {
                 "???",
                 RouteType._OTHER_,
                 Color.parseColor("#EC1C5A"),
-                Color.parseColor("#FFFFFF")
+                Color.parseColor("#FFFFFF"),
+                false
         );
 
         Route rainbow2 = new Route(
@@ -162,7 +170,8 @@ public class MockApiClient implements AlertApiClient {
                 "???",
                 RouteType._OTHER_,
                 Color.parseColor("#F58023"),
-                Color.parseColor("#FFFFFF")
+                Color.parseColor("#FFFFFF"),
+                false
         );
 
         Route rainbow3 = new Route(
@@ -172,7 +181,8 @@ public class MockApiClient implements AlertApiClient {
                 "???",
                 RouteType._OTHER_,
                 Color.parseColor("#FAE83E"),
-                Color.parseColor("#FFFFFF")
+                Color.parseColor("#FFFFFF"),
+                false
         );
 
         Route rainbow4 = new Route(
@@ -182,7 +192,8 @@ public class MockApiClient implements AlertApiClient {
                 "???",
                 RouteType._OTHER_,
                 Color.parseColor("#9CC841"),
-                Color.parseColor("#FFFFFF")
+                Color.parseColor("#FFFFFF"),
+                false
         );
 
         Route rainbow5 = new Route(
@@ -192,7 +203,8 @@ public class MockApiClient implements AlertApiClient {
                 "???",
                 RouteType._OTHER_,
                 Color.parseColor("#46BEA2"),
-                Color.parseColor("#FFFFFF")
+                Color.parseColor("#FFFFFF"),
+                false
         );
 
         Route rainbow6 = new Route(
@@ -202,7 +214,8 @@ public class MockApiClient implements AlertApiClient {
                 "???",
                 RouteType._OTHER_,
                 Color.parseColor("#3D81C2"),
-                Color.parseColor("#FFFFFF")
+                Color.parseColor("#FFFFFF"),
+                false
         );
 
         Route rainbow7 = new Route(
@@ -212,7 +225,8 @@ public class MockApiClient implements AlertApiClient {
                 "???",
                 RouteType._OTHER_,
                 Color.parseColor("#644B9E"),
-                Color.parseColor("#FFFFFF")
+                Color.parseColor("#FFFFFF"),
+                false
         );
 
         TEST_ALERTS.add(new Alert(

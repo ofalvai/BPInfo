@@ -12,7 +12,5 @@ interface RouteListContract {
 
     }
 
-    interface Presenter : MvpPresenter<View> {
-
-    }
+    interface Presenter : MvpPresenter<View>
 }

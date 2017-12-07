@@ -42,7 +42,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:indeterminate="true"
-        android:indeterminateTint="@color/colorProgressBar"/>
+        android:indeterminateTint="@color/colorProgressBar"
+        tools:targetApi="lollipop" />
 
     <TextView
         android:id="@+id/alert_detail_date"

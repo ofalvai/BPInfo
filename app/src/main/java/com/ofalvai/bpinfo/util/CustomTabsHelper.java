@@ -27,7 +27,7 @@ import android.text.TextUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ofalvai.bpinfo.util.LogUtils.LOGE;
+import timber.log.Timber;
 
 /**
  * Helper class for Custom Tabs.
@@ -126,7 +126,7 @@ public class CustomTabsHelper {
                 return true;
             }
         } catch (RuntimeException e) {
-            LOGE(TAG, "Runtime exception while getting specialized handlers");
+            Timber.e("Runtime exception while getting specialized handlers");
         }
         return false;
     }

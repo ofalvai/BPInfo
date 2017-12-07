@@ -119,7 +119,7 @@ class RouteListClient(private val requestQueue: RequestQueue) {
                 "P" -> RouteType._OTHER_ // Sétajárat
                 "L" -> RouteType._OTHER_ // RouteType.CHAIRLIFT
                 "S" -> RouteType._OTHER_ // Sikló
-                "N" -> when (shortName) { // Nosztalgia: http://www.bkk.hu/nosztalgia/menetrendek
+                "N" -> RouteType._OTHER_ // Nosztalgia: http://www.bkk.hu/nosztalgia/menetrendek
 //                    "SH" -> RouteType.FERRY // Sétahajó
 //                    "DH" -> RouteType.TRAM // Duna villamos
 //                    "TH" -> RouteType.TRAM // Termál villamos
@@ -129,8 +129,6 @@ class RouteListClient(private val requestQueue: RequestQueue) {
 //                    "N74" -> RouteType.TROLLEYBUS
 //                    "N76" -> RouteType.TROLLEYBUS
 //                    "N17" -> RouteType.TRAM
-                    else -> RouteType._OTHER_
-                }
                 else -> RouteType._OTHER_
             }
         }

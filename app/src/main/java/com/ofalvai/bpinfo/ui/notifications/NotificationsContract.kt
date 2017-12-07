@@ -6,7 +6,7 @@ import com.ofalvai.bpinfo.ui.base.MvpView
 
 interface NotificationsContract {
 
-    interface View: MvpView {
+    interface View : MvpView {
 
         /**
          * List of all routes, before grouped by route type
@@ -15,7 +15,7 @@ interface NotificationsContract {
 
     }
 
-    interface Presenter: MvpPresenter<View> {
+    interface Presenter : MvpPresenter<View> {
 
         fun fetchRouteList()
 

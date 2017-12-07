@@ -72,10 +72,10 @@ class AlertMessagingService : FirebaseMessagingService() {
     }
 
     private fun parseAlertNumericalId(id: String): Int {
-        try {
-            return id.split("-")[1].toInt()
+        return try {
+            id.split("-")[1].toInt()
         } catch (ex: Exception) {
-            return -1
+            -1
         }
     }
 }

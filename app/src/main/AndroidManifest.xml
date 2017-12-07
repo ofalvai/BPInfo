@@ -97,14 +97,16 @@
         </activity>
 
         <service
-            android:name=".notifications.AlertMessagingService">
+            android:name=".notifications.AlertMessagingService"
+            tools:ignore="ExportedService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
 
         <service
-            android:name=".notifications.FcmInstanceIdService">
+            android:name=".notifications.FcmInstanceIdService"
+            tools:ignore="ExportedService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>
