@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.NavUtils
 import android.support.v4.view.ViewPager
-import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
@@ -14,12 +13,13 @@ import com.google.firebase.iid.FirebaseInstanceId
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.model.Route
 import com.ofalvai.bpinfo.model.RouteType
+import com.ofalvai.bpinfo.ui.base.BaseActivity
 import com.ofalvai.bpinfo.ui.notifications.adapter.RouteListPagerAdapter
 import com.ofalvai.bpinfo.ui.settings.SettingsActivity
 import kotterknife.bindView
 import timber.log.Timber
 
-class NotificationsActivity : AppCompatActivity(), NotificationsContract.View {
+class NotificationsActivity : BaseActivity(), NotificationsContract.View {
 
     private lateinit var presenter: NotificationsContract.Presenter
 
@@ -44,6 +44,7 @@ class NotificationsActivity : AppCompatActivity(), NotificationsContract.View {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setTitle(R.string.title_activity_notifications)
 
 
         presenter = NotificationsPresenter()

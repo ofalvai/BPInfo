@@ -19,12 +19,11 @@ package com.ofalvai.bpinfo.ui.settings
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.webkit.WebView
-
 import com.ofalvai.bpinfo.R
+import com.ofalvai.bpinfo.ui.base.BaseActivity
 
-class LicensesActivity : AppCompatActivity() {
+class LicensesActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

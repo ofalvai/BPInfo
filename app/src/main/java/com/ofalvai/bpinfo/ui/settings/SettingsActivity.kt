@@ -38,6 +38,7 @@ import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.ui.alertlist.AlertListActivity
 import com.ofalvai.bpinfo.util.AppCompatPreferenceActivity
 import com.ofalvai.bpinfo.util.FabricUtils
+import com.ofalvai.bpinfo.util.LocaleManager
 import javax.inject.Inject
 
 /**
@@ -54,6 +55,10 @@ import javax.inject.Inject
 class SettingsActivity : AppCompatPreferenceActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
 
     @Inject lateinit internal var mSharedPreferences: SharedPreferences
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(LocaleManager.setLocale(newBase))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -142,6 +147,7 @@ class SettingsActivity : AppCompatPreferenceActivity(), SharedPreferences.OnShar
      */
     private fun setupActionBar() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setTitle(R.string.title_activity_settings)
     }
 
     private fun showLanguageRestartDialog() {

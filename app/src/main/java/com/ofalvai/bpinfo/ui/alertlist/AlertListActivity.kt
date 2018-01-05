@@ -19,13 +19,13 @@ package com.ofalvai.bpinfo.ui.alertlist
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.view.ViewPager
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.ui.alertlist.adapter.AlertListPagerAdapter
+import com.ofalvai.bpinfo.ui.base.BaseActivity
 import kotterknife.bindView
 
-class AlertListActivity : AppCompatActivity() {
+class AlertListActivity : BaseActivity() {
 
     private val viewPager: ViewPager by bindView(R.id.alert_list_pager)
 

@@ -10,6 +10,7 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.ui.alertlist.AlertListActivity
+import com.ofalvai.bpinfo.util.LocaleManager
 import timber.log.Timber
 import java.util.*
 
@@ -21,6 +22,11 @@ const val REQUEST_CODE = 0
 const val NOTIF_CHANNEL_ID_ALERTS = "channel_alerts"
 
 class AlertMessagingService : FirebaseMessagingService() {
+
+    override fun attachBaseContext(base: Context) {
+        // Updating locale
+        super.attachBaseContext(LocaleManager.setLocale(base))
+    }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage?) {
         if (remoteMessage == null) return

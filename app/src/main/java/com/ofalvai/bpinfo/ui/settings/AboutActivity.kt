@@ -19,14 +19,14 @@ package com.ofalvai.bpinfo.ui.settings
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.widget.TextView
 import com.ofalvai.bpinfo.Config
 import com.ofalvai.bpinfo.R
+import com.ofalvai.bpinfo.ui.base.BaseActivity
 import com.ofalvai.bpinfo.util.underline
 import kotterknife.bindView
 
-class AboutActivity : AppCompatActivity() {
+class AboutActivity : BaseActivity() {
 
     private val licensesView: TextView by bindView(R.id.about_licenses)
 

@@ -32,13 +32,12 @@ import com.ofalvai.bpinfo.injection.AppComponent
 import com.ofalvai.bpinfo.injection.AppModule
 import com.ofalvai.bpinfo.injection.DaggerAppComponent
 import com.ofalvai.bpinfo.notifications.NOTIF_CHANNEL_ID_ALERTS
+import com.ofalvai.bpinfo.util.LocaleManager
 import com.squareup.leakcanary.LeakCanary
 import com.squareup.leakcanary.RefWatcher
 import io.fabric.sdk.android.Fabric
 import net.danlew.android.joda.JodaTimeAndroid
 import timber.log.Timber
-import java.util.*
-import javax.inject.Inject
 
 class BpInfoApplication : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -50,14 +49,11 @@ class BpInfoApplication : Application(), SharedPreferences.OnSharedPreferenceCha
         @JvmStatic
         fun getRefWatcher(context: Context): RefWatcher {
             val application = context.applicationContext as BpInfoApplication
-            return application.mRefWatcher
+            return application.refWatcher
         }
     }
 
-    @Inject
-    lateinit var mSharedPreferences: SharedPreferences
-
-    private lateinit var mRefWatcher: RefWatcher
+    private lateinit var refWatcher: RefWatcher
 
     override fun onCreate() {
         super.onCreate()
@@ -67,7 +63,7 @@ class BpInfoApplication : Application(), SharedPreferences.OnSharedPreferenceCha
             // You should not init your app in this process.
             return
         }
-        mRefWatcher = LeakCanary.install(this)
+        refWatcher = LeakCanary.install(this)
 
         PreferenceManager.getDefaultSharedPreferences(this)
                 .registerOnSharedPreferenceChangeListener(this)
@@ -78,8 +74,6 @@ class BpInfoApplication : Application(), SharedPreferences.OnSharedPreferenceCha
 
         injector.inject(this) // Oh the irony...
 
-        setLanguage()
-
         JodaTimeAndroid.init(this)
 
         Fabric.with(this, Crashlytics(), Answers())
@@ -89,14 +83,19 @@ class BpInfoApplication : Application(), SharedPreferences.OnSharedPreferenceCha
         createNotificationChannels()
     }
 
+    override fun attachBaseContext(base: Context) {
+        // Updating locale
+        super.attachBaseContext(LocaleManager.setLocale(base))
+    }
+
     /**
-     * This handles orientation and other configuration changes. Without this, a screen rotation
-     * would reset the language previously set in Application.onCreate() above.
+     * Without this, a screen rotation would reset the language previously set
+     * in Application.onCreate() above.
      */
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
 
-        setLanguage()
+        LocaleManager.setLocale(this)
     }
 
     /**
@@ -109,30 +108,6 @@ class BpInfoApplication : Application(), SharedPreferences.OnSharedPreferenceCha
         if (key == dataSourceKey) {
             initDagger()
         }
-    }
-
-    /**
-     * Sets the application language (and locale) to the value saved in preferences.
-     * If nothing is set, or set to "auto", it won't update the configuration.
-     */
-    private fun setLanguage() {
-        val languagePreference = mSharedPreferences.getString(
-                getString(R.string.pref_key_language),
-                getString(R.string.pref_key_language_auto)
-        )
-
-        if (languagePreference == getString(R.string.pref_key_language_auto)) {
-            // Language is "auto". This is either because the preference is missing,
-            // or because it has been set to "auto"
-            return
-        }
-
-        val newLocale = Locale(languagePreference)
-        Locale.setDefault(newLocale)
-        val config = Configuration()
-        config.locale = newLocale
-
-        resources.updateConfiguration(config, null)
     }
 
     private fun initDagger() {
