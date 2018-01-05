@@ -257,7 +257,10 @@ fun openCustomTab(activity: Activity, url: Uri) {
     if (packageName == null) {
         val intent = Intent(Intent.ACTION_VIEW)
         intent.data = url
-        activity.startActivity(intent)
+
+        if (intent.resolveActivity(activity.packageManager!!) != null) {
+            activity.startActivity(intent)
+        }
     } else {
         val color = ContextCompat.getColor(activity, R.color.colorPrimary)
         val customTabsIntent = CustomTabsIntent.Builder()
