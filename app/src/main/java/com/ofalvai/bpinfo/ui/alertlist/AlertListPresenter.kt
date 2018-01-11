@@ -18,6 +18,7 @@ package com.ofalvai.bpinfo.ui.alertlist
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.android.volley.NoConnectionError
 import com.android.volley.VolleyError
 import com.crashlytics.android.Crashlytics
 import com.ofalvai.bpinfo.BpInfoApplication
@@ -39,6 +40,8 @@ import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
+
+
 class AlertListPresenter(private val alertListType: AlertListType)
     : BasePresenter<AlertListContract.View>(), NoticeClient.NoticeListener,
         AlertListContract.Presenter {
@@ -58,7 +61,7 @@ class AlertListPresenter(private val alertListType: AlertListType)
     /**
      * List of alerts returned by the client, before filtering by RouteTypes
      */
-    private var unfilteredAlerts: MutableList<Alert> = mutableListOf()
+    private var unfilteredAlerts: MutableList<Alert>? = null
 
     private var lastUpdate: DateTime? = null
 
@@ -88,6 +91,9 @@ class AlertListPresenter(private val alertListType: AlertListType)
     override fun fetchAlertList() {
         if (context.hasNetworkConnection()) {
             alertApiClient.fetchAlertList(alertRequestParams)
+        } else if (unfilteredAlerts == null) {
+            // Nothing was displayed previously, showing a full error view
+            view?.displayNetworkError(NoConnectionError())
         } else {
             // A list was loaded previously, we don't clear that, only display a warning.
             view?.displayNoNetworkWarning()
@@ -99,8 +105,12 @@ class AlertListPresenter(private val alertListType: AlertListType)
      * otherwise calls fetchAlertList() to get data from the API.
      */
     override fun getAlertList() {
-        val processedAlerts = filterAndSort(activeFilter, unfilteredAlerts, alertListType)
-        view?.displayAlerts(processedAlerts)
+        if (unfilteredAlerts != null) {
+            val processedAlerts = filterAndSort(activeFilter, unfilteredAlerts!!, alertListType)
+            view?.displayAlerts(processedAlerts)
+        } else {
+            fetchAlertList()
+        }
     }
 
     override fun fetchAlert(alertId: String) {
@@ -169,13 +179,13 @@ class AlertListPresenter(private val alertListType: AlertListType)
             unfilteredAlerts = message.futureAlerts.toMutableList()
         }
 
-        val processedAlerts = filterAndSort(activeFilter, unfilteredAlerts, alertListType)
+        val processedAlerts = filterAndSort(activeFilter, unfilteredAlerts!!, alertListType)
         view?.displayAlerts(processedAlerts)
     }
 
     @Subscribe
     fun onAlertListErrorEvent(message: AlertListErrorMessage) {
-        unfilteredAlerts.clear()
+        unfilteredAlerts?.clear()
 
         val ex = message.exception
         Timber.e(ex.toString())
