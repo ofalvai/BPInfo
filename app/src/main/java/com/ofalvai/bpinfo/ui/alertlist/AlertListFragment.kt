@@ -24,7 +24,6 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.util.ListUpdateCallback
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.text.Html
 import android.view.*
 import android.widget.Button
@@ -42,7 +41,6 @@ import com.ofalvai.bpinfo.ui.alertlist.dialog.NoticeFragment
 import com.ofalvai.bpinfo.ui.settings.SettingsActivity
 import com.ofalvai.bpinfo.util.*
 import kotterknife.bindView
-import timber.log.Timber
 import java.util.*
 
 class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragment.AlertFilterListener {
@@ -308,20 +306,6 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
         alertRecyclerView.addItemDecoration(decoration)
 
         alertRecyclerView.setEmptyView(emptyView)
-
-        // Fixing overscroll effect at the bottom of the list. If a SwipeRefreshLayout is the parent
-        // of the RecyclerView, we need to disable that when the user scrolls down.
-        alertRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                try {
-                    val firstVisiblePosition = layoutManager.findFirstVisibleItemPosition()
-                    refreshLayout.isEnabled = firstVisiblePosition == 0
-                } catch (e: Exception) {
-                    Timber.e(e)
-                }
-            }
-        })
     }
 
     private fun initRefresh() {
