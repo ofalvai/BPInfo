@@ -28,6 +28,7 @@ class LicensesActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_licenses)
+        setTitle(R.string.title_activity_licences)
 
         val webView = findViewById<WebView>(R.id.webview_licences)
         webView?.loadUrl("file:///android_asset/licenses.html")
