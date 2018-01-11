@@ -18,11 +18,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item
-        android:id="@+id/menu_item_notifications"
-        android:icon="@drawable/ic_notifications"
-        android:title="@string/menu_notifications_label"
-        app:showAsAction="ifRoom"/>
+    <!--<item-->
+        <!--android:id="@+id/menu_item_notifications"-->
+        <!--android:icon="@drawable/ic_notifications"-->
+        <!--android:title="@string/menu_notifications_label"-->
+        <!--app:showAsAction="ifstrinRoom"/>-->
 
     <item
         android:id="@+id/menu_item_filter_alerts"

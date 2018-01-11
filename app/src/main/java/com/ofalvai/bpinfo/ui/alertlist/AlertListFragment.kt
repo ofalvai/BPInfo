@@ -39,7 +39,6 @@ import com.ofalvai.bpinfo.ui.alert.AlertDetailFragment
 import com.ofalvai.bpinfo.ui.alertlist.adapter.AlertAdapter
 import com.ofalvai.bpinfo.ui.alertlist.dialog.AlertFilterFragment
 import com.ofalvai.bpinfo.ui.alertlist.dialog.NoticeFragment
-import com.ofalvai.bpinfo.ui.notifications.NotificationsActivity
 import com.ofalvai.bpinfo.ui.settings.SettingsActivity
 import com.ofalvai.bpinfo.util.*
 import kotterknife.bindView
@@ -154,7 +153,7 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
         when (item.itemId) {
             R.id.menu_item_filter_alerts -> displayFilterDialog()
             R.id.menu_item_settings -> startActivity(SettingsActivity.newIntent(context))
-            R.id.menu_item_notifications -> startActivity(NotificationsActivity.newIntent(context))
+//            R.id.menu_item_notifications -> startActivity(NotificationsActivity.newIntent(context))
         }
         return true
     }
