@@ -23,7 +23,6 @@ import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonArrayRequest
-import com.crashlytics.android.Crashlytics
 import com.ofalvai.bpinfo.Config
 import com.ofalvai.bpinfo.R
 import org.json.JSONArray
@@ -75,7 +74,6 @@ class NoticeClient
     override fun onErrorResponse(error: VolleyError) {
         // We don't display anything on the UI because this feature is meant to be silent
         Timber.e(error.toString())
-        Crashlytics.logException(error)
     }
 
     private fun onResponseCallback(response: JSONArray, listener: NoticeListener, languageCode: String) {
@@ -109,7 +107,6 @@ class NoticeClient
         } catch (ex: Exception) {
             // We don't display anything on the UI because this feature is meant to be silent
             Timber.e(ex.toString())
-            Crashlytics.logException(ex)
         }
     }
 }
