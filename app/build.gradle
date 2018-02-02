@@ -40,7 +40,7 @@ localConfig.load(new FileInputStream(project.file("localconfig.properties")))
 def appVersionCode = 13
 def appVersionName = "1.4.1"
 def supportLibVersion = "26.1.0"
-def firebaseVersion = "11.6.2"
+def firebaseVersion = "11.8.0"
 
 android {
     signingConfigs {
@@ -113,7 +113,7 @@ ribbonizer {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     compile "com.android.support:recyclerview-v7:$supportLibVersion"
     compile "com.android.support:design:$supportLibVersion"
     compile "com.android.support:customtabs:$supportLibVersion"
