@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package com.ofalvai.bpinfo.api
+package com.ofalvai.bpinfo.api.notice
 
 import android.content.Context
 import android.content.SharedPreferences

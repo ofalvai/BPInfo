@@ -23,10 +23,10 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.ofalvai.bpinfo.R;
 import com.ofalvai.bpinfo.api.AlertApiClient;
-import com.ofalvai.bpinfo.api.NoticeClient;
 import com.ofalvai.bpinfo.api.bkkfutar.FutarApiClient;
 import com.ofalvai.bpinfo.api.bkkinfo.BkkInfoClient;
 import com.ofalvai.bpinfo.api.bkkinfo.RouteListClient;
+import com.ofalvai.bpinfo.api.notice.NoticeClient;
 
 import javax.inject.Singleton;
 

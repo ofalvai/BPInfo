@@ -24,8 +24,12 @@ import com.crashlytics.android.Crashlytics
 import com.ofalvai.bpinfo.BpInfoApplication
 import com.ofalvai.bpinfo.Config
 import com.ofalvai.bpinfo.R
-import com.ofalvai.bpinfo.api.*
+import com.ofalvai.bpinfo.api.AlertApiClient
+import com.ofalvai.bpinfo.api.AlertListErrorMessage
+import com.ofalvai.bpinfo.api.AlertListMessage
+import com.ofalvai.bpinfo.api.AlertRequestParams
 import com.ofalvai.bpinfo.api.bkkfutar.AlertSearchContract
+import com.ofalvai.bpinfo.api.notice.NoticeClient
 import com.ofalvai.bpinfo.model.Alert
 import com.ofalvai.bpinfo.model.RouteType
 import com.ofalvai.bpinfo.ui.base.BasePresenter
@@ -39,7 +43,6 @@ import org.json.JSONException
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
-
 
 
 class AlertListPresenter(private val alertListType: AlertListType)
