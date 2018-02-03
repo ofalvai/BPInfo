@@ -5,8 +5,10 @@ import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.VolleyError
+import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
 import com.google.firebase.iid.FirebaseInstanceId
+import org.json.JSONArray
 import org.json.JSONObject
 import timber.log.Timber
 import javax.inject.Inject
@@ -16,7 +18,7 @@ class SubscriptionClient @Inject constructor(private val requestQueue: RequestQu
     interface Callback {
         fun onSubscriptionError(error: VolleyError)
         fun onPostSubscriptionResponse() // TODO: response object
-
+        fun onGetSubscriptionResponse(routeIDList: List<String>)
     }
 
     companion object {
@@ -48,6 +50,36 @@ class SubscriptionClient @Inject constructor(private val requestQueue: RequestQu
         )
 
         requestQueue.add(request)
+    }
+
+    fun getSubscriptions(callback: Callback) {
+        val url = Uri.parse(BASE_URL)
+            .buildUpon()
+            .appendPath("subscription")
+            .appendPath(token)
+            .toString()
+
+        val request = JsonArrayRequest(Request.Method.GET, url, null,
+            Response.Listener {
+                callback.onGetSubscriptionResponse(parseSubscriptionList(it))
+            },
+            Response.ErrorListener {
+                Timber.e(it.toString())
+                callback.onSubscriptionError(it)
+            }
+        )
+        requestQueue.add(request)
+    }
+
+    private fun parseSubscriptionList(array: JSONArray): List<String> {
+        val routeIDList = mutableListOf<String>()
+
+        if (array.length() == 0) return routeIDList
+
+        for (i in 0 until array.length()) {
+            routeIDList.add(array.getString(i))
+        }
+        return routeIDList
     }
 
 }

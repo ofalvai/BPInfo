@@ -51,9 +51,9 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
         presenter.attachView(this)
 
         presenter.fetchRouteList()
+        presenter.fetchSubscriptions()
 
         Timber.d("FCM token: " + FirebaseInstanceId.getInstance().token)
-        debugTextView.text = FirebaseInstanceId.getInstance().token
 
         setupViewPager()
     }
@@ -92,6 +92,10 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
 
     override fun onRouteClicked(route: Route) {
         presenter.subscribeTo(route.id)
+    }
+
+    override fun displaySubscriptions(routeIdList: List<String>) {
+        debugTextView.text = routeIdList.joinToString(separator = ", ")
     }
 
     private fun setupViewPager() {

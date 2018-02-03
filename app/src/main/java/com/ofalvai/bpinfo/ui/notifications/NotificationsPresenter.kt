@@ -36,11 +36,20 @@ class NotificationsPresenter : BasePresenter<NotificationsContract.View>(),
         subscriptionClient.postSubscription(routeID, this)
     }
 
+    override fun fetchSubscriptions() {
+        subscriptionClient.getSubscriptions(this)
+    }
+
     override fun onSubscriptionError(error: VolleyError) {
         Timber.e(error) // TODO
     }
 
     override fun onPostSubscriptionResponse() {
+        fetchSubscriptions()
+    }
 
+    override fun onGetSubscriptionResponse(routeIDList: List<String>) {
+        // TODO: map to Route objects based on fetched route list
+        view?.displaySubscriptions(routeIDList)
     }
 }
