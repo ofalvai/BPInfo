@@ -11,11 +11,13 @@ import android.widget.ProgressBar
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.model.Route
 import com.ofalvai.bpinfo.model.RouteType
+import com.ofalvai.bpinfo.ui.notifications.NotificationsContract
 import com.ofalvai.bpinfo.ui.notifications.routelist.adapter.RouteAdapter
+import com.ofalvai.bpinfo.ui.notifications.routelist.adapter.RouteClickListener
 import com.ofalvai.bpinfo.util.EmptyRecyclerView
 import kotterknife.bindView
 
-class RouteListFragment : Fragment(), RouteListContract.View {
+class RouteListFragment : Fragment(), RouteListContract.View, RouteClickListener {
 
     private lateinit var presenter: RouteListContract.Presenter
 
@@ -77,8 +79,12 @@ class RouteListFragment : Fragment(), RouteListContract.View {
         progressBar.visibility = View.GONE
     }
 
+    override fun onRouteClicked(route: Route) {
+        (activity as? NotificationsContract.View)?.onRouteClicked(route)
+    }
+
     private fun initRecyclerView() {
-        adapter = RouteAdapter(context)
+        adapter = RouteAdapter(context, this)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.setHasFixedSize(true)

@@ -90,6 +90,10 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
         }
     }
 
+    override fun onRouteClicked(route: Route) {
+        presenter.subscribeTo(route.id)
+    }
+
     private fun setupViewPager() {
         pagerAdapter = RouteListPagerAdapter(supportFragmentManager, this)
         viewPager.adapter = pagerAdapter

@@ -12,12 +12,14 @@ interface NotificationsContract {
          * List of all routes, before grouped by route type
          */
         fun displayRouteList(routeList: List<Route>)
+        fun onRouteClicked(route: Route)
 
     }
 
     interface Presenter : MvpPresenter<View> {
 
         fun fetchRouteList()
+        fun subscribeTo(routeID: String)
 
     }
 
