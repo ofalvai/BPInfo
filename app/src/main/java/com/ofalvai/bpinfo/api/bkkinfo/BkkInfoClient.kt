@@ -64,7 +64,7 @@ class BkkInfoClient
          */
         private const val TIMEOUT_MS = 5000
 
-        private const val API_BASE_URL = "https://bkk.hu/apps/bkkinfo/"
+        private const val API_BASE_URL = "http://bkk.hu/apps/bkkinfo/"
 
         private const val API_ENDPOINT_HU = "json.php"
 
