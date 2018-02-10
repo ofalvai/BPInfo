@@ -37,8 +37,8 @@ keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 def localConfig = new Properties()
 localConfig.load(new FileInputStream(project.file("localconfig.properties")))
 
-def appVersionCode = 13
-def appVersionName = "1.4.1"
+def appVersionCode = 14
+def appVersionName = "1.4.2"
 def supportLibVersion = "26.1.0"
 def firebaseVersion = "11.6.2"
 
