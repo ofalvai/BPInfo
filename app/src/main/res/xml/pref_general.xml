@@ -67,24 +67,6 @@
         </PreferenceScreen>
 
         <PreferenceScreen
-            android:title="@string/pref_title_send_bugreport_bkk"
-            android:summary="@string/pref_description_send_bugreport_bkk"
-            android:key="pref_key_send_bugreport_bkk">
-
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:data="@string/email_bkk_mailto">
-                <!--suppress AndroidElementNotAllowed -->
-                <extra android:name="android.intent.extra.TEXT"
-                       android:value="@string/email_bkk_body" />
-                <!--suppress AndroidElementNotAllowed -->
-                <extra android:name="android.intent.extra.SUBJECT"
-                       android:value="@string/email_bkk_subject" />
-            </intent>
-
-        </PreferenceScreen>
-
-        <PreferenceScreen
             android:title="@string/pref_title_rate"
             android:summary="@string/pref_description_rate"
             android:key="pref_key_rate">
