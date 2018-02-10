@@ -84,7 +84,7 @@
     <string name="pref_key_data_source_futar" translatable="false">bkk_futar</string>
     <string name="pref_key_data_source_bkk_info" translatable="false">bkk_info</string>
 
-    <string name="pref_key_data_source_default" translatable="false">@string/pref_key_data_source_bkk_info</string>
+    <string name="pref_key_data_source_default" translatable="false">@string/pref_key_data_source_futar</string>
 
     <string-array name="pref_data_source_list_titles">
         <item>@string/pref_data_source_futar</item>
@@ -95,6 +95,8 @@
         <item>@string/pref_key_data_source_futar</item>
         <item>@string/pref_key_data_source_bkk_info</item>
     </string-array>
+
+    <string name="pref_key_data_source_override_version_code" translatable="false">data_source_override_version_code</string>
 
 
     <string name="menu_settings">Settings</string>

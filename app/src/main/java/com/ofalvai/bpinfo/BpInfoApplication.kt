@@ -16,6 +16,7 @@
 
 package com.ofalvai.bpinfo
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -38,6 +39,7 @@ import com.squareup.leakcanary.RefWatcher
 import io.fabric.sdk.android.Fabric
 import net.danlew.android.joda.JodaTimeAndroid
 import timber.log.Timber
+import javax.inject.Inject
 
 class BpInfoApplication : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -55,6 +57,9 @@ class BpInfoApplication : Application(), SharedPreferences.OnSharedPreferenceCha
 
     private lateinit var refWatcher: RefWatcher
 
+    @Inject
+    lateinit var sharedPreferences: SharedPreferences
+
     override fun onCreate() {
         super.onCreate()
 
@@ -66,12 +71,11 @@ class BpInfoApplication : Application(), SharedPreferences.OnSharedPreferenceCha
         refWatcher = LeakCanary.install(this)
 
         PreferenceManager.getDefaultSharedPreferences(this)
-                .registerOnSharedPreferenceChangeListener(this)
+            .registerOnSharedPreferenceChangeListener(this)
 
         initStrictMode()
 
         initDagger()
-
         injector.inject(this) // Oh the irony...
 
         JodaTimeAndroid.init(this)
@@ -81,6 +85,8 @@ class BpInfoApplication : Application(), SharedPreferences.OnSharedPreferenceCha
         initTimber()
 
         createNotificationChannels()
+
+        overrideSettingsIfNeeded()
     }
 
     override fun attachBaseContext(base: Context) {
@@ -112,26 +118,30 @@ class BpInfoApplication : Application(), SharedPreferences.OnSharedPreferenceCha
 
     private fun initDagger() {
         injector = DaggerAppComponent.builder()
-                .appModule(AppModule(this))
-                .apiModule(ApiModule()) //depends on selected build flavor (prod/mock)
-                .build()
+            .appModule(AppModule(this))
+            .apiModule(ApiModule()) //depends on selected build flavor (prod/mock)
+            .build()
     }
 
     private fun initStrictMode() {
         if (BuildConfig.DEBUG) {
-            StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder()
+            StrictMode.setThreadPolicy(
+                StrictMode.ThreadPolicy.Builder()
                     .detectAll()
                     .penaltyFlashScreen()
                     .penaltyLog()
-                    .build())
+                    .build()
+            )
 
-            StrictMode.setVmPolicy(StrictMode.VmPolicy.Builder()
+            StrictMode.setVmPolicy(
+                StrictMode.VmPolicy.Builder()
                     //.detectLeakedSqlLiteObjects()
                     //.detectLeakedClosableObjects()
                     .detectActivityLeaks()
                     .detectLeakedRegistrationObjects()
                     .penaltyLog()
-                    .build())
+                    .build()
+            )
         }
     }
 
@@ -146,16 +156,40 @@ class BpInfoApplication : Application(), SharedPreferences.OnSharedPreferenceCha
             return
         }
 
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         val name = getString(R.string.notif_channel_alerts_title)
         val description = getString(R.string.notif_channel_alerts_desc)
         val channel = NotificationChannel(
-                NOTIF_CHANNEL_ID_ALERTS,
-                name,
-                NotificationManager.IMPORTANCE_DEFAULT
+            NOTIF_CHANNEL_ID_ALERTS,
+            name,
+            NotificationManager.IMPORTANCE_DEFAULT
         )
         channel.description = description
         notificationManager.createNotificationChannel(channel)
+    }
+
+    @SuppressLint("ApplySharedPref")
+    private fun overrideSettingsIfNeeded() {
+        val lastOverrideVersionCode = sharedPreferences.getInt(
+            getString(R.string.pref_key_data_source_override_version_code),
+            0
+        )
+
+        if (BuildConfig.VERSION_CODE > lastOverrideVersionCode) {
+            // Override current user preference with the current default value,
+            // then store the version code of this version
+            sharedPreferences.edit()
+                .putString(
+                    getString(R.string.pref_key_data_source),
+                    getString(R.string.pref_key_data_source_default)
+                )
+                .putInt(
+                    getString(R.string.pref_key_data_source_override_version_code),
+                    BuildConfig.VERSION_CODE
+                )
+                .commit()
+        }
     }
 }
