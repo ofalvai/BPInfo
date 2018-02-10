@@ -88,7 +88,7 @@ fun JSONObject.toArray(): JSONArray {
 fun VolleyError.toStringRes() = when (this) {
     is NoConnectionError -> R.string.error_no_connection
     is NetworkError -> R.string.error_network
-    is TimeoutError -> R.string.error_network
+    is TimeoutError -> R.string.error_no_connection
     is ServerError -> R.string.error_response
     else -> R.string.error_communication
 }

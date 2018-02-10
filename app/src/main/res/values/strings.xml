@@ -17,12 +17,12 @@
 <resources>
     <string name="app_name">BPInfo</string>
     <string name="error_list_display">Unable to display traffic info</string>
-    <string name="error_response">Incorrect response received from server</string>
+    <string name="error_response">Incorrect data received from server</string>
     <plurals name="actionbar_subtitle_alert_count">
         <item quantity="one">%d traffic change</item>
         <item quantity="other">%d traffic changes</item>
     </plurals>
-    <string name="error_no_connection">No network connection</string>
+    <string name="error_no_connection">Server is unreachable</string>
     <string name="error_network">Network error</string>
     <string name="error_communication">Communication error</string>
     <string name="label_retry">Retry</string>
