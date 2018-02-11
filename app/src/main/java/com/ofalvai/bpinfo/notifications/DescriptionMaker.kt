@@ -47,15 +47,17 @@ class DescriptionMaker {
             }
         }
 
-        private fun getLocalizedRouteType(context: Context, routeType: String): String = when (routeType) {
-            DATA_KEY_ROUTE_BUS -> context.getString(R.string.route_bus)
-            DATA_KEY_ROUTE_FERRY -> context.getString(R.string.route_ferry)
-            DATA_KEY_ROUTE_RAIL -> context.getString(R.string.route_rail)
-            DATA_KEY_ROUTE_TRAM -> context.getString(R.string.route_tram)
-            DATA_KEY_ROUTE_TROLLEYBUS -> context.getString(R.string.route_trolleybus)
-            DATA_KEY_ROUTE_SUBWAY -> context.getString(R.string.route_subway)
-            DATA_KEY_ROUTE_OTHER -> context.getString(R.string.route_other)
-            else -> context.getString(R.string.route_other)
+        private fun getLocalizedRouteType(context: Context, routeType: String): String {
+            return when (routeType) {
+                DATA_KEY_ROUTE_BUS -> context.getString(R.string.route_bus)
+                DATA_KEY_ROUTE_FERRY -> context.getString(R.string.route_ferry)
+                DATA_KEY_ROUTE_RAIL -> context.getString(R.string.route_rail)
+                DATA_KEY_ROUTE_TRAM -> context.getString(R.string.route_tram)
+                DATA_KEY_ROUTE_TROLLEYBUS -> context.getString(R.string.route_trolleybus)
+                DATA_KEY_ROUTE_SUBWAY -> context.getString(R.string.route_subway)
+                DATA_KEY_ROUTE_OTHER -> context.getString(R.string.route_other)
+                else -> context.getString(R.string.route_other)
+            }.decapitalize()
         }
 
         private fun makeRouteLineHu(routeData: String?, context: Context, routeType: String): String {
