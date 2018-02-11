@@ -16,6 +16,9 @@ class NotificationsPresenter : BasePresenter<NotificationsContract.View>(),
     @Inject lateinit var routeListClient: RouteListClient
     @Inject lateinit var subscriptionClient: SubscriptionClient
 
+    private var routeListResponse: List<Route>? = null
+    private var subscribedRouteIDListResponse: List<String>? = null
+
     init {
         BpInfoApplication.injector.inject(this)
     }
@@ -25,7 +28,12 @@ class NotificationsPresenter : BasePresenter<NotificationsContract.View>(),
     }
 
     override fun onRouteListResponse(routeList: List<Route>) {
+        routeListResponse = routeList
         view?.displayRouteList(routeList)
+
+        subscribedRouteIDListResponse?.let {
+            displaySubscribedRoutes(it, routeList)
+        }
     }
 
     override fun onRouteListError(ex: Exception) {
@@ -49,7 +57,19 @@ class NotificationsPresenter : BasePresenter<NotificationsContract.View>(),
     }
 
     override fun onGetSubscriptionResponse(routeIDList: List<String>) {
-        // TODO: map to Route objects based on fetched route list
-        view?.displaySubscriptions(routeIDList)
+        subscribedRouteIDListResponse = routeIDList
+
+        routeListResponse?.let {
+            displaySubscribedRoutes(routeIDList, it)
+        }
+    }
+
+    /**
+     * Calls the View with the full Route objects when both the subscribed route IDs and
+     * the list of all Route objects are available
+     */
+    private fun displaySubscribedRoutes(routeIDList: List<String>, allRoutes: List<Route>) {
+        val routes: List<Route> = allRoutes.filter { routeIDList.contains(it.id) }
+        view?.displaySubscriptions(routes)
     }
 }

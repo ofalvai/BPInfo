@@ -13,7 +13,7 @@ interface NotificationsContract {
          */
         fun displayRouteList(routeList: List<Route>)
         fun onRouteClicked(route: Route)
-        fun displaySubscriptions(routeIdList: List<String>)
+        fun displaySubscriptions(routeList: List<Route>)
 
     }
 

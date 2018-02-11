@@ -94,8 +94,10 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
         presenter.subscribeTo(route.id)
     }
 
-    override fun displaySubscriptions(routeIdList: List<String>) {
-        debugTextView.text = routeIdList.joinToString(separator = ", ")
+    override fun displaySubscriptions(routeList: List<Route>) {
+        debugTextView.text = routeList
+            .map { it.shortName }
+            .joinToString(separator = ", ")
     }
 
     private fun setupViewPager() {
