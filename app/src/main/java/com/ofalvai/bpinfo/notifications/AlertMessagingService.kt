@@ -60,19 +60,27 @@ class AlertMessagingService : FirebaseMessagingService() {
     private fun createNotification(id: String, title: String, text: String) {
         val intent = Intent(this, AlertListActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        val pendingIntent = PendingIntent.getActivity(this, REQUEST_CODE, intent, PendingIntent.FLAG_ONE_SHOT)
+        val pendingIntent =
+            PendingIntent.getActivity(this, REQUEST_CODE, intent, PendingIntent.FLAG_ONE_SHOT)
+
+        val bigTextStyle = NotificationCompat.BigTextStyle().apply {
+            setBigContentTitle(title)
+            bigText(text)
+        }
 
         val notificationBuilder = NotificationCompat.Builder(this, NOTIF_CHANNEL_ID_ALERTS)
-                .setSmallIcon(R.drawable.ic_notification_default)
-                .setContentTitle(title)
-                .setContentText(text)
-                .setAutoCancel(true)
-                .setContentIntent(pendingIntent)
-                .setColor(ContextCompat.getColor(baseContext, R.color.colorPrimary))
-                .setShowWhen(true)
-                .setWhen(Date().time)
+            .setSmallIcon(R.drawable.ic_notification_default)
+            .setContentTitle(title)
+            .setContentText(text)
+            .setStyle(bigTextStyle)
+            .setAutoCancel(true)
+            .setContentIntent(pendingIntent)
+            .setColor(ContextCompat.getColor(baseContext, R.color.colorPrimary))
+            .setShowWhen(true)
+            .setWhen(Date().time)
 
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notificationId = parseAlertNumericalId(id)
         notificationManager.notify(notificationId, notificationBuilder.build())
     }
