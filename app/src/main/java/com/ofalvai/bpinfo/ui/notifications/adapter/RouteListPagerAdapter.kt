@@ -3,7 +3,7 @@ package com.ofalvai.bpinfo.ui.notifications.adapter
 import android.content.Context
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentStatePagerAdapter
+import android.support.v4.app.FragmentPagerAdapter
 import android.util.SparseArray
 import android.view.ViewGroup
 import com.ofalvai.bpinfo.R
@@ -13,27 +13,31 @@ import com.ofalvai.bpinfo.ui.notifications.routelist.RouteListFragment
 
 class RouteListPagerAdapter(fm: FragmentManager,
                             private val context: Context
-) : FragmentStatePagerAdapter(fm) {
-
-    // TODO: exctract position-fragment-title association
+) : FragmentPagerAdapter(fm) {
 
     private val registeredFragments = SparseArray<Fragment>()
 
     companion object {
-        const val FRAGMENT_COUNT = 7
+        private const val FRAGMENT_COUNT = 7
+
+        /**
+         * In this case, it's better to load these few tabs at once, rather than creating and
+         * destroying them during swiping
+         */
+        const val OFFSCREEN_PAGE_LIMIT = 99
     }
 
     fun getView(routeType: RouteType): RouteListContract.View? {
         return when(routeType) {
-            RouteType.BUS -> registeredFragments[0] as RouteListContract.View
-            RouteType.SUBWAY -> registeredFragments[1] as RouteListContract.View
-            RouteType.TRAM -> registeredFragments[2] as RouteListContract.View
-            RouteType.TROLLEYBUS -> registeredFragments[3] as RouteListContract.View
-            RouteType.RAIL -> registeredFragments[4] as RouteListContract.View
-            RouteType.FERRY -> registeredFragments[5] as RouteListContract.View
-            RouteType._OTHER_ -> registeredFragments[6] as RouteListContract.View
+            RouteType.BUS -> registeredFragments[0]
+            RouteType.SUBWAY -> registeredFragments[1]
+            RouteType.TRAM -> registeredFragments[2]
+            RouteType.TROLLEYBUS -> registeredFragments[3]
+            RouteType.RAIL -> registeredFragments[4]
+            RouteType.FERRY -> registeredFragments[5]
+            RouteType._OTHER_ -> registeredFragments[6]
             else -> null
-        }
+        } as? RouteListContract.View
     }
 
     override fun getItem(position: Int): Fragment {

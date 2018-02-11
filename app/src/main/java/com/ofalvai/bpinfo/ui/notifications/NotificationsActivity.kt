@@ -101,7 +101,7 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
     private fun setupViewPager() {
         pagerAdapter = RouteListPagerAdapter(supportFragmentManager, this)
         viewPager.adapter = pagerAdapter
-        viewPager.offscreenPageLimit = 99 // TODO
+        viewPager.offscreenPageLimit = RouteListPagerAdapter.OFFSCREEN_PAGE_LIMIT
         tabLayout.setupWithViewPager(viewPager, false)
     }
 }
