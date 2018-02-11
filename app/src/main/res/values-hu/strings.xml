@@ -46,6 +46,12 @@
     <string name="route_subway">Metró</string>
     <string name="route_tram">Villamos</string>
     <string name="route_trolleybus">Trolibusz</string>
+    <string name="route_bus_alt">busz</string>
+    <string name="route_ferry_alt">hajó</string>
+    <string name="route_rail_alt">HÉV</string>
+    <string name="route_subway_alt">metró</string>
+    <string name="route_tram_alt">villamos</string>
+    <string name="route_trolleybus_alt">trolibusz</string>
     <string name="filter_message">Szűrés: %1$s</string>
     <string name="route_other">Egyéb</string>
     <string name="menu_settings">Beállítások</string>

@@ -54,6 +54,12 @@
     <string name="route_trolleybus">Trolleybus</string>
     <string name="route_subway">Subway</string>
     <string name="route_rail">HÉV (Suburban rail)</string>
+    <string name="route_bus_alt">bus</string>
+    <string name="route_tram_alt">tram</string>
+    <string name="route_ferry_alt">ferry</string>
+    <string name="route_trolleybus_alt">trolleybus</string>
+    <string name="route_subway_alt">Subway</string>
+    <string name="route_rail_alt">HÉV</string>
     <string name="filter_message">Filtering: %1$s</string>
     <string name="route_other">Other</string>
     <string name="title_activity_settings">Settings</string>
