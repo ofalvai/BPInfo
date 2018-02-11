@@ -19,7 +19,7 @@ class RouteListClient(private val requestQueue: RequestQueue) {
 
     companion object {
 
-        const val URL = "https://bkk.hu/apps/bkkinfo/json.php?jlista"
+        const val URL = "https://bpinfo-backend.herokuapp.com/api/v1/routes"
 
         const val ROUTE_ID_UNKNOWN = "UNKNOWN"
 
