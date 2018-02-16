@@ -8,7 +8,6 @@ import android.support.v4.app.NavUtils
 import android.support.v4.view.ViewPager
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.TextView
 import com.google.firebase.iid.FirebaseInstanceId
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.model.Route
@@ -16,6 +15,8 @@ import com.ofalvai.bpinfo.model.RouteType
 import com.ofalvai.bpinfo.ui.base.BaseActivity
 import com.ofalvai.bpinfo.ui.notifications.adapter.RouteListPagerAdapter
 import com.ofalvai.bpinfo.ui.settings.SettingsActivity
+import com.ofalvai.bpinfo.util.addRouteIcon
+import com.wefika.flowlayout.FlowLayout
 import kotterknife.bindView
 import timber.log.Timber
 
@@ -27,7 +28,7 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
 
     private val viewPager: ViewPager by bindView(R.id.notifications__viewpager)
 
-    private val debugTextView: TextView by bindView(R.id.notifications__debug_text)
+    private val subscribedRoutesLayout: FlowLayout by bindView(R.id.notifications__subscribed_routes)
 
     private lateinit var pagerAdapter: RouteListPagerAdapter
 
@@ -95,9 +96,10 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
     }
 
     override fun displaySubscriptions(routeList: List<Route>) {
-        debugTextView.text = routeList
-            .map { it.shortName }
-            .joinToString(separator = ", ")
+        subscribedRoutesLayout.removeAllViews()
+        for (route in routeList) {
+            addRouteIcon(this, subscribedRoutesLayout, route)
+        }
     }
 
     private fun setupViewPager() {

@@ -104,5 +104,6 @@
     <string name="title_activity_notifications">Értesítések</string>
     <string name="notif_channel_alerts_title">Forgalmi változások</string>
     <string name="notif_channel_alerts_desc">Értesítés a kiválasztott járatokról</string>
+    <string name="notif_watched_routes_label">Watched routes</string>
 
 </resources>

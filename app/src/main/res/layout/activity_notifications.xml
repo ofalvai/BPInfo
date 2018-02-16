@@ -5,25 +5,59 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorNoticeBackground"
     android:orientation="vertical"
     tools:context="com.ofalvai.bpinfo.ui.notifications.NotificationsActivity">
 
     <TextView
-        android:id="@+id/notifications__debug_text"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:background="@android:color/darker_gray"
-        android:textIsSelectable="true"/>
+        android:layout_height="wrap_content"
+        android:paddingBottom="4dp"
+        android:paddingEnd="@dimen/activity_horizontal_margin"
+        android:paddingStart="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:text="@string/notif_watched_routes_label"
+        android:textColor="@color/colorPrimaryText"
+        android:textSize="16sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:background="@color/colorNoticeBorder" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="100dp">
+
+        <com.wefika.flowlayout.FlowLayout
+            android:id="@+id/notifications__subscribed_routes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:paddingBottom="16dp"
+            android:paddingTop="8dp" />
+
+    </ScrollView>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorNoticeBorder" />
 
     <android.support.design.widget.TabLayout
         android:id="@+id/notifications__tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tabMode="scrollable"/>
+        android:background="@color/colorBackground"
+        app:tabMode="scrollable" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/notifications__viewpager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:background="@color/colorBackground" />
 
 </LinearLayout>
