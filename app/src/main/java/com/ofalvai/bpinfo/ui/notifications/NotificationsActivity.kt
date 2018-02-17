@@ -1,13 +1,22 @@
 package com.ofalvai.bpinfo.ui.notifications
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.LightingColorFilter
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.NavUtils
+import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
+import android.support.v7.app.AlertDialog
+import android.support.v7.view.ContextThemeWrapper
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
 import com.google.firebase.iid.FirebaseInstanceId
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.model.Route
@@ -15,7 +24,7 @@ import com.ofalvai.bpinfo.model.RouteType
 import com.ofalvai.bpinfo.ui.base.BaseActivity
 import com.ofalvai.bpinfo.ui.notifications.adapter.RouteListPagerAdapter
 import com.ofalvai.bpinfo.ui.settings.SettingsActivity
-import com.ofalvai.bpinfo.util.addRouteIcon
+import com.ofalvai.bpinfo.util.getContentDescription
 import com.wefika.flowlayout.FlowLayout
 import kotterknife.bindView
 import timber.log.Timber
@@ -91,6 +100,14 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
         }
     }
 
+    override fun addSubscribedRoute(route: Route) {
+        addSubscribedRouteIcon(route)
+    }
+
+    override fun removeSubscribedRoute(route: Route) {
+        removeSubscribedRouteIcon(route)
+    }
+
     override fun onRouteClicked(route: Route) {
         presenter.subscribeTo(route.id)
     }
@@ -98,9 +115,7 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
     override fun displaySubscriptions(routeList: List<Route>) {
         subscribedRoutesLayout.removeAllViews()
         for (route in routeList) {
-            val view = addRouteIcon(this, subscribedRoutesLayout, route)
-
-            view.setOnClickListener { presenter.removeSubscription(route.id) }
+            addSubscribedRouteIcon(route)
         }
     }
 
@@ -109,5 +124,56 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
         viewPager.adapter = pagerAdapter
         viewPager.offscreenPageLimit = RouteListPagerAdapter.OFFSCREEN_PAGE_LIMIT
         tabLayout.setupWithViewPager(viewPager, false)
+    }
+
+    @SuppressLint("RestrictedApi")
+    private fun addSubscribedRouteIcon(route: Route) {
+        val iconContextTheme = ContextThemeWrapper(this, R.style.RouteIcon)
+        val iconView = TextView(iconContextTheme)
+
+        iconView.text = route.shortName
+        iconView.setTextColor(route.textColor)
+        iconView.contentDescription = route.getContentDescription(this)
+        iconView.tag = route.id
+        subscribedRoutesLayout.addView(iconView)
+
+        // Layout attributes defined in R.style.RouteIcon were ignored before attaching the view to
+        // a parent, so we need to manually set them
+        val params = iconView.layoutParams as ViewGroup.MarginLayoutParams
+        params.width = ViewGroup.LayoutParams.WRAP_CONTENT
+        val margin = resources.getDimension(R.dimen.route_icon_margin).toInt()
+        params.rightMargin = margin
+        params.topMargin = margin
+
+        // Setting a custom colored rounded background drawable as background
+        val iconBackground = ContextCompat.getDrawable(this, R.drawable.rounded_corner_5dp)
+        if (iconBackground != null) {
+            val colorFilter = LightingColorFilter(Color.rgb(1, 1, 1), route.color)
+            iconBackground.mutate().colorFilter = colorFilter
+            iconView.background = iconBackground
+        }
+
+        iconView.setOnClickListener { showDeleteDialog(route) }
+    }
+
+    private fun removeSubscribedRouteIcon(route: Route) {
+        for (i in 0 until subscribedRoutesLayout.childCount) {
+            val view: View? = subscribedRoutesLayout.getChildAt(i)
+            if (view?.tag == route.id) {
+                subscribedRoutesLayout.removeView(view)
+            }
+        }
+    }
+
+    private fun showDeleteDialog(route: Route) {
+        AlertDialog.Builder(this)
+            .setTitle(route.shortName) // TODO: localized long name
+            .setMessage(R.string.notif_remove_dialog_message)
+            .setPositiveButton(R.string.notif_remove_dialog_positive) { dialog, _ ->
+                dialog.dismiss()
+                presenter.removeSubscription(route.id)
+            }
+            .setNegativeButton(android.R.string.cancel) { dialog, _ -> dialog.dismiss() }
+            .show()
     }
 }

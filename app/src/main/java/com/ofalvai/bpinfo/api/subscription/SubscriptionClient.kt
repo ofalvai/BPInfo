@@ -8,6 +8,7 @@ import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
 import com.google.firebase.iid.FirebaseInstanceId
+import com.ofalvai.bpinfo.model.RouteSubscription
 import org.json.JSONArray
 import org.json.JSONObject
 import timber.log.Timber
@@ -17,14 +18,17 @@ class SubscriptionClient @Inject constructor(private val requestQueue: RequestQu
 
     interface Callback {
         fun onSubscriptionError(error: VolleyError)
-        fun onPostSubscriptionResponse() // TODO: response object
+        fun onPostSubscriptionResponse(subscription: RouteSubscription)
         fun onGetSubscriptionResponse(routeIDList: List<String>)
-        fun onDeleteSubscriptionResponse() // TODO: response object
+        fun onDeleteSubscriptionResponse(subscription: RouteSubscription)
     }
 
     companion object {
         const val BASE_URL = "https://bpinfo-backend.herokuapp.com/api/v1/"
         const val SUBSCRIPTION_URL = BASE_URL + "subscription"
+
+        const val SUBSCRIPTION_KEY_ROUTE_ID = "routeId"
+        const val SUBSCRIPTION_KEY_TOKEN = "token"
     }
 
     private val token get() = FirebaseInstanceId.getInstance().token
@@ -39,8 +43,8 @@ class SubscriptionClient @Inject constructor(private val requestQueue: RequestQu
 
         val request = JsonObjectRequest(Request.Method.POST, url, body,
             Response.Listener {
-                Timber.d(it.toString())
-                callback.onPostSubscriptionResponse()
+                val subscription = parseSubscription(it)
+                callback.onPostSubscriptionResponse(subscription)
             },
             Response.ErrorListener {
                 Timber.e(it.toString())
@@ -78,7 +82,8 @@ class SubscriptionClient @Inject constructor(private val requestQueue: RequestQu
 
         val request = JsonObjectRequest(Request.Method.DELETE, url, null,
             Response.Listener {
-                callback.onDeleteSubscriptionResponse()
+                val subscription = parseSubscription(it)
+                callback.onDeleteSubscriptionResponse(subscription)
             },
             Response.ErrorListener {
                 Timber.e(it.toString())
@@ -97,6 +102,12 @@ class SubscriptionClient @Inject constructor(private val requestQueue: RequestQu
             routeIDList.add(array.getString(i))
         }
         return routeIDList
+    }
+
+    private fun parseSubscription(jsonObject: JSONObject): RouteSubscription {
+        val routeID = jsonObject.getString(SUBSCRIPTION_KEY_ROUTE_ID)
+        val token = jsonObject.getString(SUBSCRIPTION_KEY_TOKEN)
+        return RouteSubscription(token, routeID)
     }
 
 }

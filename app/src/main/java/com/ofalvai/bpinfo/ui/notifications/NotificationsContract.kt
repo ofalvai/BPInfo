@@ -14,6 +14,8 @@ interface NotificationsContract {
         fun displayRouteList(routeList: List<Route>)
         fun onRouteClicked(route: Route)
         fun displaySubscriptions(routeList: List<Route>)
+        fun addSubscribedRoute(route: Route)
+        fun removeSubscribedRoute(route: Route)
 
     }
 
