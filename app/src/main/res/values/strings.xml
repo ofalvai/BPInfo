@@ -154,8 +154,9 @@
     <string name="title_activity_notifications">Notifications</string>
     <string name="notif_channel_alerts_title">Traffic alerts</string>
     <string name="notif_channel_alerts_desc">Notifications about selected routes</string>
-    <string name="notif_watched_routes_label">Watched routes</string>
+    <string name="notif_watched_routes_label">Followed routes</string>
     <string name="notif_remove_dialog_message">Are you sure you want to remove?</string>
     <string name="notif_remove_dialog_positive">Remove</string>
+    <string name="notif_subscribed_empty">Choose a route below to follow and receive notifications about.</string>
 
 </resources>

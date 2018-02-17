@@ -23,8 +23,11 @@ import com.ofalvai.bpinfo.model.Route
 import com.ofalvai.bpinfo.model.RouteType
 import com.ofalvai.bpinfo.ui.base.BaseActivity
 import com.ofalvai.bpinfo.ui.notifications.adapter.RouteListPagerAdapter
+import com.ofalvai.bpinfo.ui.notifications.routelist.RouteListContract
 import com.ofalvai.bpinfo.ui.settings.SettingsActivity
 import com.ofalvai.bpinfo.util.getContentDescription
+import com.ofalvai.bpinfo.util.hide
+import com.ofalvai.bpinfo.util.show
 import com.wefika.flowlayout.FlowLayout
 import kotterknife.bindView
 import timber.log.Timber
@@ -39,6 +42,8 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
 
     private val subscribedRoutesLayout: FlowLayout by bindView(R.id.notifications__subscribed_routes)
 
+    private val subscribedEmptyView: TextView by bindView(R.id.notifications__subscribed_empty)
+
     private lateinit var pagerAdapter: RouteListPagerAdapter
 
     companion object {
@@ -52,10 +57,11 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notifications)
 
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setTitle(R.string.title_activity_notifications)
-
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            setDisplayShowHomeEnabled(true)
+            setTitle(R.string.title_activity_notifications)
+        }
 
         presenter = NotificationsPresenter()
         presenter.attachView(this)
@@ -63,7 +69,7 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
         presenter.fetchRouteList()
         presenter.fetchSubscriptions()
 
-        Timber.d("FCM token: " + FirebaseInstanceId.getInstance().token)
+        Timber.d("FCM token: ${FirebaseInstanceId.getInstance().token}")
 
         setupViewPager()
     }
@@ -92,20 +98,24 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
     override fun displayRouteList(routeList: List<Route>) {
         val groupedRoutes: Map<RouteType, List<Route>> = routeList.groupBy { it.type }
         groupedRoutes.forEach {
-            val view = pagerAdapter.getView(it.key)
+            val view: RouteListContract.View? = pagerAdapter.getView(it.key)
             val routes = it.value
-            view?.let {
-                view.displayRoutes(routes)
-            }
+            view?.displayRoutes(routes)
         }
     }
 
     override fun addSubscribedRoute(route: Route) {
+        subscribedEmptyView.hide()
+
         addSubscribedRouteIcon(route)
     }
 
     override fun removeSubscribedRoute(route: Route) {
         removeSubscribedRouteIcon(route)
+
+        if (subscribedRoutesLayout.childCount == 0) {
+            subscribedEmptyView.show()
+        }
     }
 
     override fun onRouteClicked(route: Route) {
@@ -114,6 +124,13 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
 
     override fun displaySubscriptions(routeList: List<Route>) {
         subscribedRoutesLayout.removeAllViews()
+
+        if (routeList.isEmpty()) {
+            subscribedEmptyView.show()
+        } else {
+            subscribedEmptyView.hide()
+        }
+
         for (route in routeList) {
             addSubscribedRouteIcon(route)
         }

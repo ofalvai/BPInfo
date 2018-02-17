@@ -15,6 +15,7 @@ import android.support.annotation.StringRes
 import android.support.customtabs.CustomTabsIntent
 import android.support.v4.content.ContextCompat
 import android.support.v7.view.ContextThemeWrapper
+import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.android.volley.*
@@ -275,4 +276,12 @@ fun openCustomTab(activity: Activity, url: Uri) {
 
 fun TextView.underline() {
     this.paintFlags = this.paintFlags or Paint.UNDERLINE_TEXT_FLAG
+}
+
+fun View.show() {
+    visibility = View.VISIBLE
+}
+
+fun View.hide() {
+    visibility = View.GONE
 }

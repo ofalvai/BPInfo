@@ -108,5 +108,6 @@
     <string name="notif_watched_routes_label">Figyelt járatok</string>
     <string name="notif_remove_dialog_message">Biztosan el akarod távolítani?</string>
     <string name="notif_remove_dialog_positive">Eltávolít</string>
+    <string name="notif_subscribed_empty">Válassz egy járatot az alábbiakból, amiről értesítést szeretnél kapni.</string>
 
 </resources>
