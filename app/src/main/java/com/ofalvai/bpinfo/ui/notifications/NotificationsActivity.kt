@@ -193,12 +193,7 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
         for (i in 0 until subscribedRoutesLayout.childCount) {
             val view: View? = subscribedRoutesLayout.getChildAt(i)
             if (view?.tag == route.id) {
-                view.animate().apply {
-                    duration = 225
-                    alpha(0.0f)
-                    withEndAction { subscribedRoutesLayout.removeView(view) }
-                    start()
-                }
+                subscribedRoutesLayout.removeView(view)
             }
         }
     }
