@@ -58,5 +58,14 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="RouteIcon.Big" parent="RouteIcon">
+        <item name="android:paddingLeft">12dp</item>
+        <item name="android:paddingRight">12dp</item>
+        <item name="android:paddingTop">6dp</item>
+        <item name="android:paddingBottom">6dp</item>
+        <item name="android:minWidth">24dp</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
 
 </resources>

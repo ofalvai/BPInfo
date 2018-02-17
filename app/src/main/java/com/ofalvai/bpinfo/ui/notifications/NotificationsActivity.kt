@@ -128,7 +128,7 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
 
     @SuppressLint("RestrictedApi")
     private fun addSubscribedRouteIcon(route: Route) {
-        val iconContextTheme = ContextThemeWrapper(this, R.style.RouteIcon)
+        val iconContextTheme = ContextThemeWrapper(this, R.style.RouteIcon_Big)
         val iconView = TextView(iconContextTheme)
 
         iconView.text = route.shortName
