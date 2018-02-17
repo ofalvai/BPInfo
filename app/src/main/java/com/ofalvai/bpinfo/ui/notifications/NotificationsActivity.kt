@@ -10,12 +10,14 @@ import android.support.design.widget.TabLayout
 import android.support.v4.app.NavUtils
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
+import android.support.v4.widget.ContentLoadingProgressBar
 import android.support.v7.app.AlertDialog
 import android.support.v7.view.ContextThemeWrapper
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.DecelerateInterpolator
 import android.widget.TextView
 import com.google.firebase.iid.FirebaseInstanceId
 import com.ofalvai.bpinfo.R
@@ -37,12 +39,10 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
     private lateinit var presenter: NotificationsContract.Presenter
 
     private val tabLayout: TabLayout by bindView(R.id.notifications__tabs)
-
     private val viewPager: ViewPager by bindView(R.id.notifications__viewpager)
-
     private val subscribedRoutesLayout: FlowLayout by bindView(R.id.notifications__subscribed_routes)
-
     private val subscribedEmptyView: TextView by bindView(R.id.notifications__subscribed_empty)
+    private val progressBar: ContentLoadingProgressBar by bindView(R.id.notifications__progress_bar)
 
     private lateinit var pagerAdapter: RouteListPagerAdapter
 
@@ -136,6 +136,14 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
         }
     }
 
+    override fun showProgress(show: Boolean) {
+        if (show) {
+            progressBar.show()
+        } else {
+            progressBar.hide()
+        }
+    }
+
     private fun setupViewPager() {
         pagerAdapter = RouteListPagerAdapter(supportFragmentManager, this)
         viewPager.adapter = pagerAdapter
@@ -152,6 +160,7 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
         iconView.setTextColor(route.textColor)
         iconView.contentDescription = route.getContentDescription(this)
         iconView.tag = route.id
+        iconView.alpha = 0.0f
         subscribedRoutesLayout.addView(iconView)
 
         // Layout attributes defined in R.style.RouteIcon were ignored before attaching the view to
@@ -171,13 +180,25 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
         }
 
         iconView.setOnClickListener { showDeleteDialog(route) }
+
+        iconView.animate().apply {
+            alpha(1.0f)
+            duration = 225
+            interpolator = DecelerateInterpolator()
+            start()
+        }
     }
 
     private fun removeSubscribedRouteIcon(route: Route) {
         for (i in 0 until subscribedRoutesLayout.childCount) {
             val view: View? = subscribedRoutesLayout.getChildAt(i)
             if (view?.tag == route.id) {
-                subscribedRoutesLayout.removeView(view)
+                view.animate().apply {
+                    duration = 225
+                    alpha(0.0f)
+                    withEndAction { subscribedRoutesLayout.removeView(view) }
+                    start()
+                }
             }
         }
     }

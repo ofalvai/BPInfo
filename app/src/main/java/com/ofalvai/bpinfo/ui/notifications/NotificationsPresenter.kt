@@ -38,26 +38,33 @@ class NotificationsPresenter : BasePresenter<NotificationsContract.View>(),
     }
 
     override fun onRouteListError(ex: Exception) {
+        view?.showProgress(false)
         Timber.e(ex) // TODO
     }
 
     override fun subscribeTo(routeID: String) {
+        view?.showProgress(true)
         subscriptionClient.postSubscription(routeID, this)
     }
 
     override fun removeSubscription(routeID: String) {
+        view?.showProgress(true)
         subscriptionClient.deleteSubscription(routeID, this)
     }
 
     override fun fetchSubscriptions() {
+        view?.showProgress(true)
         subscriptionClient.getSubscriptions(this)
     }
 
     override fun onSubscriptionError(error: VolleyError) {
+        view?.showProgress(false)
         Timber.e(error) // TODO
     }
 
     override fun onPostSubscriptionResponse(subscription: RouteSubscription) {
+        view?.showProgress(false)
+
         val route: Route? = routeListResponse?.find { it.id == subscription.routeID }
 
         route?.let {
@@ -74,6 +81,8 @@ class NotificationsPresenter : BasePresenter<NotificationsContract.View>(),
     }
 
     override fun onDeleteSubscriptionResponse(subscription: RouteSubscription) {
+        view?.showProgress(false)
+
         val route: Route? = routeListResponse?.find { it.id == subscription.routeID }
 
         route?.let {
@@ -88,5 +97,6 @@ class NotificationsPresenter : BasePresenter<NotificationsContract.View>(),
     private fun displaySubscribedRoutes(routeIDList: List<String>, allRoutes: List<Route>) {
         val routes: List<Route> = allRoutes.filter { routeIDList.contains(it.id) }
         view?.displaySubscriptions(routes)
+        view?.showProgress(false)
     }
 }
