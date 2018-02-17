@@ -19,19 +19,18 @@ class SubscriptionClient @Inject constructor(private val requestQueue: RequestQu
         fun onSubscriptionError(error: VolleyError)
         fun onPostSubscriptionResponse() // TODO: response object
         fun onGetSubscriptionResponse(routeIDList: List<String>)
+        fun onDeleteSubscriptionResponse() // TODO: response object
     }
 
     companion object {
         const val BASE_URL = "https://bpinfo-backend.herokuapp.com/api/v1/"
+        const val SUBSCRIPTION_URL = BASE_URL + "subscription"
     }
 
     private val token get() = FirebaseInstanceId.getInstance().token
 
     fun postSubscription(routeID: String, callback: Callback) {
-        val url: String = Uri.parse(BASE_URL)
-            .buildUpon()
-            .appendPath("subscription")
-            .toString()
+        val url = SUBSCRIPTION_URL
 
         val body = JSONObject().apply {
             put("routeId", routeID)
@@ -53,15 +52,33 @@ class SubscriptionClient @Inject constructor(private val requestQueue: RequestQu
     }
 
     fun getSubscriptions(callback: Callback) {
-        val url = Uri.parse(BASE_URL)
+        val url = Uri.parse(SUBSCRIPTION_URL)
             .buildUpon()
-            .appendPath("subscription")
             .appendPath(token)
             .toString()
 
         val request = JsonArrayRequest(Request.Method.GET, url, null,
             Response.Listener {
                 callback.onGetSubscriptionResponse(parseSubscriptionList(it))
+            },
+            Response.ErrorListener {
+                Timber.e(it.toString())
+                callback.onSubscriptionError(it)
+            }
+        )
+        requestQueue.add(request)
+    }
+
+    fun deleteSubscription(routeID: String, callback: Callback) {
+        val url = Uri.parse(SUBSCRIPTION_URL)
+            .buildUpon()
+            .appendPath(token)
+            .appendPath(routeID)
+            .toString()
+
+        val request = JsonObjectRequest(Request.Method.DELETE, url, null,
+            Response.Listener {
+                callback.onDeleteSubscriptionResponse()
             },
             Response.ErrorListener {
                 Timber.e(it.toString())

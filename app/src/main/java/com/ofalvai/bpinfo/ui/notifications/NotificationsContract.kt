@@ -18,9 +18,9 @@ interface NotificationsContract {
     }
 
     interface Presenter : MvpPresenter<View> {
-
         fun fetchRouteList()
         fun subscribeTo(routeID: String)
+        fun removeSubscription(routeID: String)
         fun fetchSubscriptions()
 
     }

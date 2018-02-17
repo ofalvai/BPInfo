@@ -44,6 +44,10 @@ class NotificationsPresenter : BasePresenter<NotificationsContract.View>(),
         subscriptionClient.postSubscription(routeID, this)
     }
 
+    override fun removeSubscription(routeID: String) {
+        subscriptionClient.deleteSubscription(routeID, this)
+    }
+
     override fun fetchSubscriptions() {
         subscriptionClient.getSubscriptions(this)
     }
@@ -62,6 +66,10 @@ class NotificationsPresenter : BasePresenter<NotificationsContract.View>(),
         routeListResponse?.let {
             displaySubscribedRoutes(routeIDList, it)
         }
+    }
+
+    override fun onDeleteSubscriptionResponse() {
+        fetchSubscriptions() // TODO
     }
 
     /**

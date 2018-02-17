@@ -98,7 +98,9 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
     override fun displaySubscriptions(routeList: List<Route>) {
         subscribedRoutesLayout.removeAllViews()
         for (route in routeList) {
-            addRouteIcon(this, subscribedRoutesLayout, route)
+            val view = addRouteIcon(this, subscribedRoutesLayout, route)
+
+            view.setOnClickListener { presenter.removeSubscription(route.id) }
         }
     }
 

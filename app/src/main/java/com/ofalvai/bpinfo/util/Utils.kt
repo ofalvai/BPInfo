@@ -217,7 +217,7 @@ fun Alert.formatDate(context: Context): String {
  * @param route
  */
 @SuppressLint("RestrictedApi")
-fun addRouteIcon(context: Context, root: ViewGroup, route: Route) {
+fun addRouteIcon(context: Context, root: ViewGroup, route: Route): TextView {
     val iconContextTheme = ContextThemeWrapper(context, R.style.RouteIcon)
     val iconView = TextView(iconContextTheme)
 
@@ -244,6 +244,8 @@ fun addRouteIcon(context: Context, root: ViewGroup, route: Route) {
         iconBackground.mutate().colorFilter = colorFilter
         iconView.background = iconBackground
     }
+
+    return iconView
 }
 
 /**
