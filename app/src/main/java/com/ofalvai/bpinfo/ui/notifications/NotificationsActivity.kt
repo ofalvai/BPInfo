@@ -99,7 +99,7 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
         val groupedRoutes: Map<RouteType, List<Route>> = routeList.groupBy { it.type }
         groupedRoutes.forEach {
             val view: RouteListContract.View? = pagerAdapter.getView(it.key)
-            val routes = it.value
+            val routes = it.value.sortedBy { it.id }
             view?.displayRoutes(routes)
         }
     }
