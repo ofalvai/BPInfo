@@ -3,6 +3,7 @@ package com.ofalvai.bpinfo.notifications
 import android.content.Context
 import com.ofalvai.bpinfo.R
 
+// TODO: refactor
 class DescriptionMaker {
 
     companion object {
@@ -116,7 +117,7 @@ class DescriptionMaker {
                     .joinToString(separator = ", ") { it.trim() }
                 sb.append(routeList)
             }
-            return sb.toString()
+            return sb.toString().capitalize()
         }
 
         private fun numberPostfixHu(name: String): String {
