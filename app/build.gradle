@@ -52,7 +52,6 @@ android {
         }
     }
     compileSdkVersion 26
-    buildToolsVersion '26.0.2'
 
     defaultConfig {
         applicationId "com.ofalvai.bpinfo"
@@ -99,6 +98,13 @@ android {
             dimension "data"
         }
     }
+
+    packagingOptions {
+        exclude 'protobuf.meta' // 25.3 KB
+        exclude 'error_prone/**' // 93 B
+        exclude 'jsr305_annotations/**' // 104 B
+        exclude 'third_party/java_src/error_prone/**' // 331 B
+    }
 }
 
 ribbonizer {
@@ -112,54 +118,53 @@ ribbonizer {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    compile "com.android.support:recyclerview-v7:$supportLibVersion"
-    compile "com.android.support:design:$supportLibVersion"
-    compile "com.android.support:customtabs:$supportLibVersion"
-    compile "com.android.support:support-annotations:$supportLibVersion"
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.android.volley:volley:1.0.0'
-    compile ('com.wefika:flowlayout:0.4.1') {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "com.android.support:recyclerview-v7:$supportLibVersion"
+    implementation "com.android.support:design:$supportLibVersion"
+    implementation "com.android.support:customtabs:$supportLibVersion"
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.android.volley:volley:1.0.0'
+    implementation ('com.wefika:flowlayout:0.4.1') {
         exclude group: 'com.intellij', module: 'annotations'
     }
-    compile 'com.google.dagger:dagger:2.13'
-    compile 'org.sufficientlysecure:html-textview:3.4'
-    compile 'net.danlew:android.joda:2.9.9'
-    compile 'com.jakewharton:process-phoenix:2.0.0'
-    compile 'com.jakewharton:butterknife:8.8.1'
-    compile 'org.greenrobot:eventbus:3.1.1'
-    compile "com.google.firebase:firebase-core:$firebaseVersion"
-    compile "com.google.firebase:firebase-perf:$firebaseVersion"
-    compile "com.google.firebase:firebase-messaging:$firebaseVersion"
-    compile 'com.jakewharton.timber:timber:4.6.0'
-    compile 'com.jakewharton:kotterknife:0.1.0-SNAPSHOT'
-    compile('com.crashlytics.sdk.android:crashlytics:2.6.6@aar') {
+    implementation 'com.google.dagger:dagger:2.13'
+    implementation 'org.sufficientlysecure:html-textview:3.4'
+    implementation 'net.danlew:android.joda:2.9.9'
+    implementation 'com.jakewharton:process-phoenix:2.0.0'
+    implementation 'com.jakewharton:butterknife:8.8.1'
+    implementation 'org.greenrobot:eventbus:3.1.1'
+    implementation "com.google.firebase:firebase-core:$firebaseVersion"
+    implementation "com.google.firebase:firebase-perf:$firebaseVersion"
+    implementation "com.google.firebase:firebase-messaging:$firebaseVersion"
+    implementation 'com.jakewharton.timber:timber:4.6.0'
+    implementation 'com.jakewharton:kotterknife:0.1.0-SNAPSHOT'
+    implementation('com.crashlytics.sdk.android:crashlytics:2.6.6@aar') {
         transitive = true
     }
     kapt 'com.google.dagger:dagger-compiler:2.13'
     kapt 'com.jakewharton:butterknife-compiler:8.8.1'
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.4'
-    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2') {
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2') {
         // Necessary if your app targets Marshmallow (since Espresso
         // hasn't moved to Marshmallow yet)
         exclude group: 'com.android.support', module: 'support-annotations'
     }
-    androidTestCompile('com.android.support.test:runner:0.5') {
+    androidTestImplementation('com.android.support.test:runner:0.5') {
         // Necessary if your app targets Marshmallow (since the test runner
         // hasn't moved to Marshmallow yet)
         exclude group: 'com.android.support', module: 'support-annotations'
     }
-    androidTestCompile('com.android.support.test:rules:0.5') {
+    androidTestImplementation('com.android.support.test:rules:0.5') {
         // Necessary if your app targets Marshmallow (since the test runner
         // hasn't moved to Marshmallow yet)
         exclude group: 'com.android.support', module: 'support-annotations'
     }
-    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
-    testCompile 'junit:junit:4.12'
-    testCompile "org.mockito:mockito-core:2.13.0"
-    androidTestCompile 'org.hamcrest:hamcrest-library:1.3'
+    testImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
+    testImplementation 'junit:junit:4.12'
+    testImplementation "org.mockito:mockito-core:2.13.0"
+    androidTestImplementation 'org.hamcrest:hamcrest-library:1.3'
 }
 
 sonarqube {
