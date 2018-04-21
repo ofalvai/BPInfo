@@ -37,9 +37,9 @@ import com.ofalvai.bpinfo.util.alertStartComparator
 import com.ofalvai.bpinfo.util.hasNetworkConnection
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
-import org.joda.time.DateTime
-import org.joda.time.Period
 import org.json.JSONException
+import org.threeten.bp.Duration
+import org.threeten.bp.LocalDateTime
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -66,7 +66,7 @@ class AlertListPresenter(private val alertListType: AlertListType)
      */
     private var unfilteredAlerts: MutableList<Alert>? = null
 
-    private var lastUpdate: DateTime? = null
+    private var lastUpdate: LocalDateTime = LocalDateTime.now()
 
     private var activeFilter: MutableSet<RouteType> = mutableSetOf()
 
@@ -135,16 +135,16 @@ class AlertListPresenter(private val alertListType: AlertListType)
     }
 
     override fun setLastUpdate() {
-        lastUpdate = DateTime()
+        lastUpdate = LocalDateTime.now()
     }
 
     /**
      * Initiates a list update if enough time has passed since the last update
      */
     override fun updateIfNeeded(): Boolean {
-        val updatePeriod = Period().withSeconds(Config.REFRESH_THRESHOLD_SEC)
+        val refreshThreshold = Duration.ofSeconds(Config.REFRESH_THRESHOLD_SEC.toLong())
         @Suppress("LiftReturnOrAssignment")
-        if (lastUpdate != null && lastUpdate!!.plus(updatePeriod).isBeforeNow) {
+        if (lastUpdate.plus(refreshThreshold).isBefore(LocalDateTime.now())) {
             fetchAlertList()
             fetchNotice()
             return true
@@ -218,7 +218,7 @@ class AlertListPresenter(private val alertListType: AlertListType)
         // Sort: descending by alert start time
         Collections.sort(sorted, alertStartComparator)
         if (type == AlertListType.ALERTS_TODAY) {
-            Collections.reverse(sorted)
+            sorted.reverse()
         }
 
         if (types == null || types.isEmpty()) {

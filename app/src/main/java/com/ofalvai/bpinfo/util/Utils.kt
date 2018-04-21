@@ -24,10 +24,12 @@ import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.model.Alert
 import com.ofalvai.bpinfo.model.Route
 import com.ofalvai.bpinfo.model.RouteType
-import org.joda.time.DateTime
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import org.threeten.bp.Instant
+import org.threeten.bp.ZoneId
+import org.threeten.bp.ZonedDateTime
 
 val alertStartComparator = compareBy<Alert> { it.start }.thenBy { it.description }
 
@@ -114,10 +116,10 @@ fun isRouteVisuallyDuplicate(routeToTest: Route, routes: List<Route>): Boolean {
  * Returns whether an alert counts as a recent one based on the start timestamp.
  */
 fun Alert.isRecent(): Boolean {
-    val alertTime = DateTime(start * 1000L)
-    val now = DateTime()
+    val startPlusThreshold: ZonedDateTime = apiTimestampToDateTime(start)
+        .plusHours(Config.ALERT_RECENT_THRESHOLD_HOURS.toLong())
 
-    return alertTime.plusHours(Config.ALERT_RECENT_THRESHOLD_HOURS).millis >= now.millis
+    return startPlusThreshold.isAfter(ZonedDateTime.now())
 }
 
 @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
@@ -140,13 +142,13 @@ fun Route.getContentDescription(context: Context): String {
  */
 @Suppress("CascadeIf")
 fun Alert.formatDate(context: Context): String {
-    val startDateTime = DateTime(start * 1000L)
-    val endDateTime = DateTime(end * 1000L)
+    val startDateTime: ZonedDateTime = apiTimestampToDateTime(start)
+    val endDateTime = apiTimestampToDateTime(end)
     val startDate = startDateTime.toLocalDate()
     val endDate = endDateTime.toLocalDate()
 
-    val today = DateTime()
-    val todayDate = DateTime().toLocalDate()
+    val today = ZonedDateTime.now()
+    val todayDate = today.toLocalDate()
     val yesterday = today.minusDays(1)
     val yesterdayDate = yesterday.toLocalDate()
     val tomorrow = today.plusDays(1)
@@ -156,23 +158,23 @@ fun Alert.formatDate(context: Context): String {
     val startDateString = if (startDate == todayDate) {
         // Start day is today, replacing month and day with today string
         context.getString(R.string.date_today) + " "
-    } else if (startDate.year().get() < today.year().get()) {
+    } else if (startDate.year < today.year) {
         // The start year is less than the current year, displaying the year too
-        Config.FORMATTER_DATE_YEAR.print(startDateTime)
+        Config.FORMATTER_DATE_YEAR.format(startDateTime)
     } else if (startDate == yesterdayDate) {
         context.getString(R.string.date_yesterday) + " "
     } else if (startDate == tomorrowDate) {
         context.getString(R.string.date_tomorrow) + " "
     } else {
-        Config.FORMATTER_DATE.print(startDateTime)
+        Config.FORMATTER_DATE.format(startDateTime)
     }
 
     // Alert start, time part
-    val startTimeString = if (startDateTime.hourOfDay().get() == 0 && startDateTime.minuteOfHour().get() == 0) {
+    val startTimeString = if (startDateTime.hour == 0 && startDateTime.minute == 0) {
         // The API marks "first departure" as 00:00
         context.getString(R.string.date_first_departure)
     } else {
-        Config.FORMATTER_TIME.print(startDateTime)
+        Config.FORMATTER_TIME.format(startDateTime)
     }
 
     // Alert end, date part
@@ -180,9 +182,9 @@ fun Alert.formatDate(context: Context): String {
         // The API marks "until further notice" as 0 (in UNIX epoch), no need to display date
         // (the replacement string is displayed as the time part, not the date)
         " "
-    } else if (endDate.year().get() > today.year().get()) {
+    } else if (endDate.year > today.year) {
         // The end year is greater than the current year, displaying the year too
-        Config.FORMATTER_DATE_YEAR.print(endDateTime)
+        Config.FORMATTER_DATE_YEAR.format(endDateTime)
     } else if (endDate == todayDate) {
         // End day is today, replacing month and day with today string
         context.getString(R.string.date_today) + " "
@@ -191,18 +193,18 @@ fun Alert.formatDate(context: Context): String {
     } else if (endDate == tomorrowDate) {
         context.getString(R.string.date_tomorrow) + " "
     } else {
-        Config.FORMATTER_DATE.print(endDateTime)
+        Config.FORMATTER_DATE.format(endDateTime)
     }
 
     // Alert end, time part
     val endTimeString = if (end == 0L) {
         // The API marks "until further notice" as 0 (in UNIX epoch)
         context.getString(R.string.date_until_revoke)
-    } else if (endDateTime.hourOfDay().get() == 23 && endDateTime.minuteOfHour().get() == 59) {
+    } else if (endDateTime.hour == 23 && endDateTime.minute == 59) {
         // The API marks "last departure" as 23:59
         context.getString(R.string.date_last_departure)
     } else {
-        Config.FORMATTER_TIME.print(endDateTime)
+        Config.FORMATTER_TIME.format(endDateTime)
     }
 
     return startDateString + startTimeString + Config.DATE_SEPARATOR + endDateString + endTimeString
@@ -284,4 +286,11 @@ fun View.show() {
 
 fun View.hide() {
     visibility = View.GONE
+}
+
+fun apiTimestampToDateTime(seconds: Long): ZonedDateTime {
+    return ZonedDateTime.ofInstant(
+        Instant.ofEpochSecond(seconds),
+        ZoneId.of("Europe/Budapest") // We can safely assume the timezone of the API
+    )
 }

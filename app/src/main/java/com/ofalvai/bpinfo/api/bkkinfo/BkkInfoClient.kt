@@ -38,12 +38,13 @@ import com.ofalvai.bpinfo.api.AlertRequestParams
 import com.ofalvai.bpinfo.model.Alert
 import com.ofalvai.bpinfo.model.Route
 import com.ofalvai.bpinfo.model.RouteType
+import com.ofalvai.bpinfo.util.apiTimestampToDateTime
 import com.ofalvai.bpinfo.util.toArray
 import org.greenrobot.eventbus.EventBus
-import org.joda.time.DateTime
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import org.threeten.bp.ZonedDateTime
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -189,8 +190,8 @@ class BkkInfoClient
 
                 // Some alerts are still listed a few minutes after they ended, we need to hide them,
                 // but still show them if debug mode is enabled
-                val alertEndTime = DateTime(alert.end * 1000L)
-                if (alertEndTime.isAfterNow || alert.end == 0L || isDebugMode) {
+                val alertEndTime: ZonedDateTime = apiTimestampToDateTime(alert.end)
+                if (alertEndTime.isAfter(ZonedDateTime.now()) || alert.end == 0L || isDebugMode) {
                     alerts.add(alert)
                 }
             } catch (ex: JSONException) {
@@ -560,8 +561,8 @@ class BkkInfoClient
         val todayIterator = alertsToday.listIterator()
         while (todayIterator.hasNext()) {
             val alert = todayIterator.next()
-            val startTime = DateTime(alert.start * 1000L)
-            if (startTime.isAfterNow) {
+            val startTime: ZonedDateTime = apiTimestampToDateTime(alert.start)
+            if (startTime.isAfter(ZonedDateTime.now())) {
                 alertsFuture.add(alert)
                 todayIterator.remove()
             }

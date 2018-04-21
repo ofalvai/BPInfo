@@ -37,13 +37,15 @@ import com.ofalvai.bpinfo.model.Alert
 import com.ofalvai.bpinfo.model.Route
 import com.ofalvai.bpinfo.model.RouteType
 import com.ofalvai.bpinfo.ui.alertlist.AlertListType
+import com.ofalvai.bpinfo.util.apiTimestampToDateTime
 import com.ofalvai.bpinfo.util.isReplacement
 import com.ofalvai.bpinfo.util.toArray
 import com.ofalvai.bpinfo.util.toStringList
 import org.greenrobot.eventbus.EventBus
-import org.joda.time.DateTime
 import org.json.JSONException
 import org.json.JSONObject
+import org.threeten.bp.Instant
+import org.threeten.bp.ZonedDateTime
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -167,7 +169,7 @@ class FutarApiClient
                 context.getString(R.string.pref_key_debug_mode), false)
 
         if (!isDebugMode) {
-            val startTimestamp = (DateTime().millis / 1000L).toString()
+            val startTimestamp: String = Instant.now().epochSecond.toString()
             builder.appendQueryParameter("start", startTimestamp)
         }
 
@@ -199,10 +201,10 @@ class FutarApiClient
 
                 // Time ranges in the API response are messed up. We need to filter out alerts that are
                 // before/after the time range we want.
-                val alertStartTime = DateTime(alert.start * 1000L)
-                if (alertListType == AlertListType.ALERTS_TODAY && alertStartTime.isBeforeNow) {
+                val alertStartTime: ZonedDateTime = apiTimestampToDateTime(alert.start)
+                if (alertListType == AlertListType.ALERTS_TODAY && alertStartTime.isBefore(ZonedDateTime.now())) {
                     alertList.add(alert)
-                } else if (alertListType == AlertListType.ALERTS_FUTURE && alertStartTime.isAfterNow) {
+                } else if (alertListType == AlertListType.ALERTS_FUTURE && alertStartTime.isAfter(ZonedDateTime.now())) {
                     alertList.add(alert)
                 }
             } catch (ex: JSONException) {

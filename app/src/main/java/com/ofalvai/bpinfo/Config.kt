@@ -16,8 +16,8 @@
 
 package com.ofalvai.bpinfo
 
-import org.joda.time.format.DateTimeFormat
-import org.joda.time.format.DateTimeFormatter
+import org.threeten.bp.format.DateTimeFormatter
+
 
 object Config {
 
@@ -34,13 +34,13 @@ object Config {
     const val ALERT_RECENT_THRESHOLD_HOURS = 24
 
     @JvmField
-    val FORMATTER_TIME: DateTimeFormatter = DateTimeFormat.forPattern("HH:mm")
+    val FORMATTER_TIME: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
     @JvmField
-    val FORMATTER_DATE: DateTimeFormatter = DateTimeFormat.forPattern("MMM d. EEEE ")
+    val FORMATTER_DATE: DateTimeFormatter = DateTimeFormatter.ofPattern("MMM d. EEEE ")
 
     @JvmField
-    val FORMATTER_DATE_YEAR: DateTimeFormatter = DateTimeFormat.forPattern("YYYY MMM d. EEEE ")
+    val FORMATTER_DATE_YEAR: DateTimeFormatter = DateTimeFormatter.ofPattern("YYYY MMM d. EEEE ")
 
     const val DATE_SEPARATOR = " ➔ "
 
