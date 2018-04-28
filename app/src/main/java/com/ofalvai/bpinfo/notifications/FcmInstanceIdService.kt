@@ -66,8 +66,11 @@ class FcmInstanceIdService : FirebaseInstanceIdService() {
             .setExtras(extras)
             .build()
 
-        jobDispatcher.mustSchedule(job)
-        // TODO: ScheduleFailedException
+        jobDispatcher.schedule(job).let {
+            if (it != FirebaseJobDispatcher.SCHEDULE_RESULT_SUCCESS) {
+                Timber.e("Unsuccessful job schedule, result code: %d", it)
+            }
+        }
     }
 
     private fun persistNewToken(newToken: String) {
