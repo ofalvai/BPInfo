@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <ProgressBar
         android:id="@+id/fragment_route_list__progressbar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="32dp"/>
+        android:layout_marginTop="32dp" />
 
     <com.ofalvai.bpinfo.util.EmptyRecyclerView
         android:id="@+id/fragment_route_list__recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        app:fastScrollEnabled="true"
+        app:fastScrollHorizontalThumbDrawable="@drawable/fastscroll_thumb"
+        app:fastScrollHorizontalTrackDrawable="@drawable/fastscroll_track"
+        app:fastScrollVerticalThumbDrawable="@drawable/fastscroll_thumb"
+        app:fastScrollVerticalTrackDrawable="@drawable/fastscroll_track" />
 
 </LinearLayout>

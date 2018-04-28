@@ -31,4 +31,8 @@
 
     <color name="colorProgressBar">#3989F8</color>
 
+    <color name="colorScrollBackground">#ccc</color>
+    <color name="colorScrollThumb">#999</color>
+    <color name="colorScrollThumbPressed">@color/colorPrimaryDark</color>
+
 </resources>
