@@ -294,3 +294,7 @@ fun apiTimestampToDateTime(seconds: Long): ZonedDateTime {
         ZoneId.of("Europe/Budapest") // We can safely assume the timezone of the API
     )
 }
+
+fun <T> Request<T>.addTo(queue: RequestQueue) {
+    queue.add(this)
+}
