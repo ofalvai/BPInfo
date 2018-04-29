@@ -19,6 +19,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import android.widget.TextView
+import com.google.android.gms.common.GoogleApiAvailability
 import com.google.firebase.iid.FirebaseInstanceId
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.model.Route
@@ -72,6 +73,8 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
         Timber.d("FCM token: ${FirebaseInstanceId.getInstance().token}")
 
         setupViewPager()
+
+        GoogleApiAvailability.getInstance().makeGooglePlayServicesAvailable(this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
