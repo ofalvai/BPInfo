@@ -33,7 +33,6 @@ import com.ofalvai.bpinfo.injection.ApiModule
 import com.ofalvai.bpinfo.injection.AppComponent
 import com.ofalvai.bpinfo.injection.AppModule
 import com.ofalvai.bpinfo.injection.DaggerAppComponent
-import com.ofalvai.bpinfo.notifications.NOTIF_CHANNEL_ID_ALERTS
 import com.ofalvai.bpinfo.util.LocaleManager
 import com.squareup.leakcanary.LeakCanary
 import com.squareup.leakcanary.RefWatcher
@@ -159,13 +158,10 @@ class BpInfoApplication : Application(), SharedPreferences.OnSharedPreferenceCha
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
+        val id = getString(R.string.notif_channel_alerts_id)
         val name = getString(R.string.notif_channel_alerts_title)
         val description = getString(R.string.notif_channel_alerts_desc)
-        val channel = NotificationChannel(
-            NOTIF_CHANNEL_ID_ALERTS,
-            name,
-            NotificationManager.IMPORTANCE_DEFAULT
-        )
+        val channel = NotificationChannel(id, name, NotificationManager.IMPORTANCE_DEFAULT)
         channel.description = description
         notificationManager.createNotificationChannel(channel)
     }

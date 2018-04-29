@@ -126,6 +126,11 @@
     <string name="pref_language_dialog_negative_button">Later</string>
     <string name="pref_key_category_other" translatable="false">category_about</string>
     <string name="pref_key_debug_mode" translatable="false">pref_key_debug_mode</string>
+    <string name="pref_key_category_notifications" translatable="false">category_notification</string>
+    <string name="pref_key_notifications" translatable="false">notifications</string>
+    <string name="pref_category_notifications">Notifications</string>
+    <string name="pref_title_notifications">Notification settings</string>
+    <string name="pref_summary_notifications">Priority, vibration, sound</string>
     <string name="debug_mode_on">Debug mode enabled</string>
     <string name="debog_mode_off">Debug mode disabled</string>
     <string name="email_bkk_mailto" translatable="false">mailto:futar@bkk.hu</string>
@@ -152,6 +157,7 @@
     <string name="menu_notifications_label">Notifications</string>
 
     <string name="title_activity_notifications">Notifications</string>
+    <string name="notif_channel_alerts_id" translatable="false">channel_alerts</string>
     <string name="notif_channel_alerts_title">Traffic alerts</string>
     <string name="notif_channel_alerts_desc">Notifications about selected routes</string>
     <string name="notif_watched_routes_label">Followed routes</string>

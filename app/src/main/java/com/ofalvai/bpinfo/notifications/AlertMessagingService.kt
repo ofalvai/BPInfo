@@ -19,8 +19,6 @@ const val DATA_KEY_TITLE = "title"
 
 const val REQUEST_CODE = 0
 
-const val NOTIF_CHANNEL_ID_ALERTS = "channel_alerts"
-
 class AlertMessagingService : FirebaseMessagingService() {
 
     override fun attachBaseContext(base: Context) {
@@ -68,7 +66,9 @@ class AlertMessagingService : FirebaseMessagingService() {
             bigText(text)
         }
 
-        val notificationBuilder = NotificationCompat.Builder(this, NOTIF_CHANNEL_ID_ALERTS)
+        val channelId = getString(R.string.notif_channel_alerts_id)
+
+        val notificationBuilder = NotificationCompat.Builder(this, channelId)
             .setSmallIcon(R.drawable.ic_notification_default)
             .setContentTitle(title)
             .setContentText(text)

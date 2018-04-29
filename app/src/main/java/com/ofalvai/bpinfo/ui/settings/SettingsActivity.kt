@@ -22,10 +22,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
-import android.preference.ListPreference
-import android.preference.Preference
-import android.preference.PreferenceActivity
-import android.preference.PreferenceManager
+import android.preference.*
 import android.provider.Settings
 import android.support.v4.app.NavUtils
 import android.support.v7.app.AlertDialog
@@ -52,9 +49,10 @@ import javax.inject.Inject
  * Android Design: Settings](http://developer.android.com/design/patterns/settings.html) for design guidelines and the [Settings
  * API Guide](http://developer.android.com/guide/topics/ui/settings.html) for more information on developing a Settings UI.
  */
-class SettingsActivity : AppCompatPreferenceActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
+class SettingsActivity : AppCompatPreferenceActivity(),
+    SharedPreferences.OnSharedPreferenceChangeListener {
 
-    @Inject lateinit internal var mSharedPreferences: SharedPreferences
+    @Inject lateinit var mSharedPreferences: SharedPreferences
 
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(LocaleManager.setLocale(newBase))
@@ -73,6 +71,7 @@ class SettingsActivity : AppCompatPreferenceActivity(), SharedPreferences.OnShar
         bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_language)))
         bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_key_data_source)))
 
+        initNotificationPrefs()
     }
 
     override fun onResume() {
@@ -94,12 +93,14 @@ class SettingsActivity : AppCompatPreferenceActivity(), SharedPreferences.OnShar
             }
             getString(R.string.pref_key_debug_mode) -> {
                 val state = mSharedPreferences.getBoolean(key, false)
-                val text = if (state) getString(R.string.debug_mode_on) else getString(R.string.debog_mode_off)
+                val text =
+                    if (state) getString(R.string.debug_mode_on) else getString(R.string.debog_mode_off)
                 Toast.makeText(this, text, Toast.LENGTH_LONG).show()
                 FabricUtils.logDebugMode(state.toString())
             }
             getString(R.string.pref_key_data_source) -> {
-                Toast.makeText(this, R.string.data_source_changed_refreshed, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, R.string.data_source_changed_refreshed, Toast.LENGTH_SHORT)
+                    .show()
                 FabricUtils.logDataSourceChange(mSharedPreferences.getString(key, ""))
 
                 // Recreating AlertListActivity. This relies on BpInfoApplication's preference listener,
@@ -152,13 +153,13 @@ class SettingsActivity : AppCompatPreferenceActivity(), SharedPreferences.OnShar
 
     private fun showLanguageRestartDialog() {
         AlertDialog.Builder(this)
-                .setTitle(getString(R.string.pref_language_dialog_title))
-                .setMessage(getString(R.string.pref_language_dialog_message))
-                .setNegativeButton(getString(R.string.pref_language_dialog_negative_button), null)
-                .setPositiveButton(getString(R.string.pref_language_dialog_positive_button)) { _, _ ->
-                    ProcessPhoenix.triggerRebirth(applicationContext)
-                }
-                .show()
+            .setTitle(getString(R.string.pref_language_dialog_title))
+            .setMessage(getString(R.string.pref_language_dialog_message))
+            .setNegativeButton(getString(R.string.pref_language_dialog_negative_button), null)
+            .setPositiveButton(getString(R.string.pref_language_dialog_positive_button)) { _, _ ->
+                ProcessPhoenix.triggerRebirth(applicationContext)
+            }
+            .show()
     }
 
     /**
@@ -167,12 +168,52 @@ class SettingsActivity : AppCompatPreferenceActivity(), SharedPreferences.OnShar
     private fun shouldShowDebugMode(): Boolean {
         var devOptions = 0
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.JELLY_BEAN) {
-            devOptions = Settings.Secure.getInt(this.contentResolver, Settings.Secure.DEVELOPMENT_SETTINGS_ENABLED, 0)
+            @Suppress("DEPRECATION")
+            devOptions = Settings.Secure.getInt(
+                this.contentResolver,
+                Settings.Secure.DEVELOPMENT_SETTINGS_ENABLED,
+                0
+            )
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            devOptions = Settings.Secure.getInt(this.contentResolver, Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0)
+            devOptions = Settings.Secure.getInt(
+                this.contentResolver,
+                Settings.Global.DEVELOPMENT_SETTINGS_ENABLED,
+                0
+            )
         }
 
         return devOptions == 1
+    }
+
+    private fun initNotificationPrefs() {
+        val pref = findPreference(getString(R.string.pref_key_notifications))
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            // The system notification preference screen is unavailable on pre-Lollipop
+            val prefCategory =
+                findPreference(getString(R.string.pref_key_category_notifications)) as PreferenceCategory
+            prefCategory.removePreference(pref)
+        } else {
+            pref.setOnPreferenceClickListener {
+                launchSystemNotificationPrefs()
+                true
+            }
+        }
+    }
+
+    private fun launchSystemNotificationPrefs() {
+        val intent = Intent()
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            intent.action = Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS
+            intent.putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
+            intent.putExtra(Settings.EXTRA_CHANNEL_ID, getString(R.string.notif_channel_alerts_id))
+        } else if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            intent.action = "android.settings.APP_NOTIFICATION_SETTINGS"
+            intent.putExtra("app_package", packageName)
+            intent.putExtra("app_uid", applicationInfo.uid)
+        }
+
+        startActivity(intent)
     }
 
     companion object {
@@ -186,28 +227,30 @@ class SettingsActivity : AppCompatPreferenceActivity(), SharedPreferences.OnShar
          * A preference value change listener that updates the preference's summary
          * to reflect its new value.
          */
-        private val sBindPreferenceSummaryToValueListener = Preference.OnPreferenceChangeListener { preference, value ->
-            val stringValue = value.toString()
+        private val sBindPreferenceSummaryToValueListener =
+            Preference.OnPreferenceChangeListener { preference, value ->
+                val stringValue = value.toString()
 
-            if (preference is ListPreference) {
-                // For list preferences, look up the correct display value in
-                // the preference's 'entries' list.
-                val index = preference.findIndexOfValue(stringValue)
+                if (preference is ListPreference) {
+                    // For list preferences, look up the correct display value in
+                    // the preference's 'entries' list.
+                    val index = preference.findIndexOfValue(stringValue)
 
-                // Set the summary to reflect the new value.
-                preference.setSummary(
+                    // Set the summary to reflect the new value.
+                    preference.setSummary(
                         if (index >= 0)
                             preference.entries[index]
                         else
-                            null)
+                            null
+                    )
 
-            } else {
-                // For all other preferences, set the summary to the value's
-                // simple string representation.
-                preference.summary = stringValue
+                } else {
+                    // For all other preferences, set the summary to the value's
+                    // simple string representation.
+                    preference.summary = stringValue
+                }
+                true
             }
-            true
-        }
 
         /**
          * Binds a preference's summary to its value. More specifically, when the
@@ -224,10 +267,12 @@ class SettingsActivity : AppCompatPreferenceActivity(), SharedPreferences.OnShar
 
             // Trigger the listener immediately with the preference's
             // current value.
-            sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
-                    PreferenceManager
-                            .getDefaultSharedPreferences(preference.context)
-                            .getString(preference.key, ""))
+            sBindPreferenceSummaryToValueListener.onPreferenceChange(
+                preference,
+                PreferenceManager
+                    .getDefaultSharedPreferences(preference.context)
+                    .getString(preference.key, "")
+            )
         }
     }
 }
