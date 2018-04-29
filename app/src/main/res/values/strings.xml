@@ -131,6 +131,7 @@
     <string name="pref_category_notifications">Notifications</string>
     <string name="pref_title_notifications">Notification settings</string>
     <string name="pref_summary_notifications">Priority, vibration, sound</string>
+    <string name="pref_title_notifications_routes">Select routes</string>
     <string name="debug_mode_on">Debug mode enabled</string>
     <string name="debog_mode_off">Debug mode disabled</string>
     <string name="email_bkk_mailto" translatable="false">mailto:futar@bkk.hu</string>

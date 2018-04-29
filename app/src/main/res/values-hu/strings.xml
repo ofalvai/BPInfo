@@ -77,6 +77,7 @@
     <string name="pref_category_notifications">Értesítések</string>
     <string name="pref_title_notifications">Értesítés beállítások</string>
     <string name="pref_summary_notifications">Prioritás, rezgés, hang</string>
+    <string name="pref_title_notifications_routes">Járatok kiválasztása</string>
     <string name="menu_debug">Debug mód</string>
     <string name="title_activity_settings">Beállítások</string>
     <string name="pref_language_dialog_title">Újraindítás szükséges</string>

@@ -45,6 +45,15 @@
             android:summary="@string/pref_summary_notifications"
             android:key="@string/pref_key_notifications"/>
 
+        <PreferenceScreen
+            android:title="@string/pref_title_notifications_routes">
+
+            <intent
+                android:targetPackage="@string/PACKAGE_NAME_REAL"
+                android:targetClass="com.ofalvai.bpinfo.ui.notifications.NotificationsActivity" />
+
+        </PreferenceScreen>
+
     </PreferenceCategory>
 
     <PreferenceCategory
