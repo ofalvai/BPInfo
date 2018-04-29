@@ -17,8 +17,8 @@ class NotificationsPresenter : BasePresenter<NotificationsContract.View>(),
     @Inject lateinit var routeListClient: RouteListClient
     @Inject lateinit var subscriptionClient: SubscriptionClient
 
-    private var routeListResponse: List<Route>? = null
-    private var subscribedRouteIDListResponse: List<String>? = null
+    private var routeList: List<Route>? = null
+    private var subscribedRouteIDList: MutableList<String>? = null
 
     init {
         BpInfoApplication.injector.inject(this)
@@ -29,10 +29,10 @@ class NotificationsPresenter : BasePresenter<NotificationsContract.View>(),
     }
 
     override fun onRouteListResponse(routeList: List<Route>) {
-        routeListResponse = routeList
+        this.routeList = routeList
         view?.displayRouteList(routeList)
 
-        subscribedRouteIDListResponse?.let {
+        subscribedRouteIDList?.let {
             displaySubscribedRoutes(it, routeList)
         }
     }
@@ -43,6 +43,12 @@ class NotificationsPresenter : BasePresenter<NotificationsContract.View>(),
     }
 
     override fun subscribeTo(routeID: String) {
+        subscribedRouteIDList?.let {
+            if (it.contains(routeID)) {
+                return
+            }
+        }
+
         view?.showProgress(true)
         subscriptionClient.postSubscription(routeID, this)
     }
@@ -65,17 +71,24 @@ class NotificationsPresenter : BasePresenter<NotificationsContract.View>(),
     override fun onPostSubscriptionResponse(subscription: RouteSubscription) {
         view?.showProgress(false)
 
-        val route: Route? = routeListResponse?.find { it.id == subscription.routeID }
+        subscribedRouteIDList?.let {
+            if (it.contains(subscription.routeID)) {
+                return
+            }
+        }
 
+        subscribedRouteIDList?.add(subscription.routeID)
+
+        val route: Route? = routeList?.find { it.id == subscription.routeID }
         route?.let {
             view?.addSubscribedRoute(it)
         }
     }
 
     override fun onGetSubscriptionResponse(routeIDList: List<String>) {
-        subscribedRouteIDListResponse = routeIDList
+        subscribedRouteIDList = routeIDList.toMutableList()
 
-        routeListResponse?.let {
+        routeList?.let {
             displaySubscribedRoutes(routeIDList, it)
         }
     }
@@ -83,10 +96,11 @@ class NotificationsPresenter : BasePresenter<NotificationsContract.View>(),
     override fun onDeleteSubscriptionResponse(subscription: RouteSubscription) {
         view?.showProgress(false)
 
-        val route: Route? = routeListResponse?.find { it.id == subscription.routeID }
+        subscribedRouteIDList?.removeAll { it == subscription.routeID }
 
+        val route: Route? = routeList?.find { it.id == subscription.routeID }
         route?.let {
-            view?.removeSubscribedRoute(route)
+            view?.removeSubscribedRoute(it)
         }
     }
 
