@@ -137,7 +137,6 @@ dependencies {
     implementation 'org.sufficientlysecure:html-textview:3.4'
     implementation 'com.jakewharton.threetenabp:threetenabp:1.0.5'
     implementation 'com.jakewharton:process-phoenix:2.0.0'
-    implementation 'com.jakewharton:butterknife:8.8.1'
     implementation 'org.greenrobot:eventbus:3.1.1'
     implementation "com.google.firebase:firebase-core:$firebaseVersion"
     implementation "com.google.firebase:firebase-perf:$firebaseVersion"
@@ -149,7 +148,6 @@ dependencies {
         transitive = true
     }
     kapt 'com.google.dagger:dagger-compiler:2.13'
-    kapt 'com.jakewharton:butterknife-compiler:8.8.1'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2') {

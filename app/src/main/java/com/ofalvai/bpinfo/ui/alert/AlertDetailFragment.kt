@@ -36,7 +36,6 @@ import android.view.WindowManager
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
-import butterknife.ButterKnife
 import com.ofalvai.bpinfo.BpInfoApplication
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.model.Alert
@@ -118,7 +117,6 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
                               savedInstanceState: Bundle?): View? {
         // Note: container is null because this is a subclass on DialogFragment
         val view = inflater.inflate(R.layout.fragment_alert_detail, container, false)
-        ButterKnife.bind(this, view)
         return view
     }
 
