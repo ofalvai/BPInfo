@@ -30,7 +30,7 @@ class SubscriptionClient @Inject constructor(private val requestQueue: RequestQu
     }
 
     companion object {
-        private const val BASE_URL = "https://bpinfo-backend.herokuapp.com/api/v1/"
+        private const val BASE_URL = "https://bpinfo-backend-api.herokuapp.com/api/v1/"
         private const val SUBSCRIPTION_URL = BASE_URL + "subscription"
 
         private const val PATH_REPLACE_TOKEN = "replaceToken"
