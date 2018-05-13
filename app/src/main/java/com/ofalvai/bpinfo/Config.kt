@@ -21,17 +21,31 @@ import org.threeten.bp.format.DateTimeFormatter
 
 object Config {
 
-    const val FUTAR_API_BASE_URL = "http://futar.bkk.hu/bkk-utvonaltervezo-api/ws/otp/api/where/"
+    object Url {
 
-    /**
-     * Time after the alert list is considered outdated when the user returns to the activity
-     */
-    const val REFRESH_THRESHOLD_SEC = 30
+        const val BACKEND = BuildConfig.BACKEND_URL
 
-    /**
-     * Time before an alert is considered "recent".
-     */
-    const val ALERT_RECENT_THRESHOLD_HOURS = 24
+        private const val FIREBASE_BACKEND = "https://bpinfo-26f36.firebaseapp.com"
+
+        const val PRIVACY_POLICY = "$FIREBASE_BACKEND/privacy.html"
+
+        const val NOTICES = "$FIREBASE_BACKEND/notices.json"
+
+        const val SOURCE_CODE = "https://github.com/ofalvai/BPInfo"
+
+    }
+
+    object Behavior {
+        /**
+         * Time after the alert list is considered outdated when the user returns to the activity
+         */
+        const val REFRESH_THRESHOLD_SEC = 30
+
+        /**
+         * Time before an alert is considered "recent".
+         */
+        const val ALERT_RECENT_THRESHOLD_HOURS = 24
+    }
 
     @JvmField
     val FORMATTER_TIME: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
@@ -43,12 +57,4 @@ object Config {
     val FORMATTER_DATE_YEAR: DateTimeFormatter = DateTimeFormatter.ofPattern("YYYY MMM d. EEEE ")
 
     const val DATE_SEPARATOR = " ➔ "
-
-    const val SOURCE_CODE_URL = "https://github.com/ofalvai/BPInfo"
-
-    const val BACKEND_URL = BuildConfig.BACKEND_URL
-
-    const val PRIVACY_POLICY_URL = BACKEND_URL + "/privacy.html"
-
-    const val BACKEND_NOTICE_PATH = "notices.json"
 }

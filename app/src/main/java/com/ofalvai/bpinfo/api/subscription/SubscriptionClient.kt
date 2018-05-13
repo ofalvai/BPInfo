@@ -8,6 +8,7 @@ import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
 import com.google.firebase.iid.FirebaseInstanceId
+import com.ofalvai.bpinfo.Config
 import com.ofalvai.bpinfo.model.RouteSubscription
 import com.ofalvai.bpinfo.util.addTo
 import org.json.JSONArray
@@ -30,8 +31,7 @@ class SubscriptionClient @Inject constructor(private val requestQueue: RequestQu
     }
 
     companion object {
-        private const val BASE_URL = "https://bpinfo-backend-api.herokuapp.com/api/v1/"
-        private const val SUBSCRIPTION_URL = BASE_URL + "subscription"
+        private const val SUBSCRIPTION_URL = Config.Url.BACKEND + "subscription"
 
         private const val PATH_REPLACE_TOKEN = "replaceToken"
 

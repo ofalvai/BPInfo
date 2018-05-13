@@ -19,7 +19,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.github.gfx.ribbonizer'
 apply plugin: 'io.fabric'
-apply plugin: 'com.google.firebase.firebase-perf'
+// apply plugin: 'com.google.firebase.firebase-perf' TODO: re-enable before release
 
 // Create a variable called keystorePropertiesFile, and initialize it to your
 // keystore.properties file, in the rootProject folder.
@@ -60,7 +60,6 @@ android {
 
         resConfigs "en", "hu"
         resValue "string", "APP_VERSION", appVersionName
-        buildConfigField "String", "BACKEND_URL", "\"${localConfig.backendUrl}\""
         manifestPlaceholders = [fabricApiKey: localConfig.fabricApiKey]
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -68,7 +67,6 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
-
             resValue "string", "PACKAGE_NAME_REAL", "com.ofalvai.bpinfo.debug"
         }
 
@@ -77,28 +75,35 @@ android {
             shrinkResources true
             debuggable false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-
             resValue "string", "PACKAGE_NAME_REAL", "com.ofalvai.bpinfo"
         }
     }
 
-    flavorDimensions "data"
+    flavorDimensions "network", "backend"
 
     productFlavors {
-        prod {
-            dimension "data"
+        live {
+            dimension "network"
         }
         mock {
+            dimension "network"
             applicationIdSuffix ".mock"
-            dimension "data"
+        }
+        prod {
+            dimension "backend"
+            buildConfigField "String", "BACKEND_URL", '"https://bpinfo-backend-api.herokuapp.com/api/v1/"'
+        }
+        staging {
+            dimension "backend"
+            buildConfigField "String", "BACKEND_URL", '"https://bpinfo-backend-api.herokuapp.com/api/v1/"'
         }
     }
 
     packagingOptions {
-        exclude 'protobuf.meta' // 25.3 KB
-        exclude 'error_prone/**' // 93 B
-        exclude 'jsr305_annotations/**' // 104 B
-        exclude 'third_party/java_src/error_prone/**' // 331 B
+        exclude 'protobuf.meta'
+        exclude 'error_prone/**'
+        exclude 'jsr305_annotations/**'
+        exclude 'third_party/java_src/error_prone/**'
     }
 }
 

@@ -18,7 +18,6 @@ package com.ofalvai.bpinfo.api.notice
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.net.Uri
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.VolleyError
@@ -54,12 +53,10 @@ class NoticeClient
     }
 
     fun fetchNotice(noticeListener: NoticeListener, languageCode: String) {
-        val url = Uri.parse(Config.BACKEND_URL).buildUpon()
-                .appendEncodedPath(Config.BACKEND_NOTICE_PATH)
-                .build()
+        val url = Config.Url.NOTICES
 
         val request = JsonArrayRequest(
-                url.toString(),
+                url,
                 Response.Listener { response ->
                     onResponseCallback(response, noticeListener, languageCode)
                 },
@@ -67,7 +64,7 @@ class NoticeClient
         )
 
         // Invalidating Volley's cache for this URL to always get the latest notice
-        requestQueue.cache.remove(url.toString())
+        requestQueue.cache.remove(url)
         requestQueue.add(request)
     }
 

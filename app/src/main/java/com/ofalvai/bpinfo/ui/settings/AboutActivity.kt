@@ -48,14 +48,14 @@ class AboutActivity : BaseActivity() {
         sourceCodeView.underline()
         sourceCodeView.setOnClickListener {
             val sourceCodeIntent = Intent(Intent.ACTION_VIEW)
-            sourceCodeIntent.data = Uri.parse(Config.SOURCE_CODE_URL)
+            sourceCodeIntent.data = Uri.parse(Config.Url.SOURCE_CODE)
             startActivity(sourceCodeIntent)
         }
 
         privacyPolicyView.underline()
         privacyPolicyView.setOnClickListener {
             val privacyPolicyIntent = Intent(Intent.ACTION_VIEW)
-            privacyPolicyIntent.data = Uri.parse(Config.PRIVACY_POLICY_URL)
+            privacyPolicyIntent.data = Uri.parse(Config.Url.PRIVACY_POLICY)
             startActivity(privacyPolicyIntent)
         }
     }

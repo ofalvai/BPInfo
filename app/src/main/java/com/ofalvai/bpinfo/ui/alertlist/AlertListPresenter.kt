@@ -142,7 +142,7 @@ class AlertListPresenter(private val alertListType: AlertListType)
      * Initiates a list update if enough time has passed since the last update
      */
     override fun updateIfNeeded(): Boolean {
-        val refreshThreshold = Duration.ofSeconds(Config.REFRESH_THRESHOLD_SEC.toLong())
+        val refreshThreshold = Duration.ofSeconds(Config.Behavior.REFRESH_THRESHOLD_SEC.toLong())
         @Suppress("LiftReturnOrAssignment")
         if (lastUpdate.plus(refreshThreshold).isBefore(LocalDateTime.now())) {
             fetchAlertList()

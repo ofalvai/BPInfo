@@ -27,7 +27,6 @@ import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.crashlytics.android.Crashlytics
 import com.ofalvai.bpinfo.BuildConfig
-import com.ofalvai.bpinfo.Config
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.api.AlertApiClient
 import com.ofalvai.bpinfo.api.AlertListErrorMessage
@@ -157,7 +156,7 @@ class FutarApiClient
     }
 
     private fun buildUri(): Uri {
-        val builder = Uri.parse(Config.FUTAR_API_BASE_URL).buildUpon()
+        val builder = Uri.parse(AlertSearchContract.BASE_URL).buildUpon()
                 .appendEncodedPath(AlertSearchContract.API_ENDPOINT)
                 .appendQueryParameter("key", QUERY_API_KEY)
                 .appendQueryParameter("version", QUERY_API_VERSION)

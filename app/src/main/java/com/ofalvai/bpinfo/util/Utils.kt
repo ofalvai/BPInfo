@@ -117,7 +117,7 @@ fun isRouteVisuallyDuplicate(routeToTest: Route, routes: List<Route>): Boolean {
  */
 fun Alert.isRecent(): Boolean {
     val startPlusThreshold: ZonedDateTime = apiTimestampToDateTime(start)
-        .plusHours(Config.ALERT_RECENT_THRESHOLD_HOURS.toLong())
+        .plusHours(Config.Behavior.ALERT_RECENT_THRESHOLD_HOURS.toLong())
 
     return startPlusThreshold.isAfter(ZonedDateTime.now())
 }

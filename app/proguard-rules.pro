@@ -1,6 +1,3 @@
-## Joda Time 2.3
--dontwarn org.joda.time.**
-
 ## Fabric
 -keepattributes *Annotation*
 -keepattributes SourceFile,LineNumberTable

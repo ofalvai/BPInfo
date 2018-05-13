@@ -3,6 +3,7 @@ package com.ofalvai.bpinfo.api.bkkinfo
 import android.graphics.Color
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
+import com.ofalvai.bpinfo.Config
 import com.ofalvai.bpinfo.model.Route
 import com.ofalvai.bpinfo.model.RouteType
 import org.json.JSONException
@@ -19,7 +20,7 @@ class RouteListClient(private val requestQueue: RequestQueue) {
 
     companion object {
 
-        const val URL = "https://bpinfo-backend-api.herokuapp.com/api/v1/routes"
+        const val URL = Config.Url.BACKEND + "routes"
 
         const val ROUTE_ID_UNKNOWN = "UNKNOWN"
 
