@@ -107,7 +107,7 @@ class BkkInfoClient
 
         val url = buildAlertListUrl(params)
 
-        Timber.i("API request: " + url.toString())
+        Timber.i("API request: %s", url.toString())
 
         val request = JsonObjectRequest(
                 url.toString(),
@@ -125,7 +125,7 @@ class BkkInfoClient
                             params: AlertRequestParams) {
         val url = buildAlertDetailUrl(params, id)
 
-        Timber.i("API request: " + url.toString())
+        Timber.i("API request: %s", url.toString())
 
         val request = JsonObjectRequest(
                 url.toString(), null,
@@ -396,7 +396,7 @@ class BkkInfoClient
             routes.add(route)
         }
 
-        Collections.sort(routes)
+        routes.sort()
 
         return routes
     }
@@ -537,11 +537,11 @@ class BkkInfoClient
         var backgroundColor: Int
         var textColor: Int
         try {
-            backgroundColor = Color.parseColor("#" + background)
-            textColor = Color.parseColor("#" + text)
+            backgroundColor = Color.parseColor("#$background")
+            textColor = Color.parseColor("#$text")
         } catch (ex: IllegalArgumentException) {
-            backgroundColor = Color.parseColor("#" + defaultBackground)
-            textColor = Color.parseColor("#" + defaultText)
+            backgroundColor = Color.parseColor("#$defaultBackground")
+            textColor = Color.parseColor("#$defaultText")
         }
 
         return intArrayOf(backgroundColor, textColor)

@@ -111,7 +111,7 @@ class FutarApiClient
 
         val uri = buildUri()
 
-        Timber.i("API request: " + uri.toString())
+        Timber.i("API request: %s", uri.toString())
 
         val request = JsonObjectRequest(
                 uri.toString(), null,
@@ -292,7 +292,7 @@ class FutarApiClient
 
                 // Replacement routes are inconsistent and unnecessary to display
                 if (!route.isReplacement()) {
-                    routeMap.put(route.id, route)
+                    routeMap[route.id] = route
                 }
             } catch (ex: JSONException) {
                 Crashlytics.log(Log.ERROR, TAG, "Route parse: failed at index " + i + ":\n" + routeNode.toString())
@@ -332,7 +332,7 @@ class FutarApiClient
         try {
             return RouteType.valueOf(type)
         } catch (ex: IllegalArgumentException) {
-            Crashlytics.log(Log.WARN, TAG, "Route parse: failed to parse route type to enum: " + type)
+            Crashlytics.log(Log.WARN, TAG, "Route parse: failed to parse route type to enum: $type")
         }
 
         return RouteType._OTHER_

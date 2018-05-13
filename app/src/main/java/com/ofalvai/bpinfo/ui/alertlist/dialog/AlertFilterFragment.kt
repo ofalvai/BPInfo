@@ -128,7 +128,7 @@ class AlertFilterFragment : DialogFragment() {
                 selectedRouteTypes?.remove(type)
             }
         } else {
-            Timber.d("Unable to find a RouteType to index " + which)
+            Timber.d("Unable to find a RouteType to index %s", which)
         }
     }
 
@@ -154,7 +154,7 @@ class AlertFilterFragment : DialogFragment() {
             if (type != null) {
                 checkedItems[i] = selectedRouteTypes != null && selectedRouteTypes!!.contains(type)
             } else {
-                Timber.d("Unable to find a RouteType to index " + i)
+                Timber.d("Unable to find a RouteType to index %s", i)
             }
         }
 

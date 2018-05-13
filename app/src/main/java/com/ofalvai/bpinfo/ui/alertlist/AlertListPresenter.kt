@@ -92,14 +92,16 @@ class AlertListPresenter(private val alertListType: AlertListType)
      * calls the appropriate callback.
      */
     override fun fetchAlertList() {
-        if (context.hasNetworkConnection()) {
-            alertApiClient.fetchAlertList(alertRequestParams)
-        } else if (unfilteredAlerts == null) {
-            // Nothing was displayed previously, showing a full error view
-            view?.displayNetworkError(NoConnectionError())
-        } else {
-            // A list was loaded previously, we don't clear that, only display a warning.
-            view?.displayNoNetworkWarning()
+        when {
+            context.hasNetworkConnection() -> alertApiClient.fetchAlertList(alertRequestParams)
+            unfilteredAlerts == null -> {
+                // Nothing was displayed previously, showing a full error view
+                view?.displayNetworkError(NoConnectionError())
+            }
+            else -> {
+                // A list was loaded previously, we don't clear that, only display a warning.
+                view?.displayNoNetworkWarning()
+            }
         }
     }
 

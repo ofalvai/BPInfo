@@ -68,11 +68,9 @@
     </string-array>
     <string name="pref_category_other">Egyéb</string>
     <string name="pref_title_send_bugreport">Hibajelentés</string>
-    <string name="pref_title_send_bugreport_bkk">Hibajelentés a BKK-nak</string>
     <string name="pref_title_rate">App értékelése</string>
     <string name="pref_title_language">Nyelv</string>
     <string name="pref_description_send_bugreport">Ha az alkalmazással van gond</string>
-    <string name="pref_description_send_bugreport_bkk">Ha az adatokkal van gond (FUTÁR)</string>
     <string name="pref_description_rate">Értékeld a Play Store-ban, ha tetszik az app</string>
     <string name="pref_category_notifications">Értesítések</string>
     <string name="pref_title_notifications">Értesítés beállítások</string>
@@ -86,8 +84,6 @@
     <string name="pref_language_dialog_negative_button">Később</string>
     <string name="debog_mode_off">Debug mód kikapcsolva</string>
     <string name="debug_mode_on">Debug mód bekapcsolva</string>
-    <string name="email_bkk_subject">FUTÁR API hibajelentés</string>
-    <string name="email_bkk_body">Tisztelt BKK!\n\nA nyilvános FUTÁR API által visszaadott adatokban az alábbi problémát szeretném jelenteni:\n\nÜdvözlettel:\n</string>
     <string name="email_developer_subject">BPInfo visszajelzés</string>
     <string name="title_activity_licences">Licencek</string>
     <string name="alert_label_recent">FRISS</string>

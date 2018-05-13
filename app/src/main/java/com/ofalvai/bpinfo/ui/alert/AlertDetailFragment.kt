@@ -51,8 +51,7 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
 
     companion object {
 
-        @JvmField
-        val FRAGMENT_TAG = "alert_detail"
+        const val FRAGMENT_TAG = "alert_detail"
 
         private const val ARG_ALERT_OBJECT = "alert_object"
 

@@ -99,8 +99,8 @@ class RouteListClient(private val requestQueue: RequestQueue) {
                 longName = null,
                 description = details?.getString(KEY_DESC)?.replace("&nbsp;", ""),
                 type = type,
-                color = Color.parseColor("#" + backgroundColor),
-                textColor = Color.parseColor("#" + textColor),
+                color = Color.parseColor("#$backgroundColor"),
+                textColor = Color.parseColor("#$textColor"),
                 discontinued = discontinued
         )
     }

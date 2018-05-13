@@ -110,10 +110,8 @@
     <string name="pref_title_language">Language</string>
     <string name="pref_category_other">Other</string>
     <string name="pref_title_send_bugreport">Report a problem</string>
-    <string name="pref_title_send_bugreport_bkk">Report a problem to BKK</string>
     <string name="pref_title_rate">Rate the app</string>
     <string name="pref_description_send_bugreport">If there\'s a problem with the app</string>
-    <string name="pref_description_send_bugreport_bkk">If there\'s a problem with data (FUTÁR)</string>
     <string name="pref_description_rate">If you like the app, rate it in the Play Store</string>
     <string name="menu_debug">Debug mode</string>
 
@@ -134,9 +132,6 @@
     <string name="pref_title_notifications_routes">Select routes</string>
     <string name="debug_mode_on">Debug mode enabled</string>
     <string name="debog_mode_off">Debug mode disabled</string>
-    <string name="email_bkk_mailto" translatable="false">mailto:futar@bkk.hu</string>
-    <string name="email_bkk_body">To whom it may concern,\n\nI would like to report a problem in the data returned by the FUTÁR API:\n\nSincerely,\n</string>
-    <string name="email_bkk_subject">FUTÁR API bugreport</string>
     <string name="email_developer_mailto" translatable="false">mailto:oliver.falvai@gmail.com</string>
     <string name="email_developer_subject">BPInfo feedback</string>
     <string name="title_activity_licences">Licenses</string>

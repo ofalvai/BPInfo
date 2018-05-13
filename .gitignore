@@ -40,6 +40,5 @@ local.properties
 ehthumbs.db
 Thumbs.db
 
-*.apk
 /**/keystore.properties
 /**/fabric.properties

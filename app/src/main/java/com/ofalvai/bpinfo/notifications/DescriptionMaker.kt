@@ -96,7 +96,7 @@ class DescriptionMaker {
                     return routeList
                 } else {
                     val name = getLocalizedRouteType(context, routeType)
-                    return routeList + " $name"
+                    return "$routeList $name"
                 }
             } else {
                 return ""

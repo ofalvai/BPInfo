@@ -21,6 +21,7 @@ open class BasePresenter<V : MvpView> : MvpPresenter<V> {
     var view: V? = null
         private set
 
+    @Suppress("MemberVisibilityCanBePrivate")
     val isViewAttached: Boolean
         get() = view != null
 
