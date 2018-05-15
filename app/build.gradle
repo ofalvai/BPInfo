@@ -62,6 +62,8 @@ android {
         resValue "string", "APP_VERSION", appVersionName
         manifestPlaceholders = [fabricApiKey: localConfig.fabricApiKey]
 
+        vectorDrawables.useSupportLibrary = true
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

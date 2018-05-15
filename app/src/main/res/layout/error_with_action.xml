@@ -16,14 +16,15 @@
   -->
 
 <LinearLayout android:id="@+id/error_with_action"
-              xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical"
-              android:padding="16dp"
-              android:visibility="gone"
-              tools:visibility="visible">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:visibility="gone"
+    tools:visibility="visible"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
         android:id="@+id/error_icon"
@@ -31,7 +32,7 @@
         android:layout_height="48dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="16dp"
-        android:background="@drawable/ic_error_icon"
+        app:srcCompat="@drawable/ic_error_icon"
         android:contentDescription="@string/error_list_display"/>
 
     <TextView
