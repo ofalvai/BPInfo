@@ -30,9 +30,6 @@
         android:supportsRtl="false"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="${fabricApiKey}" />
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
