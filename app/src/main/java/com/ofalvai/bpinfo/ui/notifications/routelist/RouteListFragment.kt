@@ -40,9 +40,9 @@ class RouteListFragment : Fragment(), RouteListContract.View, RouteClickListener
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater?.inflate(R.layout.fragment_route_list, container, false)
+        val view = inflater.inflate(R.layout.fragment_route_list, container, false)
 
         savedInstanceState?.let {
             routeType = if (savedInstanceState.getSerializable(KEY_ROUTE_TYPE) != null) {
@@ -58,7 +58,7 @@ class RouteListFragment : Fragment(), RouteListContract.View, RouteClickListener
         return view
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         initRecyclerView()
@@ -69,8 +69,8 @@ class RouteListFragment : Fragment(), RouteListContract.View, RouteClickListener
         super.onDestroy()
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
-        outState?.putSerializable(KEY_ROUTE_TYPE, routeType)
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putSerializable(KEY_ROUTE_TYPE, routeType)
         super.onSaveInstanceState(outState)
     }
 
@@ -84,7 +84,7 @@ class RouteListFragment : Fragment(), RouteListContract.View, RouteClickListener
     }
 
     private fun initRecyclerView() {
-        adapter = RouteAdapter(context, this)
+        adapter = RouteAdapter(requireContext(), this)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.setHasFixedSize(true)

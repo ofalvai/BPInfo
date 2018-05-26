@@ -29,7 +29,7 @@ keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 def appVersionCode = 14
 def appVersionName = "1.4.2"
-def supportLibVersion = "26.1.0"
+def supportLibVersion = "27.1.1"
 
 android {
     signingConfigs {
@@ -40,14 +40,14 @@ android {
             storePassword keystoreProperties['storePassword']
         }
     }
-    compileSdkVersion 26
+    compileSdkVersion 27
 
     defaultConfig {
         applicationId "com.ofalvai.bpinfo"
         signingConfig signingConfigs.config
 
         minSdkVersion 16
-        targetSdkVersion 26
+        targetSdkVersion 27
 
         versionCode appVersionCode
         versionName appVersionName

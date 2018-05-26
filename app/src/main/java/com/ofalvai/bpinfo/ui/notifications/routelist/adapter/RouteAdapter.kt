@@ -22,15 +22,15 @@ class RouteAdapter(private val context: Context,
             notifyDataSetChanged()
         }
 
-    override fun onBindViewHolder(holder: RouteViewHolder?, position: Int) {
-        holder?.bind(routeList[position])
+    override fun onBindViewHolder(holder: RouteViewHolder, position: Int) {
+        holder.bind(routeList[position])
     }
 
     override fun getItemCount(): Int {
         return routeList.size
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RouteViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RouteViewHolder {
         val inflater = LayoutInflater.from(context)
         val itemView = inflater.inflate(R.layout.list_item_route, parent, false)
         val viewHolder = RouteViewHolder(itemView)

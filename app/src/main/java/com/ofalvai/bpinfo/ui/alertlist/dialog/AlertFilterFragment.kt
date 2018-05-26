@@ -73,7 +73,7 @@ class AlertFilterFragment : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return AlertDialog.Builder(activity)
+        return AlertDialog.Builder(requireContext())
                 .setTitle(R.string.filter_title)
                 .setMultiChoiceItems(R.array.route_types, defaultCheckedItems(), this::onItemClick)
                 .setPositiveButton(R.string.filter_positive_button, this::onApplyClick)
@@ -98,7 +98,7 @@ class AlertFilterFragment : DialogFragment() {
     override fun onDestroyView() {
         filterListener?.onFilterDismissed()
 
-        BpInfoApplication.getRefWatcher(context).watch(this)
+        BpInfoApplication.getRefWatcher(requireContext()).watch(this)
         super.onDestroyView()
     }
 
@@ -136,7 +136,7 @@ class AlertFilterFragment : DialogFragment() {
         if (filterListener != null && selectedRouteTypes != null) {
             filterListener!!.onFilterChanged(selectedRouteTypes!!)
 
-            Analytics.logFilterApplied(context, selectedRouteTypes!!)
+            Analytics.logFilterApplied(requireContext(), selectedRouteTypes!!)
         }
     }
 

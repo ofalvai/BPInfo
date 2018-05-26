@@ -72,13 +72,13 @@ class RouteListPagerAdapter(fm: FragmentManager,
         })
     }
 
-    override fun instantiateItem(container: ViewGroup?, position: Int): Any {
+    override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val fragment = super.instantiateItem(container, position) as Fragment
         registeredFragments.put(position, fragment)
         return fragment
     }
 
-    override fun destroyItem(container: ViewGroup?, position: Int, `object`: Any?) {
+    override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
         registeredFragments.remove(position)
         super.destroyItem(container, position, `object`)
     }

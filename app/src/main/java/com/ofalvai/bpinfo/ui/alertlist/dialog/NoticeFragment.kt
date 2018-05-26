@@ -51,7 +51,7 @@ class NoticeFragment : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return AlertDialog.Builder(activity)
+        return AlertDialog.Builder(requireContext())
                 .setTitle(R.string.dialog_notice_title)
                 .setMessage(Html.fromHtml(noticeText))
                 .setPositiveButton(R.string.dialog_notice_positive_button) { _, _ -> dismiss() }
@@ -65,6 +65,6 @@ class NoticeFragment : DialogFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        BpInfoApplication.getRefWatcher(context).watch(this)
+        BpInfoApplication.getRefWatcher(requireContext()).watch(this)
     }
 }

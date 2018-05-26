@@ -61,10 +61,9 @@ class AlertMessagingService : FirebaseMessagingService() {
         val pendingIntent =
             PendingIntent.getActivity(this, REQUEST_CODE, intent, PendingIntent.FLAG_ONE_SHOT)
 
-        val bigTextStyle = NotificationCompat.BigTextStyle().apply {
-            setBigContentTitle(title)
-            bigText(text)
-        }
+        val bigTextStyle = NotificationCompat.BigTextStyle()
+        bigTextStyle.setBigContentTitle(title)
+        bigTextStyle.bigText(text)
 
         val channelId = getString(R.string.notif_channel_alerts_id)
 

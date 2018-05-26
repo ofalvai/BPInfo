@@ -108,7 +108,7 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
         // If this fragment got recreated while the filter dialog was open, we need to update
         // the listener reference
         if (savedInstanceState != null) {
-            val filterFragment = fragmentManager.findFragmentByTag(FILTER_DIALOG_TAG) as AlertFilterFragment?
+            val filterFragment = requireFragmentManager().findFragmentByTag(FILTER_DIALOG_TAG) as AlertFilterFragment?
 
             // Only attach to the filter fragment if it filters our type of list
             if (filterFragment != null && alertListType == filterFragment.alertListType) {
@@ -120,14 +120,14 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
         return view
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         setupRecyclerView()
 
         refreshLayout.setOnRefreshListener {
             initRefresh()
-            Analytics.logManualRefresh(context)
+            Analytics.logManualRefresh(requireContext())
         }
 
         initRefresh()
@@ -151,8 +151,8 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_item_filter_alerts -> displayFilterDialog()
-            R.id.menu_item_settings -> startActivity(SettingsActivity.newIntent(context))
-            R.id.menu_item_notifications -> startActivity(NotificationsActivity.newIntent(context))
+            R.id.menu_item_settings -> startActivity(SettingsActivity.newIntent(requireContext()))
+            R.id.menu_item_notifications -> startActivity(NotificationsActivity.newIntent(requireContext()))
         }
         return true
     }
@@ -161,7 +161,7 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
         super.onStart()
 
         val updating = presenter.updateIfNeeded()
-        if (updating && context.hasNetworkConnection()) {
+        if (updating && requireActivity().hasNetworkConnection()) {
             setUpdating(true)
         }
     }
@@ -172,7 +172,7 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
     }
 
     override fun onDestroyView() {
-        BpInfoApplication.getRefWatcher(context).watch(this)
+        BpInfoApplication.getRefWatcher(requireContext()).watch(this)
         super.onDestroyView()
     }
 
@@ -252,7 +252,7 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
             text = Html.fromHtml(noticeText)
             setOnClickListener {
                 val fragment = NoticeFragment.newInstance(noticeText)
-                val transaction = activity.supportFragmentManager
+                val transaction = requireActivity().supportFragmentManager
                         .beginTransaction()
                 fragment.show(transaction, NOTICE_DIALOG_TAG)
 
@@ -273,11 +273,11 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
 
     override fun displayAlertDetail(alert: Alert) {
         val alertDetailFragment = AlertDetailFragment.newInstance(alert, presenter)
-        alertDetailFragment.show(activity.supportFragmentManager, AlertDetailFragment.FRAGMENT_TAG)
+        alertDetailFragment.show(requireFragmentManager(), AlertDetailFragment.FRAGMENT_TAG)
     }
 
     override fun updateAlertDetail(alert: Alert) {
-        val manager = activity.supportFragmentManager
+        val manager = requireFragmentManager()
         val fragment = manager.findFragmentByTag(AlertDetailFragment.FRAGMENT_TAG) as AlertDetailFragment?
 
         // It's possible that the presenter calls this method instantly, when the fragment is not
@@ -286,7 +286,7 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
     }
 
     override fun displayAlertDetailError() {
-        val manager = activity.supportFragmentManager
+        val manager = requireFragmentManager()
         val fragment = manager.findFragmentByTag(AlertDetailFragment.FRAGMENT_TAG) as AlertDetailFragment?
 
         // It's possible that the presenter calls this method instantly, when the fragment is not
@@ -297,7 +297,7 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
     override fun getAlertListType() = alertListType
 
     private fun setupRecyclerView() {
-        alertAdapter = AlertAdapter(ArrayList(), activity, this)
+        alertAdapter = AlertAdapter(ArrayList(), requireContext(), this)
         alertRecyclerView.adapter = alertAdapter
 
         val layoutManager = LinearLayoutManager(activity)
@@ -326,10 +326,10 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
         val initialFilter = presenter.getFilter() ?: mutableSetOf()
 
         val filterFragment = AlertFilterFragment.newInstance(this, initialFilter, alertListType)
-        val transaction = activity.supportFragmentManager.beginTransaction()
+        val transaction = requireFragmentManager().beginTransaction()
         filterFragment.show(transaction, FILTER_DIALOG_TAG)
 
-        Analytics.logFilterDialogOpened(context)
+        Analytics.logFilterDialogOpened(requireContext())
     }
 
     /**
@@ -371,7 +371,7 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
         if (selectedTypes.isEmpty()) {
             filterWarningView.visibility = View.GONE
         } else {
-            val typeList = selectedTypes.joinToString(separator = ", ") { it.getName(context) }
+            val typeList = selectedTypes.joinToString(separator = ", ") { it.getName(requireContext()) }
             filterWarningView.text = getString(R.string.filter_message, typeList)
             filterWarningView.visibility = View.VISIBLE
         }

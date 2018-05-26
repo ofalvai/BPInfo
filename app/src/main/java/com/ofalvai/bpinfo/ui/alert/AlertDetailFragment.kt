@@ -105,11 +105,11 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
             alert = savedInstanceState.getSerializable(ARG_ALERT_OBJECT) as Alert
         }
 
-        Analytics.logAlertContentView(context, alert)
+        Analytics.logAlertContentView(requireContext(), alert)
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
-        outState?.putSerializable(ARG_ALERT_OBJECT, alert)
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putSerializable(ARG_ALERT_OBJECT, alert)
         super.onSaveInstanceState(outState)
     }
 
@@ -120,7 +120,7 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
         return view
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         displayAlert(alert)
@@ -156,14 +156,14 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
         super.onStart()
 
         // Bottom sheets on tablets should have a smaller width than the screen width.
-        val width = context.resources.getDimensionPixelSize(R.dimen.bottom_sheet_width)
+        val width = requireContext().resources.getDimensionPixelSize(R.dimen.bottom_sheet_width)
         val actualWidth = if (width > 0) width else ViewGroup.LayoutParams.MATCH_PARENT
         dialog.window?.setLayout(actualWidth, ViewGroup.LayoutParams.MATCH_PARENT)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        BpInfoApplication.getRefWatcher(context).watch(this)
+        BpInfoApplication.getRefWatcher(requireContext()).watch(this)
     }
 
     fun updateAlert(alert: Alert) {
@@ -229,7 +229,7 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
 
         titleTextView.text = alert.header
 
-        val dateString = alert.formatDate(activity)
+        val dateString = alert.formatDate(requireContext())
         dateTextView.text = dateString
 
         // There are alerts without affected routes, eg. announcements
@@ -238,7 +238,7 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
             // to diplay them again.
             if (!isRouteVisuallyDuplicate(route, displayedRoutes)) {
                 displayedRoutes.add(route)
-                addRouteIcon(activity, routeIconsLayout, route)
+                addRouteIcon(requireContext(), routeIconsLayout, route)
             }
         }
 
@@ -252,8 +252,8 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
             urlTextView.paintFlags = urlTextView.paintFlags or Paint.UNDERLINE_TEXT_FLAG
             urlTextView.setOnClickListener {
                 val url = Uri.parse(alert.url)
-                openCustomTab(activity, url)
-                Analytics.logAlertUrlClick(context, alert)
+                openCustomTab(requireActivity(), url)
+                Analytics.logAlertUrlClick(requireContext(), alert)
             }
         }
     }
