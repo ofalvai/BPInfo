@@ -41,13 +41,14 @@ fun Route.isReplacement(): Boolean {
     /*
       Possible values and meanings:
       BKK_VP: VillamosPótló
+      BKK_V: VillamosPótló
       BKK_OP: Operatív Pótló (Metró, Villamos)
       BKK_TP: TroliPótló
       BKK_HP: HévPótló
       BKK_MP: MetróPótló
       to be continued...
      */
-    val replacementIdPattern = "BKK_(VP|OP|TP|HP|MP)[0-9A-Z]+"
+    val replacementIdPattern = "BKK_(VP?|OP|TP|HP|MP)[0-9A-Z]+"
     return id.matches(replacementIdPattern.toRegex())
 }
 
