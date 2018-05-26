@@ -109,6 +109,16 @@ public class DescriptionMakerTest {
     }
 
     @Test
+    public void multiple_duplicates() {
+        routeMap.put(DATA_KEY_ROUTE_RAIL, "H8|H8|H9");
+
+        String result = DescriptionMaker.makeDescription(routeMap, context);
+
+        String expected = "H8-as, H9-es HÉV";
+        assertEquals("Duplicate routes are omitted", expected, result);
+    }
+
+    @Test
     public void error_noRouteKeyInMap() {
         routeMap.remove(DATA_KEY_ROUTE_SUBWAY);
         routeMap.put(DATA_KEY_ROUTE_BUS, "32");

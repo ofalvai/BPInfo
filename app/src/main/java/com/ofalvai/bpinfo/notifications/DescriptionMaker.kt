@@ -89,7 +89,9 @@ class DescriptionMaker {
                     .split(DATA_KEY_ROUTE_SEPARATOR)
                     .map { it.trim() }
                     .filter { it.isNotEmpty() }
-                    .joinToString(separator = ", ", transform = this::numberPostfixHu)
+                    .map(this::numberPostfixHu)
+                    .distinct()
+                    .joinToString(separator = ", ")
 
                 if (routeType == DATA_KEY_ROUTE_OTHER) {
                     // We don't append the type of route, because the route's shortName is the type itself
