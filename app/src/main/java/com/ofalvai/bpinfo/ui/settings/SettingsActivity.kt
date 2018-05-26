@@ -34,7 +34,7 @@ import com.ofalvai.bpinfo.BpInfoApplication
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.ui.alertlist.AlertListActivity
 import com.ofalvai.bpinfo.util.AppCompatPreferenceActivity
-import com.ofalvai.bpinfo.util.FabricUtils
+import com.ofalvai.bpinfo.util.Analytics
 import com.ofalvai.bpinfo.util.LocaleManager
 import javax.inject.Inject
 
@@ -88,7 +88,7 @@ class SettingsActivity : AppCompatPreferenceActivity(),
         when (key) {
             getString(R.string.pref_key_language) -> {
                 val languageValue = sharedPreferences.getString(key, "default")
-                FabricUtils.logLanguageChange(languageValue)
+                Analytics.logLanguageChange(this, languageValue)
                 showLanguageRestartDialog()
             }
             getString(R.string.pref_key_debug_mode) -> {
@@ -96,12 +96,12 @@ class SettingsActivity : AppCompatPreferenceActivity(),
                 val text =
                     if (state) getString(R.string.debug_mode_on) else getString(R.string.debog_mode_off)
                 Toast.makeText(this, text, Toast.LENGTH_LONG).show()
-                FabricUtils.logDebugMode(state.toString())
+                Analytics.logDebugMode(this, state.toString())
             }
             getString(R.string.pref_key_data_source) -> {
                 Toast.makeText(this, R.string.data_source_changed_refreshed, Toast.LENGTH_SHORT)
                     .show()
-                FabricUtils.logDataSourceChange(mSharedPreferences.getString(key, ""))
+                Analytics.logDataSourceChange(this, mSharedPreferences.getString(key, ""))
 
                 // Recreating AlertListActivity. This relies on BpInfoApplication's preference listener,
                 // which can rebuild the Dagger dependency graph so that the new Activity (and its

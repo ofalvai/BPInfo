@@ -26,8 +26,6 @@ import android.content.res.Configuration
 import android.os.Build
 import android.os.StrictMode
 import android.preference.PreferenceManager
-import com.crashlytics.android.Crashlytics
-import com.crashlytics.android.answers.Answers
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.ofalvai.bpinfo.injection.ApiModule
 import com.ofalvai.bpinfo.injection.AppComponent
@@ -36,7 +34,6 @@ import com.ofalvai.bpinfo.injection.DaggerAppComponent
 import com.ofalvai.bpinfo.util.LocaleManager
 import com.squareup.leakcanary.LeakCanary
 import com.squareup.leakcanary.RefWatcher
-import io.fabric.sdk.android.Fabric
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -78,8 +75,6 @@ class BpInfoApplication : Application(), SharedPreferences.OnSharedPreferenceCha
         injector.inject(this) // Oh the irony...
 
         AndroidThreeTen.init(this)
-
-        Fabric.with(this, Crashlytics(), Answers())
 
         initTimber()
 

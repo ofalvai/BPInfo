@@ -105,7 +105,7 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
             alert = savedInstanceState.getSerializable(ARG_ALERT_OBJECT) as Alert
         }
 
-        FabricUtils.logAlertContentView(alert)
+        Analytics.logAlertContentView(context, alert)
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
@@ -253,7 +253,7 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
             urlTextView.setOnClickListener {
                 val url = Uri.parse(alert.url)
                 openCustomTab(activity, url)
-                FabricUtils.logAlertUrlClick(alert)
+                Analytics.logAlertUrlClick(context, alert)
             }
         }
     }

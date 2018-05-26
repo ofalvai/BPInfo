@@ -25,7 +25,7 @@ import com.ofalvai.bpinfo.BpInfoApplication
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.model.RouteType
 import com.ofalvai.bpinfo.ui.alertlist.AlertListType
-import com.ofalvai.bpinfo.util.FabricUtils
+import com.ofalvai.bpinfo.util.Analytics
 import timber.log.Timber
 
 /**
@@ -136,7 +136,7 @@ class AlertFilterFragment : DialogFragment() {
         if (filterListener != null && selectedRouteTypes != null) {
             filterListener!!.onFilterChanged(selectedRouteTypes!!)
 
-            FabricUtils.logFilterApplied(selectedRouteTypes!!)
+            Analytics.logFilterApplied(context, selectedRouteTypes!!)
         }
     }
 

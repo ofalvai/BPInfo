@@ -127,7 +127,7 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
 
         refreshLayout.setOnRefreshListener {
             initRefresh()
-            FabricUtils.logManualRefresh()
+            Analytics.logManualRefresh(context)
         }
 
         initRefresh()
@@ -256,7 +256,7 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
                         .beginTransaction()
                 fragment.show(transaction, NOTICE_DIALOG_TAG)
 
-                FabricUtils.logNoticeDialogView()
+                Analytics.logNoticeDialogView(context)
             }
         }
     }
@@ -329,7 +329,7 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
         val transaction = activity.supportFragmentManager.beginTransaction()
         filterFragment.show(transaction, FILTER_DIALOG_TAG)
 
-        FabricUtils.logFilterDialogOpened()
+        Analytics.logFilterDialogOpened(context)
     }
 
     /**
