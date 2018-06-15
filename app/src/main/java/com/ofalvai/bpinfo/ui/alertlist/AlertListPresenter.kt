@@ -146,7 +146,7 @@ class AlertListPresenter(private val alertListType: AlertListType)
     override fun updateIfNeeded(): Boolean {
         val refreshThreshold = Duration.ofSeconds(Config.Behavior.REFRESH_THRESHOLD_SEC.toLong())
         @Suppress("LiftReturnOrAssignment")
-        if (lastUpdate.plus(refreshThreshold).isBefore(LocalDateTime.now())) {
+        if (LocalDateTime.now().isAfter(lastUpdate.plus(refreshThreshold))) {
             fetchAlertList()
             fetchNotice()
             return true
@@ -178,6 +178,8 @@ class AlertListPresenter(private val alertListType: AlertListType)
      */
     @Subscribe
     fun onAlertListEvent(message: AlertListMessage) {
+        lastUpdate = LocalDateTime.now()
+
         if (alertListType == AlertListType.ALERTS_TODAY) {
             unfilteredAlerts = message.todayAlerts.toMutableList()
         } else if (alertListType == AlertListType.ALERTS_FUTURE) {
