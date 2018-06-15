@@ -129,14 +129,14 @@ dependencies {
     implementation "com.android.support:recyclerview-v7:$supportLibVersion"
     implementation "com.android.support:design:$supportLibVersion"
     implementation "com.android.support:customtabs:$supportLibVersion"
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
 
     // Firebase
-    implementation 'com.google.firebase:firebase-core:15.0.2'
-    implementation 'com.google.firebase:firebase-perf:15.2.0'
-    implementation 'com.google.firebase:firebase-messaging:15.0.2'
+    implementation 'com.google.firebase:firebase-core:16.0.1'
+    implementation 'com.google.firebase:firebase-perf:16.0.0'
+    implementation 'com.google.firebase:firebase-messaging:17.0.0'
     implementation 'com.firebase:firebase-jobdispatcher:0.8.5'
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.2'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.4'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
@@ -152,7 +152,7 @@ dependencies {
 
     implementation 'org.sufficientlysecure:html-textview:3.4'
 
-    implementation 'com.jakewharton.threetenabp:threetenabp:1.0.5'
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.1.0'
 
     implementation 'com.jakewharton:process-phoenix:2.0.0'
 
