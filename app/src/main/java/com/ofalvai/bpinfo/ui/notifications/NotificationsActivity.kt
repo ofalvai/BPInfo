@@ -21,9 +21,11 @@ import android.view.animation.DecelerateInterpolator
 import android.widget.TextView
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.firebase.iid.FirebaseInstanceId
+import com.ofalvai.bpinfo.Config
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.model.Route
 import com.ofalvai.bpinfo.model.RouteType
+import com.ofalvai.bpinfo.notifications.NotificationMaker
 import com.ofalvai.bpinfo.ui.base.BaseActivity
 import com.ofalvai.bpinfo.ui.notifications.adapter.RouteListPagerAdapter
 import com.ofalvai.bpinfo.ui.notifications.routelist.RouteListContract
@@ -86,6 +88,13 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
         when (item?.itemId) {
             R.id.menu_item_settings -> {
                 startActivity(Intent(this, SettingsActivity::class.java))
+            }
+            R.id.menu_item_test_notification -> {
+                NotificationMaker.make(
+                    this, Config.Behavior.TEST_NOTIFICATION_ALERT_ID,
+                    getString(R.string.notif_test_title),
+                    getString(R.string.notif_test_desc)
+                )
             }
             android.R.id.home -> NavUtils.navigateUpFromSameTask(this)
         }

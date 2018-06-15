@@ -2,6 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/menu_item_test_notification"
+        android:title="@string/menu_test_notification"/>
+
+    <item
         android:id="@+id/menu_item_settings"
         android:title="@string/menu_settings"/>
 

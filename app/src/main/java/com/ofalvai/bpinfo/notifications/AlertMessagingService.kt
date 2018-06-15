@@ -1,25 +1,17 @@
 package com.ofalvai.bpinfo.notifications
 
-import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
-import android.support.v4.app.NotificationCompat
-import android.support.v4.content.ContextCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.ofalvai.bpinfo.R
-import com.ofalvai.bpinfo.ui.alertlist.AlertListActivity
 import com.ofalvai.bpinfo.util.LocaleManager
 import timber.log.Timber
-import java.util.*
-
-const val DATA_KEY_ID = "id"
-const val DATA_KEY_TITLE = "title"
-
-const val REQUEST_CODE = 0
 
 class AlertMessagingService : FirebaseMessagingService() {
+
+    companion object {
+        const val DATA_KEY_ID = "id"
+        const val DATA_KEY_TITLE = "title"
+    }
 
     override fun attachBaseContext(base: Context) {
         // Updating locale
@@ -43,7 +35,7 @@ class AlertMessagingService : FirebaseMessagingService() {
                     Timber.d("Title: $title")
                     Timber.d("Text: $text")
 
-                    createNotification(id, title, text)
+                    NotificationMaker.make(this, id, title, text)
                 } else {
                     Timber.e("Message data is null")
                 }
@@ -52,43 +44,6 @@ class AlertMessagingService : FirebaseMessagingService() {
             }
         } else {
             Timber.e("Message data is empty")
-        }
-    }
-
-    private fun createNotification(id: String, title: String, text: String) {
-        val intent = Intent(this, AlertListActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        val pendingIntent =
-            PendingIntent.getActivity(this, REQUEST_CODE, intent, PendingIntent.FLAG_ONE_SHOT)
-
-        val bigTextStyle = NotificationCompat.BigTextStyle()
-        bigTextStyle.setBigContentTitle(title)
-        bigTextStyle.bigText(text)
-
-        val channelId = getString(R.string.notif_channel_alerts_id)
-
-        val notificationBuilder = NotificationCompat.Builder(this, channelId)
-            .setSmallIcon(R.drawable.ic_notification_default)
-            .setContentTitle(title)
-            .setContentText(text)
-            .setStyle(bigTextStyle)
-            .setAutoCancel(true)
-            .setContentIntent(pendingIntent)
-            .setColor(ContextCompat.getColor(baseContext, R.color.colorPrimary))
-            .setShowWhen(true)
-            .setWhen(Date().time)
-
-        val notificationManager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        val notificationId = parseAlertNumericalId(id)
-        notificationManager.notify(notificationId, notificationBuilder.build())
-    }
-
-    private fun parseAlertNumericalId(id: String): Int {
-        return try {
-            id.split("-")[1].toInt()
-        } catch (ex: Exception) {
-            -1
         }
     }
 }

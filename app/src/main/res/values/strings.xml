@@ -114,6 +114,7 @@
     <string name="pref_description_send_bugreport">If there\'s a problem with the app</string>
     <string name="pref_description_rate">If you like the app, rate it in the Play Store</string>
     <string name="menu_debug">Debug mode</string>
+    <string name="menu_test_notification">Test notification</string>
 
     <string name="pref_key_category_general" translatable="false">category_general</string>
     <string name="pref_key_language" translatable="false">language</string>
@@ -160,5 +161,7 @@
     <string name="notif_remove_dialog_message">Are you sure you want to remove?</string>
     <string name="notif_remove_dialog_positive">Remove</string>
     <string name="notif_subscribed_empty">Choose a route below to follow and receive notifications about.</string>
+    <string name="notif_test_title">This is how a notification would look like</string>
+    <string name="notif_test_desc">Bus 15, 115</string>
 
 </resources>

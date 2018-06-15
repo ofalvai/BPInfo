@@ -16,22 +16,30 @@
 
 package com.ofalvai.bpinfo.ui.alertlist
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.view.ViewPager
 import android.support.v7.widget.Toolbar
 import com.ofalvai.bpinfo.R
+import com.ofalvai.bpinfo.notifications.NotificationMaker
 import com.ofalvai.bpinfo.ui.alertlist.adapter.AlertListPagerAdapter
 import com.ofalvai.bpinfo.ui.base.BaseActivity
 import kotterknife.bindView
 
 class AlertListActivity : BaseActivity() {
 
+    /**
+     * ID of an Alert after a notification launches the Activity.
+     * This is later accessed by [AlertListFragment].
+     */
+    var pendingNavigationAlertId: String? = null
+
     private val viewPager: ViewPager by bindView(R.id.alert_list_pager)
-
     private val tabLayout: TabLayout by bindView(R.id.tabs)
-
     private val toolbar: Toolbar by bindView(R.id.toolbar)
+
+    private lateinit var pagerAdapter: AlertListPagerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,11 +47,30 @@ class AlertListActivity : BaseActivity() {
 
         setSupportActionBar(toolbar)
 
-        val alertListPagerAdapter = AlertListPagerAdapter(supportFragmentManager, this)
+        pagerAdapter = AlertListPagerAdapter(supportFragmentManager, this)
 
-        viewPager.adapter = alertListPagerAdapter
-        viewPager.addOnPageChangeListener(alertListPagerAdapter)
+        viewPager.adapter = pagerAdapter
+        viewPager.addOnPageChangeListener(pagerAdapter)
 
         tabLayout.setupWithViewPager(viewPager, false)
+
+        handlePendingNavigation(intent)
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        handlePendingNavigation(intent)
+    }
+
+    /**
+     * This Activity's launchMode is singleTop, so either onNewIntent() or onCreate() is called.
+     * This method must be called from both.
+     */
+    private fun handlePendingNavigation(intent: Intent?) {
+        pendingNavigationAlertId = intent?.getStringExtra(NotificationMaker.INTENT_EXTRA_ALERT_ID)
+        if (pendingNavigationAlertId != null) {
+            // Prevent triggering it again in the future (eg. back navigation from another Activity)
+            intent?.removeExtra(NotificationMaker.INTENT_EXTRA_ALERT_ID)
+        }
     }
 }

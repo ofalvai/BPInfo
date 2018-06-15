@@ -45,6 +45,11 @@ object Config {
          * Time before an alert is considered "recent".
          */
         const val ALERT_RECENT_THRESHOLD_HOURS = 24
+
+        /**
+         * ID of an alert that should open when clicking the test notification
+         */
+        const val TEST_NOTIFICATION_ALERT_ID = "BKK_bkkinfo-15346"
     }
 
     @JvmField

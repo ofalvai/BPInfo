@@ -42,6 +42,7 @@ import com.ofalvai.bpinfo.ui.notifications.NotificationsActivity
 import com.ofalvai.bpinfo.ui.settings.SettingsActivity
 import com.ofalvai.bpinfo.util.*
 import kotterknife.bindView
+import timber.log.Timber
 import java.util.*
 
 class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragment.AlertFilterListener {
@@ -70,16 +71,13 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
 
     private lateinit var alertListType: AlertListType
 
+    private var pendingNavigationAlertId: String? = null
+
     private val alertRecyclerView: EmptyRecyclerView by bindView(R.id.alerts_recycler_view)
-
     private val refreshLayout: SwipeRefreshLayout by bindView(R.id.alerts_swipe_refresh_layout)
-
     private val errorLayout: LinearLayout by bindView(R.id.error_with_action)
-
     private val filterWarningView: TextView by bindView(R.id.alert_list_filter_active_message)
-
     private val emptyView: TextView by bindView(R.id.empty_view)
-
     private val noticeView: TextView by bindView(R.id.alert_list_notice)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -164,6 +162,10 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
         if (updating && requireActivity().hasNetworkConnection()) {
             setUpdating(true)
         }
+
+        if (activity is AlertListActivity && alertListType == AlertListType.ALERTS_TODAY) {
+            pendingNavigationAlertId = (activity!! as AlertListActivity).pendingNavigationAlertId
+        }
     }
 
     override fun onDestroy() {
@@ -211,6 +213,16 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
             alertAdapter.updateAlertData(alerts, AlertListUpdateCallback())
 
             setUpdating(false)
+
+            pendingNavigationAlertId?.let { id ->
+                val alert: Alert? = alerts.find { it.id == id }
+                if (alert != null) {
+                    launchAlertDetail(alert)
+                    pendingNavigationAlertId = null
+                } else {
+                    Timber.w("Pending alert navigation: no alert found for ID %s", id)
+                }
+            }
         }
     }
 

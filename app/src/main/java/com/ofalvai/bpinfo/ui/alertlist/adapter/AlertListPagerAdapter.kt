@@ -16,8 +16,7 @@ class AlertListPagerAdapter(fm: FragmentManager, private val context: Context)
     : FragmentPagerAdapter(fm), ViewPager.OnPageChangeListener {
 
     companion object {
-
-        const val FRAGMENT_COUNT = 2
+        private const val FRAGMENT_COUNT = 2
     }
 
     // http://stackoverflow.com/a/15261142/745637

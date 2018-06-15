@@ -54,8 +54,6 @@
     <string name="route_trolleybus_alt">trolibusz</string>
     <string name="filter_message">Szűrés: %1$s</string>
     <string name="route_other">Egyéb</string>
-    <string name="menu_settings">Beállítások</string>
-    <string name="pref_category_general">Általános</string>
 
     <string name="pref_language_auto">Automatikus</string>
     <string name="pref_language_hu">Magyar</string>
@@ -101,6 +99,9 @@
     <string name="data_source_changed_refreshed">Az adatok forrása megváltozott</string>
     <string name="about_label_privacy_policy">Adatvédelmi irányelvek</string>
     <string name="menu_notifications_label">Értesítések</string>
+    <string name="menu_settings">Beállítások</string>
+    <string name="menu_test_notification">Próba értesítés</string>
+    <string name="pref_category_general">Általános</string>
 
     <string name="title_activity_notifications">Értesítések</string>
     <string name="notif_channel_alerts_title">Forgalmi változások</string>
@@ -109,5 +110,7 @@
     <string name="notif_remove_dialog_message">Biztosan el akarod távolítani?</string>
     <string name="notif_remove_dialog_positive">Eltávolít</string>
     <string name="notif_subscribed_empty">Válassz egy járatot az alábbiakból, amiről értesítést szeretnél kapni.</string>
+    <string name="notif_test_title">Így nézne ki egy értesítés</string>
+    <string name="notif_test_desc">15-ös, 115-ös busz</string>
 
 </resources>
