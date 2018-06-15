@@ -31,7 +31,7 @@
         android:id="@+id/alert_detail_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/colorPrimaryText"
+        android:textColor="@color/text_primary"
         android:textIsSelectable="true"
         android:textSize="20sp"
         tools:text="Alert title"/>
@@ -42,7 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:indeterminate="true"
-        android:indeterminateTint="@color/colorProgressBar"
+        android:indeterminateTint="@color/progress_bar"
         tools:targetApi="lollipop" />
 
     <TextView

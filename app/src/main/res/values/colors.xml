@@ -16,23 +16,37 @@
   -->
 
 <resources>
-    <color name="colorPrimary">#4c0d60</color>
-    <color name="colorPrimaryDark">#3D0B4C</color>
-    <color name="colorAccent">#E5481C</color>
-    <color name="colorPrimaryText">#070109</color>
-    <color name="colorLinkText">#2196F3</color>
-    <color name="colorLinkBackground">#ACD7FA</color>
 
-    <color name="colorSecondaryText">#8a000000</color>
+    <!-- Color palette -->
+    <color name="gallery">#eeeeee</color>
+    <color name="silver">#bdbdbd</color>
+    <color name="dusty_gray">#999999</color>
+    <color name="sail">#ACD7FA</color>
+    <color name="dodger_blue">#2196F3</color>
+    <color name="cinnabar">#E5481C</color>
+    <color name="jagger">#4c0d60</color>
+    <color name="jagger_two">#3D0B4C</color>
+    <color name="black_alpha_50">#8a000000</color>
+    <color name="jaguar">#070109</color>
 
-    <color name="colorBackground">#fafafa</color>
-    <color name="colorNoticeBackground">#eeeeee</color>
-    <color name="colorNoticeBorder">#bdbdbd</color>
+    <!-- App colors -->
+    <color name="primary">@color/jagger</color>
+    <color name="primary_dark">@color/jagger_two</color>
+    <color name="accent">@color/cinnabar</color>
 
-    <color name="colorProgressBar">#3989F8</color>
+    <color name="text_primary">@color/jaguar</color>
+    <color name="text_secondary">@color/black_alpha_50</color>
+    <color name="text_link">@color/dodger_blue</color>
 
-    <color name="colorScrollBackground">#ccc</color>
-    <color name="colorScrollThumb">#999</color>
-    <color name="colorScrollThumbPressed">@color/colorPrimaryDark</color>
+    <color name="background">#fafafa</color> <!-- The same as in AOSP, but some vendors override that -->
+    <color name="background_link">@color/sail</color>
+    <color name="background_notice">@color/gallery</color>
+
+    <color name="border_notice">@color/silver</color>
+    <color name="progress_bar">@color/dodger_blue</color>
+
+    <color name="scroll_background">@color/silver</color>
+    <color name="scroll_thumb">@color/dusty_gray</color>
+    <color name="scroll_thumb_pressed">@color/primary_dark</color>
 
 </resources>

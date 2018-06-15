@@ -31,7 +31,7 @@
         android:gravity="center"
         android:paddingTop="48dp"
         android:text="@string/alert_list_empty"
-        android:textColor="@color/colorSecondaryText"
+        android:textColor="@color/text_secondary"
         android:textSize="@dimen/text_size_title"
         android:visibility="gone"
         tools:visibility="visible"/>

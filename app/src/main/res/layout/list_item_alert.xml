@@ -45,7 +45,7 @@
         android:layout_alignParentRight="true"
         android:layout_marginTop="12dp"
         android:text="@string/alert_label_recent"
-        android:textColor="@color/colorAccent"
+        android:textColor="@color/accent"
         android:textSize="12sp"
         android:textStyle="bold"/>
 
@@ -54,7 +54,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/list_item_alert_route_icons_wrapper"
-        android:textColor="@color/colorPrimaryText"
+        android:textColor="@color/text_primary"
         android:textSize="16sp"
         tools:ignore="SelectableText"
         tools:text="Alert title"

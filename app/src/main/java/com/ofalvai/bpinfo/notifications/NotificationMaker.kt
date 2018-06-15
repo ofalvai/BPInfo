@@ -36,7 +36,7 @@ object NotificationMaker {
             .setStyle(bigTextStyle)
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
-            .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
+            .setColor(ContextCompat.getColor(context, R.color.primary))
             .setShowWhen(true)
             .setWhen(Date().time)
 

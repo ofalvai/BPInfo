@@ -3,7 +3,7 @@
     <item>
         <shape android:shape="rectangle">
 
-            <solid android:color="@color/colorScrollBackground" />
+            <solid android:color="@color/scroll_background" />
 
             <padding android:bottom="10dp" android:left="10dp" android:right="10dp" android:top="10dp" />
         </shape>

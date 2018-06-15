@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorNoticeBackground"
+    android:background="@color/background_notice"
     android:orientation="vertical"
     tools:context="com.ofalvai.bpinfo.ui.notifications.NotificationsActivity">
 
@@ -16,7 +16,7 @@
         android:paddingStart="@dimen/activity_horizontal_margin"
         android:paddingTop="8dp"
         android:text="@string/notif_watched_routes_label"
-        android:textColor="@color/colorPrimaryText"
+        android:textColor="@color/text_primary"
         android:textSize="16sp" />
 
     <View
@@ -25,7 +25,7 @@
         android:visibility="gone"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:background="@color/colorNoticeBorder" />
+        android:background="@color/border_notice" />
 
     <android.support.v4.widget.ContentLoadingProgressBar
         android:id="@+id/notifications__progress_bar"
@@ -33,7 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:indeterminate="true"
-        android:indeterminateTint="@color/colorProgressBar"
+        android:indeterminateTint="@color/progress_bar"
         tools:targetApi="lollipop" />
 
     <ScrollView
@@ -74,7 +74,7 @@
         android:id="@+id/notifications__tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorBackground"
+        android:background="@color/background"
         android:elevation="4dp"
         app:tabMode="scrollable"
         tools:ignore="UnusedAttribute" />
@@ -83,6 +83,6 @@
         android:id="@+id/notifications__viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorBackground" />
+        android:background="@color/background" />
 
 </LinearLayout>

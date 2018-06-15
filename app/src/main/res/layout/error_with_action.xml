@@ -42,7 +42,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_margin="16dp"
         android:gravity="center"
-        android:textColor="@color/colorSecondaryText"
+        android:textColor="@color/text_secondary"
         android:textSize="@dimen/text_size_title"
         tools:text="Sample error message"
         tools:ignore="SelectableText"/>

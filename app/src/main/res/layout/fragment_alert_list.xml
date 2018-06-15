@@ -26,7 +26,7 @@
         android:id="@+id/alert_list_filter_active_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorAccent"
+        android:background="@color/accent"
         android:paddingBottom="8dp"
         android:paddingLeft="@dimen/toolbar_horizontal_margin"
         android:paddingRight="@dimen/toolbar_horizontal_margin"

@@ -268,7 +268,7 @@ fun openCustomTab(activity: Activity, url: Uri) {
             activity.startActivity(intent)
         }
     } else {
-        val color = ContextCompat.getColor(activity, R.color.colorPrimary)
+        val color = ContextCompat.getColor(activity, R.color.primary)
         val customTabsIntent = CustomTabsIntent.Builder()
                 .setToolbarColor(color)
                 .build()
