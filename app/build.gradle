@@ -68,7 +68,7 @@ android {
             minifyEnabled true
             shrinkResources true
             debuggable false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             resValue "string", "PACKAGE_NAME_REAL", "com.ofalvai.bpinfo"
         }
     }
@@ -99,6 +99,8 @@ android {
     }
 
     packagingOptions {
+        exclude "**/kotlin/**"
+        exclude "/META-INF/*.kotlin_module"
         exclude 'protobuf.meta'
         exclude 'error_prone/**'
         exclude 'jsr305_annotations/**'

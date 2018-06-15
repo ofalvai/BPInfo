@@ -20,7 +20,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.net.Uri
-import android.support.v4.util.ArrayMap
 import android.util.Log
 import com.android.volley.RequestQueue
 import com.android.volley.Response
@@ -277,7 +276,7 @@ class FutarApiClient
 
     @Throws(JSONException::class)
     private fun parseRoutes(response: JSONObject): Map<String, Route> {
-        val routeMap = ArrayMap<String, Route>()
+        val routeMap = mutableMapOf<String, Route>()
 
         val dataNode = response.getJSONObject(AlertSearchContract.DATA)
         val referencesNode = dataNode.getJSONObject(AlertSearchContract.DATA_REFERENCES)
