@@ -8,8 +8,16 @@ import com.ofalvai.bpinfo.model.RouteType
 
 object Analytics {
 
+    const val DATA_SOURCE_BKKINFO = "bkkinfo"
+    const val DATA_SOURCE_FUTAR = "futar"
+
     private fun alertHasNoRoutes(alert: Alert): String {
         return if (alert.affectedRoutes.isEmpty()) "true" else "false"
+    }
+
+    fun setDataSource(context: Context, dataSource: String) {
+        FirebaseAnalytics.getInstance(context)
+            .setUserProperty("data_source", dataSource)
     }
 
     fun logAlertContentView(context: Context, alert: Alert?) {

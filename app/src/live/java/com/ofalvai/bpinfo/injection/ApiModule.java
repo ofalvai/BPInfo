@@ -28,6 +28,7 @@ import com.ofalvai.bpinfo.api.bkkinfo.BkkInfoClient;
 import com.ofalvai.bpinfo.api.bkkinfo.RouteListClient;
 import com.ofalvai.bpinfo.api.notice.NoticeClient;
 import com.ofalvai.bpinfo.api.subscription.SubscriptionClient;
+import com.ofalvai.bpinfo.util.Analytics;
 
 import javax.inject.Singleton;
 
@@ -57,8 +58,10 @@ public class ApiModule {
                 getString(context.getString(R.string.pref_key_data_source), keyDefault);
 
         if (keyCurrent.equals(keyBkkFutar)) {
-            return  new FutarApiClient(requestQueue, sharedPreferences, context);
+            Analytics.INSTANCE.setDataSource(context, Analytics.DATA_SOURCE_FUTAR);
+            return new FutarApiClient(requestQueue, sharedPreferences, context);
         } else {
+            Analytics.INSTANCE.setDataSource(context, Analytics.DATA_SOURCE_BKKINFO);
             return new BkkInfoClient(requestQueue, sharedPreferences, context);
         }
     }
