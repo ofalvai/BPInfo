@@ -49,8 +49,5 @@ class TokenUploadJobService : JobService() {
         }
     }
 
-    override fun onStopJob(job: JobParameters?): Boolean {
-        // TODO: cancel request
-        return true // should be retried
-    }
+    override fun onStopJob(job: JobParameters?) = true // should be retried later
 }

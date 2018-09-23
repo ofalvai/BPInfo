@@ -25,7 +25,6 @@ import android.util.Log
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.RequestQueue
 import com.android.volley.Response
-import com.android.volley.RetryPolicy
 import com.android.volley.toolbox.JsonObjectRequest
 import com.crashlytics.android.Crashlytics
 import com.google.firebase.perf.FirebasePerformance
@@ -83,8 +82,7 @@ class BkkInfoClient
          * Returns a retry policy with increased timeout
          */
         @JvmStatic
-        private val retryPolicy: RetryPolicy
-            get() = DefaultRetryPolicy(
+        private val retryPolicy = DefaultRetryPolicy(
                     TIMEOUT_MS,
                     DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                     DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
