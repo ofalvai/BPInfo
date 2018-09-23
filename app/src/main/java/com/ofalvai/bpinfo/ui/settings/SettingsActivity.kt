@@ -33,8 +33,8 @@ import com.jakewharton.processphoenix.ProcessPhoenix
 import com.ofalvai.bpinfo.BpInfoApplication
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.ui.alertlist.AlertListActivity
-import com.ofalvai.bpinfo.util.AppCompatPreferenceActivity
 import com.ofalvai.bpinfo.util.Analytics
+import com.ofalvai.bpinfo.util.AppCompatPreferenceActivity
 import com.ofalvai.bpinfo.util.LocaleManager
 import javax.inject.Inject
 
@@ -52,7 +52,8 @@ import javax.inject.Inject
 class SettingsActivity : AppCompatPreferenceActivity(),
     SharedPreferences.OnSharedPreferenceChangeListener {
 
-    @Inject lateinit var mSharedPreferences: SharedPreferences
+    @Inject
+    lateinit var mSharedPreferences: SharedPreferences
 
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(LocaleManager.setLocale(newBase))
@@ -195,9 +196,16 @@ class SettingsActivity : AppCompatPreferenceActivity(),
         } else {
             pref.setOnPreferenceClickListener {
                 launchSystemNotificationPrefs()
+                Analytics.logNotificationChannelsOpened(this)
                 true
             }
         }
+
+        findPreference(getString(R.string.pref_key_notifications_routes))
+            .setOnPreferenceClickListener {
+                Analytics.logNotificationFromSettingsOpened(this)
+                false // Launch intent is defined in XML
+            }
     }
 
     private fun launchSystemNotificationPrefs() {

@@ -30,6 +30,7 @@ import com.ofalvai.bpinfo.ui.base.BaseActivity
 import com.ofalvai.bpinfo.ui.notifications.adapter.RouteListPagerAdapter
 import com.ofalvai.bpinfo.ui.notifications.routelist.RouteListContract
 import com.ofalvai.bpinfo.ui.settings.SettingsActivity
+import com.ofalvai.bpinfo.util.Analytics
 import com.ofalvai.bpinfo.util.getContentDescription
 import com.ofalvai.bpinfo.util.hide
 import com.ofalvai.bpinfo.util.show
@@ -117,12 +118,16 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
     }
 
     override fun addSubscribedRoute(route: Route) {
+        Analytics.logNotificationSubscribe(this, route.id)
+
         subscribedEmptyView.hide()
 
         addSubscribedRouteIcon(route)
     }
 
     override fun removeSubscribedRoute(route: Route) {
+        Analytics.logNotificationUnsubscribe(this, route.id)
+
         removeSubscribedRouteIcon(route)
 
         if (subscribedRoutesLayout.childCount == 0) {

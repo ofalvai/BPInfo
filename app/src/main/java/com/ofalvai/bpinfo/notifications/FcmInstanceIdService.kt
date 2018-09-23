@@ -9,6 +9,7 @@ import com.firebase.jobdispatcher.Lifetime
 import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.iid.FirebaseInstanceIdService
 import com.ofalvai.bpinfo.BpInfoApplication
+import com.ofalvai.bpinfo.util.Analytics
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -31,6 +32,7 @@ class FcmInstanceIdService : FirebaseInstanceIdService() {
         val newToken: String? = FirebaseInstanceId.getInstance().token
         val oldToken: String? = getOldToken()
         Timber.i("New Firebase token: $newToken")
+        Analytics.logDeviceTokenUpdate(this, newToken ?: "")
 
         if (newToken == null) {
             // It should never happen

@@ -71,4 +71,36 @@ object Analytics {
         bundle.putString("settings_data_source", selectedDataSourceLabel)
         FirebaseAnalytics.getInstance(context).logEvent("settings_data_source_changed", bundle)
     }
+
+    fun logNotificationSubscribe(context: Context, routeId: String) {
+        val bundle = Bundle()
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, routeId)
+        FirebaseAnalytics.getInstance(context).logEvent("notif_subscribe_route", bundle)
+    }
+
+    fun logNotificationUnsubscribe(context: Context, routeId: String) {
+        val bundle = Bundle()
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, routeId)
+        FirebaseAnalytics.getInstance(context).logEvent("notif_unsubscribe_route", bundle)
+    }
+
+    fun logNotificationOpen(context: Context, alertId: String) {
+        val bundle = Bundle()
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, alertId)
+        FirebaseAnalytics.getInstance(context).logEvent("notif_open", bundle)
+    }
+
+    fun logNotificationChannelsOpened(context: Context) {
+        FirebaseAnalytics.getInstance(context).logEvent("notif_channels_opened", null)
+    }
+
+    fun logNotificationFromSettingsOpened(context: Context) {
+        FirebaseAnalytics.getInstance(context).logEvent("notif_from_settings_opened", null)
+    }
+
+    fun logDeviceTokenUpdate(context: Context, newToken: String) {
+        val bundle = Bundle()
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, newToken)
+        FirebaseAnalytics.getInstance(context).logEvent("notif_token_update", bundle)
+    }
 }

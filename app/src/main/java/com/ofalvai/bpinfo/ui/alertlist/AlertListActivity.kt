@@ -25,6 +25,7 @@ import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.notifications.NotificationMaker
 import com.ofalvai.bpinfo.ui.alertlist.adapter.AlertListPagerAdapter
 import com.ofalvai.bpinfo.ui.base.BaseActivity
+import com.ofalvai.bpinfo.util.Analytics
 import kotterknife.bindView
 
 class AlertListActivity : BaseActivity() {
@@ -68,7 +69,10 @@ class AlertListActivity : BaseActivity() {
      */
     private fun handlePendingNavigation(intent: Intent?) {
         pendingNavigationAlertId = intent?.getStringExtra(NotificationMaker.INTENT_EXTRA_ALERT_ID)
-        if (pendingNavigationAlertId != null) {
+
+        pendingNavigationAlertId?.let {
+            Analytics.logNotificationOpen(this, it)
+
             // Prevent triggering it again in the future (eg. back navigation from another Activity)
             intent?.removeExtra(NotificationMaker.INTENT_EXTRA_ALERT_ID)
         }
