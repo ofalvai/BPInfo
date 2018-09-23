@@ -78,6 +78,8 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
         setupViewPager()
 
         GoogleApiAvailability.getInstance().makeGooglePlayServicesAvailable(this)
+
+        Analytics.setSystemNotificationState(this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

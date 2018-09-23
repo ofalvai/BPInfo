@@ -2,6 +2,7 @@ package com.ofalvai.bpinfo.util
 
 import android.content.Context
 import android.os.Bundle
+import android.support.v4.app.NotificationManagerCompat
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.ofalvai.bpinfo.model.Alert
 import com.ofalvai.bpinfo.model.RouteType
@@ -18,6 +19,16 @@ object Analytics {
     fun setDataSource(context: Context, dataSource: String) {
         FirebaseAnalytics.getInstance(context)
             .setUserProperty("data_source", dataSource)
+    }
+
+    /**
+     * Checks if notifications are enabled or disabled for the app, and sets the result as a
+     * user property.
+     */
+    fun setSystemNotificationState(context: Context) {
+        val enabled = NotificationManagerCompat.from(context).areNotificationsEnabled()
+        FirebaseAnalytics.getInstance(context)
+            .setUserProperty("notifications_enabled", enabled.toString())
     }
 
     fun logAlertContentView(context: Context, alert: Alert?) {
