@@ -112,5 +112,7 @@
     <string name="notif_subscribed_empty">Válassz egy járatot az alábbiakból, amiről értesítést szeretnél kapni.</string>
     <string name="notif_test_title">Így nézne ki egy értesítés</string>
     <string name="notif_test_desc">15-ös, 115-ös busz</string>
+    <string name="error_routes_load">Nem sikerült a járatok betöltése</string>
+    <string name="error_subscriptions_action">Nem sikerült a művelet</string>
 
 </resources>

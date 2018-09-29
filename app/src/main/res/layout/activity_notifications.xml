@@ -1,87 +1,97 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_notice"
-    android:orientation="vertical"
     tools:context="com.ofalvai.bpinfo.ui.notifications.NotificationsActivity">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="4dp"
-        android:paddingEnd="@dimen/activity_horizontal_margin"
-        android:paddingStart="@dimen/activity_horizontal_margin"
-        android:paddingTop="8dp"
-        android:text="@string/notif_watched_routes_label"
-        android:textColor="@color/text_primary"
-        android:textSize="16sp" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:visibility="gone"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:background="@color/border_notice" />
-
-    <android.support.v4.widget.ContentLoadingProgressBar
-        android:id="@+id/notifications__progress_bar"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:indeterminate="true"
-        android:indeterminateTint="@color/progress_bar"
-        tools:targetApi="lollipop" />
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="100dp">
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/notifications__subscribed_empty"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="start"
-                android:layout_marginTop="12dp"
-                android:text="@string/notif_subscribed_empty"
-                android:visibility="gone"
-                android:textSize="15sp"
-                android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
-                tools:visibility="visible" />
-
-            <com.wefika.flowlayout.FlowLayout
-                android:id="@+id/notifications__subscribed_routes"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
-                android:paddingBottom="8dp"
-                android:paddingTop="4dp" />
-
-        </FrameLayout>
-
-    </ScrollView>
-
-    <android.support.design.widget.TabLayout
-        android:id="@+id/notifications__tabs"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/background"
-        android:elevation="4dp"
-        app:tabMode="scrollable"
-        tools:ignore="UnusedAttribute" />
-
-    <android.support.v4.view.ViewPager
-        android:id="@+id/notifications__viewpager"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/background" />
+        android:background="@color/background_notice"
+        android:orientation="vertical">
 
-</LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/activity_horizontal_margin"
+            android:paddingTop="8dp"
+            android:paddingEnd="@dimen/activity_horizontal_margin"
+            android:paddingBottom="4dp"
+            android:text="@string/notif_watched_routes_label"
+            android:textColor="@color/text_primary"
+            android:textSize="16sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:background="@color/border_notice"
+            android:visibility="gone" />
+
+        <android.support.v4.widget.ContentLoadingProgressBar
+            android:id="@+id/notifications__progress_bar"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/progress_bar"
+            tools:targetApi="lollipop" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="100dp">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/notifications__subscribed_empty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                    android:gravity="start"
+                    android:text="@string/notif_subscribed_empty"
+                    android:textSize="15sp"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
+
+                <com.wefika.flowlayout.FlowLayout
+                    android:id="@+id/notifications__subscribed_routes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="8dp" />
+
+            </FrameLayout>
+
+        </ScrollView>
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/notifications__tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/background"
+            android:elevation="4dp"
+            app:tabMode="scrollable"
+            tools:ignore="UnusedAttribute" />
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/notifications__viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/background" />
+
+        <include
+            android:id="@+id/notifications__error"
+            layout="@layout/error_with_action" />
+
+    </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>

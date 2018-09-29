@@ -31,6 +31,7 @@ class NotificationsPresenter : BasePresenter<NotificationsContract.View>(),
     override fun onRouteListResponse(routeList: List<Route>) {
         this.routeList = routeList
         view?.displayRouteList(routeList)
+        view?.showRouteListError(false)
 
         subscribedRouteIDList?.let {
             displaySubscribedRoutes(it, routeList)
@@ -38,8 +39,8 @@ class NotificationsPresenter : BasePresenter<NotificationsContract.View>(),
     }
 
     override fun onRouteListError(ex: Exception) {
-        view?.showProgress(false)
-        Timber.e(ex) // TODO
+        view?.showRouteListError(true)
+        Timber.e(ex)
     }
 
     override fun subscribeTo(routeID: String) {
@@ -65,7 +66,7 @@ class NotificationsPresenter : BasePresenter<NotificationsContract.View>(),
 
     override fun onSubscriptionError(error: VolleyError) {
         view?.showProgress(false)
-        Timber.e(error) // TODO
+        view?.showSubscriptionError()
     }
 
     override fun onPostSubscriptionResponse(subscription: RouteSubscription) {

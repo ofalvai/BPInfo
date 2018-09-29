@@ -164,5 +164,7 @@
     <string name="notif_subscribed_empty">Choose a route below to follow and receive notifications about.</string>
     <string name="notif_test_title">This is how a notification would look like</string>
     <string name="notif_test_desc">Bus 15, 115</string>
+    <string name="error_routes_load">Unable to load routes</string>
+    <string name="error_subscriptions_action">Unable to complete request</string>
 
 </resources>

@@ -17,6 +17,8 @@ interface NotificationsContract {
         fun addSubscribedRoute(route: Route)
         fun removeSubscribedRoute(route: Route)
         fun showProgress(show: Boolean)
+        fun showRouteListError(show: Boolean)
+        fun showSubscriptionError()
     }
 
     interface Presenter : MvpPresenter<View> {

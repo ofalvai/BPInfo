@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.LightingColorFilter
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.design.widget.TabLayout
 import android.support.v4.app.NavUtils
 import android.support.v4.content.ContextCompat
@@ -18,6 +19,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
+import android.widget.Button
 import android.widget.TextView
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.firebase.iid.FirebaseInstanceId
@@ -47,6 +49,7 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
     private val subscribedRoutesLayout: FlowLayout by bindView(R.id.notifications__subscribed_routes)
     private val subscribedEmptyView: TextView by bindView(R.id.notifications__subscribed_empty)
     private val progressBar: ContentLoadingProgressBar by bindView(R.id.notifications__progress_bar)
+    private val errorView: View by bindView(R.id.notifications__error)
 
     private lateinit var pagerAdapter: RouteListPagerAdapter
 
@@ -112,9 +115,9 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
 
     override fun displayRouteList(routeList: List<Route>) {
         val groupedRoutes: Map<RouteType, List<Route>> = routeList.groupBy { it.type }
-        groupedRoutes.forEach {
-            val view: RouteListContract.View? = pagerAdapter.getView(it.key)
-            val routes = it.value.sortedBy { it.id }
+        groupedRoutes.forEach { entry ->
+            val view: RouteListContract.View? = pagerAdapter.getView(entry.key)
+            val routes = entry.value.sortedBy { it.id }
             view?.displayRoutes(routes)
         }
     }
@@ -161,6 +164,40 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
         } else {
             progressBar.hide()
         }
+    }
+
+    override fun showRouteListError(show: Boolean) {
+        if (show) {
+            showProgress(false)
+
+            errorView.visibility = View.VISIBLE
+            viewPager.visibility = View.GONE
+
+            val errorMessageView = errorView.findViewById<TextView>(R.id.error_message)
+            val refreshButton = errorView.findViewById<Button>(R.id.error_action_button)
+
+            if (!refreshButton.hasOnClickListeners()) {
+                refreshButton.setOnClickListener {
+                    presenter.fetchRouteList()
+                    presenter.fetchSubscriptions()
+                }
+            }
+            refreshButton.text = getString(R.string.label_retry)
+            errorMessageView.text = getString(R.string.error_routes_load)
+        } else {
+            errorView.visibility = View.GONE
+            viewPager.visibility = View.VISIBLE
+        }
+    }
+
+    override fun showSubscriptionError() {
+        val snackbar = Snackbar.make(
+            viewPager,
+            getString(R.string.error_subscriptions_action),
+            Snackbar.LENGTH_LONG
+        )
+        snackbar.view.setBackgroundColor(ContextCompat.getColor(this, R.color.accent))
+        snackbar.show()
     }
 
     private fun setupViewPager() {
