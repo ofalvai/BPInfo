@@ -218,10 +218,13 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
                 val alert: Alert? = alerts.find { it.id == id }
                 if (alert != null) {
                     launchAlertDetail(alert)
-                    pendingNavigationAlertId = null
                 } else {
                     Timber.w("Pending alert navigation: no alert found for ID %s", id)
                 }
+            }
+            pendingNavigationAlertId = null
+            if (activity is AlertListActivity && alertListType == AlertListType.ALERTS_TODAY) {
+                (activity!! as AlertListActivity).pendingNavigationAlertId = null
             }
         }
     }
