@@ -412,7 +412,7 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
             // For some reason, the usual RecyclerView.smoothScrollToPosition(0) doesn't work here,
             // the list scrolls to the bottom, instead of the top.
             if (alertRecyclerView.layoutManager is LinearLayoutManager) {
-                alertRecyclerView.layoutManager.scrollToPosition(0)
+                (alertRecyclerView.layoutManager as LinearLayoutManager).scrollToPosition(0)
             }
         }
 
