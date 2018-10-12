@@ -197,6 +197,11 @@ class FutarApiClient
             try {
                 alert = parseAlert(alertNode)
 
+                if (alert.id == "BKK_alert-4") {
+                    // This alert is a special message warning users to update the official app
+                    continue
+                }
+
                 // Time ranges in the API response are messed up. We need to filter out alerts that are
                 // before/after the time range we want.
                 val alertStartTime: ZonedDateTime = apiTimestampToDateTime(alert.start)
