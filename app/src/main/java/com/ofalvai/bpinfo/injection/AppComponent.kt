@@ -17,7 +17,7 @@
 package com.ofalvai.bpinfo.injection
 
 import com.ofalvai.bpinfo.BpInfoApplication
-import com.ofalvai.bpinfo.notifications.FcmInstanceIdService
+import com.ofalvai.bpinfo.notifications.AlertMessagingService
 import com.ofalvai.bpinfo.notifications.TokenUploadJobService
 import com.ofalvai.bpinfo.ui.alertlist.AlertListPresenter
 import com.ofalvai.bpinfo.ui.notifications.NotificationsPresenter
@@ -43,5 +43,5 @@ interface AppComponent {
 
     fun inject(service: TokenUploadJobService)
 
-    fun inject(service: FcmInstanceIdService)
+    fun inject(service: AlertMessagingService)
 }

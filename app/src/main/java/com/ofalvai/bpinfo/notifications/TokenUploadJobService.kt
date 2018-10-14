@@ -51,10 +51,12 @@ class TokenUploadJobService : JobService() {
                 newToken,
                 object : SubscriptionClient.TokenReplaceCallback {
                     override fun onTokenReplaceSuccess() {
+                        Timber.d("New token successfully uploaded")
                         jobFinished(job, false)
                     }
 
                     override fun onTokenReplaceError(error: VolleyError) {
+                        Timber.d("New token upload unsuccessful", error)
                         jobFinished(job, true)
                     }
                 })

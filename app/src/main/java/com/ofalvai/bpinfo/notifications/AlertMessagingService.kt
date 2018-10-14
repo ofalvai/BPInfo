@@ -17,21 +17,38 @@
 package com.ofalvai.bpinfo.notifications
 
 import android.content.Context
+import android.content.SharedPreferences
+import android.os.Bundle
+import com.firebase.jobdispatcher.Constraint
+import com.firebase.jobdispatcher.FirebaseJobDispatcher
+import com.firebase.jobdispatcher.GooglePlayDriver
+import com.firebase.jobdispatcher.Lifetime
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.ofalvai.bpinfo.BpInfoApplication
+import com.ofalvai.bpinfo.util.Analytics
 import com.ofalvai.bpinfo.util.LocaleManager
 import timber.log.Timber
+import javax.inject.Inject
 
 class AlertMessagingService : FirebaseMessagingService() {
 
     companion object {
-        const val DATA_KEY_ID = "id"
-        const val DATA_KEY_TITLE = "title"
+        private const val DATA_KEY_ID = "id"
+        private const val DATA_KEY_TITLE = "title"
+        private const val PREF_KEY_TOKEN = "fcm_token"
     }
+
+    @Inject lateinit var sharedPreferences: SharedPreferences
 
     override fun attachBaseContext(base: Context) {
         // Updating locale
         super.attachBaseContext(LocaleManager.setLocale(base))
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        BpInfoApplication.injector.inject(this)
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage?) {
@@ -61,5 +78,59 @@ class AlertMessagingService : FirebaseMessagingService() {
         } else {
             Timber.e("Message data is empty")
         }
+    }
+
+    override fun onNewToken(token: String?) {
+        super.onNewToken(token)
+
+        val oldToken: String? = getOldToken()
+        Timber.i("New Firebase token: $token")
+        Analytics.logDeviceTokenUpdate(this, token ?: "")
+
+        if (token == null) {
+            // It should never happen
+            return
+        }
+
+        if (oldToken != null) {
+            Timber.i("Previous token was found, scheduling upload")
+            scheduleTokenUpload(oldToken, token)
+        }
+
+        Timber.i("Persisting new token in SharedPreferences")
+        persistNewToken(token)
+    }
+
+    private fun getOldToken(): String? {
+        return sharedPreferences.getString(PREF_KEY_TOKEN, null)
+    }
+
+    private fun scheduleTokenUpload(oldToken: String, newToken: String) {
+        val extras = Bundle().apply {
+            putString(TokenUploadJobService.KEY_NEW_TOKEN, newToken)
+            putString(TokenUploadJobService.KEY_OLD_TOKEN, oldToken)
+        }
+
+        val jobDispatcher = FirebaseJobDispatcher(GooglePlayDriver(this))
+        val job = jobDispatcher.newJobBuilder()
+            .setService(TokenUploadJobService::class.java)
+            .setTag(TokenUploadJobService.TAG)
+            .addConstraint(Constraint.ON_ANY_NETWORK)
+            .setLifetime(Lifetime.FOREVER)
+            .setReplaceCurrent(false)
+            .setExtras(extras)
+            .build()
+
+        jobDispatcher.schedule(job).let {
+            if (it != FirebaseJobDispatcher.SCHEDULE_RESULT_SUCCESS) {
+                Timber.e("Unsuccessful job schedule, result code: %d", it)
+            }
+        }
+    }
+
+    private fun persistNewToken(newToken: String) {
+        sharedPreferences.edit()
+            .putString(PREF_KEY_TOKEN, newToken)
+            .apply()
     }
 }
