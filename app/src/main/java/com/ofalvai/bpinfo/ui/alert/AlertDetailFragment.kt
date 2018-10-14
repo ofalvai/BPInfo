@@ -36,7 +36,6 @@ import android.view.WindowManager
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.ofalvai.bpinfo.BpInfoApplication
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.model.Alert
 import com.ofalvai.bpinfo.model.Route
@@ -159,11 +158,6 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
         val width = requireContext().resources.getDimensionPixelSize(R.dimen.bottom_sheet_width)
         val actualWidth = if (width > 0) width else ViewGroup.LayoutParams.MATCH_PARENT
         dialog.window?.setLayout(actualWidth, ViewGroup.LayoutParams.MATCH_PARENT)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        BpInfoApplication.getRefWatcher(requireContext()).watch(this)
     }
 
     fun updateAlert(alert: Alert) {

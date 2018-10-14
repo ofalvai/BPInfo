@@ -173,11 +173,6 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
         super.onDestroy()
     }
 
-    override fun onDestroyView() {
-        BpInfoApplication.getRefWatcher(requireContext()).watch(this)
-        super.onDestroyView()
-    }
-
     /**
      * Updates the Toolbar's subtitle to the number of current items in the RecyclerView's Adapter
      */

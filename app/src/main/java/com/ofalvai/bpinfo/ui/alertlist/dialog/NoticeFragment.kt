@@ -21,7 +21,6 @@ import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AlertDialog
 import android.text.Html
-import com.ofalvai.bpinfo.BpInfoApplication
 import com.ofalvai.bpinfo.R
 
 class NoticeFragment : DialogFragment() {
@@ -61,10 +60,5 @@ class NoticeFragment : DialogFragment() {
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putString(KEY_NOTICE_TEXT, noticeText)
         super.onSaveInstanceState(outState)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        BpInfoApplication.getRefWatcher(requireContext()).watch(this)
     }
 }

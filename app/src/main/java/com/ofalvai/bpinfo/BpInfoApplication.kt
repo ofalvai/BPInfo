@@ -33,7 +33,6 @@ import com.ofalvai.bpinfo.injection.AppModule
 import com.ofalvai.bpinfo.injection.DaggerAppComponent
 import com.ofalvai.bpinfo.util.LocaleManager
 import com.squareup.leakcanary.LeakCanary
-import com.squareup.leakcanary.RefWatcher
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -43,15 +42,7 @@ class BpInfoApplication : Application(), SharedPreferences.OnSharedPreferenceCha
 
         @JvmStatic
         lateinit var injector: AppComponent
-
-        @JvmStatic
-        fun getRefWatcher(context: Context): RefWatcher {
-            val application = context.applicationContext as BpInfoApplication
-            return application.refWatcher
-        }
     }
-
-    private lateinit var refWatcher: RefWatcher
 
     @Inject
     lateinit var sharedPreferences: SharedPreferences
@@ -64,7 +55,7 @@ class BpInfoApplication : Application(), SharedPreferences.OnSharedPreferenceCha
             // You should not init your app in this process.
             return
         }
-        refWatcher = LeakCanary.install(this)
+        LeakCanary.install(this)
 
         PreferenceManager.getDefaultSharedPreferences(this)
             .registerOnSharedPreferenceChangeListener(this)

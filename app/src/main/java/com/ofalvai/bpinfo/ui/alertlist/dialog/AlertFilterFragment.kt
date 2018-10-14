@@ -97,8 +97,6 @@ class AlertFilterFragment : DialogFragment() {
 
     override fun onDestroyView() {
         filterListener?.onFilterDismissed()
-
-        BpInfoApplication.getRefWatcher(requireContext()).watch(this)
         super.onDestroyView()
     }
 
