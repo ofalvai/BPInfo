@@ -28,10 +28,6 @@ object Analytics {
     const val DATA_SOURCE_BKKINFO = "bkkinfo"
     const val DATA_SOURCE_FUTAR = "futar"
 
-    private fun alertHasNoRoutes(alert: Alert): String {
-        return if (alert.affectedRoutes.isEmpty()) "true" else "false"
-    }
-
     fun setDataSource(context: Context, dataSource: String) {
         FirebaseAnalytics.getInstance(context)
             .setUserProperty("data_source", dataSource)
@@ -52,8 +48,6 @@ object Analytics {
             val bundle = Bundle().apply {
                 putString(FirebaseAnalytics.Param.ITEM_ID, alert.id)
                 putString(FirebaseAnalytics.Param.ITEM_NAME, alert.header)
-                putString(FirebaseAnalytics.Param.SOURCE, alert.url)
-                putString("no_routes", alertHasNoRoutes(alert))
             }
             FirebaseAnalytics.getInstance(context)
                 .logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle)
@@ -63,9 +57,7 @@ object Analytics {
     fun logAlertUrlClick(context: Context, alert: Alert?) {
         alert?.let {
             val bundle = Bundle().apply {
-                putString(FirebaseAnalytics.Param.SOURCE, alert.url)
                 putString(FirebaseAnalytics.Param.ITEM_ID, alert.id)
-                putString("no_routes", alertHasNoRoutes(alert))
             }
             FirebaseAnalytics.getInstance(context).logEvent("alert_url_click", bundle)
         }
@@ -101,9 +93,8 @@ object Analytics {
         FirebaseAnalytics.getInstance(context).logEvent("notice_dialog_view", null)
     }
 
-    fun logDataSourceChange(context: Context, selectedDataSourceLabel: String) {
+    fun logDataSourceChange(context: Context) {
         val bundle = Bundle()
-        bundle.putString("settings_data_source", selectedDataSourceLabel)
         FirebaseAnalytics.getInstance(context).logEvent("settings_data_source_changed", bundle)
     }
 

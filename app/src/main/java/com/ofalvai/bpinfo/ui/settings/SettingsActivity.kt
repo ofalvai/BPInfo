@@ -102,7 +102,7 @@ class SettingsActivity : AppCompatPreferenceActivity(),
             getString(R.string.pref_key_data_source) -> {
                 Toast.makeText(this, R.string.data_source_changed_refreshed, Toast.LENGTH_SHORT)
                     .show()
-                Analytics.logDataSourceChange(this, mSharedPreferences.getString(key, ""))
+                Analytics.logDataSourceChange(this)
 
                 // Recreating AlertListActivity. This relies on BpInfoApplication's preference listener,
                 // which can rebuild the Dagger dependency graph so that the new Activity (and its
