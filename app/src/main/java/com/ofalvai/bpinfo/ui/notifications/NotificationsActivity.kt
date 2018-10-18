@@ -38,7 +38,6 @@ import android.view.animation.DecelerateInterpolator
 import android.widget.Button
 import android.widget.TextView
 import com.google.android.gms.common.GoogleApiAvailability
-import com.google.firebase.iid.FirebaseInstanceId
 import com.ofalvai.bpinfo.Config
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.model.Route
@@ -54,7 +53,6 @@ import com.ofalvai.bpinfo.util.hide
 import com.ofalvai.bpinfo.util.show
 import com.wefika.flowlayout.FlowLayout
 import kotterknife.bindView
-import timber.log.Timber
 
 class NotificationsActivity : BaseActivity(), NotificationsContract.View {
 
@@ -91,8 +89,6 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
 
         presenter.fetchRouteList()
         presenter.fetchSubscriptions()
-
-        Timber.d("FCM token: ${FirebaseInstanceId.getInstance().token}")
 
         setupViewPager()
 
