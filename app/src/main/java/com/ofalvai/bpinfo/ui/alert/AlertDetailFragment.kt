@@ -114,9 +114,7 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Note: container is null because this is a subclass on DialogFragment
-        val view = inflater.inflate(R.layout.fragment_alert_detail, container, false)
-        return view
+        return inflater.inflate(R.layout.fragment_alert_detail, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -130,7 +128,7 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
             }
         }
 
-        errorButton.setOnClickListener {
+        errorButton.setOnClickListener { _ ->
             errorLayout.visibility = View.GONE
             progressBar.show()
             alert?.let {

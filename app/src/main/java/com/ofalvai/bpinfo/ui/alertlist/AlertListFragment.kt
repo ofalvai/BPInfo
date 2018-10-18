@@ -30,7 +30,6 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.android.volley.VolleyError
-import com.ofalvai.bpinfo.BpInfoApplication
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.model.Alert
 import com.ofalvai.bpinfo.model.RouteType

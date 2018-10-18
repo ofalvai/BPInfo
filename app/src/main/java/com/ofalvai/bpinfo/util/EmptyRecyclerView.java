@@ -59,6 +59,7 @@ public class EmptyRecyclerView extends RecyclerView {
     }
 
     // synthetic accessor call
+    @SuppressWarnings("WeakerAccess")
     void checkIfEmpty() {
         if (emptyView != null && getAdapter() != null) {
             final boolean emptyViewVisible = getAdapter().getItemCount() == 0;

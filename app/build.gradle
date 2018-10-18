@@ -147,26 +147,26 @@ dependencies {
     }
 
     // Dagger
-    implementation 'com.google.dagger:dagger:2.13'
-    kapt 'com.google.dagger:dagger-compiler:2.13'
+    implementation 'com.google.dagger:dagger:2.17'
+    kapt 'com.google.dagger:dagger-compiler:2.17'
 
     implementation 'org.sufficientlysecure:html-textview:3.4'
 
-    implementation 'com.jakewharton.threetenabp:threetenabp:1.1.0'
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.1.1'
 
     implementation 'com.jakewharton:process-phoenix:2.0.0'
 
     implementation 'org.greenrobot:eventbus:3.1.1'
 
-    implementation 'com.jakewharton.timber:timber:4.7.0'
+    implementation 'com.jakewharton.timber:timber:4.7.1'
 
     implementation 'com.jakewharton:kotterknife:0.1.0-SNAPSHOT'
 
 
     // LeakCanary
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.1'
-    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.1'
-    debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.1'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.2'
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.2'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.2'
 
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2') {
         // Necessary if your app targets Marshmallow (since Espresso
@@ -183,9 +183,8 @@ dependencies {
         // hasn't moved to Marshmallow yet)
         exclude group: 'com.android.support', module: 'support-annotations'
     }
-    testImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
     testImplementation 'junit:junit:4.12'
-    testImplementation "org.mockito:mockito-core:2.19.0"
+    testImplementation "org.mockito:mockito-core:2.23.0"
     androidTestImplementation 'org.hamcrest:hamcrest-library:1.3'
 }
 
