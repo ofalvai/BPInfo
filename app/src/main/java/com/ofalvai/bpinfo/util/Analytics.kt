@@ -16,7 +16,10 @@
 
 package com.ofalvai.bpinfo.util
 
+import android.app.ActivityManager
+import android.app.usage.UsageStatsManager
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.NotificationManagerCompat
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -43,6 +46,22 @@ object Analytics {
             .setUserProperty("notifications_enabled", enabled.toString())
     }
 
+    fun setRestrictions(context: Context) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) return
+
+        val activityManager = context
+            .getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+
+        val isBackgroundRestricted: String = activityManager.isBackgroundRestricted.toString()
+        FirebaseAnalytics.getInstance(context)
+            .setUserProperty("background_restricted", isBackgroundRestricted)
+
+        val usageStatsManager = context
+            .getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
+        FirebaseAnalytics.getInstance(context)
+            .setUserProperty("app_standby_bucket", usageStatsManager.appStandbyBucket.toString())
+    }
+
     fun logAlertContentView(context: Context, alert: Alert?) {
         alert?.let {
             val bundle = Bundle().apply {
@@ -66,7 +85,7 @@ object Analytics {
     fun logLanguageChange(context: Context, newValue: String) {
         val bundle = Bundle()
         bundle.putString("settings_new_language", newValue)
-        FirebaseAnalytics.getInstance(context).logEvent("settings_changed_language", bundle);
+        FirebaseAnalytics.getInstance(context).logEvent("settings_changed_language", bundle)
     }
 
     fun logDebugMode(context: Context, newState: String) {

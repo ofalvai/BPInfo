@@ -31,6 +31,7 @@ import com.ofalvai.bpinfo.injection.ApiModule
 import com.ofalvai.bpinfo.injection.AppComponent
 import com.ofalvai.bpinfo.injection.AppModule
 import com.ofalvai.bpinfo.injection.DaggerAppComponent
+import com.ofalvai.bpinfo.util.Analytics
 import com.ofalvai.bpinfo.util.LocaleManager
 import com.squareup.leakcanary.LeakCanary
 import timber.log.Timber
@@ -72,6 +73,9 @@ class BpInfoApplication : Application(), SharedPreferences.OnSharedPreferenceCha
         createNotificationChannels()
 
         overrideSettingsIfNeeded()
+
+        Analytics.setSystemNotificationState(this)
+        Analytics.setRestrictions(this)
     }
 
     override fun attachBaseContext(base: Context) {
