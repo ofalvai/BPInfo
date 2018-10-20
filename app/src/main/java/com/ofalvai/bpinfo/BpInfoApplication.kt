@@ -24,7 +24,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Build
-import android.os.StrictMode
 import android.preference.PreferenceManager
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.ofalvai.bpinfo.injection.ApiModule
@@ -60,8 +59,6 @@ class BpInfoApplication : Application(), SharedPreferences.OnSharedPreferenceCha
 
         PreferenceManager.getDefaultSharedPreferences(this)
             .registerOnSharedPreferenceChangeListener(this)
-
-        initStrictMode()
 
         initDagger()
         injector.inject(this) // Oh the irony...
@@ -110,28 +107,6 @@ class BpInfoApplication : Application(), SharedPreferences.OnSharedPreferenceCha
             .appModule(AppModule(this))
             .apiModule(ApiModule()) //depends on selected build flavor (prod/mock)
             .build()
-    }
-
-    private fun initStrictMode() {
-        if (BuildConfig.DEBUG) {
-            StrictMode.setThreadPolicy(
-                StrictMode.ThreadPolicy.Builder()
-                    .detectAll()
-                    .penaltyFlashScreen()
-                    .penaltyLog()
-                    .build()
-            )
-
-            StrictMode.setVmPolicy(
-                StrictMode.VmPolicy.Builder()
-                    //.detectLeakedSqlLiteObjects()
-                    //.detectLeakedClosableObjects()
-                    .detectActivityLeaks()
-                    .detectLeakedRegistrationObjects()
-                    .penaltyLog()
-                    .build()
-            )
-        }
     }
 
     private fun initTimber() {
