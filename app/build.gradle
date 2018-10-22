@@ -19,7 +19,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.github.gfx.ribbonizer'
 apply plugin: 'io.fabric'
-// apply plugin: 'com.google.firebase.firebase-perf' TODO: re-enable before release
+apply plugin: 'com.google.firebase.firebase-perf'
 
 // Create a variable called keystorePropertiesFile, and initialize it to your
 // keystore.properties file, in the rootProject folder.
