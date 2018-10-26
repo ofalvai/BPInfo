@@ -19,8 +19,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Without a LinearLayout here, the ViewPager's height would be wrong,
-         sliding under the navbar at the bottom -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
