@@ -20,19 +20,15 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
-import android.app.Dialog
 import android.graphics.Paint
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.support.design.widget.BottomSheetDialog
 import android.support.design.widget.BottomSheetDialogFragment
 import android.support.v4.view.animation.FastOutSlowInInterpolator
 import android.support.v4.widget.ContentLoadingProgressBar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -135,18 +131,6 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
                 listPresenter.fetchAlert(it.id)
             }
         }
-    }
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        // By default, the BottomSheetDialog changes the statusbar's color to black.
-        // Found this solution here: https://code.google.com/p/android/issues/detail?id=202691
-        val dialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
-        if (dialog.window != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                dialog.window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-            }
-        }
-        return dialog
     }
 
     override fun onStart() {
