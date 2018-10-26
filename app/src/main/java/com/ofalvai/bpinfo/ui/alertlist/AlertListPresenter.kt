@@ -33,7 +33,6 @@ import com.ofalvai.bpinfo.api.notice.NoticeClient
 import com.ofalvai.bpinfo.model.Alert
 import com.ofalvai.bpinfo.model.RouteType
 import com.ofalvai.bpinfo.ui.base.BasePresenter
-import com.ofalvai.bpinfo.util.alertStartComparator
 import com.ofalvai.bpinfo.util.hasNetworkConnection
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -219,7 +218,7 @@ class AlertListPresenter(private val alertListType: AlertListType)
                               type: AlertListType): List<Alert> {
         val sorted = ArrayList(alerts)
 
-        // Sort: descending by alert start time
+        val alertStartComparator = compareBy<Alert> { it.start }.thenBy { it.description }
         Collections.sort(sorted, alertStartComparator)
         if (type == AlertListType.ALERTS_TODAY) {
             sorted.reverse()
@@ -269,7 +268,7 @@ class AlertListPresenter(private val alertListType: AlertListType)
         var languageCode = sharedPreferences.getString(
                 context.getString(R.string.pref_key_language),
                 context.getString(R.string.pref_key_language_auto)
-        )
+        )!!
 
         if (languageCode == context.getString(R.string.pref_key_language_auto)) {
             languageCode = if (Locale.getDefault().language == AlertSearchContract.LANG_HU) {

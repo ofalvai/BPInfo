@@ -67,6 +67,6 @@ object LocaleManager {
         return prefs.getString(
                 c.getString(R.string.pref_key_language),
                 c.getString(R.string.pref_key_language_auto)
-        )
+        )!!
     }
 }

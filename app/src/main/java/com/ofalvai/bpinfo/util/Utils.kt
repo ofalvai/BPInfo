@@ -47,8 +47,6 @@ import org.threeten.bp.Instant
 import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 
-val alertStartComparator = compareBy<Alert> { it.start }.thenBy { it.description }
-
 /**
  * Detects if a route seems to be a replacement route from its ID format.
  * It's needed because the API returns replacement routes mixed together with the affected routes.
@@ -144,7 +142,7 @@ fun Context.hasNetworkConnection(): Boolean {
     val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
     val activeNetwork = cm.activeNetworkInfo
-    return activeNetwork != null && activeNetwork.isConnectedOrConnecting
+    return activeNetwork != null && activeNetwork.isConnected
 }
 
 fun Route.getContentDescription(context: Context): String {

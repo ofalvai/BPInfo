@@ -18,42 +18,44 @@ package com.ofalvai.bpinfo.model
 
 import java.io.Serializable
 
-data class Alert(val id: String,
+data class Alert(
+    val id: String,
 
-                 /**
-                  * Start of the alert in seconds since the UNIX epoch
-                  */
-                 val start: Long,
+    /**
+     * Start of the alert in seconds since the UNIX epoch
+     */
+    val start: Long,
 
-                 /**
-                  * End of the alert in seconds since the UNIX epoch
-                  * Might be 0, which means the end is not known yet.
-                  */
-                 val end: Long,
+    /**
+     * End of the alert in seconds since the UNIX epoch
+     * Might be 0, which means the end is not known yet.
+     */
+    val end: Long,
 
-                 /**
-                  * Last modification of alert data in seconds since the UNIX epoch
-                  */
-                 val timestamp: Long,
+    /**
+     * Last modification of alert data in seconds since the UNIX epoch
+     */
+    val timestamp: Long,
 
-                 /**
-                  * Points to the alert's detail page at the mobile version of BKK Info
-                  */
-                 val url: String?,
+    /**
+     * Points to the alert's detail page at the mobile version of BKK Info
+     */
+    val url: String?,
 
-                 /**
-                  * One line title of the alert (diversion, replacement, construction, etc.)
-                  */
-                 val header: String?,
+    /**
+     * One line title of the alert (diversion, replacement, construction, etc.)
+     */
+    val header: String?,
 
-                 /**
-                  * HTML description of the alert
-                  */
-                 val description: String?,
+    /**
+     * HTML description of the alert
+     */
+    val description: String?,
 
-                 val affectedRoutes: List<Route>,
+    val affectedRoutes: List<Route>,
 
-                 /**
-                  * Whether the alert object contains all required information, or a second API call is needed
-                  */
-                 val isPartial: Boolean = false) : Serializable
+    /**
+     * Whether the alert object contains all required information, or a second API call is needed
+     */
+    val isPartial: Boolean = false
+) : Serializable
