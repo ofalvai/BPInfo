@@ -16,7 +16,6 @@
 
 package com.ofalvai.bpinfo.ui.alertlist.viewholder
 
-import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
@@ -49,10 +48,10 @@ class AlertHolder(itemView: View, private val alertListType: AlertListType) : Re
      */
     private val displayedRoutes = mutableListOf<Route>()
 
-    fun bindAlert(alert: Alert, context: Context) {
+    fun bindAlert(alert: Alert) {
         titleTextView.text = alert.header
 
-        dateTextView.text = alert.formatDate(context)
+        dateTextView.text = alert.formatDate(itemView.context)
 
         // Route icons
         // First, removing any previously added icons
@@ -65,7 +64,7 @@ class AlertHolder(itemView: View, private val alertListType: AlertListType) : Re
             // to diplay them again.
             if (!isRouteVisuallyDuplicate(route, displayedRoutes)) {
                 displayedRoutes.add(route)
-                addRouteIcon(context, routeIconsWrapper, route)
+                addRouteIcon(itemView.context, routeIconsWrapper, route)
 
                 if (route.type == RouteType._OTHER_) {
                     Timber.d("Unknown route type: %s (%s)", route.shortName, route.id)

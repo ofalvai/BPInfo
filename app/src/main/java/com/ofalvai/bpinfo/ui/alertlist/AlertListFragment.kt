@@ -19,12 +19,11 @@ package com.ofalvai.bpinfo.ui.alertlist
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
+import android.support.v4.text.HtmlCompat
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.util.ListUpdateCallback
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
-import android.text.Html
 import android.view.*
 import android.widget.Button
 import android.widget.LinearLayout
@@ -172,20 +171,8 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
         super.onDestroy()
     }
 
-    /**
-     * Updates the Toolbar's subtitle to the number of current items in the RecyclerView's Adapter
-     */
     override fun updateSubtitle() {
-        // Update subtitle only if the fragment is attached and visible to the user (not preloaded
-        // by ViewPager)
-        if (isAdded) {
-            val count = alertAdapter.itemCount
-            val subtitle = resources.getQuantityString(R.plurals.actionbar_subtitle_alert_count, count, count)
-            val activity = activity as AppCompatActivity
-            activity.supportActionBar?.let {
-                it.subtitle = subtitle
-            }
-        }
+        updateSubtitle(alertAdapter.itemCount)
     }
 
     override fun onFilterChanged(selectedTypes: MutableSet<RouteType>) {
@@ -204,7 +191,13 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
         if (isAdded) {
             setErrorView(false, null)
 
-            alertAdapter.updateAlertData(alerts, AlertListUpdateCallback())
+            alertAdapter.submitList(alerts)
+
+            // Only update the toolbar if this fragment is currently selected in the ViewPager
+            if (userVisibleHint) {
+                updateSubtitle(alerts.size)
+            }
+            alertRecyclerView.smoothScrollToPosition(0)
 
             setUpdating(false)
 
@@ -258,7 +251,7 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
     override fun displayNotice(noticeText: String) {
         noticeView.apply {
             visibility = View.VISIBLE
-            text = Html.fromHtml(noticeText)
+            text = HtmlCompat.fromHtml(noticeText, HtmlCompat.FROM_HTML_MODE_COMPACT)
             setOnClickListener {
                 val fragment = NoticeFragment.newInstance(noticeText)
                 val transaction = requireActivity().supportFragmentManager
@@ -306,7 +299,7 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
     override fun getAlertListType() = alertListType
 
     private fun setupRecyclerView() {
-        alertAdapter = AlertAdapter(ArrayList(), requireContext(), this)
+        alertAdapter = AlertAdapter(this)
         alertRecyclerView.adapter = alertAdapter
 
         val layoutManager = LinearLayoutManager(activity)
@@ -386,42 +379,15 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
         }
     }
 
-    /**
-     * Scrolls to top and calls updateSubtitle() after the Alert list changed visually.
-     */
-    private inner class AlertListUpdateCallback : ListUpdateCallback {
-        override fun onInserted(position: Int, count: Int) {
-            // Only update the toolbar if this fragment is currently selected in the ViewPager
-            if (userVisibleHint) {
-                updateSubtitle()
+    private fun updateSubtitle(count: Int) {
+        // Update subtitle only if the fragment is attached and visible to the user (not preloaded
+        // by ViewPager)
+        if (isAdded) {
+            val subtitle = resources.getQuantityString(R.plurals.actionbar_subtitle_alert_count, count, count)
+            val activity = activity as AppCompatActivity
+            activity.supportActionBar?.let {
+                it.subtitle = subtitle
             }
-            alertRecyclerView.smoothScrollToPosition(0)
-        }
-
-        override fun onRemoved(position: Int, count: Int) {
-            if (userVisibleHint) {
-                updateSubtitle()
-            }
-
-            // For some reason, the usual RecyclerView.smoothScrollToPosition(0) doesn't work here,
-            // the list scrolls to the bottom, instead of the top.
-            if (alertRecyclerView.layoutManager is LinearLayoutManager) {
-                (alertRecyclerView.layoutManager as LinearLayoutManager).scrollToPosition(0)
-            }
-        }
-
-        override fun onMoved(fromPosition: Int, toPosition: Int) {
-            if (userVisibleHint) {
-                updateSubtitle()
-            }
-            alertRecyclerView.smoothScrollToPosition(0)
-        }
-
-        override fun onChanged(position: Int, count: Int, payload: Any?) {
-            if (userVisibleHint) {
-                updateSubtitle()
-            }
-            alertRecyclerView.smoothScrollToPosition(0)
         }
     }
 }
