@@ -22,14 +22,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.LightingColorFilter
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.design.widget.TabLayout
-import android.support.v4.app.NavUtils
-import android.support.v4.content.ContextCompat
-import android.support.v4.view.ViewPager
-import android.support.v4.widget.ContentLoadingProgressBar
-import android.support.v7.app.AlertDialog
-import android.support.v7.view.ContextThemeWrapper
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -37,7 +29,15 @@ import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.view.ContextThemeWrapper
+import androidx.core.app.NavUtils
+import androidx.core.content.ContextCompat
+import androidx.core.widget.ContentLoadingProgressBar
+import androidx.viewpager.widget.ViewPager
 import com.google.android.gms.common.GoogleApiAvailability
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.tabs.TabLayout
 import com.ofalvai.bpinfo.Config
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.model.Route
@@ -47,12 +47,8 @@ import com.ofalvai.bpinfo.ui.base.BaseActivity
 import com.ofalvai.bpinfo.ui.notifications.adapter.RouteListPagerAdapter
 import com.ofalvai.bpinfo.ui.notifications.routelist.RouteListContract
 import com.ofalvai.bpinfo.ui.settings.SettingsActivity
-import com.ofalvai.bpinfo.util.Analytics
-import com.ofalvai.bpinfo.util.getContentDescription
-import com.ofalvai.bpinfo.util.hide
-import com.ofalvai.bpinfo.util.show
+import com.ofalvai.bpinfo.util.*
 import com.wefika.flowlayout.FlowLayout
-import kotterknife.bindView
 
 class NotificationsActivity : BaseActivity(), NotificationsContract.View {
 

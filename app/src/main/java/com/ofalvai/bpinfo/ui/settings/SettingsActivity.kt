@@ -24,11 +24,11 @@ import android.os.Build
 import android.os.Bundle
 import android.preference.*
 import android.provider.Settings
-import android.support.v4.app.NavUtils
-import android.support.v7.app.AlertDialog
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.core.app.NavUtils
 import com.jakewharton.processphoenix.ProcessPhoenix
 import com.ofalvai.bpinfo.BpInfoApplication
 import com.ofalvai.bpinfo.R

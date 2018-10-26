@@ -16,20 +16,16 @@
 
 package com.ofalvai.bpinfo.ui.alertlist.viewholder
 
-import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.model.Alert
 import com.ofalvai.bpinfo.model.Route
 import com.ofalvai.bpinfo.model.RouteType
 import com.ofalvai.bpinfo.ui.alertlist.AlertListType
-import com.ofalvai.bpinfo.util.addRouteIcon
-import com.ofalvai.bpinfo.util.formatDate
-import com.ofalvai.bpinfo.util.isRecent
-import com.ofalvai.bpinfo.util.isRouteVisuallyDuplicate
+import com.ofalvai.bpinfo.util.*
 import com.wefika.flowlayout.FlowLayout
-import kotterknife.bindView
 import timber.log.Timber
 
 class AlertHolder(itemView: View, private val alertListType: AlertListType) : RecyclerView.ViewHolder(itemView) {

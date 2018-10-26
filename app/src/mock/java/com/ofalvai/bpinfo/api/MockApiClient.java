@@ -2,7 +2,6 @@ package com.ofalvai.bpinfo.api;
 
 import android.graphics.Color;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.ofalvai.bpinfo.model.Alert;
@@ -14,6 +13,8 @@ import org.greenrobot.eventbus.EventBus;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 public class MockApiClient implements AlertApiClient {
 

@@ -18,15 +18,15 @@ package com.ofalvai.bpinfo.ui.alertlist
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.TabLayout
-import android.support.v4.view.ViewPager
-import android.support.v7.widget.Toolbar
+import androidx.appcompat.widget.Toolbar
+import androidx.viewpager.widget.ViewPager
+import com.google.android.material.tabs.TabLayout
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.notifications.NotificationMaker
 import com.ofalvai.bpinfo.ui.alertlist.adapter.AlertListPagerAdapter
 import com.ofalvai.bpinfo.ui.base.BaseActivity
 import com.ofalvai.bpinfo.util.Analytics
-import kotterknife.bindView
+import com.ofalvai.bpinfo.util.bindView
 
 class AlertListActivity : BaseActivity() {
 

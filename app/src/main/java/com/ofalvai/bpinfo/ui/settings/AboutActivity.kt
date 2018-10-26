@@ -23,8 +23,8 @@ import android.widget.TextView
 import com.ofalvai.bpinfo.Config
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.ui.base.BaseActivity
+import com.ofalvai.bpinfo.util.bindView
 import com.ofalvai.bpinfo.util.underline
-import kotterknife.bindView
 
 class AboutActivity : BaseActivity() {
 

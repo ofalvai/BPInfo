@@ -17,13 +17,13 @@
 package com.ofalvai.bpinfo.ui.notifications.routelist
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.model.Route
 import com.ofalvai.bpinfo.model.RouteType
@@ -31,7 +31,7 @@ import com.ofalvai.bpinfo.ui.notifications.NotificationsContract
 import com.ofalvai.bpinfo.ui.notifications.routelist.adapter.RouteAdapter
 import com.ofalvai.bpinfo.ui.notifications.routelist.adapter.RouteClickListener
 import com.ofalvai.bpinfo.util.EmptyRecyclerView
-import kotterknife.bindView
+import com.ofalvai.bpinfo.util.bindView
 
 class RouteListFragment : Fragment(), RouteListContract.View, RouteClickListener {
 
@@ -105,7 +105,7 @@ class RouteListFragment : Fragment(), RouteListContract.View, RouteClickListener
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.setHasFixedSize(true)
         recyclerView.addItemDecoration(
-                DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
+            DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         )
     }
 }

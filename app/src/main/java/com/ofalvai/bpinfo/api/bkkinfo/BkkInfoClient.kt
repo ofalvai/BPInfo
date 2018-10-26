@@ -20,8 +20,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.net.Uri
-import android.support.annotation.ColorInt
 import android.util.Log
+import androidx.annotation.ColorInt
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.RequestQueue
 import com.android.volley.Response

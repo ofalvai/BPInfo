@@ -17,18 +17,16 @@
 package com.ofalvai.bpinfo.ui.alertlist
 
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
-import android.support.v4.text.HtmlCompat
-import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.text.HtmlCompat
+import androidx.fragment.app.Fragment
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.android.volley.VolleyError
+import com.google.android.material.snackbar.Snackbar
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.model.Alert
 import com.ofalvai.bpinfo.model.RouteType
@@ -39,7 +37,6 @@ import com.ofalvai.bpinfo.ui.alertlist.dialog.NoticeFragment
 import com.ofalvai.bpinfo.ui.notifications.NotificationsActivity
 import com.ofalvai.bpinfo.ui.settings.SettingsActivity
 import com.ofalvai.bpinfo.util.*
-import kotterknife.bindView
 import timber.log.Timber
 import java.util.*
 
@@ -302,10 +299,11 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
         alertAdapter = AlertAdapter(this)
         alertRecyclerView.adapter = alertAdapter
 
-        val layoutManager = LinearLayoutManager(activity)
+        val layoutManager = androidx.recyclerview.widget.LinearLayoutManager(activity)
         alertRecyclerView.layoutManager = layoutManager
 
-        val decoration = DividerItemDecoration(context, layoutManager.orientation)
+        val decoration =
+            androidx.recyclerview.widget.DividerItemDecoration(context, layoutManager.orientation)
         alertRecyclerView.addItemDecoration(decoration)
 
         alertRecyclerView.setEmptyView(emptyView)

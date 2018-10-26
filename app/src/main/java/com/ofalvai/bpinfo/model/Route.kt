@@ -16,7 +16,7 @@
 
 package com.ofalvai.bpinfo.model
 
-import android.support.annotation.ColorInt
+import androidx.annotation.ColorInt
 
 import java.io.Serializable
 

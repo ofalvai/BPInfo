@@ -23,22 +23,21 @@ import android.animation.ValueAnimator
 import android.graphics.Paint
 import android.net.Uri
 import android.os.Bundle
-import android.support.design.widget.BottomSheetDialogFragment
-import android.support.v4.view.animation.FastOutSlowInInterpolator
-import android.support.v4.widget.ContentLoadingProgressBar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.widget.ContentLoadingProgressBar
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.model.Alert
 import com.ofalvai.bpinfo.model.Route
 import com.ofalvai.bpinfo.ui.alertlist.AlertListContract
 import com.ofalvai.bpinfo.util.*
 import com.wefika.flowlayout.FlowLayout
-import kotterknife.bindView
 import org.sufficientlysecure.htmltextview.HtmlTextView
 
 class AlertDetailFragment : BottomSheetDialogFragment() {
