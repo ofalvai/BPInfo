@@ -21,7 +21,6 @@ import android.content.SharedPreferences
 import com.android.volley.NoConnectionError
 import com.android.volley.VolleyError
 import com.crashlytics.android.Crashlytics
-import com.ofalvai.bpinfo.BpInfoApplication
 import com.ofalvai.bpinfo.Config
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.api.AlertApiClient
@@ -41,24 +40,17 @@ import org.threeten.bp.Duration
 import org.threeten.bp.LocalDateTime
 import timber.log.Timber
 import java.util.*
-import javax.inject.Inject
 
 
-class AlertListPresenter(private val alertListType: AlertListType)
-    : BasePresenter<AlertListContract.View>(), NoticeClient.NoticeListener,
-        AlertListContract.Presenter {
+class AlertListPresenter(
+    private val alertApiClient: AlertApiClient,
+    private val noticeClient: NoticeClient,
+    private val sharedPreferences: SharedPreferences,
+    private val context: Context
+) : BasePresenter<AlertListContract.View>(), NoticeClient.NoticeListener,
+    AlertListContract.Presenter {
 
-    @Inject
-    lateinit var alertApiClient: AlertApiClient
-
-    @Inject
-    lateinit var noticeClient: NoticeClient
-
-    @Inject
-    lateinit var sharedPreferences: SharedPreferences
-
-    @Inject
-    lateinit var context: Context
+    override lateinit var alertListType: AlertListType
 
     /**
      * List of alerts returned by the client, before filtering by RouteTypes
@@ -71,10 +63,6 @@ class AlertListPresenter(private val alertListType: AlertListType)
 
     private val alertRequestParams: AlertRequestParams
         get() = AlertRequestParams(alertListType, getCurrentLanguageCode())
-
-    init {
-        BpInfoApplication.injector.inject(this)
-    }
 
     override fun attachView(view: AlertListContract.View) {
         super.attachView(view)
@@ -119,19 +107,19 @@ class AlertListPresenter(private val alertListType: AlertListType)
 
     override fun fetchAlert(alertId: String) {
         alertApiClient.fetchAlert(
-                alertId,
-                object : AlertApiClient.AlertDetailListener {
-                    override fun onAlertResponse(alert: Alert) {
-                        view?.updateAlertDetail(alert)
-                    }
+            alertId,
+            object : AlertApiClient.AlertDetailListener {
+                override fun onAlertResponse(alert: Alert) {
+                    view?.updateAlertDetail(alert)
+                }
 
-                    override fun onError(ex: Exception) {
-                        view?.displayAlertDetailError()
-                        Timber.e(ex)
-                        Crashlytics.logException(ex)
-                    }
-                },
-                alertRequestParams
+                override fun onError(ex: Exception) {
+                    view?.displayAlertDetailError()
+                    Timber.e(ex)
+                    Crashlytics.logException(ex)
+                }
+            },
+            alertRequestParams
         )
     }
 
@@ -213,9 +201,11 @@ class AlertListPresenter(private val alertListType: AlertListType)
      * according to the alert list type (descending/ascending)
      */
     // TODO: possible rewrite with Kotlin collection methods
-    private fun filterAndSort(types: Set<RouteType>?,
-                              alerts: List<Alert>,
-                              type: AlertListType): List<Alert> {
+    private fun filterAndSort(
+        types: Set<RouteType>?,
+        alerts: List<Alert>,
+        type: AlertListType
+    ): List<Alert> {
         val sorted = ArrayList(alerts)
 
         val alertStartComparator = compareBy<Alert> { it.start }.thenBy { it.description }
@@ -266,8 +256,8 @@ class AlertListPresenter(private val alertListType: AlertListType)
      */
     private fun getCurrentLanguageCode(): String {
         var languageCode = sharedPreferences.getString(
-                context.getString(R.string.pref_key_language),
-                context.getString(R.string.pref_key_language_auto)
+            context.getString(R.string.pref_key_language),
+            context.getString(R.string.pref_key_language_auto)
         )!!
 
         if (languageCode == context.getString(R.string.pref_key_language_auto)) {

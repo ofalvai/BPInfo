@@ -119,17 +119,17 @@ ribbonizer {
 }
 
 ext {
-    supportLibVersion = "28.0.0"
+    koinVersion = "1.0.1"
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    // Support libraries
+    // AndroidX
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
-    implementation 'com.google.android.material:material:1.0.0'
     implementation 'androidx.browser:browser:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
+    implementation 'com.google.android.material:material:1.0.0'
 
     // Firebase
     implementation 'com.google.firebase:firebase-core:16.0.4'
@@ -138,26 +138,33 @@ dependencies {
     implementation 'com.firebase:firebase-jobdispatcher:0.8.5'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.5'
 
+    // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
+    // Volley
     implementation 'com.android.volley:volley:1.1.0'
 
+    // FlowLayout
     implementation ('com.wefika:flowlayout:0.4.1') {
         exclude group: 'com.intellij', module: 'annotations'
     }
 
-    // Dagger
-    implementation 'com.google.dagger:dagger:2.17'
-    kapt 'com.google.dagger:dagger-compiler:2.17'
+    // Koin for Android
+    implementation "org.koin:koin-android:$koinVersion"
 
+    // HTML TextView
     implementation 'org.sufficientlysecure:html-textview:3.4'
 
+    // ThreetenABP
     implementation 'com.jakewharton.threetenabp:threetenabp:1.1.1'
 
+    // Process-Phoenix
     implementation 'com.jakewharton:process-phoenix:2.0.0'
 
+    // EventBus
     implementation 'org.greenrobot:eventbus:3.1.1'
 
+    // Timber
     implementation 'com.jakewharton.timber:timber:4.7.1'
 
     // LeakCanary
@@ -183,6 +190,14 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     testImplementation "org.mockito:mockito-core:2.23.0"
     androidTestImplementation 'org.hamcrest:hamcrest-library:1.3'
+
+    // Koin testing tools
+    testImplementation "org.koin:koin-test:$koinVersion"
+
+    // This is needed to check Koin's dependency graph. It tries to instantiate Volley, which tries
+    // to load the Apache HTTP client, but the classloader fails to find its classes
+    // Remove this dependency when Volley gets replaced by somethings else
+    testImplementation 'org.jbundle.util.osgi.wrapped:org.jbundle.util.osgi.wrapped.org.apache.http.client:4.1.2'
 }
 
 apply plugin: 'com.google.gms.google-services'

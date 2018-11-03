@@ -19,10 +19,9 @@ package com.ofalvai.bpinfo.notifications
 import com.android.volley.VolleyError
 import com.firebase.jobdispatcher.JobParameters
 import com.firebase.jobdispatcher.JobService
-import com.ofalvai.bpinfo.BpInfoApplication
 import com.ofalvai.bpinfo.api.subscription.SubscriptionClient
+import org.koin.android.ext.android.inject
 import timber.log.Timber
-import javax.inject.Inject
 
 class TokenUploadJobService : JobService() {
 
@@ -32,13 +31,7 @@ class TokenUploadJobService : JobService() {
         const val KEY_OLD_TOKEN = "old_token"
     }
 
-    @Inject
-    lateinit var subscriptionClient: SubscriptionClient
-
-    override fun onCreate() {
-        super.onCreate()
-        BpInfoApplication.injector.inject(this)
-    }
+    private val subscriptionClient: SubscriptionClient by inject()
 
     override fun onStartJob(job: JobParameters?): Boolean {
         val newToken: String? = job?.extras?.getString(KEY_NEW_TOKEN)

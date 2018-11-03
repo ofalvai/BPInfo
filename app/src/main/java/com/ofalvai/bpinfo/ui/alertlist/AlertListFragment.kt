@@ -37,6 +37,7 @@ import com.ofalvai.bpinfo.ui.alertlist.dialog.NoticeFragment
 import com.ofalvai.bpinfo.ui.notifications.NotificationsActivity
 import com.ofalvai.bpinfo.ui.settings.SettingsActivity
 import com.ofalvai.bpinfo.util.*
+import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.util.*
 
@@ -60,9 +61,9 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
         }
     }
 
-    private lateinit var presenter: AlertListContract.Presenter
+    private val presenter: AlertListContract.Presenter by inject()
 
-    private lateinit var alertAdapter: AlertAdapter
+    private val alertAdapter = AlertAdapter(this)
 
     private lateinit var alertListType: AlertListType
 
@@ -85,8 +86,8 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
             restoredFilter = savedInstanceState.getSerializable(KEY_ACTIVE_FILTER) as MutableSet<RouteType>
         }
 
-        presenter = AlertListPresenter(alertListType)
         presenter.attachView(this)
+        presenter.alertListType = alertListType
 
         restoredFilter?.let {
             presenter.setFilter(restoredFilter)
@@ -296,7 +297,6 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
     override fun getAlertListType() = alertListType
 
     private fun setupRecyclerView() {
-        alertAdapter = AlertAdapter(this)
         alertRecyclerView.adapter = alertAdapter
 
         val layoutManager = androidx.recyclerview.widget.LinearLayoutManager(activity)

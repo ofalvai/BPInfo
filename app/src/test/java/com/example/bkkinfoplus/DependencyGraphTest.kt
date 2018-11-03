@@ -14,32 +14,27 @@
  * limitations under the License.
  */
 
-package com.ofalvai.bpinfo.injection
+package com.example.bkkinfoplus
 
+import android.app.Application
 import android.content.Context
-import android.content.SharedPreferences
-import android.preference.PreferenceManager
-import dagger.Module
-import dagger.Provides
-import javax.inject.Singleton
+import com.ofalvai.bpinfo.injection.allModules
+import org.junit.Test
+import org.koin.dsl.module.module
+import org.koin.test.KoinTest
+import org.koin.test.checkModules
+import org.mockito.Mockito.mock
 
-/**
- * Dagger module providing Application context, mostly for other Dagger modules
- */
+class DependencyGraphTest: KoinTest {
 
-@Module
-class AppModule(private val mContext: Context) {
+    @Test
+    fun checkKoinModules() {
+        val mockModule = module {
+            single { mock(Application::class.java) }
+            single { mock(Context::class.java) }
+        }
+        val modules = allModules + mockModule
 
-    @Provides
-    @Singleton
-    internal fun providesAppContext(): Context {
-        return mContext
+        checkModules(modules)
     }
-
-    @Provides
-    @Singleton
-    internal fun providesSharedPreferences(context: Context): SharedPreferences {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-    }
-
 }

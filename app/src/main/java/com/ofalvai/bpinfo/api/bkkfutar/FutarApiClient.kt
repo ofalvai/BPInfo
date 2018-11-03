@@ -46,13 +46,12 @@ import org.threeten.bp.Instant
 import org.threeten.bp.ZonedDateTime
 import timber.log.Timber
 import java.util.*
-import javax.inject.Inject
 
-class FutarApiClient
-    @Inject constructor(private val requestQueue: RequestQueue,
-                        private val sharedPreferences: SharedPreferences,
-                        private val context: Context
-    ) : AlertApiClient {
+class FutarApiClient(
+    private val requestQueue: RequestQueue,
+    private val sharedPreferences: SharedPreferences,
+    private val context: Context
+) : AlertApiClient {
 
     companion object {
         private const val TAG = "FutarApiClient"
@@ -113,30 +112,32 @@ class FutarApiClient
         Timber.i("API request: %s", uri.toString())
 
         val request = JsonObjectRequest(
-                uri.toString(), null,
-                Response.Listener { response ->
-                    try {
-                        routes = parseRoutes(response)
-                        alertsToday = parseAlerts(response, AlertListType.ALERTS_TODAY)
-                        alertsFuture = parseAlerts(response, AlertListType.ALERTS_FUTURE)
-                        EventBus.getDefault().post(AlertListMessage(alertsToday, alertsFuture))
-                    } catch (ex: Exception) {
-                        EventBus.getDefault().post(AlertListErrorMessage(ex))
-                    } finally {
-                        requestInProgress = false
-                    }
-                },
-                Response.ErrorListener { error ->
-                    EventBus.getDefault().post(AlertListErrorMessage(error))
+            uri.toString(), null,
+            Response.Listener { response ->
+                try {
+                    routes = parseRoutes(response)
+                    alertsToday = parseAlerts(response, AlertListType.ALERTS_TODAY)
+                    alertsFuture = parseAlerts(response, AlertListType.ALERTS_FUTURE)
+                    EventBus.getDefault().post(AlertListMessage(alertsToday, alertsFuture))
+                } catch (ex: Exception) {
+                    EventBus.getDefault().post(AlertListErrorMessage(ex))
+                } finally {
+                    requestInProgress = false
                 }
+            },
+            Response.ErrorListener { error ->
+                EventBus.getDefault().post(AlertListErrorMessage(error))
+            }
         )
 
         requestInProgress = true
         requestQueue.add(request)
     }
 
-    override fun fetchAlert(id: String, listener: AlertApiClient.AlertDetailListener,
-                            params: AlertRequestParams) {
+    override fun fetchAlert(
+        id: String, listener: AlertApiClient.AlertDetailListener,
+        params: AlertRequestParams
+    ) {
         if (params.alertListType == AlertListType.ALERTS_TODAY) {
             alertsToday.find { it.id == id }?.let {
                 listener.onAlertResponse(it)
@@ -156,15 +157,16 @@ class FutarApiClient
 
     private fun buildUri(): Uri {
         val builder = Uri.parse(AlertSearchContract.BASE_URL).buildUpon()
-                .appendEncodedPath(AlertSearchContract.API_ENDPOINT)
-                .appendQueryParameter("key", QUERY_API_KEY)
-                .appendQueryParameter("version", QUERY_API_VERSION)
-                .appendQueryParameter("appVersion", QUERY_APPVERSION)
-                .appendQueryParameter("includeReferences", QUERY_INCLUDEREFERENCES)
+            .appendEncodedPath(AlertSearchContract.API_ENDPOINT)
+            .appendQueryParameter("key", QUERY_API_KEY)
+            .appendQueryParameter("version", QUERY_API_VERSION)
+            .appendQueryParameter("appVersion", QUERY_APPVERSION)
+            .appendQueryParameter("includeReferences", QUERY_INCLUDEREFERENCES)
 
         // In debug mode, all alerts (even past ones) are retrieved
         val isDebugMode = sharedPreferences.getBoolean(
-                context.getString(R.string.pref_key_debug_mode), false)
+            context.getString(R.string.pref_key_debug_mode), false
+        )
 
         if (!isDebugMode) {
             val startTimestamp: String = Instant.now().epochSecond.toString()
@@ -205,9 +207,13 @@ class FutarApiClient
                 // Time ranges in the API response are messed up. We need to filter out alerts that are
                 // before/after the time range we want.
                 val alertStartTime: ZonedDateTime = apiTimestampToDateTime(alert.start)
-                if (alertListType == AlertListType.ALERTS_TODAY && alertStartTime.isBefore(ZonedDateTime.now())) {
+                if (alertListType == AlertListType.ALERTS_TODAY && alertStartTime.isBefore(
+                        ZonedDateTime.now()
+                    )) {
                     alertList.add(alert)
-                } else if (alertListType == AlertListType.ALERTS_FUTURE && alertStartTime.isAfter(ZonedDateTime.now())) {
+                } else if (alertListType == AlertListType.ALERTS_FUTURE && alertStartTime.isAfter(
+                        ZonedDateTime.now()
+                    )) {
                     alertList.add(alert)
                 }
             } catch (ex: JSONException) {
@@ -299,7 +305,11 @@ class FutarApiClient
                     routeMap[route.id] = route
                 }
             } catch (ex: JSONException) {
-                Crashlytics.log(Log.ERROR, TAG, "Route parse: failed at index " + i + ":\n" + routeNode.toString())
+                Crashlytics.log(
+                    Log.ERROR,
+                    TAG,
+                    "Route parse: failed at index " + i + ":\n" + routeNode.toString()
+                )
             }
         }
 

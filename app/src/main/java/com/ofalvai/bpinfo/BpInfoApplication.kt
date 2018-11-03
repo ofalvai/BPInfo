@@ -26,26 +26,20 @@ import android.content.res.Configuration
 import android.os.Build
 import android.preference.PreferenceManager
 import com.jakewharton.threetenabp.AndroidThreeTen
-import com.ofalvai.bpinfo.injection.ApiModule
-import com.ofalvai.bpinfo.injection.AppComponent
-import com.ofalvai.bpinfo.injection.AppModule
-import com.ofalvai.bpinfo.injection.DaggerAppComponent
+import com.ofalvai.bpinfo.injection.allModules
 import com.ofalvai.bpinfo.util.Analytics
 import com.ofalvai.bpinfo.util.LocaleManager
 import com.squareup.leakcanary.LeakCanary
+import org.koin.android.ext.android.inject
+import org.koin.android.ext.android.startKoin
+import org.koin.android.logger.AndroidLogger
+import org.koin.log.EmptyLogger
+import org.koin.standalone.StandAloneContext
 import timber.log.Timber
-import javax.inject.Inject
 
 class BpInfoApplication : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
-    companion object {
-
-        @JvmStatic
-        lateinit var injector: AppComponent
-    }
-
-    @Inject
-    lateinit var sharedPreferences: SharedPreferences
+    private val sharedPreferences: SharedPreferences by inject()
 
     override fun onCreate() {
         super.onCreate()
@@ -60,8 +54,7 @@ class BpInfoApplication : Application(), SharedPreferences.OnSharedPreferenceCha
         PreferenceManager.getDefaultSharedPreferences(this)
             .registerOnSharedPreferenceChangeListener(this)
 
-        initDagger()
-        injector.inject(this) // Oh the irony...
+        initKoin()
 
         AndroidThreeTen.init(this)
 
@@ -98,15 +91,14 @@ class BpInfoApplication : Application(), SharedPreferences.OnSharedPreferenceCha
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         val dataSourceKey = getString(R.string.pref_key_data_source)
         if (key == dataSourceKey) {
-            initDagger()
+            StandAloneContext.stopKoin()
+            initKoin()
         }
     }
 
-    private fun initDagger() {
-        injector = DaggerAppComponent.builder()
-            .appModule(AppModule(this))
-            .apiModule(ApiModule()) //depends on selected build flavor (prod/mock)
-            .build()
+    private fun initKoin() {
+        val logger = if (BuildConfig.DEBUG) AndroidLogger() else EmptyLogger()
+        startKoin(this, allModules, logger = logger)
     }
 
     private fun initTimber() {

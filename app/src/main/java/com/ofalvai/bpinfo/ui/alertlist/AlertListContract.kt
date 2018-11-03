@@ -68,6 +68,8 @@ interface AlertListContract {
 
     interface Presenter : MvpPresenter<View> {
 
+        var alertListType: AlertListType
+
         fun getFilter(): MutableSet<RouteType>?
 
         fun setFilter(routeTypes: MutableSet<RouteType>?)

@@ -30,13 +30,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.NavUtils
 import com.jakewharton.processphoenix.ProcessPhoenix
-import com.ofalvai.bpinfo.BpInfoApplication
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.ui.alertlist.AlertListActivity
 import com.ofalvai.bpinfo.util.Analytics
 import com.ofalvai.bpinfo.util.AppCompatPreferenceActivity
 import com.ofalvai.bpinfo.util.LocaleManager
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
 
 /**
  * A [PreferenceActivity] that presents a set of application settings. On
@@ -52,8 +51,7 @@ import javax.inject.Inject
 class SettingsActivity : AppCompatPreferenceActivity(),
     SharedPreferences.OnSharedPreferenceChangeListener {
 
-    @Inject
-    lateinit var mSharedPreferences: SharedPreferences
+    private val mSharedPreferences: SharedPreferences by inject()
 
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(LocaleManager.setLocale(newBase))
@@ -61,8 +59,6 @@ class SettingsActivity : AppCompatPreferenceActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        BpInfoApplication.injector.inject(this)
 
         setupActionBar()
 

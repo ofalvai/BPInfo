@@ -49,10 +49,11 @@ import com.ofalvai.bpinfo.ui.notifications.routelist.RouteListContract
 import com.ofalvai.bpinfo.ui.settings.SettingsActivity
 import com.ofalvai.bpinfo.util.*
 import com.wefika.flowlayout.FlowLayout
+import org.koin.android.ext.android.inject
 
 class NotificationsActivity : BaseActivity(), NotificationsContract.View {
 
-    private lateinit var presenter: NotificationsContract.Presenter
+    private val presenter: NotificationsContract.Presenter by inject()
 
     private val tabLayout: TabLayout by bindView(R.id.notifications__tabs)
     private val viewPager: ViewPager by bindView(R.id.notifications__viewpager)
@@ -80,9 +81,7 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
             setTitle(R.string.title_activity_notifications)
         }
 
-        presenter = NotificationsPresenter()
         presenter.attachView(this)
-
         presenter.fetchRouteList()
         presenter.fetchSubscriptions()
 

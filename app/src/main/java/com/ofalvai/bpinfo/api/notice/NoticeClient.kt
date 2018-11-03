@@ -26,21 +26,21 @@ import com.ofalvai.bpinfo.Config
 import com.ofalvai.bpinfo.R
 import org.json.JSONArray
 import timber.log.Timber
-import javax.inject.Inject
 
 /**
  * Fetches messages (notices) from our own backend. This is used to inform the users when the API is
  * down or broken, without updating the app itself.
  */
-class NoticeClient
-@Inject constructor(private val requestQueue: RequestQueue,
-                    private val context: Context,
-                    private val sharedPreferences: SharedPreferences
+class NoticeClient(
+    private val requestQueue: RequestQueue,
+    private val context: Context,
+    private val sharedPreferences: SharedPreferences
 ) : Response.ErrorListener {
 
     private val isDebugActivated: Boolean
         get() = sharedPreferences.getBoolean(
-                context.getString(R.string.pref_key_debug_mode), false)
+            context.getString(R.string.pref_key_debug_mode), false
+        )
 
     interface NoticeListener {
         /**
@@ -56,11 +56,11 @@ class NoticeClient
         val url = Config.Url.NOTICES
 
         val request = JsonArrayRequest(
-                url,
-                Response.Listener { response ->
-                    onResponseCallback(response, noticeListener, languageCode)
-                },
-                this
+            url,
+            Response.Listener { response ->
+                onResponseCallback(response, noticeListener, languageCode)
+            },
+            this
         )
 
         // Invalidating Volley's cache for this URL to always get the latest notice
@@ -73,7 +73,11 @@ class NoticeClient
         Timber.e(error.toString())
     }
 
-    private fun onResponseCallback(response: JSONArray, listener: NoticeListener, languageCode: String) {
+    private fun onResponseCallback(
+        response: JSONArray,
+        listener: NoticeListener,
+        languageCode: String
+    ) {
         try {
             val noticeBuilder = StringBuilder()
 

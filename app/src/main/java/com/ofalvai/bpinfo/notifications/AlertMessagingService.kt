@@ -25,11 +25,10 @@ import com.firebase.jobdispatcher.GooglePlayDriver
 import com.firebase.jobdispatcher.Lifetime
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.ofalvai.bpinfo.BpInfoApplication
 import com.ofalvai.bpinfo.util.Analytics
 import com.ofalvai.bpinfo.util.LocaleManager
+import org.koin.android.ext.android.inject
 import timber.log.Timber
-import javax.inject.Inject
 
 class AlertMessagingService : FirebaseMessagingService() {
 
@@ -39,16 +38,11 @@ class AlertMessagingService : FirebaseMessagingService() {
         private const val PREF_KEY_TOKEN = "fcm_token"
     }
 
-    @Inject lateinit var sharedPreferences: SharedPreferences
+    private val  sharedPreferences: SharedPreferences by inject()
 
     override fun attachBaseContext(base: Context) {
         // Updating locale
         super.attachBaseContext(LocaleManager.setLocale(base))
-    }
-
-    override fun onCreate() {
-        super.onCreate()
-        BpInfoApplication.injector.inject(this)
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage?) {

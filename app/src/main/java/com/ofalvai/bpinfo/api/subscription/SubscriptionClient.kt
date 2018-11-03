@@ -30,9 +30,8 @@ import com.ofalvai.bpinfo.util.addTo
 import org.json.JSONArray
 import org.json.JSONObject
 import timber.log.Timber
-import javax.inject.Inject
 
-class SubscriptionClient @Inject constructor(private val requestQueue: RequestQueue) {
+class SubscriptionClient(private val requestQueue: RequestQueue) {
 
     interface Callback {
         fun onSubscriptionError(error: VolleyError)
