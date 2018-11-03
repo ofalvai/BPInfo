@@ -25,6 +25,7 @@ import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.model.RouteType
 import com.ofalvai.bpinfo.ui.alertlist.AlertListType
 import com.ofalvai.bpinfo.util.Analytics
+import org.koin.android.ext.android.inject
 import timber.log.Timber
 
 /**
@@ -47,6 +48,8 @@ class AlertFilterFragment : DialogFragment() {
             }
         }
     }
+
+    private val analytics: Analytics by inject()
 
     var selectedRouteTypes: MutableSet<RouteType>? = HashSet()
 
@@ -133,7 +136,7 @@ class AlertFilterFragment : DialogFragment() {
         if (filterListener != null && selectedRouteTypes != null) {
             filterListener!!.onFilterChanged(selectedRouteTypes!!)
 
-            Analytics.logFilterApplied(requireContext(), selectedRouteTypes!!)
+            analytics.logFilterApplied(selectedRouteTypes!!)
         }
     }
 

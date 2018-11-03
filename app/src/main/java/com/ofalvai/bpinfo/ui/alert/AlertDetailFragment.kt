@@ -38,6 +38,7 @@ import com.ofalvai.bpinfo.model.Route
 import com.ofalvai.bpinfo.ui.alertlist.AlertListContract
 import com.ofalvai.bpinfo.util.*
 import com.wefika.flowlayout.FlowLayout
+import org.koin.android.ext.android.inject
 import org.sufficientlysecure.htmltextview.HtmlTextView
 
 class AlertDetailFragment : BottomSheetDialogFragment() {
@@ -63,6 +64,8 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
     private var alert: Alert? = null
 
     private lateinit var listPresenter: AlertListContract.Presenter
+
+    private val analytics: Analytics by inject()
 
     private val titleTextView: TextView by bindView(R.id.alert_detail_title)
 
@@ -99,7 +102,7 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
             alert = savedInstanceState.getSerializable(ARG_ALERT_OBJECT) as Alert
         }
 
-        Analytics.logAlertContentView(requireContext(), alert)
+        analytics.logAlertContentView(alert)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -228,7 +231,7 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
             urlTextView.setOnClickListener {
                 val url = Uri.parse(alert.url)
                 openCustomTab(requireActivity(), url)
-                Analytics.logAlertUrlClick(requireContext(), alert)
+                analytics.logAlertUrlClick(alert)
             }
         }
     }

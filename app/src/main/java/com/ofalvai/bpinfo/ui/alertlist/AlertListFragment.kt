@@ -63,6 +63,8 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
 
     private val presenter: AlertListContract.Presenter by inject()
 
+    private val analytics: Analytics by inject()
+
     private val alertAdapter = AlertAdapter(this)
 
     private lateinit var alertListType: AlertListType
@@ -121,7 +123,7 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
 
         refreshLayout.setOnRefreshListener {
             initRefresh()
-            Analytics.logManualRefresh(requireContext())
+            analytics.logManualRefresh()
         }
 
         initRefresh()
@@ -256,7 +258,7 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
                         .beginTransaction()
                 fragment.show(transaction, NOTICE_DIALOG_TAG)
 
-                Analytics.logNoticeDialogView(context)
+                analytics.logNoticeDialogView()
             }
         }
     }
@@ -329,7 +331,7 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
         val transaction = requireFragmentManager().beginTransaction()
         filterFragment.show(transaction, FILTER_DIALOG_TAG)
 
-        Analytics.logFilterDialogOpened(requireContext())
+        analytics.logFilterDialogOpened()
     }
 
     /**

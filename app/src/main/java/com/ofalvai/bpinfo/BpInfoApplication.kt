@@ -41,6 +41,8 @@ class BpInfoApplication : Application(), SharedPreferences.OnSharedPreferenceCha
 
     private val sharedPreferences: SharedPreferences by inject()
 
+    private val analytics: Analytics by inject()
+
     override fun onCreate() {
         super.onCreate()
 
@@ -64,8 +66,8 @@ class BpInfoApplication : Application(), SharedPreferences.OnSharedPreferenceCha
 
         overrideSettingsIfNeeded()
 
-        Analytics.setSystemNotificationState(this)
-        Analytics.setRestrictions(this)
+        analytics.setSystemNotificationState()
+        analytics.setRestrictions()
     }
 
     override fun attachBaseContext(base: Context) {

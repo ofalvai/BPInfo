@@ -37,6 +37,7 @@ val apiModule = module {
     @Suppress("RemoveExplicitTypeArguments")
     single<AlertApiClient> {
         val sharedPreferences: SharedPreferences = get()
+        val analytics: Analytics = get()
 
         val keyBkkFutar = androidContext().getString(R.string.pref_key_data_source_futar)
         val keyDefault = androidContext().getString(R.string.pref_key_data_source_default)
@@ -46,10 +47,10 @@ val apiModule = module {
         )
 
         if (keyCurrent == keyBkkFutar) {
-            Analytics.setDataSource(androidContext(), Analytics.DATA_SOURCE_FUTAR)
+            analytics.setDataSource(Analytics.DATA_SOURCE_FUTAR)
             FutarApiClient(get(), sharedPreferences, androidContext())
         } else {
-            Analytics.setDataSource(androidContext(), Analytics.DATA_SOURCE_BKKINFO)
+            analytics.setDataSource(Analytics.DATA_SOURCE_BKKINFO)
             BkkInfoClient(get(), sharedPreferences, androidContext())
         }
     }

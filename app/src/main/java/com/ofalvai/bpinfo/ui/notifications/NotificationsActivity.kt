@@ -55,6 +55,8 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
 
     private val presenter: NotificationsContract.Presenter by inject()
 
+    private val analytics: Analytics by inject()
+
     private val tabLayout: TabLayout by bindView(R.id.notifications__tabs)
     private val viewPager: ViewPager by bindView(R.id.notifications__viewpager)
     private val subscribedRoutesLayout: FlowLayout by bindView(R.id.notifications__subscribed_routes)
@@ -128,7 +130,7 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
     }
 
     override fun addSubscribedRoute(route: Route) {
-        Analytics.logNotificationSubscribe(this, route.id)
+        analytics.logNotificationSubscribe(route.id)
 
         subscribedEmptyView.hide()
 
@@ -136,7 +138,7 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
     }
 
     override fun removeSubscribedRoute(route: Route) {
-        Analytics.logNotificationUnsubscribe(this, route.id)
+        analytics.logNotificationUnsubscribe(route.id)
 
         removeSubscribedRouteIcon(route)
 

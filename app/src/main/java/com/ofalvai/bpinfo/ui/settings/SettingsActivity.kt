@@ -53,6 +53,8 @@ class SettingsActivity : AppCompatPreferenceActivity(),
 
     private val mSharedPreferences: SharedPreferences by inject()
 
+    private val analytics: Analytics by inject()
+
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(LocaleManager.setLocale(newBase))
     }
@@ -85,7 +87,7 @@ class SettingsActivity : AppCompatPreferenceActivity(),
         when (key) {
             getString(R.string.pref_key_language) -> {
                 val languageValue = sharedPreferences.getString(key, "default")
-                Analytics.logLanguageChange(this, languageValue)
+                analytics.logLanguageChange(languageValue)
                 showLanguageRestartDialog()
             }
             getString(R.string.pref_key_debug_mode) -> {
@@ -93,12 +95,12 @@ class SettingsActivity : AppCompatPreferenceActivity(),
                 val text =
                     if (state) getString(R.string.debug_mode_on) else getString(R.string.debog_mode_off)
                 Toast.makeText(this, text, Toast.LENGTH_LONG).show()
-                Analytics.logDebugMode(this, state.toString())
+                analytics.logDebugMode(state.toString())
             }
             getString(R.string.pref_key_data_source) -> {
                 Toast.makeText(this, R.string.data_source_changed_refreshed, Toast.LENGTH_SHORT)
                     .show()
-                Analytics.logDataSourceChange(this)
+                analytics.logDataSourceChange()
 
                 // Recreating AlertListActivity. This relies on BpInfoApplication's preference listener,
                 // which can rebuild the Dagger dependency graph so that the new Activity (and its
@@ -192,14 +194,14 @@ class SettingsActivity : AppCompatPreferenceActivity(),
         } else {
             pref.setOnPreferenceClickListener {
                 launchSystemNotificationPrefs()
-                Analytics.logNotificationChannelsOpened(this)
+                analytics.logNotificationChannelsOpened()
                 true
             }
         }
 
         findPreference(getString(R.string.pref_key_notifications_routes))
             .setOnPreferenceClickListener {
-                Analytics.logNotificationFromSettingsOpened(this)
+                analytics.logNotificationFromSettingsOpened()
                 false // Launch intent is defined in XML
             }
     }

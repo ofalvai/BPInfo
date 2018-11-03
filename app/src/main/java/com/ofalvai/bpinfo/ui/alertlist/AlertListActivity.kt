@@ -27,6 +27,7 @@ import com.ofalvai.bpinfo.ui.alertlist.adapter.AlertListPagerAdapter
 import com.ofalvai.bpinfo.ui.base.BaseActivity
 import com.ofalvai.bpinfo.util.Analytics
 import com.ofalvai.bpinfo.util.bindView
+import org.koin.android.ext.android.inject
 
 class AlertListActivity : BaseActivity() {
 
@@ -41,6 +42,8 @@ class AlertListActivity : BaseActivity() {
     private val toolbar: Toolbar by bindView(R.id.toolbar)
 
     private lateinit var pagerAdapter: AlertListPagerAdapter
+
+    private val analytics: Analytics by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,7 +74,7 @@ class AlertListActivity : BaseActivity() {
         pendingNavigationAlertId = intent?.getStringExtra(NotificationMaker.INTENT_EXTRA_ALERT_ID)
 
         pendingNavigationAlertId?.let {
-            Analytics.logNotificationOpen(this, it)
+            analytics.logNotificationOpen(it)
 
             // Prevent triggering it again in the future (eg. back navigation from another Activity)
             intent?.removeExtra(NotificationMaker.INTENT_EXTRA_ALERT_ID)

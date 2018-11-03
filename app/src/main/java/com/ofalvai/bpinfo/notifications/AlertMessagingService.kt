@@ -40,6 +40,8 @@ class AlertMessagingService : FirebaseMessagingService() {
 
     private val  sharedPreferences: SharedPreferences by inject()
 
+    private val analytics: Analytics by inject()
+
     override fun attachBaseContext(base: Context) {
         // Updating locale
         super.attachBaseContext(LocaleManager.setLocale(base))
@@ -79,7 +81,7 @@ class AlertMessagingService : FirebaseMessagingService() {
 
         val oldToken: String? = getOldToken()
         Timber.i("New Firebase token: $token")
-        Analytics.logDeviceTokenUpdate(this, token ?: "")
+        analytics.logDeviceTokenUpdate(token ?: "")
 
         if (token == null) {
             // It should never happen

@@ -22,6 +22,7 @@ import com.ofalvai.bpinfo.ui.alertlist.AlertListContract
 import com.ofalvai.bpinfo.ui.alertlist.AlertListPresenter
 import com.ofalvai.bpinfo.ui.notifications.NotificationsContract
 import com.ofalvai.bpinfo.ui.notifications.NotificationsPresenter
+import com.ofalvai.bpinfo.util.Analytics
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module.module
 
@@ -30,6 +31,8 @@ val appModule = module {
     single<SharedPreferences> {
         PreferenceManager.getDefaultSharedPreferences(androidContext())
     }
+
+    single { Analytics(androidContext()) }
 }
 
 val screenModule = module {
