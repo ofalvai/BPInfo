@@ -22,6 +22,7 @@ import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.getSystemService
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.ofalvai.bpinfo.model.Alert
 import com.ofalvai.bpinfo.model.RouteType
@@ -51,17 +52,15 @@ class Analytics(private val context: Context) {
     fun setRestrictions() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) return
 
-        val activityManager = context
-            .getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        val activityManager = context.getSystemService<ActivityManager>()
 
-        val isBackgroundRestricted: String = activityManager.isBackgroundRestricted.toString()
+        val isBackgroundRestricted: String = activityManager?.isBackgroundRestricted.toString()
         FirebaseAnalytics.getInstance(context)
             .setUserProperty("background_restricted", isBackgroundRestricted)
 
-        val usageStatsManager = context
-            .getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
+        val usageStatsManager = context.getSystemService<UsageStatsManager>()
         FirebaseAnalytics.getInstance(context)
-            .setUserProperty("app_standby_bucket", usageStatsManager.appStandbyBucket.toString())
+            .setUserProperty("app_standby_bucket", usageStatsManager?.appStandbyBucket.toString())
     }
 
     fun logAlertContentView(alert: Alert?) {

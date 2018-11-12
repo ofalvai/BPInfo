@@ -18,7 +18,7 @@ package com.ofalvai.bpinfo.notifications
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.os.Bundle
+import androidx.core.os.bundleOf
 import com.firebase.jobdispatcher.Constraint
 import com.firebase.jobdispatcher.FirebaseJobDispatcher
 import com.firebase.jobdispatcher.GooglePlayDriver
@@ -102,10 +102,10 @@ class AlertMessagingService : FirebaseMessagingService() {
     }
 
     private fun scheduleTokenUpload(oldToken: String, newToken: String) {
-        val extras = Bundle().apply {
-            putString(TokenUploadJobService.KEY_NEW_TOKEN, newToken)
-            putString(TokenUploadJobService.KEY_OLD_TOKEN, oldToken)
-        }
+        val extras = bundleOf(
+            TokenUploadJobService.KEY_NEW_TOKEN to newToken,
+            TokenUploadJobService.KEY_OLD_TOKEN to oldToken
+        )
 
         val jobDispatcher = FirebaseJobDispatcher(GooglePlayDriver(this))
         val job = jobDispatcher.newJobBuilder()

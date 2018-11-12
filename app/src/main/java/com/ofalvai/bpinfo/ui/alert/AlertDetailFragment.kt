@@ -29,6 +29,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.os.bundleOf
 import androidx.core.widget.ContentLoadingProgressBar
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -54,8 +55,7 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
                         presenter: AlertListContract.Presenter): AlertDetailFragment {
             val fragment = AlertDetailFragment()
             fragment.listPresenter = presenter
-            val args = Bundle()
-            args.putSerializable(ARG_ALERT_OBJECT, alert)
+            val args = bundleOf(ARG_ALERT_OBJECT to alert)
             fragment.arguments = args
             return fragment
         }

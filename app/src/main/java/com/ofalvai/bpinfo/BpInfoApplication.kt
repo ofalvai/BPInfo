@@ -25,6 +25,7 @@ import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Build
 import android.preference.PreferenceManager
+import androidx.core.content.getSystemService
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.ofalvai.bpinfo.injection.allModules
 import com.ofalvai.bpinfo.util.Analytics
@@ -114,15 +115,14 @@ class BpInfoApplication : Application(), SharedPreferences.OnSharedPreferenceCha
             return
         }
 
-        val notificationManager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager = getSystemService<NotificationManager>()
 
         val id = getString(R.string.notif_channel_alerts_id)
         val name = getString(R.string.notif_channel_alerts_title)
         val description = getString(R.string.notif_channel_alerts_desc)
         val channel = NotificationChannel(id, name, NotificationManager.IMPORTANCE_DEFAULT)
         channel.description = description
-        notificationManager.createNotificationChannel(channel)
+        notificationManager?.createNotificationChannel(channel)
     }
 
     @SuppressLint("ApplySharedPref")

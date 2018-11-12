@@ -34,6 +34,7 @@ import androidx.annotation.StringRes
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
+import androidx.core.content.getSystemService
 import com.android.volley.*
 import com.ofalvai.bpinfo.Config
 import com.ofalvai.bpinfo.R
@@ -139,9 +140,9 @@ fun Alert.isRecent(): Boolean {
 
 @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
 fun Context.hasNetworkConnection(): Boolean {
-    val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val cm = getSystemService<ConnectivityManager>()
 
-    val activeNetwork = cm.activeNetworkInfo
+    val activeNetwork = cm?.activeNetworkInfo
     return activeNetwork != null && activeNetwork.isConnected
 }
 
