@@ -194,10 +194,13 @@ dependencies {
     // Koin testing tools
     testImplementation "org.koin:koin-test:$koinVersion"
 
-    // This is needed to check Koin's dependency graph. It tries to instantiate Volley, which tries
-    // to load the Apache HTTP client, but the classloader fails to find its classes
-    // Remove this dependency when Volley gets replaced by somethings else
-    testImplementation 'org.jbundle.util.osgi.wrapped:org.jbundle.util.osgi.wrapped.org.apache.http.client:4.1.2'
+    testImplementation('org.jbundle.util.osgi.wrapped:org.jbundle.util.osgi.wrapped.org.apache.http.client:4.1.2') {
+        because """
+            This is needed to check Koin\'s dependency graph. It tries to instantiate Volley, which 
+            tries to load the Apache HTTP client, but the classloader fails to find its classes
+            Remove this dependency when Volley gets replaced by somethings else
+        """
+    }
 }
 
 apply plugin: 'com.google.gms.google-services'
