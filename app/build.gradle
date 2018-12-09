@@ -27,8 +27,8 @@ def keystorePropertiesFile = rootProject.file("keystore.properties")
 def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
-def appVersionCode = 15
-def appVersionName = "2.0.0"
+def appVersionCode = 17
+def appVersionName = "2.0.2"
 
 android {
     signingConfigs {
@@ -134,7 +134,7 @@ dependencies {
     // Firebase
     implementation 'com.google.firebase:firebase-core:16.0.4'
     implementation 'com.google.firebase:firebase-perf:16.1.2'
-    implementation 'com.google.firebase:firebase-messaging:17.3.3'
+    implementation 'com.google.firebase:firebase-messaging:17.3.4'
     implementation 'com.firebase:firebase-jobdispatcher:0.8.5'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.5'
 
