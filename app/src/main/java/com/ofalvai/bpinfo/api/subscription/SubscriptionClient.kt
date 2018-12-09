@@ -16,6 +16,7 @@
 
 package com.ofalvai.bpinfo.api.subscription
 
+import android.content.SharedPreferences
 import android.net.Uri
 import com.android.volley.Request
 import com.android.volley.RequestQueue
@@ -23,16 +24,19 @@ import com.android.volley.Response
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
-import com.google.firebase.iid.FirebaseInstanceId
 import com.ofalvai.bpinfo.Config
 import com.ofalvai.bpinfo.model.RouteSubscription
+import com.ofalvai.bpinfo.notifications.AlertMessagingService
 import com.ofalvai.bpinfo.util.addTo
 import org.json.JSONArray
 import org.json.JSONObject
 import timber.log.Timber
 import javax.inject.Inject
 
-class SubscriptionClient @Inject constructor(private val requestQueue: RequestQueue) {
+class SubscriptionClient @Inject constructor(
+    private val requestQueue: RequestQueue,
+    private val sharedPreferences: SharedPreferences
+) {
 
     interface Callback {
         fun onSubscriptionError(error: VolleyError)
@@ -57,14 +61,12 @@ class SubscriptionClient @Inject constructor(private val requestQueue: RequestQu
         private const val KEY_NEW_TOKEN = "new"
     }
 
-    private val token get() = FirebaseInstanceId.getInstance().token
-
     fun postSubscription(routeID: String, callback: Callback) {
         val url = SUBSCRIPTION_URL
 
         val body = JSONObject().apply {
             put("routeId", routeID)
-            put("token", token)
+            put("token", getToken())
         }
 
         JsonObjectRequest(Request.Method.POST, url, body,
@@ -82,7 +84,7 @@ class SubscriptionClient @Inject constructor(private val requestQueue: RequestQu
     fun getSubscriptions(callback: Callback) {
         val url = Uri.parse(SUBSCRIPTION_URL)
             .buildUpon()
-            .appendPath(token)
+            .appendPath(getToken())
             .toString()
 
         JsonArrayRequest(Request.Method.GET, url, null,
@@ -99,7 +101,7 @@ class SubscriptionClient @Inject constructor(private val requestQueue: RequestQu
     fun deleteSubscription(routeID: String, callback: Callback) {
         val url = Uri.parse(SUBSCRIPTION_URL)
             .buildUpon()
-            .appendPath(token)
+            .appendPath(getToken())
             .appendPath(routeID)
             .toString()
 
@@ -136,6 +138,10 @@ class SubscriptionClient @Inject constructor(private val requestQueue: RequestQu
                 callback.onTokenReplaceError(it)
             }
         ).addTo(requestQueue)
+    }
+
+    private fun getToken(): String? {
+        return sharedPreferences.getString(AlertMessagingService.PREF_KEY_TOKEN, null)
     }
 
     private fun parseSubscriptionList(array: JSONArray): List<String> {

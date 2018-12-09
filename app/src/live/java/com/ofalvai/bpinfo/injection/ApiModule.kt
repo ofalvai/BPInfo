@@ -76,6 +76,6 @@ class ApiModule {
 
     @Provides
     @Singleton
-    internal fun provideSubscriptionClient(requestQueue: RequestQueue) =
-        SubscriptionClient(requestQueue)
+    internal fun provideSubscriptionClient(requestQueue: RequestQueue, sharedPreferences: SharedPreferences) =
+        SubscriptionClient(requestQueue, sharedPreferences)
 }

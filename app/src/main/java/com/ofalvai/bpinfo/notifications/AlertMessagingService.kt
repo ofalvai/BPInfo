@@ -34,9 +34,9 @@ import javax.inject.Inject
 class AlertMessagingService : FirebaseMessagingService() {
 
     companion object {
+        const val PREF_KEY_TOKEN = "fcm_token"
         private const val DATA_KEY_ID = "id"
         private const val DATA_KEY_TITLE = "title"
-        private const val PREF_KEY_TOKEN = "fcm_token"
     }
 
     @Inject lateinit var sharedPreferences: SharedPreferences
