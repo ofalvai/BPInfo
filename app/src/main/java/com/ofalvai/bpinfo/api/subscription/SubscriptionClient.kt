@@ -24,9 +24,9 @@ import com.android.volley.Response
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
+import com.google.firebase.iid.FirebaseInstanceId
 import com.ofalvai.bpinfo.Config
 import com.ofalvai.bpinfo.model.RouteSubscription
-import com.ofalvai.bpinfo.notifications.AlertMessagingService
 import com.ofalvai.bpinfo.util.addTo
 import org.json.JSONArray
 import org.json.JSONObject
@@ -35,11 +35,11 @@ import javax.inject.Inject
 
 class SubscriptionClient @Inject constructor(
     private val requestQueue: RequestQueue,
-    private val sharedPreferences: SharedPreferences
+    private val sharedPreferences: SharedPreferences // TODO: remove from injection
 ) {
 
     interface Callback {
-        fun onSubscriptionError(error: VolleyError)
+        fun onSubscriptionError(error: Throwable)
         fun onPostSubscriptionResponse(subscription: RouteSubscription)
         fun onGetSubscriptionResponse(routeIDList: List<String>)
         fun onDeleteSubscriptionResponse(subscription: RouteSubscription)
@@ -62,59 +62,65 @@ class SubscriptionClient @Inject constructor(
     }
 
     fun postSubscription(routeID: String, callback: Callback) {
-        val url = SUBSCRIPTION_URL
+        withToken(callback) { token ->
+            val url = SUBSCRIPTION_URL
 
-        val body = JSONObject().apply {
-            put("routeId", routeID)
-            put("token", getToken())
-        }
-
-        JsonObjectRequest(Request.Method.POST, url, body,
-            Response.Listener {
-                val subscription = parseSubscription(it)
-                callback.onPostSubscriptionResponse(subscription)
-            },
-            Response.ErrorListener {
-                Timber.e(it.toString())
-                callback.onSubscriptionError(it)
+            val body = JSONObject().apply {
+                put("routeId", routeID)
+                put("token", token)
             }
-        ).addTo(requestQueue)
+
+            JsonObjectRequest(Request.Method.POST, url, body,
+                Response.Listener {
+                    val subscription = parseSubscription(it)
+                    callback.onPostSubscriptionResponse(subscription)
+                },
+                Response.ErrorListener {
+                    Timber.e(it.toString())
+                    callback.onSubscriptionError(it)
+                }
+            ).addTo(requestQueue)
+        }
     }
 
     fun getSubscriptions(callback: Callback) {
-        val url = Uri.parse(SUBSCRIPTION_URL)
-            .buildUpon()
-            .appendPath(getToken())
-            .toString()
+        withToken(callback) { token ->
+            val url = Uri.parse(SUBSCRIPTION_URL)
+                .buildUpon()
+                .appendPath(token)
+                .toString()
 
-        JsonArrayRequest(Request.Method.GET, url, null,
-            Response.Listener {
-                callback.onGetSubscriptionResponse(parseSubscriptionList(it))
-            },
-            Response.ErrorListener {
-                Timber.e(it.toString())
-                callback.onSubscriptionError(it)
-            }
-        ).addTo(requestQueue)
+            JsonArrayRequest(Request.Method.GET, url, null,
+                Response.Listener {
+                    callback.onGetSubscriptionResponse(parseSubscriptionList(it))
+                },
+                Response.ErrorListener {
+                    Timber.e(it.toString())
+                    callback.onSubscriptionError(it)
+                }
+            ).addTo(requestQueue)
+        }
     }
 
     fun deleteSubscription(routeID: String, callback: Callback) {
-        val url = Uri.parse(SUBSCRIPTION_URL)
-            .buildUpon()
-            .appendPath(getToken())
-            .appendPath(routeID)
-            .toString()
+        withToken(callback) { token ->
+            val url = Uri.parse(SUBSCRIPTION_URL)
+                .buildUpon()
+                .appendPath(token)
+                .appendPath(routeID)
+                .toString()
 
-        JsonObjectRequest(Request.Method.DELETE, url, null,
-            Response.Listener {
-                val subscription = parseSubscription(it)
-                callback.onDeleteSubscriptionResponse(subscription)
-            },
-            Response.ErrorListener {
-                Timber.e(it.toString())
-                callback.onSubscriptionError(it)
-            }
-        ).addTo(requestQueue)
+            JsonObjectRequest(Request.Method.DELETE, url, null,
+                Response.Listener {
+                    val subscription = parseSubscription(it)
+                    callback.onDeleteSubscriptionResponse(subscription)
+                },
+                Response.ErrorListener {
+                    Timber.e(it.toString())
+                    callback.onSubscriptionError(it)
+                }
+            ).addTo(requestQueue)
+        }
     }
 
     fun replaceToken(old: String, new: String, callback: TokenReplaceCallback) {
@@ -140,8 +146,10 @@ class SubscriptionClient @Inject constructor(
         ).addTo(requestQueue)
     }
 
-    private fun getToken(): String? {
-        return sharedPreferences.getString(AlertMessagingService.PREF_KEY_TOKEN, null)
+    private fun withToken(callback: Callback, action: (String) -> Unit) {
+        FirebaseInstanceId.getInstance().instanceId
+            .addOnSuccessListener { action(it.token) }
+            .addOnFailureListener { callback.onSubscriptionError(it) }
     }
 
     private fun parseSubscriptionList(array: JSONArray): List<String> {

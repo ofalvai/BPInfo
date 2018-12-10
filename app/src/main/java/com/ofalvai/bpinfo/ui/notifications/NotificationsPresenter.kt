@@ -16,7 +16,7 @@
 
 package com.ofalvai.bpinfo.ui.notifications
 
-import com.android.volley.VolleyError
+import com.crashlytics.android.Crashlytics
 import com.ofalvai.bpinfo.BpInfoApplication
 import com.ofalvai.bpinfo.api.bkkinfo.RouteListClient
 import com.ofalvai.bpinfo.api.subscription.SubscriptionClient
@@ -80,7 +80,8 @@ class NotificationsPresenter : BasePresenter<NotificationsContract.View>(),
         subscriptionClient.getSubscriptions(this)
     }
 
-    override fun onSubscriptionError(error: VolleyError) {
+    override fun onSubscriptionError(error: Throwable) {
+        Crashlytics.logException(error)
         view?.showProgress(false)
         view?.showSubscriptionError()
     }
