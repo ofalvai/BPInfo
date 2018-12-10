@@ -113,6 +113,14 @@ android {
     }
 }
 
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile.class).all {
+    kotlinOptions {
+        freeCompilerArgs = [
+                '-progressive'
+        ]
+    }
+}
+
 ribbonizer {
     builder { variant, iconFile ->
         if (variant.flavorName == "mock") {
