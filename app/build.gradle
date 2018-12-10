@@ -92,6 +92,12 @@ android {
         }
     }
 
+    bundle {
+        language {
+            enableSplit = false // Required for dynamic language switching
+        }
+    }
+
     lintOptions {
         fatal 'StopShip', 'NewApi'
         warning 'ConvertToWebp'
