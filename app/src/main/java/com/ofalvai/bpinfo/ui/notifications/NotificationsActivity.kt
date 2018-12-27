@@ -38,6 +38,7 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
+import com.google.firebase.iid.FirebaseInstanceId
 import com.ofalvai.bpinfo.Config
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.model.Route
@@ -50,10 +51,12 @@ import com.ofalvai.bpinfo.ui.settings.SettingsActivity
 import com.ofalvai.bpinfo.util.*
 import com.wefika.flowlayout.FlowLayout
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
-class NotificationsActivity : BaseActivity(), NotificationsContract.View {
+class NotificationsActivity : BaseActivity() {
 
-    private val presenter: NotificationsContract.Presenter by inject()
+    private val viewModel by viewModel<NotificationsViewModel>()
 
     private val analytics: Analytics by inject()
 
@@ -83,13 +86,27 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
             setTitle(R.string.title_activity_notifications)
         }
 
-        presenter.attachView(this)
-        presenter.fetchRouteList()
-        presenter.fetchSubscriptions()
-
         setupViewPager()
 
         GoogleApiAvailability.getInstance().makeGooglePlayServicesAvailable(this)
+
+        Timber.i("FCM token: %s", FirebaseInstanceId.getInstance().token)
+
+        observe(viewModel.routeList, this::displayRouteList)
+
+        observe(viewModel.routeListError, this::showRouteListError)
+
+        observe(viewModel.subscriptions, this::displaySubscriptions)
+
+        observe(viewModel.subscriptionProgress, this::showSubscriptionProgress)
+
+        observe(viewModel.subscriptionError) {
+            showSubscriptionError()
+        }
+
+        observe(viewModel.newSubscribedRoute, this::addSubscribedRoute)
+
+        observe(viewModel.removedSubscribedRoute, this::removeSubscribedRoute)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -115,21 +132,16 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
         return true
     }
 
-    override fun onDestroy() {
-        presenter.detachView()
-        super.onDestroy()
-    }
-
-    override fun displayRouteList(routeList: List<Route>) {
+    private fun displayRouteList(routeList: List<Route>) {
         val groupedRoutes: Map<RouteType, List<Route>> = routeList.groupBy { it.type }
         groupedRoutes.forEach { entry ->
-            val view: RouteListContract.View? = pagerAdapter.getView(entry.key)
+            val fragment: RouteListContract.View? = pagerAdapter.getFragment(entry.key)
             val routes = entry.value.sortedBy { it.id }
-            view?.displayRoutes(routes)
+            fragment?.displayRoutes(routes)
         }
     }
 
-    override fun addSubscribedRoute(route: Route) {
+    private fun addSubscribedRoute(route: Route) {
         analytics.logNotificationSubscribe(route.id)
 
         subscribedEmptyView.hide()
@@ -137,7 +149,7 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
         addSubscribedRouteIcon(route)
     }
 
-    override fun removeSubscribedRoute(route: Route) {
+    private fun removeSubscribedRoute(route: Route) {
         analytics.logNotificationUnsubscribe(route.id)
 
         removeSubscribedRouteIcon(route)
@@ -147,11 +159,11 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
         }
     }
 
-    override fun onRouteClicked(route: Route) {
-        presenter.subscribeTo(route.id)
+    fun onRouteClicked(route: Route) {
+        viewModel.subscribeTo(route.id)
     }
 
-    override fun displaySubscriptions(routeList: List<Route>) {
+    private fun displaySubscriptions(routeList: List<Route>) {
         subscribedRoutesLayout.removeAllViews()
 
         if (routeList.isEmpty()) {
@@ -165,7 +177,7 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
         }
     }
 
-    override fun showProgress(show: Boolean) {
+    private fun showSubscriptionProgress(show: Boolean) {
         if (show) {
             progressBar.show()
         } else {
@@ -173,9 +185,9 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
         }
     }
 
-    override fun showRouteListError(show: Boolean) {
+    private fun showRouteListError(show: Boolean) {
         if (show) {
-            showProgress(false)
+            showSubscriptionProgress(false)
 
             errorView.visibility = View.VISIBLE
             viewPager.visibility = View.GONE
@@ -185,8 +197,8 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
 
             if (!refreshButton.hasOnClickListeners()) {
                 refreshButton.setOnClickListener {
-                    presenter.fetchRouteList()
-                    presenter.fetchSubscriptions()
+                    viewModel.fetchRouteList()
+                    viewModel.fetchSubscriptions()
                 }
             }
             refreshButton.text = getString(R.string.label_retry)
@@ -197,7 +209,7 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
         }
     }
 
-    override fun showSubscriptionError() {
+    private fun showSubscriptionError() {
         val snackbar = Snackbar.make(
             viewPager,
             getString(R.string.error_subscriptions_action),
@@ -267,7 +279,7 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
             .setMessage(R.string.notif_remove_dialog_message)
             .setPositiveButton(R.string.notif_remove_dialog_positive) { dialog, _ ->
                 dialog.dismiss()
-                presenter.removeSubscription(route.id)
+                viewModel.removeSubscription(route.id)
             }
             .setNegativeButton(android.R.string.cancel) { dialog, _ -> dialog.dismiss() }
             .show()

@@ -43,7 +43,7 @@ class RouteListPagerAdapter(fm: FragmentManager,
         const val OFFSCREEN_PAGE_LIMIT = 99
     }
 
-    fun getView(routeType: RouteType): RouteListContract.View? {
+    fun getFragment(routeType: RouteType): RouteListContract.View? {
         return when(routeType) {
             RouteType.BUS -> registeredFragments[0]
             RouteType.SUBWAY -> registeredFragments[1]

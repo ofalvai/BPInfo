@@ -27,7 +27,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.model.Route
 import com.ofalvai.bpinfo.model.RouteType
-import com.ofalvai.bpinfo.ui.notifications.NotificationsContract
+import com.ofalvai.bpinfo.ui.notifications.NotificationsActivity
 import com.ofalvai.bpinfo.ui.notifications.routelist.adapter.RouteAdapter
 import com.ofalvai.bpinfo.ui.notifications.routelist.adapter.RouteClickListener
 import com.ofalvai.bpinfo.util.EmptyRecyclerView
@@ -96,7 +96,7 @@ class RouteListFragment : Fragment(), RouteListContract.View, RouteClickListener
     }
 
     override fun onRouteClicked(route: Route) {
-        (activity as? NotificationsContract.View)?.onRouteClicked(route)
+        (activity as? NotificationsActivity)?.onRouteClicked(route)
     }
 
     private fun initRecyclerView() {

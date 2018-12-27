@@ -151,6 +151,7 @@ dependencies {
 
     // Koin for Android
     implementation "org.koin:koin-android:$koinVersion"
+    implementation "org.koin:koin-androidx-viewmodel:$koinVersion"
 
     // HTML TextView
     implementation 'org.sufficientlysecure:html-textview:3.4'
@@ -198,7 +199,7 @@ dependencies {
         because """
             This is needed to check Koin\'s dependency graph. It tries to instantiate Volley, which 
             tries to load the Apache HTTP client, but the classloader fails to find its classes
-            Remove this dependency when Volley gets replaced by somethings else
+            Remove this dependency when Volley gets replaced by something else
         """
     }
 }

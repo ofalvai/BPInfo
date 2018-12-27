@@ -20,10 +20,10 @@ import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import com.ofalvai.bpinfo.ui.alertlist.AlertListContract
 import com.ofalvai.bpinfo.ui.alertlist.AlertListPresenter
-import com.ofalvai.bpinfo.ui.notifications.NotificationsContract
-import com.ofalvai.bpinfo.ui.notifications.NotificationsPresenter
+import com.ofalvai.bpinfo.ui.notifications.NotificationsViewModel
 import com.ofalvai.bpinfo.util.Analytics
 import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.viewmodel.ext.koin.viewModel
 import org.koin.dsl.module.module
 
 val appModule = module {
@@ -37,9 +37,9 @@ val appModule = module {
 
 val screenModule = module {
 
-    factory<NotificationsContract.Presenter> { NotificationsPresenter(get(), get()) }
-
     factory<AlertListContract.Presenter> { AlertListPresenter(get(), get(), get(), get()) }
+
+    viewModel { NotificationsViewModel(get(), get()) }
 }
 // Note: apiModule depends on selected product flavor (mock/live)
 val allModules = listOf(appModule, screenModule, apiModule)
