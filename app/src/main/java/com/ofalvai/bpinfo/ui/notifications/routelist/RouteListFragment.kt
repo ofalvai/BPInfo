@@ -36,9 +36,7 @@ import com.ofalvai.bpinfo.util.bindView
 import com.ofalvai.bpinfo.util.observe
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
-class RouteListFragment : Fragment(), RouteListContract.View, RouteClickListener {
-
-    private lateinit var presenter: RouteListContract.Presenter
+class RouteListFragment : Fragment(), RouteClickListener {
 
     private val parentViewModel by sharedViewModel<NotificationsViewModel>()
 
@@ -73,41 +71,20 @@ class RouteListFragment : Fragment(), RouteListContract.View, RouteClickListener
             }
         }
 
-        presenter = RouteListPresenter()
-        presenter.attachView(this)
-
         return view
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        initRecyclerView()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        observe(parentViewModel.routeList, this::displayRoutes)
-    }
+        initRecyclerView()
 
-    override fun onDestroy() {
-        presenter.detachView()
-        super.onDestroy()
+        observe(parentViewModel.routeList, this::displayRoutes)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putSerializable(KEY_ROUTE_TYPE, routeType)
         super.onSaveInstanceState(outState)
-    }
-
-    override fun displayRoutes(routeList: List<Route>) {
-        val groupedRoutes: Map<RouteType, List<Route>> = routeList.groupBy { it.type }
-
-        val routeListByType: List<Route>? = groupedRoutes[routeType]?.sortedBy { it.id }
-
-        adapter.routeList = routeListByType ?: emptyList()
-        progressBar.visibility = View.GONE
     }
 
     override fun onRouteClicked(route: Route) {
@@ -122,5 +99,14 @@ class RouteListFragment : Fragment(), RouteListContract.View, RouteClickListener
         recyclerView.addItemDecoration(
             DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         )
+    }
+
+    private fun displayRoutes(routeList: List<Route>) {
+        val groupedRoutes: Map<RouteType, List<Route>> = routeList.groupBy { it.type }
+
+        val routeListByType: List<Route>? = groupedRoutes[routeType]?.sortedBy { it.id }
+
+        adapter.routeList = routeListByType ?: emptyList()
+        progressBar.visibility = View.GONE
     }
 }

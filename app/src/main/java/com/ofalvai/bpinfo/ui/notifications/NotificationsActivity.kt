@@ -42,11 +42,9 @@ import com.google.firebase.iid.FirebaseInstanceId
 import com.ofalvai.bpinfo.Config
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.model.Route
-import com.ofalvai.bpinfo.model.RouteType
 import com.ofalvai.bpinfo.notifications.NotificationMaker
 import com.ofalvai.bpinfo.ui.base.BaseActivity
 import com.ofalvai.bpinfo.ui.notifications.adapter.RouteListPagerAdapter
-import com.ofalvai.bpinfo.ui.notifications.routelist.RouteListContract
 import com.ofalvai.bpinfo.ui.settings.SettingsActivity
 import com.ofalvai.bpinfo.util.*
 import com.wefika.flowlayout.FlowLayout
