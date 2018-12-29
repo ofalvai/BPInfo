@@ -24,7 +24,7 @@ interface RouteListContract {
 
     interface View : MvpView {
 
-        fun displayRoutes(routes: List<Route>)
+        fun displayRoutes(routeList: List<Route>)
 
     }
 

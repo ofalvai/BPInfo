@@ -92,8 +92,6 @@ class NotificationsActivity : BaseActivity() {
 
         Timber.i("FCM token: %s", FirebaseInstanceId.getInstance().token)
 
-        observe(viewModel.routeList, this::displayRouteList)
-
         observe(viewModel.routeListError, this::showRouteListError)
 
         observe(viewModel.subscriptions, this::displaySubscriptions)
@@ -130,15 +128,6 @@ class NotificationsActivity : BaseActivity() {
         }
 
         return true
-    }
-
-    private fun displayRouteList(routeList: List<Route>) {
-        val groupedRoutes: Map<RouteType, List<Route>> = routeList.groupBy { it.type }
-        groupedRoutes.forEach { entry ->
-            val fragment: RouteListContract.View? = pagerAdapter.getFragment(entry.key)
-            val routes = entry.value.sortedBy { it.id }
-            fragment?.displayRoutes(routes)
-        }
     }
 
     private fun addSubscribedRoute(route: Route) {

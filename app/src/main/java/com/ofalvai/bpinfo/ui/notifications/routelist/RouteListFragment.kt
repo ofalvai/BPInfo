@@ -28,14 +28,19 @@ import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.model.Route
 import com.ofalvai.bpinfo.model.RouteType
 import com.ofalvai.bpinfo.ui.notifications.NotificationsActivity
+import com.ofalvai.bpinfo.ui.notifications.NotificationsViewModel
 import com.ofalvai.bpinfo.ui.notifications.routelist.adapter.RouteAdapter
 import com.ofalvai.bpinfo.ui.notifications.routelist.adapter.RouteClickListener
 import com.ofalvai.bpinfo.util.EmptyRecyclerView
 import com.ofalvai.bpinfo.util.bindView
+import com.ofalvai.bpinfo.util.observe
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class RouteListFragment : Fragment(), RouteListContract.View, RouteClickListener {
 
     private lateinit var presenter: RouteListContract.Presenter
+
+    private val parentViewModel by sharedViewModel<NotificationsViewModel>()
 
     private val recyclerView: EmptyRecyclerView by bindView(R.id.fragment_route_list__recyclerview)
 
@@ -80,6 +85,12 @@ class RouteListFragment : Fragment(), RouteListContract.View, RouteClickListener
         initRecyclerView()
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        observe(parentViewModel.routeList, this::displayRoutes)
+    }
+
     override fun onDestroy() {
         presenter.detachView()
         super.onDestroy()
@@ -90,8 +101,12 @@ class RouteListFragment : Fragment(), RouteListContract.View, RouteClickListener
         super.onSaveInstanceState(outState)
     }
 
-    override fun displayRoutes(routes: List<Route>) {
-        adapter.routeList = routes
+    override fun displayRoutes(routeList: List<Route>) {
+        val groupedRoutes: Map<RouteType, List<Route>> = routeList.groupBy { it.type }
+
+        val routeListByType: List<Route>? = groupedRoutes[routeType]?.sortedBy { it.id }
+
+        adapter.routeList = routeListByType ?: emptyList()
         progressBar.visibility = View.GONE
     }
 

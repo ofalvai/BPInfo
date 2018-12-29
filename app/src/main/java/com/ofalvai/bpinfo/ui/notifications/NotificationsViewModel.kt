@@ -48,9 +48,9 @@ class NotificationsViewModel(
 
     val subscriptionError = SingleLiveEvent<Void>()
 
-    val newSubscribedRoute = SingleLiveEvent<Route>()
+    val newSubscribedRoute = MutableLiveData<Route>()
 
-    val removedSubscribedRoute = SingleLiveEvent<Route>()
+    val removedSubscribedRoute = MutableLiveData<Route>()
 
     private var subscribedRouteIDList: MutableList<String>? = null
 

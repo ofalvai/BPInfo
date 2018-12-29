@@ -36,6 +36,7 @@ import androidx.appcompat.view.ContextThemeWrapper
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import com.android.volley.*
@@ -320,4 +321,8 @@ fun <T> Request<T>.addTo(queue: RequestQueue) {
 
 fun <T> AppCompatActivity.observe(liveData: LiveData<T>, observer: (T) -> Unit) {
     liveData.observe(this, Observer { observer.invoke(it) })
+}
+
+fun <T> Fragment.observe(liveData: LiveData<T>, observer: (T) -> Unit) {
+    liveData.observe(viewLifecycleOwner, Observer { observer.invoke(it) })
 }
