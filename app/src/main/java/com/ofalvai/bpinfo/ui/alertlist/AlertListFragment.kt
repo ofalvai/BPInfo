@@ -38,8 +38,9 @@ import com.ofalvai.bpinfo.ui.notifications.NotificationsActivity
 import com.ofalvai.bpinfo.ui.settings.SettingsActivity
 import com.ofalvai.bpinfo.util.*
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
-import java.util.*
 
 class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragment.AlertFilterListener {
 
@@ -61,7 +62,11 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
         }
     }
 
-    private val presenter: AlertListContract.Presenter by inject()
+    private val viewModel by viewModel<AlertListViewModel>()
+
+    private val parentViewModel by sharedViewModel<AlertsViewModel>()
+
+//    private val presenter: AlertListContract.Presenter by inject()
 
     private val analytics: Analytics by inject()
 
@@ -88,11 +93,11 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
             restoredFilter = savedInstanceState.getSerializable(KEY_ACTIVE_FILTER) as MutableSet<RouteType>
         }
 
-        presenter.attachView(this)
-        presenter.alertListType = alertListType
+//        presenter.attachView(this)
+//        presenter.alertListType = alertListType
 
         restoredFilter?.let {
-            presenter.setFilter(restoredFilter)
+            //            presenter.setFilter(restoredFilter)
         }
     }
 
@@ -109,7 +114,7 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
             // Only attach to the filter fragment if it filters our type of list
             if (filterFragment != null && alertListType == filterFragment.alertListType) {
                 filterFragment.filterListener = this
-                filterFragment.selectedRouteTypes = presenter.getFilter()
+//                filterFragment.selectedRouteTypes = presenter.getFilter()
             }
         }
 
@@ -126,8 +131,20 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
             analytics.logManualRefresh()
         }
 
-        initRefresh()
+//        initRefresh()
         updateFilterWarning()
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        when (alertListType) {
+            AlertListType.ALERTS_TODAY -> {
+                observe(parentViewModel.notice, this::displayNotice)
+                observe(parentViewModel.todayAlerts, this::displayAlerts)
+            }
+            AlertListType.ALERTS_FUTURE -> observe(parentViewModel.futureAlerts, this::displayAlerts)
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -136,8 +153,8 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
         outState.putSerializable(KEY_ALERT_LIST_TYPE, alertListType)
 
         // Casting to HashSet, because Set is not serializable :(
-        val filter = presenter.getFilter() as HashSet<RouteType>?
-        outState.putSerializable(KEY_ACTIVE_FILTER, filter)
+//        val filter = presenter.getFilter() as HashSet<RouteType>?
+//        outState.putSerializable(KEY_ACTIVE_FILTER, filter)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater) {
@@ -156,10 +173,10 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
     override fun onStart() {
         super.onStart()
 
-        val updating = presenter.updateIfNeeded()
-        if (updating && requireActivity().hasNetworkConnection()) {
-            setUpdating(true)
-        }
+//        val updating = presenter.updateIfNeeded()
+//        if (updating && requireActivity().hasNetworkConnection()) {
+//            setUpdating(true)
+//        }
 
         if (activity is AlertListActivity && alertListType == AlertListType.ALERTS_TODAY) {
             pendingNavigationAlertId = (activity!! as AlertListActivity).pendingNavigationAlertId
@@ -167,7 +184,7 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
     }
 
     override fun onDestroy() {
-        presenter.detachView()
+//        presenter.detachView()
         super.onDestroy()
     }
 
@@ -176,8 +193,8 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
     }
 
     override fun onFilterChanged(selectedTypes: MutableSet<RouteType>) {
-        presenter.setFilter(selectedTypes)
-        presenter.getAlertList()
+//        presenter.setFilter(selectedTypes)
+//        presenter.getAlertList()
 
         updateFilterWarning()
     }
@@ -248,34 +265,34 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
         }
     }
 
-    override fun displayNotice(noticeText: String) {
-        noticeView.apply {
-            visibility = View.VISIBLE
-            text = HtmlCompat.fromHtml(noticeText, HtmlCompat.FROM_HTML_MODE_COMPACT)
-            setOnClickListener {
-                val fragment = NoticeFragment.newInstance(noticeText)
-                val transaction = requireActivity().supportFragmentManager
-                        .beginTransaction()
-                fragment.show(transaction, NOTICE_DIALOG_TAG)
+    private fun displayNotice(noticeText: String?) {
+        if (noticeText == null) {
+            noticeView.hide()
+        } else {
+            noticeView.apply {
+                show()
+                text = HtmlCompat.fromHtml(noticeText, HtmlCompat.FROM_HTML_MODE_COMPACT)
+                setOnClickListener {
+                    val fragment = NoticeFragment.newInstance(noticeText)
+                    val transaction = requireActivity().supportFragmentManager
+                            .beginTransaction()
+                    fragment.show(transaction, NOTICE_DIALOG_TAG)
 
-                analytics.logNoticeDialogView()
+                    analytics.logNoticeDialogView()
+                }
             }
         }
-    }
-
-    override fun removeNotice() {
-        noticeView.visibility = View.GONE
     }
 
     override fun launchAlertDetail(alert: Alert) {
         displayAlertDetail(alert)
 
-        presenter.fetchAlert(alert.id)
+//        presenter.fetchAlert(alert.id)
     }
 
     override fun displayAlertDetail(alert: Alert) {
-        val alertDetailFragment = AlertDetailFragment.newInstance(alert, presenter)
-        alertDetailFragment.show(requireFragmentManager(), AlertDetailFragment.FRAGMENT_TAG)
+//        val alertDetailFragment = AlertDetailFragment.newInstance(alert, presenter)
+//        alertDetailFragment.show(requireFragmentManager(), AlertDetailFragment.FRAGMENT_TAG)
     }
 
     override fun updateAlertDetail(alert: Alert) {
@@ -305,7 +322,7 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
         alertRecyclerView.layoutManager = layoutManager
 
         val decoration =
-            androidx.recyclerview.widget.DividerItemDecoration(context, layoutManager.orientation)
+                androidx.recyclerview.widget.DividerItemDecoration(context, layoutManager.orientation)
         alertRecyclerView.addItemDecoration(decoration)
 
         alertRecyclerView.setEmptyView(emptyView)
@@ -314,10 +331,10 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
     private fun initRefresh() {
         setUpdating(true)
 
-        presenter.fetchAlertList()
-        presenter.fetchNotice()
+//        presenter.fetchAlertList()
+//        presenter.fetchNotice()
 
-        presenter.setLastUpdate()
+//        presenter.setLastUpdate()
     }
 
     private fun setUpdating(updating: Boolean) {
@@ -325,11 +342,11 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
     }
 
     private fun displayFilterDialog() {
-        val initialFilter = presenter.getFilter() ?: mutableSetOf()
+//        val initialFilter = presenter.getFilter() ?: mutableSetOf()
 
-        val filterFragment = AlertFilterFragment.newInstance(this, initialFilter, alertListType)
-        val transaction = requireFragmentManager().beginTransaction()
-        filterFragment.show(transaction, FILTER_DIALOG_TAG)
+//        val filterFragment = AlertFilterFragment.newInstance(this, initialFilter, alertListType)
+//        val transaction = requireFragmentManager().beginTransaction()
+//        filterFragment.show(transaction, FILTER_DIALOG_TAG)
 
         analytics.logFilterDialogOpened()
     }
@@ -368,15 +385,15 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
      */
     private fun updateFilterWarning() {
         // Might be null, because it gets called by onCreate() too
-        val selectedTypes: MutableSet<RouteType> = presenter.getFilter() ?: return
+//        val selectedTypes: MutableSet<RouteType> = presenter.getFilter() ?: return
 
-        if (selectedTypes.isEmpty()) {
-            filterWarningView.visibility = View.GONE
-        } else {
-            val typeList = selectedTypes.joinToString(separator = ", ") { it.getName(requireContext()) }
-            filterWarningView.text = getString(R.string.filter_message, typeList)
-            filterWarningView.visibility = View.VISIBLE
-        }
+//        if (selectedTypes.isEmpty()) {
+//            filterWarningView.visibility = View.GONE
+//        } else {
+//            val typeList = selectedTypes.joinToString(separator = ", ") { it.getName(requireContext()) }
+//            filterWarningView.text = getString(R.string.filter_message, typeList)
+//            filterWarningView.visibility = View.VISIBLE
+//        }
     }
 
     private fun updateSubtitle(count: Int) {

@@ -20,6 +20,7 @@ import com.ofalvai.bpinfo.model.Alert
 
 interface AlertApiClient {
 
+    // TODO
     // EventBus is used for alert list calls instead of a callback interface,
     // because both API clients are complicated due to API quirks.
     fun fetchAlertList(params: AlertRequestParams)

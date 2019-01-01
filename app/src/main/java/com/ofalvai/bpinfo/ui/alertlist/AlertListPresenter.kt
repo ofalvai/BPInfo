@@ -47,7 +47,7 @@ class AlertListPresenter(
     private val noticeClient: NoticeClient,
     private val sharedPreferences: SharedPreferences,
     private val context: Context
-) : BasePresenter<AlertListContract.View>(), NoticeClient.NoticeListener,
+) : BasePresenter<AlertListContract.View>(),
     AlertListContract.Presenter {
 
     override lateinit var alertListType: AlertListType
@@ -135,7 +135,7 @@ class AlertListPresenter(
         @Suppress("LiftReturnOrAssignment")
         if (LocalDateTime.now().isAfter(lastUpdate.plus(refreshThreshold))) {
             fetchAlertList()
-            fetchNotice()
+//            fetchNotice()
             return true
         } else {
             return false
@@ -230,21 +230,6 @@ class AlertListPresenter(
         }
 
         return filtered
-    }
-
-    override fun fetchNotice() {
-        // We only need to display one dialog per activity
-        if (alertListType == AlertListType.ALERTS_TODAY) {
-            noticeClient.fetchNotice(this, getCurrentLanguageCode())
-        }
-    }
-
-    override fun onNoticeResponse(noticeBody: String) {
-        view?.displayNotice(noticeBody)
-    }
-
-    override fun onNoNotice() {
-        view?.removeNotice()
     }
 
     /**

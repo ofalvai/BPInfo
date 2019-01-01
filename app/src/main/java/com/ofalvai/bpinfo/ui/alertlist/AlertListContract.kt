@@ -56,10 +56,6 @@ interface AlertListContract {
 
         fun displayNoNetworkWarning()
 
-        fun displayNotice(noticeText: String)
-
-        fun removeNotice()
-
         /**
          * This is called by the adapter to launch the alert detail view
          */
@@ -86,7 +82,5 @@ interface AlertListContract {
         fun updateIfNeeded(): Boolean
 
         fun setLastUpdate()
-
-        fun fetchNotice()
     }
 }
