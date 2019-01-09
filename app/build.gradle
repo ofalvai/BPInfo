@@ -163,7 +163,7 @@ dependencies {
     implementation 'com.google.dagger:dagger:2.17'
     kapt 'com.google.dagger:dagger-compiler:2.17'
 
-    implementation 'org.sufficientlysecure:html-textview:3.4'
+    implementation 'org.sufficientlysecure:html-textview:3.6'
 
     implementation 'com.jakewharton.threetenabp:threetenabp:1.1.1'
 
