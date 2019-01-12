@@ -17,7 +17,9 @@
 package com.ofalvai.bpinfo.ui.base
 
 import android.content.Context
+import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.util.LocaleManager
 
 abstract class BaseActivity : AppCompatActivity() {
@@ -25,5 +27,12 @@ abstract class BaseActivity : AppCompatActivity() {
     override fun attachBaseContext(newBase: Context) {
         // Updating locale
         super.attachBaseContext(LocaleManager.setLocale(newBase))
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // Replace splash window background with real
+        window.setBackgroundDrawableResource(R.color.background)
     }
 }

@@ -62,6 +62,10 @@ class SettingsActivity : AppCompatPreferenceActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Replace splash window background with real
+        // Remove this once SettingsActivity extends BaseActivity
+        window.setBackgroundDrawableResource(R.color.background)
+
         setupActionBar()
 
         addPreferencesFromResource(R.xml.pref_general)
