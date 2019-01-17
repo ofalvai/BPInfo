@@ -84,14 +84,6 @@ class FutarApiClient(
     private var alertsFuture: List<Alert> = arrayListOf()
 
     /**
-     * This client performs only one alert list API call, because the API is structured in a way
-     * that both current and future data is returned at the same time, sometimes even mixed together.
-     * If multiple alert list requests are called, only the first will perform the request, and
-     * later notify all of its EventBus subscribers.
-     */
-    private var requestInProgress = false
-
-    /**
      * Map of all parsed routes. This is used to set every alert's affected routes by ID.
      */
     private var routes: Map<String, Route> = mutableMapOf()
@@ -99,9 +91,6 @@ class FutarApiClient(
     private var languageCode: String? = null
 
     override fun fetchAlertList() {
-        // If a request is in progress, we don't proceed. The response callback will notify every subscriber
-        if (requestInProgress) return
-
         languageCode = LocaleManager.getCurrentLanguageCode(context, sharedPreferences)
 
         val uri = buildUri()
@@ -118,8 +107,6 @@ class FutarApiClient(
                     EventBus.getDefault().post(AlertListMessage(alertsToday, alertsFuture))
                 } catch (ex: Exception) {
                     EventBus.getDefault().post(AlertListErrorMessage(ex))
-                } finally {
-                    requestInProgress = false
                 }
             },
             Response.ErrorListener { error ->
@@ -127,7 +114,6 @@ class FutarApiClient(
             }
         )
 
-        requestInProgress = true
         requestQueue.add(request)
     }
 
