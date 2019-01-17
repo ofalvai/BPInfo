@@ -11,19 +11,30 @@ import com.ofalvai.bpinfo.model.RouteType
  * [AlertsViewModel] is the ViewModel of the whole screen
  */
 class AlertListViewModel(
-        private val parentViewModel: AlertsViewModel
+    private val alertListType: AlertListType,
+    alertsRepository: AlertsRepository
 ) : ViewModel() {
 
-    val alerts: LiveData<List<Alert>> = Transformations.map(parentViewModel.todayAlerts, this::alertListMapper)
-
-    private lateinit var alertListType: AlertListType
+    val alerts: LiveData<List<Alert>> = Transformations.map(
+        when (alertListType) {
+            AlertListType.ALERTS_TODAY -> alertsRepository.todayAlerts
+            AlertListType.ALERTS_FUTURE -> alertsRepository.futureAlerts
+        },
+        this::sortAndFilter
+    )
+    val alertError: LiveData<AlertsRepository.Error> = alertsRepository.error
 
     private var activeFilter: MutableSet<RouteType> = mutableSetOf()
 
+    private val alertComparator = compareBy<Alert> { it.start }.thenBy { it.description }
 
-
-    private fun alertListMapper(alertList: List<Alert>): List<Alert> {
-        return alertList // TODO
+    private fun sortAndFilter(alertList: List<Alert>): List<Alert> {
+        // TODO: filtering goes here
+        val sortedList = alertList.sortedWith(alertComparator)
+        return if (alertListType == AlertListType.ALERTS_TODAY) {
+            sortedList.reversed()
+        } else {
+            sortedList
+        }
     }
-
 }

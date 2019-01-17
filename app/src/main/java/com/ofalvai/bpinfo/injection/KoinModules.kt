@@ -18,10 +18,7 @@ package com.ofalvai.bpinfo.injection
 
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
-import com.ofalvai.bpinfo.ui.alertlist.AlertListContract
-import com.ofalvai.bpinfo.ui.alertlist.AlertListPresenter
-import com.ofalvai.bpinfo.ui.alertlist.AlertListViewModel
-import com.ofalvai.bpinfo.ui.alertlist.AlertsViewModel
+import com.ofalvai.bpinfo.ui.alertlist.*
 import com.ofalvai.bpinfo.ui.notifications.NotificationsViewModel
 import com.ofalvai.bpinfo.util.Analytics
 import org.koin.android.ext.koin.androidContext
@@ -35,6 +32,8 @@ val appModule = module {
     }
 
     single { Analytics(androidContext()) }
+
+    single { AlertsRepository(get()) }
 }
 
 val screenModule = module {
@@ -45,7 +44,9 @@ val screenModule = module {
 
     viewModel { AlertsViewModel(get(), get(), get()) }
 
-    viewModel { AlertListViewModel(get()) }
+    viewModel { (type: AlertListType) ->
+        AlertListViewModel(type, get())
+    }
 }
 // Note: apiModule depends on selected product flavor (mock/live)
 val allModules = listOf(appModule, screenModule, apiModule)

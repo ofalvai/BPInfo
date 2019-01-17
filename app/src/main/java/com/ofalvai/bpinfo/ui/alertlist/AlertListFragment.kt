@@ -40,6 +40,7 @@ import com.ofalvai.bpinfo.util.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import timber.log.Timber
 
 class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragment.AlertFilterListener {
@@ -62,7 +63,7 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
         }
     }
 
-    private val viewModel by viewModel<AlertListViewModel>()
+    private val viewModel by viewModel<AlertListViewModel>{ parametersOf(alertListType) }
 
     private val parentViewModel by sharedViewModel<AlertsViewModel>()
 
@@ -90,7 +91,7 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
 
         if (savedInstanceState != null) {
             alertListType = savedInstanceState.getSerializable(KEY_ALERT_LIST_TYPE) as AlertListType
-            restoredFilter = savedInstanceState.getSerializable(KEY_ACTIVE_FILTER) as MutableSet<RouteType>
+            restoredFilter = savedInstanceState.getSerializable(KEY_ACTIVE_FILTER) as? MutableSet<RouteType>
         }
 
 //        presenter.attachView(this)
@@ -138,12 +139,17 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        when (alertListType) {
-            AlertListType.ALERTS_TODAY -> {
-                observe(parentViewModel.notice, this::displayNotice)
-                observe(parentViewModel.todayAlerts, this::displayAlerts)
+        observe(viewModel.alerts, this::displayAlerts)
+
+        observe(viewModel.alertError) {
+            when (it) {
+                is AlertsRepository.Error.NetworkError -> displayNetworkError(it.volleyError)
+                AlertsRepository.Error.DataError -> displayDataError()
+                AlertsRepository.Error.GeneralError -> displayGeneralError()
             }
-            AlertListType.ALERTS_FUTURE -> observe(parentViewModel.futureAlerts, this::displayAlerts)
+        }
+        if (alertListType == AlertListType.ALERTS_TODAY) {
+            observe(parentViewModel.notice, this::displayNotice)
         }
     }
 
