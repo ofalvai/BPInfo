@@ -37,6 +37,7 @@ import com.ofalvai.bpinfo.api.AlertRequestParams
 import com.ofalvai.bpinfo.model.Alert
 import com.ofalvai.bpinfo.model.Route
 import com.ofalvai.bpinfo.model.RouteType
+import com.ofalvai.bpinfo.util.LocaleManager
 import com.ofalvai.bpinfo.util.apiTimestampToDateTime
 import com.ofalvai.bpinfo.util.toArray
 import org.greenrobot.eventbus.EventBus
@@ -98,11 +99,14 @@ class BkkInfoClient(
 
     private var alertDetailTrace: Trace? = null
 
-    override fun fetchAlertList(params: AlertRequestParams) {
+    private val languageCode: String =
+        LocaleManager.getCurrentLanguageCode(context, sharedPreferences)
+
+    override fun fetchAlertList() {
         // If a request is in progress, we don't proceed. The response callback will notify every subscriber
         if (requestInProgress) return
 
-        val url = buildAlertListUrl(params)
+        val url = buildAlertListUrl()
 
         Timber.i("API request: %s", url.toString())
 
@@ -124,7 +128,7 @@ class BkkInfoClient(
         id: String, listener: AlertApiClient.AlertDetailListener,
         params: AlertRequestParams
     ) {
-        val url = buildAlertDetailUrl(params, id)
+        val url = buildAlertDetailUrl(id)
 
         Timber.i("API request: %s", url.toString())
 
@@ -139,16 +143,16 @@ class BkkInfoClient(
         createAndStartTrace("network_alert_detail_bkk")
     }
 
-    private fun buildAlertListUrl(params: AlertRequestParams) = Uri.parse(API_BASE_URL)
-        .buildUpon()
-        .appendEncodedPath(if (params.languageCode == "hu") API_ENDPOINT_HU else API_ENDPOINT_EN)
-        .appendEncodedPath(PARAM_ALERT_LIST)
-        .build()
+    private fun buildAlertListUrl() = Uri.parse(API_BASE_URL)
+            .buildUpon()
+            .appendEncodedPath(if (languageCode == "hu") API_ENDPOINT_HU else API_ENDPOINT_EN)
+            .appendEncodedPath(PARAM_ALERT_LIST)
+            .build()
 
-    private fun buildAlertDetailUrl(params: AlertRequestParams, alertId: String) =
+    private fun buildAlertDetailUrl(alertId: String) =
         Uri.parse(API_BASE_URL)
             .buildUpon()
-            .appendEncodedPath(if (params.languageCode == "hu") API_ENDPOINT_HU else API_ENDPOINT_EN)
+            .appendEncodedPath(if (languageCode == "hu") API_ENDPOINT_HU else API_ENDPOINT_EN)
             .appendQueryParameter(PARAM_ALERT_DETAIL, alertId)
             .build()
 

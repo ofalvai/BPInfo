@@ -22,7 +22,6 @@ import com.crashlytics.android.Crashlytics
 import com.ofalvai.bpinfo.api.AlertApiClient
 import com.ofalvai.bpinfo.api.AlertListErrorMessage
 import com.ofalvai.bpinfo.api.AlertListMessage
-import com.ofalvai.bpinfo.api.AlertRequestParams
 import com.ofalvai.bpinfo.model.Alert
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -45,10 +44,6 @@ class AlertsRepository(
 
     val error = MutableLiveData<Error>()
 
-    private val alertRequestParams: AlertRequestParams
-        get() = AlertRequestParams(AlertListType.ALERTS_TODAY, getCurrentLanguageCode())
-    // TODO: remove AlertListType from params
-
     private var lastUpdate: LocalDateTime = LocalDateTime.now()
 
     init {
@@ -58,7 +53,7 @@ class AlertsRepository(
 
     private fun fetchAlerts() {
         // TODO: network detection
-        alertApiClient.fetchAlertList(alertRequestParams)
+        alertApiClient.fetchAlertList()
     }
 
     @Subscribe
@@ -84,11 +79,5 @@ class AlertsRepository(
                 Crashlytics.logException(ex)
             }
         }
-    }
-
-    // TODO: implement without context
-    // TODO: return enum, not string
-    private fun getCurrentLanguageCode(): String {
-        return "hu"
     }
 }

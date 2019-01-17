@@ -80,7 +80,7 @@ class AlertListPresenter(
      */
     override fun fetchAlertList() {
         when {
-            context.hasNetworkConnection() -> alertApiClient.fetchAlertList(alertRequestParams)
+            context.hasNetworkConnection() -> alertApiClient.fetchAlertList()
             unfilteredAlerts == null -> {
                 // Nothing was displayed previously, showing a full error view
                 view?.displayNetworkError(NoConnectionError())

@@ -17,10 +17,12 @@
 package com.ofalvai.bpinfo.util
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Build
 import android.preference.PreferenceManager
 import com.ofalvai.bpinfo.R
+import com.ofalvai.bpinfo.api.bkkfutar.AlertSearchContract
 import java.util.*
 
 /**
@@ -68,5 +70,29 @@ object LocaleManager {
                 c.getString(R.string.pref_key_language),
                 c.getString(R.string.pref_key_language_auto)
         )!!
+    }
+
+    /**
+     * Gets the current language's language code for API calls.
+     * If a language has been set in the preferences, it reads the value from SharedPreferences.
+     * If it has been set to "auto" or unset, it decides based on the current locale, using "en" for
+     * any other language than Hungarian ("hu")
+     * @return The app's current language's code.
+     */
+     fun getCurrentLanguageCode(context: Context, sharedPreferences: SharedPreferences): String {
+        var languageCode = sharedPreferences.getString(
+            context.getString(R.string.pref_key_language),
+            context.getString(R.string.pref_key_language_auto)
+        )!!
+
+        if (languageCode == context.getString(R.string.pref_key_language_auto)) {
+            languageCode = if (Locale.getDefault().language == AlertSearchContract.LANG_HU) {
+                AlertSearchContract.LANG_HU
+            } else {
+                AlertSearchContract.LANG_EN
+            }
+        }
+
+        return languageCode
     }
 }

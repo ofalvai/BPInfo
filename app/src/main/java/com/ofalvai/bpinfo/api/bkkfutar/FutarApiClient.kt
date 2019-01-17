@@ -35,10 +35,7 @@ import com.ofalvai.bpinfo.model.Alert
 import com.ofalvai.bpinfo.model.Route
 import com.ofalvai.bpinfo.model.RouteType
 import com.ofalvai.bpinfo.ui.alertlist.AlertListType
-import com.ofalvai.bpinfo.util.apiTimestampToDateTime
-import com.ofalvai.bpinfo.util.isReplacement
-import com.ofalvai.bpinfo.util.toArray
-import com.ofalvai.bpinfo.util.toStringList
+import com.ofalvai.bpinfo.util.*
 import org.greenrobot.eventbus.EventBus
 import org.json.JSONException
 import org.json.JSONObject
@@ -101,11 +98,11 @@ class FutarApiClient(
 
     private var languageCode: String? = null
 
-    override fun fetchAlertList(params: AlertRequestParams) {
+    override fun fetchAlertList() {
         // If a request is in progress, we don't proceed. The response callback will notify every subscriber
         if (requestInProgress) return
 
-        languageCode = params.languageCode
+        languageCode = LocaleManager.getCurrentLanguageCode(context, sharedPreferences)
 
         val uri = buildUri()
 
