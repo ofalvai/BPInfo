@@ -31,8 +31,6 @@ import com.google.firebase.perf.FirebasePerformance
 import com.google.firebase.perf.metrics.Trace
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.api.AlertApiClient
-import com.ofalvai.bpinfo.api.AlertListErrorMessage
-import com.ofalvai.bpinfo.api.AlertListMessage
 import com.ofalvai.bpinfo.api.AlertRequestParams
 import com.ofalvai.bpinfo.model.Alert
 import com.ofalvai.bpinfo.model.Route
@@ -40,7 +38,6 @@ import com.ofalvai.bpinfo.model.RouteType
 import com.ofalvai.bpinfo.util.LocaleManager
 import com.ofalvai.bpinfo.util.apiTimestampToDateTime
 import com.ofalvai.bpinfo.util.toArray
-import org.greenrobot.eventbus.EventBus
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -94,7 +91,7 @@ class BkkInfoClient(
     private val languageCode: String =
         LocaleManager.getCurrentLanguageCode(context, sharedPreferences)
 
-    override fun fetchAlertList() {
+    override fun fetchAlertList(listener: AlertApiClient.AlertListListener) {
         val url = buildAlertListUrl()
 
         Timber.i("API request: %s", url.toString())
@@ -102,9 +99,9 @@ class BkkInfoClient(
         val request = JsonObjectRequest(
             url.toString(),
             null,
-            Response.Listener { response -> onAlertListResponse(response) },
+            Response.Listener { response -> onAlertListResponse(response, listener) },
             Response.ErrorListener { error ->
-                EventBus.getDefault().post(AlertListErrorMessage(error))
+                listener.onError(error)
             }
         )
         request.retryPolicy = retryPolicy
@@ -144,15 +141,15 @@ class BkkInfoClient(
             .appendQueryParameter(PARAM_ALERT_DETAIL, alertId)
             .build()
 
-    private fun onAlertListResponse(response: JSONObject) {
+    private fun onAlertListResponse(response: JSONObject, listener: AlertApiClient.AlertListListener) {
         try {
             val alertsToday = parseTodayAlerts(response).toMutableList()
             val alertsFuture = parseFutureAlerts(response)
             fixFutureAlertsInTodayList(alertsToday, alertsFuture)
 
-            EventBus.getDefault().post(AlertListMessage(alertsToday, alertsFuture))
+            listener.onAlertListResponse(alertsToday, alertsFuture)
         } catch (ex: Exception) {
-            EventBus.getDefault().post(AlertListErrorMessage(ex))
+            listener.onError(ex)
         }
     }
 

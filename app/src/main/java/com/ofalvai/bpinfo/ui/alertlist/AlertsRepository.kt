@@ -20,11 +20,7 @@ import androidx.lifecycle.MutableLiveData
 import com.android.volley.VolleyError
 import com.crashlytics.android.Crashlytics
 import com.ofalvai.bpinfo.api.AlertApiClient
-import com.ofalvai.bpinfo.api.AlertListErrorMessage
-import com.ofalvai.bpinfo.api.AlertListMessage
 import com.ofalvai.bpinfo.model.Alert
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
 import org.json.JSONException
 import org.threeten.bp.LocalDateTime
 import timber.log.Timber
@@ -47,37 +43,34 @@ class AlertsRepository(
     private var lastUpdate: LocalDateTime = LocalDateTime.now()
 
     init {
-        EventBus.getDefault().register(this)
         fetchAlerts()
     }
 
     private fun fetchAlerts() {
         // TODO: network detection
-        alertApiClient.fetchAlertList()
-    }
+        // TODO: refactor this listener
+        alertApiClient.fetchAlertList(object : AlertApiClient.AlertListListener {
+            override fun onAlertListResponse(todayAlerts: List<Alert>, futureAlerts: List<Alert>) {
+                lastUpdate = LocalDateTime.now()
 
-    @Subscribe
-    fun onAlertListEvent(message: AlertListMessage) {
-        lastUpdate = LocalDateTime.now()
-
-        todayAlerts.value = message.todayAlerts
-        futureAlerts.value = message.futureAlerts
-    }
-
-    @Subscribe
-    fun onAlertListErrorEvent(message: AlertListErrorMessage) {
-        val ex = message.exception
-        Timber.e(ex.toString())
-        when (ex) {
-            is VolleyError -> error.value = Error.NetworkError(ex)
-            is JSONException -> {
-                error.value = Error.DataError
-                Crashlytics.logException(ex)
+                this@AlertsRepository.todayAlerts.value = todayAlerts
+                this@AlertsRepository.futureAlerts.value = futureAlerts
             }
-            else -> {
-                error.value = Error.GeneralError
-                Crashlytics.logException(ex)
+
+            override fun onError(ex: Exception) {
+                Timber.e(ex.toString())
+                when (ex) {
+                    is VolleyError -> this@AlertsRepository.error.value = Error.NetworkError(ex)
+                    is JSONException -> {
+                        this@AlertsRepository.error.value = Error.DataError
+                        Crashlytics.logException(ex)
+                    }
+                    else -> {
+                        this@AlertsRepository.error.value = Error.GeneralError
+                        Crashlytics.logException(ex)
+                    }
+                }
             }
-        }
+        })
     }
 }

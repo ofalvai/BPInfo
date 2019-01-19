@@ -28,15 +28,12 @@ import com.crashlytics.android.Crashlytics
 import com.ofalvai.bpinfo.BuildConfig
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.api.AlertApiClient
-import com.ofalvai.bpinfo.api.AlertListErrorMessage
-import com.ofalvai.bpinfo.api.AlertListMessage
 import com.ofalvai.bpinfo.api.AlertRequestParams
 import com.ofalvai.bpinfo.model.Alert
 import com.ofalvai.bpinfo.model.Route
 import com.ofalvai.bpinfo.model.RouteType
 import com.ofalvai.bpinfo.ui.alertlist.AlertListType
 import com.ofalvai.bpinfo.util.*
-import org.greenrobot.eventbus.EventBus
 import org.json.JSONException
 import org.json.JSONObject
 import org.threeten.bp.Instant
@@ -90,7 +87,7 @@ class FutarApiClient(
 
     private var languageCode: String? = null
 
-    override fun fetchAlertList() {
+    override fun fetchAlertList(listener: AlertApiClient.AlertListListener) {
         languageCode = LocaleManager.getCurrentLanguageCode(context, sharedPreferences)
 
         val uri = buildUri()
@@ -104,13 +101,13 @@ class FutarApiClient(
                     routes = parseRoutes(response)
                     alertsToday = parseAlerts(response, AlertListType.ALERTS_TODAY)
                     alertsFuture = parseAlerts(response, AlertListType.ALERTS_FUTURE)
-                    EventBus.getDefault().post(AlertListMessage(alertsToday, alertsFuture))
+                    listener.onAlertListResponse(alertsToday, alertsFuture)
                 } catch (ex: Exception) {
-                    EventBus.getDefault().post(AlertListErrorMessage(ex))
+                    listener.onError(ex)
                 }
             },
             Response.ErrorListener { error ->
-                EventBus.getDefault().post(AlertListErrorMessage(error))
+                listener.onError(error)
             }
         )
 

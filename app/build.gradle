@@ -18,7 +18,10 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'com.github.gfx.ribbonizer'
 apply plugin: 'io.fabric'
-apply plugin: 'com.google.firebase.firebase-perf'
+if (getGradle().getStartParameter().getTaskRequests().toString().contains("Release")) {
+    // Firebase Performance slows down the build
+    apply plugin: 'com.google.firebase.firebase-perf'
+}
 
 // Create a variable called keystorePropertiesFile, and initialize it to your
 // keystore.properties file, in the rootProject folder.
@@ -161,9 +164,6 @@ dependencies {
 
     // Process-Phoenix
     implementation 'com.jakewharton:process-phoenix:2.0.0'
-
-    // EventBus
-    implementation 'org.greenrobot:eventbus:3.1.1'
 
     // Timber
     implementation 'com.jakewharton.timber:timber:4.7.1'

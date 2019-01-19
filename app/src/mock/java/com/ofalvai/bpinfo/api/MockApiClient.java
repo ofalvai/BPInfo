@@ -2,23 +2,21 @@ package com.ofalvai.bpinfo.api;
 
 import android.graphics.Color;
 import android.os.Handler;
-import android.util.Log;
 
 import com.ofalvai.bpinfo.model.Alert;
 import com.ofalvai.bpinfo.model.Route;
 import com.ofalvai.bpinfo.model.RouteType;
 
-import org.greenrobot.eventbus.EventBus;
-
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import timber.log.Timber;
 
+@SuppressWarnings("SyntheticAccessorCall")
 public class MockApiClient implements AlertApiClient {
-
-    private static final String TAG = "MockApiClient";
 
     private static final List<Alert> TEST_ALERTS = new ArrayList<>();
 
@@ -34,33 +32,22 @@ public class MockApiClient implements AlertApiClient {
      */
     private static int mTestDataState = 0;
 
-    /**
-     * As with the real API clients, this client gets called by both alert lists in parallel.
-     * We need to return data only once.
-     */
-    private volatile boolean mRequestInProgress = false;
-
     public MockApiClient() {
         makeTestAlerts();
     }
 
     @Override
-    public void fetchAlertList(@NonNull AlertRequestParams params) {
-        if (mRequestInProgress) return;
-        mRequestInProgress = true;
+    public void fetchAlertList(@NonNull final AlertApiClient.AlertListListener listener) {
 
         if (SIMULATE_CHANGES) {
             changeState();
         }
-        Log.i(TAG, "Mock API request");
+        Timber.i("Mock API request");
 
-        // Simulating delayed response. Without this, mRequestInProgress would be reset to false
-        // before the second request calls this method.
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                EventBus.getDefault().post(new AlertListMessage(TEST_ALERTS, TEST_ALERTS));
-                mRequestInProgress = false;
+                listener.onAlertListResponse(TEST_ALERTS, TEST_ALERTS);
             }
         }, SIMULATE_DELAY_MS);
     }
@@ -238,7 +225,7 @@ public class MockApiClient implements AlertApiClient {
                 null,
                 "Ez egy busz",
                 "Ez egy mock alert, meglátjuk megy-e",
-                new ArrayList<>(Arrays.asList(bus13)),
+                new ArrayList<>(Collections.singletonList(bus13)),
                 false
         ));
 
@@ -250,7 +237,7 @@ public class MockApiClient implements AlertApiClient {
                 null,
                 "Ez egy villamos",
                 "Ez egy mock alert, meglátjuk megy-e",
-                new ArrayList<>(Arrays.asList(tram60)),
+                new ArrayList<>(Collections.singletonList(tram60)),
                 false
         ));
 
@@ -262,7 +249,7 @@ public class MockApiClient implements AlertApiClient {
                 null,
                 "Ez egy troli",
                 "Ez egy mock alert, meglátjuk megy-e",
-                new ArrayList<>(Arrays.asList(trolley79)),
+                new ArrayList<>(Collections.singletonList(trolley79)),
                 false
         ));
 
@@ -289,28 +276,14 @@ public class MockApiClient implements AlertApiClient {
                 new ArrayList<>(Arrays.asList(ferry11, chairlift, funicular, rail5)),
                 false
         ));
-
-        for (int i = 0; i < 0; i++) {
-            TEST_ALERTS.add(new Alert(
-                    "test-xxx",
-                    1485567157,
-                    0,
-                    0,
-                    null,
-                    "Ez egy villamos " + i,
-                    "Ez egy mock alert, meglátjuk megy-e",
-                    new ArrayList<>(Arrays.asList(tram60)),
-                    false
-            ));
-        }
     }
 
     private void changeState() {
         switch (mTestDataState) {
             case 0:
-                int randomIndex = (int) Math.round(Math.random() * (TEST_ALERTS.size() - 1));
-                long randomTimestamp = (int) Math.round(Math.random() * System.currentTimeMillis());
-                Alert alert = TEST_ALERTS.get(randomIndex);
+                //int randomIndex = (int) Math.round(Math.random() * (TEST_ALERTS.size() - 1));
+                //long randomTimestamp = (int) Math.round(Math.random() * System.currentTimeMillis());
+                //Alert alert = TEST_ALERTS.get(randomIndex);
                 //alert.setStart(randomTimestamp);
                 // TODO: fix immutable class copy
                 mTestDataState++;
@@ -341,7 +314,7 @@ public class MockApiClient implements AlertApiClient {
 
                 mTestDataState = 0;
         }
-        Log.d(TAG, "New mock data state: " + mTestDataState);
+        Timber.d("New mock data state: %s", mTestDataState);
     }
 
 }

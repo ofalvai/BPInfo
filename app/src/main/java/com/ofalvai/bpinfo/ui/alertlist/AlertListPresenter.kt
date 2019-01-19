@@ -19,23 +19,16 @@ package com.ofalvai.bpinfo.ui.alertlist
 import android.content.Context
 import android.content.SharedPreferences
 import com.android.volley.NoConnectionError
-import com.android.volley.VolleyError
 import com.crashlytics.android.Crashlytics
 import com.ofalvai.bpinfo.Config
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.api.AlertApiClient
-import com.ofalvai.bpinfo.api.AlertListErrorMessage
-import com.ofalvai.bpinfo.api.AlertListMessage
 import com.ofalvai.bpinfo.api.AlertRequestParams
 import com.ofalvai.bpinfo.api.bkkfutar.AlertSearchContract
 import com.ofalvai.bpinfo.api.notice.NoticeClient
 import com.ofalvai.bpinfo.model.Alert
 import com.ofalvai.bpinfo.model.RouteType
 import com.ofalvai.bpinfo.ui.base.BasePresenter
-import com.ofalvai.bpinfo.util.hasNetworkConnection
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.json.JSONException
 import org.threeten.bp.Duration
 import org.threeten.bp.LocalDateTime
 import timber.log.Timber
@@ -66,12 +59,12 @@ class AlertListPresenter(
 
     override fun attachView(view: AlertListContract.View) {
         super.attachView(view)
-        EventBus.getDefault().register(this)
+//        EventBus.getDefault().register(this)
     }
 
     override fun detachView() {
         super.detachView()
-        EventBus.getDefault().unregister(this)
+//        EventBus.getDefault().unregister(this)
     }
 
     /**
@@ -80,7 +73,7 @@ class AlertListPresenter(
      */
     override fun fetchAlertList() {
         when {
-            context.hasNetworkConnection() -> alertApiClient.fetchAlertList()
+//            context.hasNetworkConnection() -> alertApiClient.fetchAlertList()
             unfilteredAlerts == null -> {
                 // Nothing was displayed previously, showing a full error view
                 view?.displayNetworkError(NoConnectionError())
@@ -163,38 +156,38 @@ class AlertListPresenter(
      * 1. Sort the list by the alerts' start time
      * 2. Filter the list by the currently active filter
      */
-    @Subscribe
-    fun onAlertListEvent(message: AlertListMessage) {
-        lastUpdate = LocalDateTime.now()
+//    @Subscribe
+//    fun onAlertListEvent(message: AlertListMessage) {
+//        lastUpdate = LocalDateTime.now()
+//
+//        if (alertListType == AlertListType.ALERTS_TODAY) {
+//            unfilteredAlerts = message.todayAlerts.toMutableList()
+//        } else if (alertListType == AlertListType.ALERTS_FUTURE) {
+//            unfilteredAlerts = message.futureAlerts.toMutableList()
+//        }
+//
+//        val processedAlerts = filterAndSort(activeFilter, unfilteredAlerts!!, alertListType)
+//        view?.displayAlerts(processedAlerts)
+//    }
 
-        if (alertListType == AlertListType.ALERTS_TODAY) {
-            unfilteredAlerts = message.todayAlerts.toMutableList()
-        } else if (alertListType == AlertListType.ALERTS_FUTURE) {
-            unfilteredAlerts = message.futureAlerts.toMutableList()
-        }
-
-        val processedAlerts = filterAndSort(activeFilter, unfilteredAlerts!!, alertListType)
-        view?.displayAlerts(processedAlerts)
-    }
-
-    @Subscribe
-    fun onAlertListErrorEvent(message: AlertListErrorMessage) {
-        unfilteredAlerts?.clear()
-
-        val ex = message.exception
-        Timber.e(ex.toString())
-        when (ex) {
-            is VolleyError -> view?.displayNetworkError(ex)
-            is JSONException -> {
-                view?.displayDataError()
-                Crashlytics.logException(ex)
-            }
-            else -> {
-                view?.displayGeneralError()
-                Crashlytics.logException(ex)
-            }
-        }
-    }
+//    @Subscribe
+//    fun onAlertListErrorEvent(message: AlertListErrorMessage) {
+//        unfilteredAlerts?.clear()
+//
+//        val ex = message.exception
+//        Timber.e(ex.toString())
+//        when (ex) {
+//            is VolleyError -> view?.displayNetworkError(ex)
+//            is JSONException -> {
+//                view?.displayDataError()
+//                Crashlytics.logException(ex)
+//            }
+//            else -> {
+//                view?.displayGeneralError()
+//                Crashlytics.logException(ex)
+//            }
+//        }
+//    }
 
     /**
      * Returns a new filtered list of Alerts matching the provided set of RouteTypes, and sorted
