@@ -19,9 +19,11 @@ package com.ofalvai.bpinfo.ui.alertlist
 import androidx.lifecycle.MutableLiveData
 import com.android.volley.VolleyError
 import com.crashlytics.android.Crashlytics
+import com.ofalvai.bpinfo.Config
 import com.ofalvai.bpinfo.api.AlertApiClient
 import com.ofalvai.bpinfo.model.Alert
 import org.json.JSONException
+import org.threeten.bp.Duration
 import org.threeten.bp.LocalDateTime
 import timber.log.Timber
 
@@ -40,13 +42,16 @@ class AlertsRepository(
 
     val error = MutableLiveData<Error>()
 
-    private var lastUpdate: LocalDateTime = LocalDateTime.now()
+    private var lastUpdate: LocalDateTime? = null
+    private val refreshThreshold = Duration.ofSeconds(Config.Behavior.REFRESH_THRESHOLD_SEC.toLong())
 
     init {
         fetchAlerts()
     }
 
-    private fun fetchAlerts() {
+    fun fetchAlerts() {
+        if (shouldUpdate().not()) return
+
         // TODO: network detection
         // TODO: refactor this listener
         alertApiClient.fetchAlertList(object : AlertApiClient.AlertListListener {
@@ -72,5 +77,15 @@ class AlertsRepository(
                 }
             }
         })
+    }
+
+    private fun shouldUpdate(): Boolean {
+        // TODO: rewrite to UNIX timestamps
+        // Something like https://github.com/googlesamples/android-architecture-components/blob/master/GithubBrowserSample/app/src/main/java/com/android/example/github/util/RateLimiter.kt
+        return if (lastUpdate == null) {
+            true
+        } else {
+            LocalDateTime.now().isAfter(lastUpdate?.plus(refreshThreshold))
+        }
     }
 }

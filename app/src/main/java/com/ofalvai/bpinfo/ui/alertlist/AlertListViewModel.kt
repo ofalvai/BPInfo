@@ -12,7 +12,7 @@ import com.ofalvai.bpinfo.model.RouteType
  */
 class AlertListViewModel(
     private val alertListType: AlertListType,
-    alertsRepository: AlertsRepository
+    private val alertsRepository: AlertsRepository
 ) : ViewModel() {
 
     val alerts: LiveData<List<Alert>> = Transformations.map(
@@ -23,6 +23,10 @@ class AlertListViewModel(
         this::sortAndFilter
     )
     val alertError: LiveData<AlertsRepository.Error> = alertsRepository.error
+
+    fun refresh() {
+        alertsRepository.fetchAlerts()
+    }
 
     private var activeFilter: MutableSet<RouteType> = mutableSetOf()
 

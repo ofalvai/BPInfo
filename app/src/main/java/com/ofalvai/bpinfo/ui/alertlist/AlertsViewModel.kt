@@ -1,8 +1,7 @@
 package com.ofalvai.bpinfo.ui.alertlist
 
 import android.content.SharedPreferences
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.ofalvai.bpinfo.api.notice.NoticeClient
 
 /**
@@ -13,7 +12,7 @@ class AlertsViewModel(
         private val alertsRepository: AlertsRepository,
         private val noticeClient: NoticeClient,
         private val sharedPreferences: SharedPreferences
-) : ViewModel() {
+) : ViewModel(), LifecycleObserver {
 
     val notice = MutableLiveData<String?>()
 
@@ -21,7 +20,12 @@ class AlertsViewModel(
         fetchNotices()
     }
 
-    private fun fetchNotices() {
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    fun updateIfNeeded() {
+        alertsRepository.fetchAlerts()
+    }
+
+    fun fetchNotices() {
         // TODO: parameter order
         // TODO: merge two methods into a String? parameter
         noticeClient.fetchNotice(object : NoticeClient.NoticeListener {

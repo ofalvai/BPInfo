@@ -28,6 +28,7 @@ import com.ofalvai.bpinfo.ui.base.BaseActivity
 import com.ofalvai.bpinfo.util.Analytics
 import com.ofalvai.bpinfo.util.bindView
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AlertListActivity : BaseActivity() {
 
@@ -36,6 +37,8 @@ class AlertListActivity : BaseActivity() {
      * This is later accessed by [AlertListFragment].
      */
     var pendingNavigationAlertId: String? = null
+
+    private val viewModel by viewModel<AlertsViewModel>()
 
     private val viewPager: ViewPager by bindView(R.id.alert_list_pager)
     private val tabLayout: TabLayout by bindView(R.id.tabs)
@@ -48,6 +51,8 @@ class AlertListActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_alert_list)
+
+        lifecycle.addObserver(viewModel)
 
         setSupportActionBar(toolbar)
 

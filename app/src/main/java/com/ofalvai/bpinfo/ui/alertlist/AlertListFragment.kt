@@ -335,12 +335,9 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
     }
 
     private fun initRefresh() {
-        setUpdating(true)
-
-//        presenter.fetchAlertList()
-//        presenter.fetchNotice()
-
-//        presenter.setLastUpdate()
+        // TODO: move SwipeRefreshLayout from Fragment to Activity
+        viewModel.refresh()
+        parentViewModel.fetchNotices()
     }
 
     private fun setUpdating(updating: Boolean) {
