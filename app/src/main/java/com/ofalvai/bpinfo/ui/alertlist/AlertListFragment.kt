@@ -157,6 +157,8 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
             }
         }
 
+        observe(viewModel.noConnectionWarning) { displayNoNetworkWarning() }
+
         if (alertListType == AlertListType.ALERTS_TODAY) {
             observe(parentViewModel.notice, this::displayNotice)
         }

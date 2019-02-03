@@ -33,7 +33,7 @@ val appModule = module {
 
     single { Analytics(androidContext()) }
 
-    single { AlertsRepository(get()) }
+    single { AlertsRepository(get(), androidContext()) }
 }
 
 val screenModule = module {
@@ -45,7 +45,7 @@ val screenModule = module {
     viewModel { AlertsViewModel(get(), get(), get()) }
 
     viewModel { (type: AlertListType) ->
-        AlertListViewModel(type, get())
+        AlertListViewModel(type, get(), androidContext())
     }
 }
 // Note: apiModule depends on selected product flavor (mock/live)

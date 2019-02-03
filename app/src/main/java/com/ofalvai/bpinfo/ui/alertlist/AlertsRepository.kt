@@ -16,20 +16,24 @@
 
 package com.ofalvai.bpinfo.ui.alertlist
 
+import android.content.Context
 import androidx.lifecycle.MutableLiveData
+import com.android.volley.NoConnectionError
 import com.android.volley.VolleyError
 import com.crashlytics.android.Crashlytics
 import com.ofalvai.bpinfo.Config
 import com.ofalvai.bpinfo.api.AlertApiClient
 import com.ofalvai.bpinfo.model.Alert
 import com.ofalvai.bpinfo.model.Status
+import com.ofalvai.bpinfo.util.hasNetworkConnection
 import org.json.JSONException
 import org.threeten.bp.Duration
 import org.threeten.bp.LocalDateTime
 import timber.log.Timber
 
 class AlertsRepository(
-    private val alertApiClient: AlertApiClient
+    private val alertApiClient: AlertApiClient,
+    private val appContext: Context
 ) {
 
     sealed class Error {
@@ -54,13 +58,20 @@ class AlertsRepository(
 
     fun fetchAlerts() {
         if (shouldUpdate().not()) {
-            status.value = Status.Success
+            if (status.value != Status.Loading) {
+                status.value = Status.Success
+            }
+            return
+        }
+
+        if (appContext.hasNetworkConnection().not()) {
+            status.value = Status.Error
+            error.value = Error.NetworkError(NoConnectionError())
             return
         }
 
         status.value = Status.Loading
 
-        // TODO: network detection
         // TODO: refactor this listener
         alertApiClient.fetchAlertList(object : AlertApiClient.AlertListListener {
             override fun onAlertListResponse(todayAlerts: List<Alert>, futureAlerts: List<Alert>) {
