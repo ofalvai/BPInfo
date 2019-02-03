@@ -30,6 +30,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.model.Alert
 import com.ofalvai.bpinfo.model.RouteType
+import com.ofalvai.bpinfo.model.Status
 import com.ofalvai.bpinfo.ui.alert.AlertDetailFragment
 import com.ofalvai.bpinfo.ui.alertlist.adapter.AlertAdapter
 import com.ofalvai.bpinfo.ui.alertlist.dialog.AlertFilterFragment
@@ -148,6 +149,14 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
                 AlertsRepository.Error.GeneralError -> displayGeneralError()
             }
         }
+
+        observe(viewModel.status) {
+            when (it) {
+                Status.Loading -> setUpdating(true)
+                else -> setUpdating(false)
+            }
+        }
+
         if (alertListType == AlertListType.ALERTS_TODAY) {
             observe(parentViewModel.notice, this::displayNotice)
         }
@@ -221,8 +230,6 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
                 updateSubtitle(alerts.size)
             }
             alertRecyclerView.smoothScrollToPosition(0)
-
-            setUpdating(false)
 
             pendingNavigationAlertId?.let { id ->
                 val alert: Alert? = alerts.find { it.id == id }
@@ -362,8 +369,6 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
      */
     private fun setErrorView(state: Boolean, errorMessage: String?) {
         if (state) {
-            setUpdating(false)
-
             alertRecyclerView.visibility = View.GONE
 
             val errorMessageView = errorLayout.findViewById<TextView>(R.id.error_message)

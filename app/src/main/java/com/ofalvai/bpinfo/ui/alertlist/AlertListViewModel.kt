@@ -5,6 +5,7 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.ofalvai.bpinfo.model.Alert
 import com.ofalvai.bpinfo.model.RouteType
+import com.ofalvai.bpinfo.model.Status
 
 /**
  * ViewModel of a tab (an alert list)
@@ -22,7 +23,9 @@ class AlertListViewModel(
         },
         this::sortAndFilter
     )
+
     val alertError: LiveData<AlertsRepository.Error> = alertsRepository.error
+    val status: LiveData<Status> = alertsRepository.status
 
     fun refresh() {
         alertsRepository.fetchAlerts()

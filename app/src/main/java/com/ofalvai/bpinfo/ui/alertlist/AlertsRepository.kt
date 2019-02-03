@@ -22,6 +22,7 @@ import com.crashlytics.android.Crashlytics
 import com.ofalvai.bpinfo.Config
 import com.ofalvai.bpinfo.api.AlertApiClient
 import com.ofalvai.bpinfo.model.Alert
+import com.ofalvai.bpinfo.model.Status
 import org.json.JSONException
 import org.threeten.bp.Duration
 import org.threeten.bp.LocalDateTime
@@ -40,6 +41,8 @@ class AlertsRepository(
     val todayAlerts = MutableLiveData<List<Alert>>()
     val futureAlerts = MutableLiveData<List<Alert>>()
 
+    val status = MutableLiveData<Status>()
+
     val error = MutableLiveData<Error>()
 
     private var lastUpdate: LocalDateTime? = null
@@ -50,7 +53,12 @@ class AlertsRepository(
     }
 
     fun fetchAlerts() {
-        if (shouldUpdate().not()) return
+        if (shouldUpdate().not()) {
+            status.value = Status.Success
+            return
+        }
+
+        status.value = Status.Loading
 
         // TODO: network detection
         // TODO: refactor this listener
@@ -60,10 +68,12 @@ class AlertsRepository(
 
                 this@AlertsRepository.todayAlerts.value = todayAlerts
                 this@AlertsRepository.futureAlerts.value = futureAlerts
+                status.value = Status.Success
             }
 
             override fun onError(ex: Exception) {
                 Timber.e(ex.toString())
+                status.value = Status.Error
                 when (ex) {
                     is VolleyError -> this@AlertsRepository.error.value = Error.NetworkError(ex)
                     is JSONException -> {
