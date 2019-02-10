@@ -32,6 +32,19 @@ class AlertListViewModel(
     val status: LiveData<Status> = alertsRepository.status
     val noConnectionWarning = SingleLiveEvent<Void>()
 
+    var activeFilter: MutableSet<RouteType> = mutableSetOf()
+        set(value) {
+            field = value
+
+            // Triggering a change in order to re-run Transformations.map() above
+            // with the changed filters
+            alertsRepository.todayAlerts.value = alertsRepository.todayAlerts.value
+            alertsRepository.futureAlerts.value = alertsRepository.futureAlerts.value
+        }
+
+
+    private val alertComparator = compareBy<Alert> { it.start }.thenBy { it.description }
+
     fun refresh() {
         if (appContext.hasNetworkConnection()) {
             alertsRepository.fetchAlerts()
@@ -40,13 +53,14 @@ class AlertListViewModel(
         }
     }
 
-    private var activeFilter: MutableSet<RouteType> = mutableSetOf()
-
-    private val alertComparator = compareBy<Alert> { it.start }.thenBy { it.description }
-
     private fun sortAndFilter(alertList: List<Alert>): List<Alert> {
-        // TODO: filtering goes here
-        val sortedList = alertList.sortedWith(alertComparator)
+        val filteredList = if (activeFilter.isEmpty()) alertList else {
+            alertList.filter { alert ->
+                alert.affectedRoutes.any { activeFilter.contains(it.type) }
+            }
+        }
+
+        val sortedList = filteredList.sortedWith(alertComparator)
         return if (alertListType == AlertListType.ALERTS_TODAY) {
             sortedList.reversed()
         } else {

@@ -24,6 +24,8 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.android.volley.VolleyError
 import com.google.android.material.snackbar.Snackbar
@@ -47,8 +49,6 @@ import timber.log.Timber
 class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragment.AlertFilterListener {
 
     companion object {
-
-        const val KEY_ACTIVE_FILTER = "active_filter"
 
         const val KEY_ALERT_LIST_TYPE = "alert_list_type"
 
@@ -88,19 +88,12 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        var restoredFilter: MutableSet<RouteType>? = null
-
         if (savedInstanceState != null) {
             alertListType = savedInstanceState.getSerializable(KEY_ALERT_LIST_TYPE) as AlertListType
-            restoredFilter = savedInstanceState.getSerializable(KEY_ACTIVE_FILTER) as? MutableSet<RouteType>
         }
 
 //        presenter.attachView(this)
 //        presenter.alertListType = alertListType
-
-        restoredFilter?.let {
-            //            presenter.setFilter(restoredFilter)
-        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -116,7 +109,6 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
             // Only attach to the filter fragment if it filters our type of list
             if (filterFragment != null && alertListType == filterFragment.alertListType) {
                 filterFragment.filterListener = this
-//                filterFragment.selectedRouteTypes = presenter.getFilter()
             }
         }
 
@@ -166,12 +158,7 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-
         outState.putSerializable(KEY_ALERT_LIST_TYPE, alertListType)
-
-        // Casting to HashSet, because Set is not serializable :(
-//        val filter = presenter.getFilter() as HashSet<RouteType>?
-//        outState.putSerializable(KEY_ACTIVE_FILTER, filter)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater) {
@@ -210,12 +197,12 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
     }
 
     override fun onFilterChanged(selectedTypes: MutableSet<RouteType>) {
-//        presenter.setFilter(selectedTypes)
-//        presenter.getAlertList()
+        viewModel.activeFilter = selectedTypes
 
         updateFilterWarning()
     }
 
+    // TODO
     override fun onFilterDismissed() {}
 
     override fun displayAlerts(alerts: List<Alert>) {
@@ -333,11 +320,10 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
     private fun setupRecyclerView() {
         alertRecyclerView.adapter = alertAdapter
 
-        val layoutManager = androidx.recyclerview.widget.LinearLayoutManager(activity)
+        val layoutManager = LinearLayoutManager(activity)
         alertRecyclerView.layoutManager = layoutManager
 
-        val decoration =
-                androidx.recyclerview.widget.DividerItemDecoration(context, layoutManager.orientation)
+        val decoration = DividerItemDecoration(context, layoutManager.orientation)
         alertRecyclerView.addItemDecoration(decoration)
 
         alertRecyclerView.setEmptyView(emptyView)
@@ -354,11 +340,11 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
     }
 
     private fun displayFilterDialog() {
-//        val initialFilter = presenter.getFilter() ?: mutableSetOf()
-
-//        val filterFragment = AlertFilterFragment.newInstance(this, initialFilter, alertListType)
-//        val transaction = requireFragmentManager().beginTransaction()
-//        filterFragment.show(transaction, FILTER_DIALOG_TAG)
+        val filterFragment = AlertFilterFragment.newInstance(
+            this, viewModel.activeFilter, alertListType
+        )
+        val transaction = requireFragmentManager().beginTransaction()
+        filterFragment.show(transaction, FILTER_DIALOG_TAG)
 
         analytics.logFilterDialogOpened()
     }
@@ -394,16 +380,15 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
      * Hides the bar if nothing is selected as filter.
      */
     private fun updateFilterWarning() {
-        // Might be null, because it gets called by onCreate() too
-//        val selectedTypes: MutableSet<RouteType> = presenter.getFilter() ?: return
-
-//        if (selectedTypes.isEmpty()) {
-//            filterWarningView.visibility = View.GONE
-//        } else {
-//            val typeList = selectedTypes.joinToString(separator = ", ") { it.getName(requireContext()) }
-//            filterWarningView.text = getString(R.string.filter_message, typeList)
-//            filterWarningView.visibility = View.VISIBLE
-//        }
+        if (viewModel.activeFilter.isEmpty()) {
+            filterWarningView.visibility = View.GONE
+        } else {
+            val typeList = viewModel.activeFilter.joinToString(separator = ", ") {
+                it.getName(requireContext())
+            }
+            filterWarningView.text = getString(R.string.filter_message, typeList)
+            filterWarningView.visibility = View.VISIBLE
+        }
     }
 
     private fun updateSubtitle(count: Int) {
