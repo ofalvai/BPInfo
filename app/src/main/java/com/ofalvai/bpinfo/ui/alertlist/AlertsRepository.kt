@@ -17,6 +17,7 @@
 package com.ofalvai.bpinfo.ui.alertlist
 
 import android.content.Context
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.android.volley.NoConnectionError
 import com.android.volley.VolleyError
@@ -24,6 +25,7 @@ import com.crashlytics.android.Crashlytics
 import com.ofalvai.bpinfo.Config
 import com.ofalvai.bpinfo.api.AlertApiClient
 import com.ofalvai.bpinfo.model.Alert
+import com.ofalvai.bpinfo.model.Resource
 import com.ofalvai.bpinfo.model.Status
 import com.ofalvai.bpinfo.util.hasNetworkConnection
 import org.json.JSONException
@@ -98,6 +100,25 @@ class AlertsRepository(
                 }
             }
         })
+    }
+
+    fun fetchAlert(id: String, alertListType: AlertListType): LiveData<Resource<Alert>> {
+        val liveData = MutableLiveData<Resource<Alert>>()
+        liveData.value = Resource.Loading()
+
+        alertApiClient.fetchAlert(id, alertListType, object : AlertApiClient.AlertDetailListener {
+            override fun onAlertResponse(alert: Alert) {
+                liveData.value = Resource.Success(alert)
+            }
+
+            override fun onError(ex: Exception) {
+                Timber.e(ex)
+                Crashlytics.logException(ex)
+                liveData.value = Resource.Error(ex)
+            }
+        })
+
+        return liveData
     }
 
     private fun shouldUpdate(): Boolean {

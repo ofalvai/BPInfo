@@ -17,12 +17,13 @@
 package com.ofalvai.bpinfo.api
 
 import com.ofalvai.bpinfo.model.Alert
+import com.ofalvai.bpinfo.ui.alertlist.AlertListType
 
 interface AlertApiClient {
 
     fun fetchAlertList(listener: AlertListListener)
 
-    fun fetchAlert(id: String, listener: AlertDetailListener, params: AlertRequestParams)
+    fun fetchAlert(id: String, alertListType: AlertListType, listener: AlertDetailListener)
 
     // TODO: rename later
     interface AlertListListener {
@@ -32,6 +33,7 @@ interface AlertApiClient {
         fun onError(ex: Exception)
     }
 
+    // TODO: rename later
     interface AlertDetailListener {
 
         fun onAlertResponse(alert: Alert)

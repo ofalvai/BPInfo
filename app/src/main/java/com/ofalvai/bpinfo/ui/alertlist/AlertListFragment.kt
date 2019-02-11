@@ -31,6 +31,7 @@ import com.android.volley.VolleyError
 import com.google.android.material.snackbar.Snackbar
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.model.Alert
+import com.ofalvai.bpinfo.model.Resource
 import com.ofalvai.bpinfo.model.RouteType
 import com.ofalvai.bpinfo.model.Status
 import com.ofalvai.bpinfo.ui.alert.AlertDetailFragment
@@ -289,10 +290,18 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
     override fun launchAlertDetail(alert: Alert) {
         displayAlertDetail(alert)
 
-//        presenter.fetchAlert(alert.id)
+        val alertLiveData = viewModel.fetchAlert(alert.id)
+        observe(alertLiveData) { resource ->
+            when (resource) {
+                is Resource.Success -> updateAlertDetail(resource.value)
+                // is Resource.Loading -> TODO
+                is Resource.Error -> displayAlertDetailError()
+            }
+        }
     }
 
     override fun displayAlertDetail(alert: Alert) {
+        // TODO
 //        val alertDetailFragment = AlertDetailFragment.newInstance(alert, presenter)
 //        alertDetailFragment.show(requireFragmentManager(), AlertDetailFragment.FRAGMENT_TAG)
     }

@@ -28,7 +28,6 @@ import com.crashlytics.android.Crashlytics
 import com.ofalvai.bpinfo.BuildConfig
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.api.AlertApiClient
-import com.ofalvai.bpinfo.api.AlertRequestParams
 import com.ofalvai.bpinfo.model.Alert
 import com.ofalvai.bpinfo.model.Route
 import com.ofalvai.bpinfo.model.RouteType
@@ -114,11 +113,9 @@ class FutarApiClient(
         requestQueue.add(request)
     }
 
-    override fun fetchAlert(
-        id: String, listener: AlertApiClient.AlertDetailListener,
-        params: AlertRequestParams
-    ) {
-        if (params.alertListType == AlertListType.ALERTS_TODAY) {
+    override fun fetchAlert(id: String, alertListType: AlertListType,
+                            listener: AlertApiClient.AlertDetailListener) {
+        if (alertListType == AlertListType.ALERTS_TODAY) {
             alertsToday.find { it.id == id }?.let {
                 listener.onAlertResponse(it)
                 return

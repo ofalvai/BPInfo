@@ -59,6 +59,7 @@ interface AlertListContract {
         /**
          * This is called by the adapter to launch the alert detail view
          */
+        // TODO
         fun launchAlertDetail(alert: Alert)
     }
 

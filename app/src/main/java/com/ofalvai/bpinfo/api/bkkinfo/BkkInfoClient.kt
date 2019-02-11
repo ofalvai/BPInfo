@@ -31,10 +31,10 @@ import com.google.firebase.perf.FirebasePerformance
 import com.google.firebase.perf.metrics.Trace
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.api.AlertApiClient
-import com.ofalvai.bpinfo.api.AlertRequestParams
 import com.ofalvai.bpinfo.model.Alert
 import com.ofalvai.bpinfo.model.Route
 import com.ofalvai.bpinfo.model.RouteType
+import com.ofalvai.bpinfo.ui.alertlist.AlertListType
 import com.ofalvai.bpinfo.util.LocaleManager
 import com.ofalvai.bpinfo.util.apiTimestampToDateTime
 import com.ofalvai.bpinfo.util.toArray
@@ -109,10 +109,8 @@ class BkkInfoClient(
         requestQueue.add(request)
     }
 
-    override fun fetchAlert(
-        id: String, listener: AlertApiClient.AlertDetailListener,
-        params: AlertRequestParams
-    ) {
+    override fun fetchAlert(id: String, alertListType: AlertListType,
+                            listener: AlertApiClient.AlertDetailListener) {
         val url = buildAlertDetailUrl(id)
 
         Timber.i("API request: %s", url.toString())

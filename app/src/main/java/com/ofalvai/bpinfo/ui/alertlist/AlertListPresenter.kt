@@ -19,7 +19,6 @@ package com.ofalvai.bpinfo.ui.alertlist
 import android.content.Context
 import android.content.SharedPreferences
 import com.android.volley.NoConnectionError
-import com.crashlytics.android.Crashlytics
 import com.ofalvai.bpinfo.Config
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.api.AlertApiClient
@@ -31,7 +30,6 @@ import com.ofalvai.bpinfo.model.RouteType
 import com.ofalvai.bpinfo.ui.base.BasePresenter
 import org.threeten.bp.Duration
 import org.threeten.bp.LocalDateTime
-import timber.log.Timber
 import java.util.*
 
 
@@ -99,21 +97,21 @@ class AlertListPresenter(
     }
 
     override fun fetchAlert(alertId: String) {
-        alertApiClient.fetchAlert(
-            alertId,
-            object : AlertApiClient.AlertDetailListener {
-                override fun onAlertResponse(alert: Alert) {
-                    view?.updateAlertDetail(alert)
-                }
-
-                override fun onError(ex: Exception) {
-                    view?.displayAlertDetailError()
-                    Timber.e(ex)
-                    Crashlytics.logException(ex)
-                }
-            },
-            alertRequestParams
-        )
+//        alertApiClient.fetchAlert(
+//            alertId,
+//            object : AlertApiClient.AlertDetailListener {
+//                override fun onAlertResponse(alert: Alert) {
+//                    view?.updateAlertDetail(alert)
+//                }
+//
+//                override fun onError(ex: Exception) {
+//                    view?.displayAlertDetailError()
+//                    Timber.e(ex)
+//                    Crashlytics.logException(ex)
+//                }
+//            },
+//            alertRequestParams
+//        )
     }
 
     override fun setLastUpdate() {
