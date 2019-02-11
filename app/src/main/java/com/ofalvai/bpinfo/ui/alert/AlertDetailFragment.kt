@@ -36,7 +36,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.model.Alert
 import com.ofalvai.bpinfo.model.Route
-import com.ofalvai.bpinfo.ui.alertlist.AlertListContract
 import com.ofalvai.bpinfo.util.*
 import com.wefika.flowlayout.FlowLayout
 import org.koin.android.ext.android.inject
@@ -51,10 +50,8 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
         private const val ARG_ALERT_OBJECT = "alert_object"
 
         @JvmStatic
-        fun newInstance(alert: Alert,
-                        presenter: AlertListContract.Presenter): AlertDetailFragment {
+        fun newInstance(alert: Alert): AlertDetailFragment {
             val fragment = AlertDetailFragment()
-            fragment.listPresenter = presenter
             val args = bundleOf(ARG_ALERT_OBJECT to alert)
             fragment.arguments = args
             return fragment
@@ -62,8 +59,6 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
     }
 
     private var alert: Alert? = null
-
-    private lateinit var listPresenter: AlertListContract.Presenter
 
     private val analytics: Analytics by inject()
 
@@ -130,7 +125,8 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
             errorLayout.visibility = View.GONE
             progressBar.show()
             alert?.let {
-                listPresenter.fetchAlert(it.id)
+                // TODO
+                //listPresenter.fetchAlert(it.id)
             }
         }
     }
@@ -213,7 +209,7 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
         // There are alerts without affected routes, eg. announcements
         for (route in alert.affectedRoutes) {
             // Some affected routes are visually identical to others in the list, no need
-            // to diplay them again.
+            // to display them again.
             if (!isRouteVisuallyDuplicate(route, displayedRoutes)) {
                 displayedRoutes.add(route)
                 addRouteIcon(requireContext(), routeIconsLayout, route)
@@ -221,7 +217,7 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
         }
 
         alert.description?.let {
-            descriptionTextView.setHtml(alert.description)
+            descriptionTextView.setHtml(it)
         }
 
         if (alert.url == null) {
