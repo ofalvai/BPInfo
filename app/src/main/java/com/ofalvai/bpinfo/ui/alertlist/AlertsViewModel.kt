@@ -44,8 +44,4 @@ class AlertsViewModel(
     private fun getCurrentLanguageCode(): String {
         return "hu"
     }
-
-
-
-
 }

@@ -47,7 +47,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import timber.log.Timber
 
-class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragment.AlertFilterListener {
+class AlertListFragment : Fragment(), AlertFilterFragment.AlertFilterListener {
 
     companion object {
 
@@ -68,8 +68,6 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
     private val viewModel by viewModel<AlertListViewModel>{ parametersOf(alertListType) }
 
     private val parentViewModel by sharedViewModel<AlertsViewModel>()
-
-//    private val presenter: AlertListContract.Presenter by inject()
 
     private val analytics: Analytics by inject()
 
@@ -92,9 +90,6 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
         if (savedInstanceState != null) {
             alertListType = savedInstanceState.getSerializable(KEY_ALERT_LIST_TYPE) as AlertListType
         }
-
-//        presenter.attachView(this)
-//        presenter.alertListType = alertListType
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -126,7 +121,6 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
             analytics.logManualRefresh()
         }
 
-//        initRefresh()
         updateFilterWarning()
     }
 
@@ -178,22 +172,12 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
     override fun onStart() {
         super.onStart()
 
-//        val updating = presenter.updateIfNeeded()
-//        if (updating && requireActivity().hasNetworkConnection()) {
-//            setUpdating(true)
-//        }
-
         if (activity is AlertListActivity && alertListType == AlertListType.ALERTS_TODAY) {
             pendingNavigationAlertId = (activity!! as AlertListActivity).pendingNavigationAlertId
         }
     }
 
-    override fun onDestroy() {
-//        presenter.detachView()
-        super.onDestroy()
-    }
-
-    override fun updateSubtitle() {
+    fun updateSubtitle() {
         updateSubtitle(alertAdapter.itemCount)
     }
 
@@ -206,7 +190,20 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
     // TODO
     override fun onFilterDismissed() {}
 
-    override fun displayAlerts(alerts: List<Alert>) {
+    fun launchAlertDetail(alert: Alert) {
+        displayAlertDetail(alert)
+
+        val alertLiveData = viewModel.fetchAlert(alert.id)
+        observe(alertLiveData) { resource ->
+            when (resource) {
+                is Resource.Success -> updateAlertDetail(resource.value)
+                is Resource.Error -> displayAlertDetailError()
+                // is Resource.Loading -> AlertDetailFragment handles its loading state
+            }
+        }
+    }
+
+    private fun displayAlerts(alerts: List<Alert>) {
         // It's possible that the network response callback thread executes this faster than
         // the UI thread attaching the fragment to the activity. In that case getResources() or
         // getString() would throw an exception.
@@ -236,7 +233,7 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
         }
     }
 
-    override fun displayNetworkError(error: VolleyError) {
+    private fun displayNetworkError(error: VolleyError) {
         // It's possible that the network response callback thread executes this faster than
         // the UI thread attaching the fragment to the activity. In that case getResources() would
         // throw an exception.
@@ -246,19 +243,19 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
         }
     }
 
-    override fun displayDataError() {
+    private fun displayDataError() {
         if (isAdded) {
             setErrorView(true, getString(R.string.error_list_display))
         }
     }
 
-    override fun displayGeneralError() {
+    private fun displayGeneralError() {
         if (isAdded) {
             setErrorView(true, getString(R.string.error_list_display))
         }
     }
 
-    override fun displayNoNetworkWarning() {
+    private fun displayNoNetworkWarning() {
         if (isAdded) {
             setUpdating(false)
 
@@ -287,25 +284,22 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
         }
     }
 
-    override fun launchAlertDetail(alert: Alert) {
-        displayAlertDetail(alert)
-
-        val alertLiveData = viewModel.fetchAlert(alert.id)
-        observe(alertLiveData) { resource ->
-            when (resource) {
-                is Resource.Success -> updateAlertDetail(resource.value)
-                // is Resource.Loading -> TODO
-                is Resource.Error -> displayAlertDetailError()
-            }
-        }
-    }
-
-    override fun displayAlertDetail(alert: Alert) {
+    /**
+     * Displays the alert detail view.
+     * If the alert object contains all required information, there's no need to call
+     * updateAlertDetail() later, otherwise Alert.partial must be set to true.
+     * @param alert data from a list item
+     */
+    private fun displayAlertDetail(alert: Alert) {
         val alertDetailFragment = AlertDetailFragment.newInstance(alert, alertListType)
         alertDetailFragment.show(requireFragmentManager(), AlertDetailFragment.FRAGMENT_TAG)
     }
 
-    override fun updateAlertDetail(alert: Alert) {
+    /**
+     * Updates the alert detail view with the full alert data
+     * @param alert data coming from the alert detail API call
+     */
+    private fun updateAlertDetail(alert: Alert) {
         val manager = requireFragmentManager()
         val fragment = manager.findFragmentByTag(AlertDetailFragment.FRAGMENT_TAG) as AlertDetailFragment?
 
@@ -314,7 +308,7 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
         fragment?.updateAlert(alert)
     }
 
-    override fun displayAlertDetailError() {
+    private fun displayAlertDetailError() {
         val manager = requireFragmentManager()
         val fragment = manager.findFragmentByTag(AlertDetailFragment.FRAGMENT_TAG) as AlertDetailFragment?
 
@@ -323,7 +317,7 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
         fragment?.onAlertUpdateFailed()
     }
 
-    override fun getAlertListType() = alertListType
+    fun getAlertListType() = alertListType // TODO: pass the private property to the Adapter (then pass to ViewHolder)
 
     private fun setupRecyclerView() {
         alertRecyclerView.adapter = alertAdapter

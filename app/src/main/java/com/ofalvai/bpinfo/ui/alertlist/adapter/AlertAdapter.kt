@@ -22,11 +22,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.model.Alert
-import com.ofalvai.bpinfo.ui.alertlist.AlertListContract
+import com.ofalvai.bpinfo.ui.alertlist.AlertListFragment
 import com.ofalvai.bpinfo.ui.alertlist.viewholder.AlertHolder
 
 class AlertAdapter(
-    private val view: AlertListContract.View
+    private val view: AlertListFragment // TODO: rewrite to lambda
 ) : ListAdapter<Alert, AlertHolder>(DIFF_CALLBACK) {
 
     companion object {

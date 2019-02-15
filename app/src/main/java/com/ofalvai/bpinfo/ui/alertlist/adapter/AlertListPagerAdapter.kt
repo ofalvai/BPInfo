@@ -24,7 +24,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.ofalvai.bpinfo.R
-import com.ofalvai.bpinfo.ui.alertlist.AlertListContract
 import com.ofalvai.bpinfo.ui.alertlist.AlertListFragment
 import com.ofalvai.bpinfo.ui.alertlist.AlertListType
 
@@ -77,7 +76,7 @@ class AlertListPagerAdapter(fm: FragmentManager, private val context: Context)
     }
 
     override fun onPageSelected(position: Int) {
-        val view = registeredFragments.get(position) as? AlertListContract.View
+        val view = registeredFragments.get(position) as? AlertListFragment
         view?.updateSubtitle()
     }
 }
