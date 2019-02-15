@@ -18,6 +18,7 @@ package com.ofalvai.bpinfo.injection
 
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
+import com.ofalvai.bpinfo.ui.alert.AlertDetailViewModel
 import com.ofalvai.bpinfo.ui.alertlist.*
 import com.ofalvai.bpinfo.ui.notifications.NotificationsViewModel
 import com.ofalvai.bpinfo.util.Analytics
@@ -47,6 +48,8 @@ val screenModule = module {
     viewModel { (type: AlertListType) ->
         AlertListViewModel(type, get(), androidContext())
     }
+
+    viewModel { AlertDetailViewModel(get()) }
 }
 // Note: apiModule depends on selected product flavor (mock/live)
 val allModules = listOf(appModule, screenModule, apiModule)

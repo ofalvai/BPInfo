@@ -36,9 +36,11 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.model.Alert
 import com.ofalvai.bpinfo.model.Route
+import com.ofalvai.bpinfo.ui.alertlist.AlertListType
 import com.ofalvai.bpinfo.util.*
 import com.wefika.flowlayout.FlowLayout
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.sufficientlysecure.htmltextview.HtmlTextView
 
 class AlertDetailFragment : BottomSheetDialogFragment() {
@@ -48,17 +50,22 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
         const val FRAGMENT_TAG = "alert_detail"
 
         private const val ARG_ALERT_OBJECT = "alert_object"
+        private const val ARG_LIST_TYPE = "alert_list_type"
 
         @JvmStatic
-        fun newInstance(alert: Alert): AlertDetailFragment {
+        fun newInstance(alert: Alert, alertListType: AlertListType): AlertDetailFragment {
             val fragment = AlertDetailFragment()
-            val args = bundleOf(ARG_ALERT_OBJECT to alert)
+            val args = bundleOf(ARG_ALERT_OBJECT to alert, ARG_LIST_TYPE to alertListType)
             fragment.arguments = args
             return fragment
         }
     }
 
+    private val viewModel by viewModel<AlertDetailViewModel>()
+
     private var alert: Alert? = null
+
+    private lateinit var alertListType: AlertListType
 
     private val analytics: Analytics by inject()
 
@@ -91,6 +98,7 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
 
         if (arguments != null) {
             alert = arguments?.getSerializable(ARG_ALERT_OBJECT) as Alert
+            alertListType = arguments?.getSerializable(ARG_LIST_TYPE) as AlertListType
         }
 
         if (savedInstanceState != null) {

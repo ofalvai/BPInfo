@@ -301,7 +301,7 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
     }
 
     override fun displayAlertDetail(alert: Alert) {
-        val alertDetailFragment = AlertDetailFragment.newInstance(alert)
+        val alertDetailFragment = AlertDetailFragment.newInstance(alert, alertListType)
         alertDetailFragment.show(requireFragmentManager(), AlertDetailFragment.FRAGMENT_TAG)
     }
 
