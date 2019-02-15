@@ -16,15 +16,19 @@
 
 package com.ofalvai.bpinfo.ui.alert
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import com.ofalvai.bpinfo.model.Alert
+import com.ofalvai.bpinfo.model.Resource
+import com.ofalvai.bpinfo.ui.alertlist.AlertListType
 import com.ofalvai.bpinfo.ui.alertlist.AlertsRepository
 
 class AlertDetailViewModel(
     private val alertsRepository: AlertsRepository
 ) : ViewModel() {
 
-    fun fetchAlert(id: String) {
-        alertsRepository.fetchAlert()
+    fun reloadAlert(id: String, alertListType: AlertListType): LiveData<Resource<Alert>> {
+        return alertsRepository.fetchAlert(id, alertListType)
     }
 
 }

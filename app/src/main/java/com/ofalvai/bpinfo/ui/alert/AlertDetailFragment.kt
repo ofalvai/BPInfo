@@ -35,6 +35,7 @@ import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.model.Alert
+import com.ofalvai.bpinfo.model.Resource
 import com.ofalvai.bpinfo.model.Route
 import com.ofalvai.bpinfo.ui.alertlist.AlertListType
 import com.ofalvai.bpinfo.util.*
@@ -63,11 +64,17 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
 
     private val viewModel by viewModel<AlertDetailViewModel>()
 
-    private var alert: Alert? = null
+    private var alertWithDetails: Alert? = null
 
     private lateinit var alertListType: AlertListType
 
     private val analytics: Analytics by inject()
+
+    /**
+     * List of currently displayed route icons. This list is needed in order to find visually
+     * duplicate route data, and not to display them twice.
+     */
+    private val displayedRoutes = mutableListOf<Route>()
 
     private val titleTextView: TextView by bindView(R.id.alert_detail_title)
 
@@ -87,29 +94,23 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
 
     private val errorButton: Button by bindView(R.id.error_action_button)
 
-    /**
-     * List of currently displayed route icons. This list is needed in order to find visually
-     * duplicate route data, and not to display them twice.
-     */
-    private val displayedRoutes = mutableListOf<Route>()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         if (arguments != null) {
-            alert = arguments?.getSerializable(ARG_ALERT_OBJECT) as Alert
+            alertWithDetails = arguments?.getSerializable(ARG_ALERT_OBJECT) as Alert
             alertListType = arguments?.getSerializable(ARG_LIST_TYPE) as AlertListType
         }
 
         if (savedInstanceState != null) {
-            alert = savedInstanceState.getSerializable(ARG_ALERT_OBJECT) as Alert
+             alertWithDetails = savedInstanceState.getSerializable(ARG_ALERT_OBJECT) as Alert
         }
 
-        analytics.logAlertContentView(alert)
+        analytics.logAlertContentView(alertWithDetails)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putSerializable(ARG_ALERT_OBJECT, alert)
+        outState.putSerializable(ARG_ALERT_OBJECT, alertWithDetails)
         super.onSaveInstanceState(outState)
     }
 
@@ -121,20 +122,27 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        displayAlert(alert)
+        displayAlert(alertWithDetails)
 
-        alert?.let {
+        alertWithDetails?.let {
             if (!it.isPartial) {
                 progressBar.hide()
             }
         }
 
-        errorButton.setOnClickListener { _ ->
-            errorLayout.visibility = View.GONE
-            progressBar.show()
-            alert?.let {
-                // TODO
-                //listPresenter.fetchAlert(it.id)
+        errorButton.setOnClickListener {
+            alertWithDetails?.id?.let {
+                val alertLiveData = viewModel.reloadAlert(it, alertListType)
+                observe(alertLiveData) { resource ->
+                    when (resource) {
+                        is Resource.Success -> updateAlert(resource.value)
+                        is Resource.Loading -> {
+                            errorLayout.visibility = View.GONE
+                            progressBar.show()
+                        }
+                        is Resource.Error -> onAlertUpdateFailed()
+                    }
+                }
             }
         }
     }
@@ -149,7 +157,7 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
     }
 
     fun updateAlert(alert: Alert) {
-        this.alert = alert
+        this.alertWithDetails = alert
         displayedRoutes.clear()
         routeIconsLayout.removeAllViews()
 
