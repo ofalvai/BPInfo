@@ -18,10 +18,10 @@ package com.ofalvai.bpinfo.injection
 
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
-import com.ofalvai.bpinfo.ui.alert.AlertDetailViewModel
+import com.ofalvai.bpinfo.ui.alertdetail.AlertDetailViewModel
 import com.ofalvai.bpinfo.ui.alertlist.AlertListType
 import com.ofalvai.bpinfo.ui.alertlist.AlertListViewModel
-import com.ofalvai.bpinfo.ui.alertlist.AlertsRepository
+import com.ofalvai.bpinfo.repository.AlertsRepository
 import com.ofalvai.bpinfo.ui.alertlist.AlertsViewModel
 import com.ofalvai.bpinfo.ui.notifications.NotificationsViewModel
 import com.ofalvai.bpinfo.util.Analytics

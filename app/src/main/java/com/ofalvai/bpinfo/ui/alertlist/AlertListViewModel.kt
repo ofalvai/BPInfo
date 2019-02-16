@@ -8,6 +8,7 @@ import com.ofalvai.bpinfo.model.Alert
 import com.ofalvai.bpinfo.model.Resource
 import com.ofalvai.bpinfo.model.RouteType
 import com.ofalvai.bpinfo.model.Status
+import com.ofalvai.bpinfo.repository.AlertsRepository
 import com.ofalvai.bpinfo.util.SingleLiveEvent
 import com.ofalvai.bpinfo.util.hasNetworkConnection
 

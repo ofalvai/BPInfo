@@ -3,6 +3,7 @@ package com.ofalvai.bpinfo.ui.alertlist
 import android.content.SharedPreferences
 import androidx.lifecycle.*
 import com.ofalvai.bpinfo.api.notice.NoticeClient
+import com.ofalvai.bpinfo.repository.AlertsRepository
 import com.ofalvai.bpinfo.util.LocaleManager
 
 /**

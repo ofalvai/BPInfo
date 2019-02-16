@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ofalvai.bpinfo.ui.alert
+package com.ofalvai.bpinfo.ui.alertdetail
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter

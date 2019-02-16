@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ofalvai.bpinfo.ui.alertlist
+package com.ofalvai.bpinfo.repository
 
 import android.content.Context
 import androidx.lifecycle.LiveData
@@ -27,6 +27,7 @@ import com.ofalvai.bpinfo.api.AlertApiClient
 import com.ofalvai.bpinfo.model.Alert
 import com.ofalvai.bpinfo.model.Resource
 import com.ofalvai.bpinfo.model.Status
+import com.ofalvai.bpinfo.ui.alertlist.AlertListType
 import com.ofalvai.bpinfo.util.hasNetworkConnection
 import org.json.JSONException
 import org.threeten.bp.Duration

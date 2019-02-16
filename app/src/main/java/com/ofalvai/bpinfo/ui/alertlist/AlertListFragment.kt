@@ -34,7 +34,8 @@ import com.ofalvai.bpinfo.model.Alert
 import com.ofalvai.bpinfo.model.Resource
 import com.ofalvai.bpinfo.model.RouteType
 import com.ofalvai.bpinfo.model.Status
-import com.ofalvai.bpinfo.ui.alert.AlertDetailFragment
+import com.ofalvai.bpinfo.repository.AlertsRepository
+import com.ofalvai.bpinfo.ui.alertdetail.AlertDetailFragment
 import com.ofalvai.bpinfo.ui.alertlist.adapter.AlertAdapter
 import com.ofalvai.bpinfo.ui.alertlist.dialog.AlertFilterFragment
 import com.ofalvai.bpinfo.ui.alertlist.dialog.NoticeFragment

@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.ofalvai.bpinfo.ui.alert
+package com.ofalvai.bpinfo.ui.alertdetail
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.ofalvai.bpinfo.model.Alert
 import com.ofalvai.bpinfo.model.Resource
 import com.ofalvai.bpinfo.ui.alertlist.AlertListType
-import com.ofalvai.bpinfo.ui.alertlist.AlertsRepository
+import com.ofalvai.bpinfo.repository.AlertsRepository
 
 class AlertDetailViewModel(
     private val alertsRepository: AlertsRepository
