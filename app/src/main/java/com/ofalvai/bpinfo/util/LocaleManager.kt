@@ -22,7 +22,6 @@ import android.content.res.Configuration
 import android.os.Build
 import android.preference.PreferenceManager
 import com.ofalvai.bpinfo.R
-import com.ofalvai.bpinfo.api.bkkfutar.AlertSearchContract
 import java.util.*
 
 /**
@@ -31,8 +30,38 @@ import java.util.*
  */
 object LocaleManager {
 
+    private const val LANG_CODE_AUTO = "auto"
+    private const val LANG_CODE_ENGLISH = "en"
+    private const val LANG_CODE_HUNGARIAN = "hu"
+
+    private const val PREF_KEY_LANGUAGE = "language" // TODO: remove the same key from strings.xml after refactor
+
     fun setLocale(c: Context): Context {
         return updateResources(c)
+    }
+
+    /**
+     * Gets the current language's language code for API calls.
+     * If a language has been set in the preferences, it reads the value from SharedPreferences.
+     * If it has been set to "auto" or unset, it decides based on the current locale, using "en" for
+     * any other language than Hungarian ("hu")
+     * @return The app's current language's code.
+     */
+    fun getCurrentLanguageCode(sharedPreferences: SharedPreferences): String {
+        var languageCode = sharedPreferences.getString(
+                PREF_KEY_LANGUAGE,
+                LANG_CODE_AUTO
+        )!!
+
+        if (languageCode == LANG_CODE_AUTO) {
+            languageCode = if (Locale.getDefault().language == LANG_CODE_HUNGARIAN) {
+                LANG_CODE_HUNGARIAN
+            } else {
+                LANG_CODE_ENGLISH
+            }
+        }
+
+        return languageCode
     }
 
     private fun updateResources(context: Context): Context {
@@ -70,29 +99,5 @@ object LocaleManager {
                 c.getString(R.string.pref_key_language),
                 c.getString(R.string.pref_key_language_auto)
         )!!
-    }
-
-    /**
-     * Gets the current language's language code for API calls.
-     * If a language has been set in the preferences, it reads the value from SharedPreferences.
-     * If it has been set to "auto" or unset, it decides based on the current locale, using "en" for
-     * any other language than Hungarian ("hu")
-     * @return The app's current language's code.
-     */
-     fun getCurrentLanguageCode(context: Context, sharedPreferences: SharedPreferences): String {
-        var languageCode = sharedPreferences.getString(
-            context.getString(R.string.pref_key_language),
-            context.getString(R.string.pref_key_language_auto)
-        )!!
-
-        if (languageCode == context.getString(R.string.pref_key_language_auto)) {
-            languageCode = if (Locale.getDefault().language == AlertSearchContract.LANG_HU) {
-                AlertSearchContract.LANG_HU
-            } else {
-                AlertSearchContract.LANG_EN
-            }
-        }
-
-        return languageCode
     }
 }

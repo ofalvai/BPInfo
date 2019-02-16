@@ -87,7 +87,7 @@ class FutarApiClient(
     private var languageCode: String? = null
 
     override fun fetchAlertList(listener: AlertApiClient.AlertListListener) {
-        languageCode = LocaleManager.getCurrentLanguageCode(context, sharedPreferences)
+        languageCode = LocaleManager.getCurrentLanguageCode(sharedPreferences)
 
         val uri = buildUri()
 

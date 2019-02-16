@@ -89,7 +89,7 @@ class BkkInfoClient(
     private var alertDetailTrace: Trace? = null
 
     private val languageCode: String =
-        LocaleManager.getCurrentLanguageCode(context, sharedPreferences)
+        LocaleManager.getCurrentLanguageCode(sharedPreferences)
 
     override fun fetchAlertList(listener: AlertApiClient.AlertListListener) {
         val url = buildAlertListUrl()

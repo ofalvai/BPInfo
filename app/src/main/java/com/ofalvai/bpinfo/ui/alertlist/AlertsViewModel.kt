@@ -3,6 +3,7 @@ package com.ofalvai.bpinfo.ui.alertlist
 import android.content.SharedPreferences
 import androidx.lifecycle.*
 import com.ofalvai.bpinfo.api.notice.NoticeClient
+import com.ofalvai.bpinfo.util.LocaleManager
 
 /**
  * ViewModel of the whole alerts screen with the ViewPager and 2 tabs.
@@ -26,6 +27,8 @@ class AlertsViewModel(
     }
 
     fun fetchNotices() {
+        val languageCode = LocaleManager.getCurrentLanguageCode(sharedPreferences)
+
         // TODO: parameter order
         // TODO: merge two methods into a String? parameter
         noticeClient.fetchNotice(object : NoticeClient.NoticeListener {
@@ -36,12 +39,6 @@ class AlertsViewModel(
             override fun onNoNotice() {
                 notice.value = null
             }
-        }, getCurrentLanguageCode())
-    }
-
-    // TODO: implement without context
-    // TODO: return enum, not string
-    private fun getCurrentLanguageCode(): String {
-        return "hu"
+        }, languageCode)
     }
 }
