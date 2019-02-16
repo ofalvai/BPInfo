@@ -74,6 +74,7 @@ class NotificationsActivity : BaseActivity() {
         }
     }
 
+    @SuppressLint("MissingFirebaseInstanceTokenRefresh")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_notifications)

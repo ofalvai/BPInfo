@@ -79,7 +79,7 @@ fun RouteType.getName(context: Context): String {
         RouteType.TRAM -> R.string.route_tram
         RouteType.TROLLEYBUS -> R.string.route_trolleybus
         RouteType.SUBWAY -> R.string.route_subway
-        RouteType._OTHER_ -> R.string.route_other
+        RouteType.OTHER -> R.string.route_other
         else -> R.string.route_other
     }
     return context.getString(resourceId)

@@ -185,7 +185,7 @@ class BkkInfoClient(
                     alerts.add(alert)
                 }
             } catch (ex: JSONException) {
-                Crashlytics.log(Log.WARN, TAG, "Alert parse: failed to parse:\n" + ex.toString())
+                Crashlytics.log(Log.WARN, TAG, "Alert parse: failed to parse:\n$ex")
             }
         }
 
@@ -203,7 +203,7 @@ class BkkInfoClient(
                 val alertNode = soonAlertList.getJSONObject(i)
                 alerts.add(parseAlert(alertNode))
             } catch (ex: JSONException) {
-                Crashlytics.log(Log.WARN, TAG, "Alert parse: failed to parse:\n" + ex.toString())
+                Crashlytics.log(Log.WARN, TAG, "Alert parse: failed to parse:\n$ex")
             }
         }
 
@@ -213,7 +213,7 @@ class BkkInfoClient(
                 val alertNode = futureAlertList.getJSONObject(i)
                 alerts.add(parseAlert(alertNode))
             } catch (ex: JSONException) {
-                Crashlytics.log(Log.WARN, TAG, "Alert parse: failed to parse:\n" + ex.toString())
+                Crashlytics.log(Log.WARN, TAG, "Alert parse: failed to parse:\n$ex")
             }
         }
 
@@ -406,7 +406,7 @@ class BkkInfoClient(
             "libego" -> RouteType.CHAIRLIFT
             "hev" -> RouteType.RAIL
             "siklo" -> RouteType.FUNICULAR
-            else -> RouteType._OTHER_
+            else -> RouteType.OTHER
         }
     }
 
@@ -520,7 +520,7 @@ class BkkInfoClient(
                 background = "884200"
                 text = "000000"
             }
-            RouteType._OTHER_ -> {
+            RouteType.OTHER -> {
                 background = defaultBackground
                 text = defaultText
             }

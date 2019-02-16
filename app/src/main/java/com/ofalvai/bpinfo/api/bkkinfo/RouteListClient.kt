@@ -123,7 +123,7 @@ class RouteListClient(private val requestQueue: RequestQueue) {
 
     private fun parseRouteType(typeString: String?, shortName: String?): RouteType {
         if (typeString == null) {
-            return RouteType._OTHER_
+            return RouteType.OTHER
         } else {
             return when (typeString) {
                 "B" -> RouteType.BUS
@@ -133,10 +133,10 @@ class RouteListClient(private val requestQueue: RequestQueue) {
                 "V" -> RouteType.TRAM
                 "D" -> RouteType.FERRY
                 "H" -> RouteType.RAIL
-                "P" -> RouteType._OTHER_ // Sétajárat
-                "L" -> RouteType._OTHER_ // RouteType.CHAIRLIFT
-                "S" -> RouteType._OTHER_ // Sikló
-                "N" -> RouteType._OTHER_ // Nosztalgia: http://www.bkk.hu/nosztalgia/menetrendek
+                "P" -> RouteType.OTHER // Sétajárat
+                "L" -> RouteType.OTHER // RouteType.CHAIRLIFT
+                "S" -> RouteType.OTHER // Sikló
+                "N" -> RouteType.OTHER // Nosztalgia: http://www.bkk.hu/nosztalgia/menetrendek
 //                    "SH" -> RouteType.FERRY // Sétahajó
 //                    "DH" -> RouteType.TRAM // Duna villamos
 //                    "TH" -> RouteType.TRAM // Termál villamos
@@ -146,7 +146,7 @@ class RouteListClient(private val requestQueue: RequestQueue) {
 //                    "N74" -> RouteType.TROLLEYBUS
 //                    "N76" -> RouteType.TROLLEYBUS
 //                    "N17" -> RouteType.TRAM
-                else -> RouteType._OTHER_
+                else -> RouteType.OTHER
             }
         }
     }

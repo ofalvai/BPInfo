@@ -62,7 +62,7 @@ class AlertHolder(itemView: View, private val alertListType: AlertListType) : Re
                 displayedRoutes.add(route)
                 addRouteIcon(itemView.context, routeIconsWrapper, route)
 
-                if (route.type == RouteType._OTHER_) {
+                if (route.type == RouteType.OTHER) {
                     Timber.d("Unknown route type: %s (%s)", route.shortName, route.id)
                 }
             }

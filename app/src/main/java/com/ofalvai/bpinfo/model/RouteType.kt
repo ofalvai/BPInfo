@@ -26,5 +26,5 @@ enum class RouteType {
     CHAIRLIFT,
     FUNICULAR,
 
-    _OTHER_
+    OTHER
 }

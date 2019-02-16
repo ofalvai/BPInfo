@@ -38,8 +38,6 @@ interface AlertSearchContract {
 
         // Languages and translations throughout the API fields:
         const val LANG_SOME = "someTranslation"
-        const val LANG_HU = "hu"
-        const val LANG_EN = "en"
     }
 
 }

@@ -194,7 +194,7 @@ class FutarApiClient(
                     alertList.add(alert)
                 }
             } catch (ex: JSONException) {
-                Crashlytics.log(Log.WARN, TAG, "Alert parse: failed to parse:\n" + ex.toString())
+                Crashlytics.log(Log.WARN, TAG, "Alert parse: failed to parse:\n$ex")
             }
         }
 
@@ -283,9 +283,7 @@ class FutarApiClient(
                 }
             } catch (ex: JSONException) {
                 Crashlytics.log(
-                    Log.ERROR,
-                    TAG,
-                    "Route parse: failed at index " + i + ":\n" + routeNode.toString()
+                    Log.ERROR, TAG, "Route parse: failed at index $i:\n$routeNode"
                 )
             }
         }
@@ -326,7 +324,7 @@ class FutarApiClient(
             Crashlytics.log(Log.WARN, TAG, "Route parse: failed to parse route type to enum: $type")
         }
 
-        return RouteType._OTHER_
+        return RouteType.OTHER
     }
 
     /**

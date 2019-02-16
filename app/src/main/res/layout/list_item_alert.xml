@@ -34,27 +34,28 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="@id/list_item_alert_recent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/list_item_alert_recent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="12dp"
         android:text="@string/alert_label_recent"
         android:textColor="@color/accent"
         android:textSize="12sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/list_item_alert_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
         android:textColor="@color/text_primary"
         android:textSize="16sp"
-        android:layout_marginTop="4dp"
         app:layout_constraintTop_toBottomOf="@id/list_item_alert_route_icons_wrapper"
         tools:ignore="SelectableText"
         tools:text="Alert title" />

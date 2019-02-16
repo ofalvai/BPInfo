@@ -67,7 +67,7 @@ class RouteListFragment : Fragment(), RouteClickListener {
             routeType = if (savedInstanceState.getSerializable(KEY_ROUTE_TYPE) != null) {
                 savedInstanceState.getSerializable(KEY_ROUTE_TYPE) as RouteType
             } else {
-                RouteType._OTHER_
+                RouteType.OTHER
             }
         }
 

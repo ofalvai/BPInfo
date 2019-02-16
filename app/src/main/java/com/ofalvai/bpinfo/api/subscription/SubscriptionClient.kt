@@ -16,7 +16,6 @@
 
 package com.ofalvai.bpinfo.api.subscription
 
-import android.content.SharedPreferences
 import android.net.Uri
 import com.android.volley.Request
 import com.android.volley.RequestQueue

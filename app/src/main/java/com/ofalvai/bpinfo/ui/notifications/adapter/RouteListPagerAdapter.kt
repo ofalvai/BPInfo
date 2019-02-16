@@ -47,8 +47,8 @@ class RouteListPagerAdapter(fm: FragmentManager,
                     3 -> RouteType.TROLLEYBUS
                     4 -> RouteType.RAIL
                     5 -> RouteType.FERRY
-                    6 -> RouteType._OTHER_
-                    else -> RouteType._OTHER_
+                    6 -> RouteType.OTHER
+                    else -> RouteType.OTHER
                 }
         )
     }
