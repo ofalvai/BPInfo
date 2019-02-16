@@ -16,11 +16,7 @@
 
 package com.ofalvai.bpinfo.ui.alertlist
 
-/**
- * Possible types of alert lists in the UI. This acts as a parameter in other classes as well.
- */
-// TODO: rename
 enum class AlertListType {
-    ALERTS_TODAY,
-    ALERTS_FUTURE
+    Today,
+    Future
 }

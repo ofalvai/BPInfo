@@ -39,8 +39,8 @@ class AlertListPagerAdapter(fm: FragmentManager, private val context: Context)
 
     override fun getItem(position: Int): Fragment {
         return when (position) {
-            0 -> AlertListFragment.newInstance(AlertListType.ALERTS_TODAY)
-            1 -> AlertListFragment.newInstance(AlertListType.ALERTS_FUTURE)
+            0 -> AlertListFragment.newInstance(AlertListType.Today)
+            1 -> AlertListFragment.newInstance(AlertListType.Future)
             else -> Fragment()
         }
     }

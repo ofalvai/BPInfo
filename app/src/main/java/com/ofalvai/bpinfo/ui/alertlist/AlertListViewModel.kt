@@ -23,8 +23,8 @@ class AlertListViewModel(
 
     val alerts: LiveData<List<Alert>> = Transformations.map(
             when (alertListType) {
-                AlertListType.ALERTS_TODAY -> alertsRepository.todayAlerts
-                AlertListType.ALERTS_FUTURE -> alertsRepository.futureAlerts
+                AlertListType.Today -> alertsRepository.todayAlerts
+                AlertListType.Future -> alertsRepository.futureAlerts
             },
             this::sortAndFilter
     )
@@ -65,7 +65,7 @@ class AlertListViewModel(
         }
 
         val sortedList = filteredList.sortedWith(alertComparator)
-        return if (alertListType == AlertListType.ALERTS_TODAY) {
+        return if (alertListType == AlertListType.Today) {
             sortedList.reversed()
         } else {
             sortedList

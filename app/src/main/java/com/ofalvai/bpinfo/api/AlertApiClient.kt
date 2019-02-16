@@ -21,20 +21,18 @@ import com.ofalvai.bpinfo.ui.alertlist.AlertListType
 
 interface AlertApiClient {
 
-    fun fetchAlertList(listener: AlertListListener)
+    fun fetchAlertList(callback: AlertListCallback)
 
-    fun fetchAlert(id: String, alertListType: AlertListType, listener: AlertDetailListener)
+    fun fetchAlert(id: String, alertListType: AlertListType, callback: AlertDetailCallback)
 
-    // TODO: rename later
-    interface AlertListListener {
+    interface AlertListCallback {
 
         fun onAlertListResponse(todayAlerts: List<Alert>, futureAlerts: List<Alert>)
 
         fun onError(ex: Exception)
     }
 
-    // TODO: rename later
-    interface AlertDetailListener {
+    interface AlertDetailCallback {
 
         fun onAlertResponse(alert: Alert)
 

@@ -68,7 +68,7 @@ class AlertHolder(itemView: View, private val alertListType: AlertListType) : Re
             }
         }
 
-        if (alertListType == AlertListType.ALERTS_TODAY) {
+        if (alertListType == AlertListType.Today) {
             recentTextView.visibility = if (alert.isRecent()) View.VISIBLE else View.GONE
         } else {
             recentTextView.visibility = View.GONE

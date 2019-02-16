@@ -146,7 +146,7 @@ class AlertListFragment : Fragment(), AlertFilterFragment.AlertFilterListener {
 
         observe(viewModel.noConnectionWarning) { displayNoNetworkWarning() }
 
-        if (alertListType == AlertListType.ALERTS_TODAY) {
+        if (alertListType == AlertListType.Today) {
             observe(parentViewModel.notice, this::displayNotice)
         }
     }
@@ -172,7 +172,7 @@ class AlertListFragment : Fragment(), AlertFilterFragment.AlertFilterListener {
     override fun onStart() {
         super.onStart()
 
-        if (activity is AlertListActivity && alertListType == AlertListType.ALERTS_TODAY) {
+        if (activity is AlertListActivity && alertListType == AlertListType.Today) {
             pendingNavigationAlertId = (activity!! as AlertListActivity).pendingNavigationAlertId
         }
     }
@@ -227,7 +227,7 @@ class AlertListFragment : Fragment(), AlertFilterFragment.AlertFilterListener {
                 }
             }
             pendingNavigationAlertId = null
-            if (activity is AlertListActivity && alertListType == AlertListType.ALERTS_TODAY) {
+            if (activity is AlertListActivity && alertListType == AlertListType.Today) {
                 (activity!! as AlertListActivity).pendingNavigationAlertId = null
             }
         }

@@ -29,8 +29,6 @@ class AlertsViewModel(
     fun fetchNotices() {
         val languageCode = LocaleManager.getCurrentLanguageCode(sharedPreferences)
 
-        // TODO: parameter order
-        // TODO: merge two methods into a String? parameter
         noticeClient.fetchNotice(object : NoticeClient.NoticeListener {
             override fun onNoticeResponse(noticeBody: String) {
                 notice.value = noticeBody

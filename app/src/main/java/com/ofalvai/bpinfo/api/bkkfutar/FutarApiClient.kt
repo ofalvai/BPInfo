@@ -86,7 +86,7 @@ class FutarApiClient(
 
     private var languageCode: String? = null
 
-    override fun fetchAlertList(listener: AlertApiClient.AlertListListener) {
+    override fun fetchAlertList(callback: AlertApiClient.AlertListCallback) {
         languageCode = LocaleManager.getCurrentLanguageCode(sharedPreferences)
 
         val uri = buildUri()
@@ -98,15 +98,15 @@ class FutarApiClient(
             Response.Listener { response ->
                 try {
                     routes = parseRoutes(response)
-                    alertsToday = parseAlerts(response, AlertListType.ALERTS_TODAY)
-                    alertsFuture = parseAlerts(response, AlertListType.ALERTS_FUTURE)
-                    listener.onAlertListResponse(alertsToday, alertsFuture)
+                    alertsToday = parseAlerts(response, AlertListType.Today)
+                    alertsFuture = parseAlerts(response, AlertListType.Future)
+                    callback.onAlertListResponse(alertsToday, alertsFuture)
                 } catch (ex: Exception) {
-                    listener.onError(ex)
+                    callback.onError(ex)
                 }
             },
             Response.ErrorListener { error ->
-                listener.onError(error)
+                callback.onError(error)
             }
         )
 
@@ -114,21 +114,21 @@ class FutarApiClient(
     }
 
     override fun fetchAlert(id: String, alertListType: AlertListType,
-                            listener: AlertApiClient.AlertDetailListener) {
-        if (alertListType == AlertListType.ALERTS_TODAY) {
+                            callback: AlertApiClient.AlertDetailCallback) {
+        if (alertListType == AlertListType.Today) {
             alertsToday.find { it.id == id }?.let {
-                listener.onAlertResponse(it)
+                callback.onAlertResponse(it)
                 return
             }
 
-            listener.onError(Exception("Alert not found"))
+            callback.onError(Exception("Alert not found"))
         } else {
             alertsFuture.find { it.id == id }?.let {
-                listener.onAlertResponse(it)
+                callback.onAlertResponse(it)
                 return
             }
 
-            listener.onError(Exception("Alert not found"))
+            callback.onError(Exception("Alert not found"))
         }
     }
 
@@ -184,11 +184,11 @@ class FutarApiClient(
                 // Time ranges in the API response are messed up. We need to filter out alerts that are
                 // before/after the time range we want.
                 val alertStartTime: ZonedDateTime = apiTimestampToDateTime(alert.start)
-                if (alertListType == AlertListType.ALERTS_TODAY && alertStartTime.isBefore(
+                if (alertListType == AlertListType.Today && alertStartTime.isBefore(
                         ZonedDateTime.now()
                     )) {
                     alertList.add(alert)
-                } else if (alertListType == AlertListType.ALERTS_FUTURE && alertStartTime.isAfter(
+                } else if (alertListType == AlertListType.Future && alertStartTime.isAfter(
                         ZonedDateTime.now()
                     )) {
                     alertList.add(alert)

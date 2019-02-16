@@ -74,8 +74,7 @@ class AlertsRepository(
 
         status.value = Status.Loading
 
-        // TODO: refactor this listener
-        alertApiClient.fetchAlertList(object : AlertApiClient.AlertListListener {
+        alertApiClient.fetchAlertList(object : AlertApiClient.AlertListCallback {
             override fun onAlertListResponse(todayAlerts: List<Alert>, futureAlerts: List<Alert>) {
                 lastUpdate = LocalDateTime.now()
 
@@ -106,7 +105,7 @@ class AlertsRepository(
         val liveData = MutableLiveData<Resource<Alert>>()
         liveData.value = Resource.Loading()
 
-        alertApiClient.fetchAlert(id, alertListType, object : AlertApiClient.AlertDetailListener {
+        alertApiClient.fetchAlert(id, alertListType, object : AlertApiClient.AlertDetailCallback {
             override fun onAlertResponse(alert: Alert) {
                 liveData.value = Resource.Success(alert)
             }

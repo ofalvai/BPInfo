@@ -91,7 +91,7 @@ class BkkInfoClient(
     private val languageCode: String =
         LocaleManager.getCurrentLanguageCode(sharedPreferences)
 
-    override fun fetchAlertList(listener: AlertApiClient.AlertListListener) {
+    override fun fetchAlertList(callback: AlertApiClient.AlertListCallback) {
         val url = buildAlertListUrl()
 
         Timber.i("API request: %s", url.toString())
@@ -99,9 +99,9 @@ class BkkInfoClient(
         val request = JsonObjectRequest(
             url.toString(),
             null,
-            Response.Listener { response -> onAlertListResponse(response, listener) },
+            Response.Listener { response -> onAlertListResponse(response, callback) },
             Response.ErrorListener { error ->
-                listener.onError(error)
+                callback.onError(error)
             }
         )
         request.retryPolicy = retryPolicy
@@ -110,15 +110,15 @@ class BkkInfoClient(
     }
 
     override fun fetchAlert(id: String, alertListType: AlertListType,
-                            listener: AlertApiClient.AlertDetailListener) {
+                            callback: AlertApiClient.AlertDetailCallback) {
         val url = buildAlertDetailUrl(id)
 
         Timber.i("API request: %s", url.toString())
 
         val request = JsonObjectRequest(
             url.toString(), null,
-            Response.Listener { response -> onAlertDetailResponse(listener, response) },
-            Response.ErrorListener { error -> listener.onError(error) }
+            Response.Listener { response -> onAlertDetailResponse(callback, response) },
+            Response.ErrorListener { error -> callback.onError(error) }
         )
         request.retryPolicy = retryPolicy
 
@@ -139,28 +139,28 @@ class BkkInfoClient(
             .appendQueryParameter(PARAM_ALERT_DETAIL, alertId)
             .build()
 
-    private fun onAlertListResponse(response: JSONObject, listener: AlertApiClient.AlertListListener) {
+    private fun onAlertListResponse(response: JSONObject, callback: AlertApiClient.AlertListCallback) {
         try {
             val alertsToday = parseTodayAlerts(response).toMutableList()
             val alertsFuture = parseFutureAlerts(response)
             fixFutureAlertsInTodayList(alertsToday, alertsFuture)
 
-            listener.onAlertListResponse(alertsToday, alertsFuture)
+            callback.onAlertListResponse(alertsToday, alertsFuture)
         } catch (ex: Exception) {
-            listener.onError(ex)
+            callback.onError(ex)
         }
     }
 
     private fun onAlertDetailResponse(
-        listener: AlertApiClient.AlertDetailListener,
-        response: JSONObject
+            callback: AlertApiClient.AlertDetailCallback,
+            response: JSONObject
     ) {
         alertDetailTrace?.stop()
         try {
             val alert = parseAlertDetail(response)
-            listener.onAlertResponse(alert)
+            callback.onAlertResponse(alert)
         } catch (ex: Exception) {
-            listener.onError(ex)
+            callback.onError(ex)
         }
     }
 
