@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Olivér Falvai
+ * Copyright 2019 Olivér Falvai
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,21 @@
  * limitations under the License.
  */
 
-package com.ofalvai.bpinfo.api
+package com.ofalvai.bpinfo.ui.alert
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import com.ofalvai.bpinfo.model.Alert
+import com.ofalvai.bpinfo.model.Resource
+import com.ofalvai.bpinfo.ui.alertlist.AlertListType
+import com.ofalvai.bpinfo.ui.alertlist.AlertsRepository
 
-class AlertListMessage(val todayAlerts: List<Alert>,
-                       val futureAlerts: List<Alert>)
+class AlertDetailViewModel(
+    private val alertsRepository: AlertsRepository
+) : ViewModel() {
+
+    fun reloadAlert(id: String, alertListType: AlertListType): LiveData<Resource<Alert>> {
+        return alertsRepository.fetchAlert(id, alertListType)
+    }
+
+}

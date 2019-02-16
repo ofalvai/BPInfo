@@ -18,18 +18,17 @@ package com.ofalvai.bpinfo.notifications
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.os.Bundle
+import androidx.core.os.bundleOf
 import com.firebase.jobdispatcher.Constraint
 import com.firebase.jobdispatcher.FirebaseJobDispatcher
 import com.firebase.jobdispatcher.GooglePlayDriver
 import com.firebase.jobdispatcher.Lifetime
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.ofalvai.bpinfo.BpInfoApplication
 import com.ofalvai.bpinfo.util.Analytics
 import com.ofalvai.bpinfo.util.LocaleManager
+import org.koin.android.ext.android.inject
 import timber.log.Timber
-import javax.inject.Inject
 
 class AlertMessagingService : FirebaseMessagingService() {
 
@@ -39,16 +38,13 @@ class AlertMessagingService : FirebaseMessagingService() {
         private const val DATA_KEY_TITLE = "title"
     }
 
-    @Inject lateinit var sharedPreferences: SharedPreferences
+    private val  sharedPreferences: SharedPreferences by inject()
+
+    private val analytics: Analytics by inject()
 
     override fun attachBaseContext(base: Context) {
         // Updating locale
         super.attachBaseContext(LocaleManager.setLocale(base))
-    }
-
-    override fun onCreate() {
-        super.onCreate()
-        BpInfoApplication.injector.inject(this)
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage?) {
@@ -85,7 +81,7 @@ class AlertMessagingService : FirebaseMessagingService() {
 
         val oldToken: String? = getOldToken()
         Timber.i("New Firebase token: $token")
-        Analytics.logDeviceTokenUpdate(this, token ?: "")
+        analytics.logDeviceTokenUpdate(token ?: "")
 
         if (token == null) {
             // It should never happen
@@ -106,10 +102,10 @@ class AlertMessagingService : FirebaseMessagingService() {
     }
 
     private fun scheduleTokenUpload(oldToken: String, newToken: String) {
-        val extras = Bundle().apply {
-            putString(TokenUploadJobService.KEY_NEW_TOKEN, newToken)
-            putString(TokenUploadJobService.KEY_OLD_TOKEN, oldToken)
-        }
+        val extras = bundleOf(
+            TokenUploadJobService.KEY_NEW_TOKEN to newToken,
+            TokenUploadJobService.KEY_OLD_TOKEN to oldToken
+        )
 
         val jobDispatcher = FirebaseJobDispatcher(GooglePlayDriver(this))
         val job = jobDispatcher.newJobBuilder()

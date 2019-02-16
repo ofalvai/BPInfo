@@ -21,13 +21,14 @@ package com.ofalvai.bpinfo.util;
 
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
-import android.support.test.espresso.UiController;
-import android.support.test.espresso.ViewAction;
 import android.view.View;
 
 import org.hamcrest.Matcher;
 
-import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
+import androidx.test.espresso.UiController;
+import androidx.test.espresso.ViewAction;
+
+import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 
 /**
  * An Espresso ViewAction that changes the orientation of the screen

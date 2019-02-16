@@ -20,8 +20,9 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.support.v4.app.NotificationCompat
-import android.support.v4.content.ContextCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
+import androidx.core.content.getSystemService
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.ui.alertlist.AlertListActivity
 import java.util.*
@@ -57,9 +58,9 @@ object NotificationMaker {
             .setWhen(Date().time)
 
         val notificationManager =
-            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            context.getSystemService<NotificationManager>()
         val notificationId = parseAlertNumericalId(id)
-        notificationManager.notify(notificationId, notificationBuilder.build())
+        notificationManager?.notify(notificationId, notificationBuilder.build())
     }
 
     private fun parseAlertNumericalId(id: String): Int {

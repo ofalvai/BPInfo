@@ -21,17 +21,20 @@ import android.app.usage.UsageStatsManager
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.app.NotificationManagerCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.getSystemService
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.ofalvai.bpinfo.model.Alert
 import com.ofalvai.bpinfo.model.RouteType
 
-object Analytics {
+class Analytics(private val context: Context) {
 
-    const val DATA_SOURCE_BKKINFO = "bkkinfo"
-    const val DATA_SOURCE_FUTAR = "futar"
+    companion object {
+        const val DATA_SOURCE_BKKINFO = "bkkinfo"
+        const val DATA_SOURCE_FUTAR = "futar"
+    }
 
-    fun setDataSource(context: Context, dataSource: String) {
+    fun setDataSource(dataSource: String) {
         FirebaseAnalytics.getInstance(context)
             .setUserProperty("data_source", dataSource)
     }
@@ -40,29 +43,27 @@ object Analytics {
      * Checks if notifications are enabled or disabled for the app, and sets the result as a
      * user property.
      */
-    fun setSystemNotificationState(context: Context) {
+    fun setSystemNotificationState() {
         val enabled = NotificationManagerCompat.from(context).areNotificationsEnabled()
         FirebaseAnalytics.getInstance(context)
             .setUserProperty("notifications_enabled", enabled.toString())
     }
 
-    fun setRestrictions(context: Context) {
+    fun setRestrictions() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) return
 
-        val activityManager = context
-            .getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        val activityManager = context.getSystemService<ActivityManager>()
 
-        val isBackgroundRestricted: String = activityManager.isBackgroundRestricted.toString()
+        val isBackgroundRestricted: String = activityManager?.isBackgroundRestricted.toString()
         FirebaseAnalytics.getInstance(context)
             .setUserProperty("background_restricted", isBackgroundRestricted)
 
-        val usageStatsManager = context
-            .getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
+        val usageStatsManager = context.getSystemService<UsageStatsManager>()
         FirebaseAnalytics.getInstance(context)
-            .setUserProperty("app_standby_bucket", usageStatsManager.appStandbyBucket.toString())
+            .setUserProperty("app_standby_bucket", usageStatsManager?.appStandbyBucket.toString())
     }
 
-    fun logAlertContentView(context: Context, alert: Alert?) {
+    fun logAlertContentView(alert: Alert?) {
         alert?.let {
             val bundle = Bundle().apply {
                 putString(FirebaseAnalytics.Param.ITEM_ID, alert.id)
@@ -73,7 +74,7 @@ object Analytics {
         }
     }
 
-    fun logAlertUrlClick(context: Context, alert: Alert?) {
+    fun logAlertUrlClick(alert: Alert?) {
         alert?.let {
             val bundle = Bundle().apply {
                 putString(FirebaseAnalytics.Param.ITEM_ID, alert.id)
@@ -82,68 +83,68 @@ object Analytics {
         }
     }
 
-    fun logLanguageChange(context: Context, newValue: String) {
+    fun logLanguageChange(newValue: String) {
         val bundle = Bundle()
         bundle.putString("settings_new_language", newValue)
         FirebaseAnalytics.getInstance(context).logEvent("settings_changed_language", bundle)
     }
 
-    fun logDebugMode(context: Context, newState: String) {
+    fun logDebugMode(newState: String) {
         val bundle = Bundle()
         bundle.putString("settings_new_debug_state", newState)
         FirebaseAnalytics.getInstance(context).logEvent("settings_changed_debug_mode", bundle)
     }
 
-    fun logManualRefresh(context: Context) {
+    fun logManualRefresh() {
         FirebaseAnalytics.getInstance(context).logEvent("alert_list_manual_refresh", null)
     }
 
-    fun logFilterDialogOpened(context: Context) {
+    fun logFilterDialogOpened() {
         FirebaseAnalytics.getInstance(context).logEvent("alert_filter_open", null)
     }
 
-    fun logFilterApplied(context: Context, routeTypes: Set<RouteType>) {
+    fun logFilterApplied(routeTypes: Set<RouteType>) {
         val bundle = Bundle()
         bundle.putString("alert_filters", routeTypes.toString())
         FirebaseAnalytics.getInstance(context).logEvent("alert_filter_apply", bundle)
     }
 
-    fun logNoticeDialogView(context: Context) {
+    fun logNoticeDialogView() {
         FirebaseAnalytics.getInstance(context).logEvent("notice_dialog_view", null)
     }
 
-    fun logDataSourceChange(context: Context) {
+    fun logDataSourceChange() {
         val bundle = Bundle()
         FirebaseAnalytics.getInstance(context).logEvent("settings_data_source_changed", bundle)
     }
 
-    fun logNotificationSubscribe(context: Context, routeId: String) {
+    fun logNotificationSubscribe(routeId: String) {
         val bundle = Bundle()
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, routeId)
         FirebaseAnalytics.getInstance(context).logEvent("notif_subscribe_route", bundle)
     }
 
-    fun logNotificationUnsubscribe(context: Context, routeId: String) {
+    fun logNotificationUnsubscribe(routeId: String) {
         val bundle = Bundle()
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, routeId)
         FirebaseAnalytics.getInstance(context).logEvent("notif_unsubscribe_route", bundle)
     }
 
-    fun logNotificationOpen(context: Context, alertId: String) {
+    fun logNotificationOpen(alertId: String) {
         val bundle = Bundle()
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, alertId)
         FirebaseAnalytics.getInstance(context).logEvent("notif_open", bundle)
     }
 
-    fun logNotificationChannelsOpened(context: Context) {
+    fun logNotificationChannelsOpened() {
         FirebaseAnalytics.getInstance(context).logEvent("notif_channels_opened", null)
     }
 
-    fun logNotificationFromSettingsOpened(context: Context) {
+    fun logNotificationFromSettingsOpened() {
         FirebaseAnalytics.getInstance(context).logEvent("notif_from_settings_opened", null)
     }
 
-    fun logDeviceTokenUpdate(context: Context, newToken: String) {
+    fun logDeviceTokenUpdate(newToken: String) {
         val bundle = Bundle()
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, newToken)
         FirebaseAnalytics.getInstance(context).logEvent("notif_token_update", bundle)

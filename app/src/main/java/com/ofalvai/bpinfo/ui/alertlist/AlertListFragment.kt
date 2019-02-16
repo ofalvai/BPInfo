@@ -17,22 +17,23 @@
 package com.ofalvai.bpinfo.ui.alertlist
 
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
-import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.util.ListUpdateCallback
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
-import android.text.Html
 import android.view.*
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.text.HtmlCompat
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.android.volley.VolleyError
+import com.google.android.material.snackbar.Snackbar
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.model.Alert
+import com.ofalvai.bpinfo.model.Resource
 import com.ofalvai.bpinfo.model.RouteType
+import com.ofalvai.bpinfo.model.Status
 import com.ofalvai.bpinfo.ui.alert.AlertDetailFragment
 import com.ofalvai.bpinfo.ui.alertlist.adapter.AlertAdapter
 import com.ofalvai.bpinfo.ui.alertlist.dialog.AlertFilterFragment
@@ -40,15 +41,15 @@ import com.ofalvai.bpinfo.ui.alertlist.dialog.NoticeFragment
 import com.ofalvai.bpinfo.ui.notifications.NotificationsActivity
 import com.ofalvai.bpinfo.ui.settings.SettingsActivity
 import com.ofalvai.bpinfo.util.*
-import kotterknife.bindView
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import timber.log.Timber
-import java.util.*
 
-class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragment.AlertFilterListener {
+class AlertListFragment : Fragment(), AlertFilterFragment.AlertFilterListener {
 
     companion object {
-
-        const val KEY_ACTIVE_FILTER = "active_filter"
 
         const val KEY_ALERT_LIST_TYPE = "alert_list_type"
 
@@ -64,9 +65,13 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
         }
     }
 
-    private lateinit var presenter: AlertListContract.Presenter
+    private val viewModel by viewModel<AlertListViewModel>{ parametersOf(alertListType) }
 
-    private lateinit var alertAdapter: AlertAdapter
+    private val parentViewModel by sharedViewModel<AlertsViewModel>()
+
+    private val analytics: Analytics by inject()
+
+    private val alertAdapter = AlertAdapter(this)
 
     private lateinit var alertListType: AlertListType
 
@@ -82,18 +87,8 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        var restoredFilter: MutableSet<RouteType>? = null
-
         if (savedInstanceState != null) {
             alertListType = savedInstanceState.getSerializable(KEY_ALERT_LIST_TYPE) as AlertListType
-            restoredFilter = savedInstanceState.getSerializable(KEY_ACTIVE_FILTER) as MutableSet<RouteType>
-        }
-
-        presenter = AlertListPresenter(alertListType)
-        presenter.attachView(this)
-
-        restoredFilter?.let {
-            presenter.setFilter(restoredFilter)
         }
     }
 
@@ -110,7 +105,6 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
             // Only attach to the filter fragment if it filters our type of list
             if (filterFragment != null && alertListType == filterFragment.alertListType) {
                 filterFragment.filterListener = this
-                filterFragment.selectedRouteTypes = presenter.getFilter()
             }
         }
 
@@ -124,21 +118,42 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
 
         refreshLayout.setOnRefreshListener {
             initRefresh()
-            Analytics.logManualRefresh(requireContext())
+            analytics.logManualRefresh()
         }
 
-        initRefresh()
         updateFilterWarning()
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        observe(viewModel.alerts, this::displayAlerts)
+
+        observe(viewModel.alertError) {
+            when (it) {
+                is AlertsRepository.Error.NetworkError -> displayNetworkError(it.volleyError)
+                AlertsRepository.Error.DataError -> displayDataError()
+                AlertsRepository.Error.GeneralError -> displayGeneralError()
+            }
+        }
+
+        observe(viewModel.status) {
+            when (it) {
+                Status.Loading -> setUpdating(true)
+                else -> setUpdating(false)
+            }
+        }
+
+        observe(viewModel.noConnectionWarning) { displayNoNetworkWarning() }
+
+        if (alertListType == AlertListType.ALERTS_TODAY) {
+            observe(parentViewModel.notice, this::displayNotice)
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-
         outState.putSerializable(KEY_ALERT_LIST_TYPE, alertListType)
-
-        // Casting to HashSet, because Set is not serializable :(
-        val filter = presenter.getFilter() as HashSet<RouteType>?
-        outState.putSerializable(KEY_ACTIVE_FILTER, filter)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater) {
@@ -157,56 +172,51 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
     override fun onStart() {
         super.onStart()
 
-        val updating = presenter.updateIfNeeded()
-        if (updating && requireActivity().hasNetworkConnection()) {
-            setUpdating(true)
-        }
-
         if (activity is AlertListActivity && alertListType == AlertListType.ALERTS_TODAY) {
             pendingNavigationAlertId = (activity!! as AlertListActivity).pendingNavigationAlertId
         }
     }
 
-    override fun onDestroy() {
-        presenter.detachView()
-        super.onDestroy()
-    }
-
-    /**
-     * Updates the Toolbar's subtitle to the number of current items in the RecyclerView's Adapter
-     */
-    override fun updateSubtitle() {
-        // Update subtitle only if the fragment is attached and visible to the user (not preloaded
-        // by ViewPager)
-        if (isAdded) {
-            val count = alertAdapter.itemCount
-            val subtitle = resources.getQuantityString(R.plurals.actionbar_subtitle_alert_count, count, count)
-            val activity = activity as AppCompatActivity
-            activity.supportActionBar?.let {
-                it.subtitle = subtitle
-            }
-        }
+    fun updateSubtitle() {
+        updateSubtitle(alertAdapter.itemCount)
     }
 
     override fun onFilterChanged(selectedTypes: MutableSet<RouteType>) {
-        presenter.setFilter(selectedTypes)
-        presenter.getAlertList()
+        viewModel.activeFilter = selectedTypes
 
         updateFilterWarning()
     }
 
+    // TODO
     override fun onFilterDismissed() {}
 
-    override fun displayAlerts(alerts: List<Alert>) {
+    fun launchAlertDetail(alert: Alert) {
+        displayAlertDetail(alert)
+
+        val alertLiveData = viewModel.fetchAlert(alert.id)
+        observe(alertLiveData) { resource ->
+            when (resource) {
+                is Resource.Success -> updateAlertDetail(resource.value)
+                is Resource.Error -> displayAlertDetailError()
+                // is Resource.Loading -> AlertDetailFragment handles its loading state
+            }
+        }
+    }
+
+    private fun displayAlerts(alerts: List<Alert>) {
         // It's possible that the network response callback thread executes this faster than
         // the UI thread attaching the fragment to the activity. In that case getResources() or
         // getString() would throw an exception.
         if (isAdded) {
             setErrorView(false, null)
 
-            alertAdapter.updateAlertData(alerts, AlertListUpdateCallback())
+            alertAdapter.submitList(alerts)
 
-            setUpdating(false)
+            // Only update the toolbar if this fragment is currently selected in the ViewPager
+            if (userVisibleHint) {
+                updateSubtitle(alerts.size)
+            }
+            alertRecyclerView.smoothScrollToPosition(0)
 
             pendingNavigationAlertId?.let { id ->
                 val alert: Alert? = alerts.find { it.id == id }
@@ -223,7 +233,7 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
         }
     }
 
-    override fun displayNetworkError(error: VolleyError) {
+    private fun displayNetworkError(error: VolleyError) {
         // It's possible that the network response callback thread executes this faster than
         // the UI thread attaching the fragment to the activity. In that case getResources() would
         // throw an exception.
@@ -233,19 +243,19 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
         }
     }
 
-    override fun displayDataError() {
+    private fun displayDataError() {
         if (isAdded) {
             setErrorView(true, getString(R.string.error_list_display))
         }
     }
 
-    override fun displayGeneralError() {
+    private fun displayGeneralError() {
         if (isAdded) {
             setErrorView(true, getString(R.string.error_list_display))
         }
     }
 
-    override fun displayNoNetworkWarning() {
+    private fun displayNoNetworkWarning() {
         if (isAdded) {
             setUpdating(false)
 
@@ -255,37 +265,41 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
         }
     }
 
-    override fun displayNotice(noticeText: String) {
-        noticeView.apply {
-            visibility = View.VISIBLE
-            text = Html.fromHtml(noticeText)
-            setOnClickListener {
-                val fragment = NoticeFragment.newInstance(noticeText)
-                val transaction = requireActivity().supportFragmentManager
-                        .beginTransaction()
-                fragment.show(transaction, NOTICE_DIALOG_TAG)
+    private fun displayNotice(noticeText: String?) {
+        if (noticeText == null) {
+            noticeView.hide()
+        } else {
+            noticeView.apply {
+                show()
+                text = HtmlCompat.fromHtml(noticeText, HtmlCompat.FROM_HTML_MODE_COMPACT)
+                setOnClickListener {
+                    val fragment = NoticeFragment.newInstance(noticeText)
+                    val transaction = requireActivity().supportFragmentManager
+                            .beginTransaction()
+                    fragment.show(transaction, NOTICE_DIALOG_TAG)
 
-                Analytics.logNoticeDialogView(context)
+                    analytics.logNoticeDialogView()
+                }
             }
         }
     }
 
-    override fun removeNotice() {
-        noticeView.visibility = View.GONE
-    }
-
-    override fun launchAlertDetail(alert: Alert) {
-        displayAlertDetail(alert)
-
-        presenter.fetchAlert(alert.id)
-    }
-
-    override fun displayAlertDetail(alert: Alert) {
-        val alertDetailFragment = AlertDetailFragment.newInstance(alert, presenter)
+    /**
+     * Displays the alert detail view.
+     * If the alert object contains all required information, there's no need to call
+     * updateAlertDetail() later, otherwise Alert.partial must be set to true.
+     * @param alert data from a list item
+     */
+    private fun displayAlertDetail(alert: Alert) {
+        val alertDetailFragment = AlertDetailFragment.newInstance(alert, alertListType)
         alertDetailFragment.show(requireFragmentManager(), AlertDetailFragment.FRAGMENT_TAG)
     }
 
-    override fun updateAlertDetail(alert: Alert) {
+    /**
+     * Updates the alert detail view with the full alert data
+     * @param alert data coming from the alert detail API call
+     */
+    private fun updateAlertDetail(alert: Alert) {
         val manager = requireFragmentManager()
         val fragment = manager.findFragmentByTag(AlertDetailFragment.FRAGMENT_TAG) as AlertDetailFragment?
 
@@ -294,7 +308,7 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
         fragment?.updateAlert(alert)
     }
 
-    override fun displayAlertDetailError() {
+    private fun displayAlertDetailError() {
         val manager = requireFragmentManager()
         val fragment = manager.findFragmentByTag(AlertDetailFragment.FRAGMENT_TAG) as AlertDetailFragment?
 
@@ -303,10 +317,9 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
         fragment?.onAlertUpdateFailed()
     }
 
-    override fun getAlertListType() = alertListType
+    fun getAlertListType() = alertListType // TODO: pass the private property to the Adapter (then pass to ViewHolder)
 
     private fun setupRecyclerView() {
-        alertAdapter = AlertAdapter(ArrayList(), requireContext(), this)
         alertRecyclerView.adapter = alertAdapter
 
         val layoutManager = LinearLayoutManager(activity)
@@ -319,12 +332,9 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
     }
 
     private fun initRefresh() {
-        setUpdating(true)
-
-        presenter.fetchAlertList()
-        presenter.fetchNotice()
-
-        presenter.setLastUpdate()
+        // TODO: move SwipeRefreshLayout from Fragment to Activity
+        viewModel.refresh()
+        parentViewModel.fetchNotices()
     }
 
     private fun setUpdating(updating: Boolean) {
@@ -332,13 +342,13 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
     }
 
     private fun displayFilterDialog() {
-        val initialFilter = presenter.getFilter() ?: mutableSetOf()
-
-        val filterFragment = AlertFilterFragment.newInstance(this, initialFilter, alertListType)
+        val filterFragment = AlertFilterFragment.newInstance(
+            this, viewModel.activeFilter, alertListType
+        )
         val transaction = requireFragmentManager().beginTransaction()
         filterFragment.show(transaction, FILTER_DIALOG_TAG)
 
-        Analytics.logFilterDialogOpened(requireContext())
+        analytics.logFilterDialogOpened()
     }
 
     /**
@@ -349,8 +359,6 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
      */
     private fun setErrorView(state: Boolean, errorMessage: String?) {
         if (state) {
-            setUpdating(false)
-
             alertRecyclerView.visibility = View.GONE
 
             val errorMessageView = errorLayout.findViewById<TextView>(R.id.error_message)
@@ -374,54 +382,26 @@ class AlertListFragment : Fragment(), AlertListContract.View, AlertFilterFragmen
      * Hides the bar if nothing is selected as filter.
      */
     private fun updateFilterWarning() {
-        // Might be null, because it gets called by onCreate() too
-        val selectedTypes: MutableSet<RouteType> = presenter.getFilter() ?: return
-
-        if (selectedTypes.isEmpty()) {
+        if (viewModel.activeFilter.isEmpty()) {
             filterWarningView.visibility = View.GONE
         } else {
-            val typeList = selectedTypes.joinToString(separator = ", ") { it.getName(requireContext()) }
+            val typeList = viewModel.activeFilter.joinToString(separator = ", ") {
+                it.getName(requireContext())
+            }
             filterWarningView.text = getString(R.string.filter_message, typeList)
             filterWarningView.visibility = View.VISIBLE
         }
     }
 
-    /**
-     * Scrolls to top and calls updateSubtitle() after the Alert list changed visually.
-     */
-    private inner class AlertListUpdateCallback : ListUpdateCallback {
-        override fun onInserted(position: Int, count: Int) {
-            // Only update the toolbar if this fragment is currently selected in the ViewPager
-            if (userVisibleHint) {
-                updateSubtitle()
+    private fun updateSubtitle(count: Int) {
+        // Update subtitle only if the fragment is attached and visible to the user (not preloaded
+        // by ViewPager)
+        if (isAdded) {
+            val subtitle = resources.getQuantityString(R.plurals.actionbar_subtitle_alert_count, count, count)
+            val activity = activity as AppCompatActivity
+            activity.supportActionBar?.let {
+                it.subtitle = subtitle
             }
-            alertRecyclerView.smoothScrollToPosition(0)
-        }
-
-        override fun onRemoved(position: Int, count: Int) {
-            if (userVisibleHint) {
-                updateSubtitle()
-            }
-
-            // For some reason, the usual RecyclerView.smoothScrollToPosition(0) doesn't work here,
-            // the list scrolls to the bottom, instead of the top.
-            if (alertRecyclerView.layoutManager is LinearLayoutManager) {
-                (alertRecyclerView.layoutManager as LinearLayoutManager).scrollToPosition(0)
-            }
-        }
-
-        override fun onMoved(fromPosition: Int, toPosition: Int) {
-            if (userVisibleHint) {
-                updateSubtitle()
-            }
-            alertRecyclerView.smoothScrollToPosition(0)
-        }
-
-        override fun onChanged(position: Int, count: Int, payload: Any?) {
-            if (userVisibleHint) {
-                updateSubtitle()
-            }
-            alertRecyclerView.smoothScrollToPosition(0)
         }
     }
 }

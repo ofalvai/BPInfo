@@ -16,38 +16,77 @@
 
 package com.ofalvai.bpinfo.ui.notifications
 
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.crashlytics.android.Crashlytics
-import com.ofalvai.bpinfo.BpInfoApplication
 import com.ofalvai.bpinfo.api.bkkinfo.RouteListClient
 import com.ofalvai.bpinfo.api.subscription.SubscriptionClient
 import com.ofalvai.bpinfo.model.Route
 import com.ofalvai.bpinfo.model.RouteSubscription
-import com.ofalvai.bpinfo.ui.base.BasePresenter
+import com.ofalvai.bpinfo.util.SingleLiveEvent
 import timber.log.Timber
-import javax.inject.Inject
 
-class NotificationsPresenter : BasePresenter<NotificationsContract.View>(),
-        NotificationsContract.Presenter, RouteListClient.RouteListListener,
+class NotificationsViewModel(
+    private val routeListClient: RouteListClient,
+    private val subscriptionClient: SubscriptionClient
+) : ViewModel(), RouteListClient.RouteListListener,
     SubscriptionClient.Callback {
 
-    @Inject lateinit var routeListClient: RouteListClient
-    @Inject lateinit var subscriptionClient: SubscriptionClient
+    /**
+     * List of all routes, before grouped by route type
+     */
+    val routeList = MutableLiveData<List<Route>>()
 
-    private var routeList: List<Route>? = null
+    val routeListError = MutableLiveData<Boolean>()
+
+    val subscriptions = MutableLiveData<List<Route>>()
+
+    /**
+     * Progress of any subscription action (get list, add, remove)
+     */
+    val subscriptionProgress = MutableLiveData<Boolean>()
+
+    val subscriptionError = SingleLiveEvent<Void>()
+
+    val newSubscribedRoute = MutableLiveData<Route>()
+
+    val removedSubscribedRoute = MutableLiveData<Route>()
+
     private var subscribedRouteIDList: MutableList<String>? = null
 
     init {
-        BpInfoApplication.injector.inject(this)
+        fetchRouteList()
+        fetchSubscriptions()
     }
 
-    override fun fetchRouteList() {
+    fun fetchRouteList() {
         routeListClient.fetchRouteList(this)
     }
 
+    fun fetchSubscriptions() {
+        subscriptionProgress.value = true
+        subscriptionClient.getSubscriptions(this)
+    }
+
+    fun subscribeTo(routeID: String) {
+        subscribedRouteIDList?.let {
+            if (it.contains(routeID)) {
+                return
+            }
+        }
+
+        subscriptionProgress.value = true
+        subscriptionClient.postSubscription(routeID, this)
+    }
+
+    fun removeSubscription(routeID: String) {
+        subscriptionProgress.value = true
+        subscriptionClient.deleteSubscription(routeID, this)
+    }
+
     override fun onRouteListResponse(routeList: List<Route>) {
-        this.routeList = routeList
-        view?.displayRouteList(routeList)
-        view?.showRouteListError(false)
+        this.routeList.value = routeList
+        routeListError.value = false
 
         subscribedRouteIDList?.let {
             displaySubscribedRoutes(it, routeList)
@@ -55,39 +94,19 @@ class NotificationsPresenter : BasePresenter<NotificationsContract.View>(),
     }
 
     override fun onRouteListError(ex: Exception) {
-        view?.showRouteListError(true)
         Timber.e(ex)
-    }
-
-    override fun subscribeTo(routeID: String) {
-        subscribedRouteIDList?.let {
-            if (it.contains(routeID)) {
-                return
-            }
-        }
-
-        view?.showProgress(true)
-        subscriptionClient.postSubscription(routeID, this)
-    }
-
-    override fun removeSubscription(routeID: String) {
-        view?.showProgress(true)
-        subscriptionClient.deleteSubscription(routeID, this)
-    }
-
-    override fun fetchSubscriptions() {
-        view?.showProgress(true)
-        subscriptionClient.getSubscriptions(this)
+        routeListError.value = true
     }
 
     override fun onSubscriptionError(error: Throwable) {
+        Timber.e(error)
         Crashlytics.logException(error)
-        view?.showProgress(false)
-        view?.showSubscriptionError()
+        subscriptionProgress.value = false
+        subscriptionError.call()
     }
 
     override fun onPostSubscriptionResponse(subscription: RouteSubscription) {
-        view?.showProgress(false)
+        subscriptionProgress.value = false
 
         subscribedRouteIDList?.let {
             if (it.contains(subscription.routeID)) {
@@ -97,28 +116,28 @@ class NotificationsPresenter : BasePresenter<NotificationsContract.View>(),
 
         subscribedRouteIDList?.add(subscription.routeID)
 
-        val route: Route? = routeList?.find { it.id == subscription.routeID }
+        val route: Route? = routeList.value?.find { it.id == subscription.routeID }
         route?.let {
-            view?.addSubscribedRoute(it)
+            newSubscribedRoute.value = it
         }
     }
 
     override fun onGetSubscriptionResponse(routeIDList: List<String>) {
         subscribedRouteIDList = routeIDList.toMutableList()
 
-        routeList?.let {
+        routeList.value?.let {
             displaySubscribedRoutes(routeIDList, it)
         }
     }
 
     override fun onDeleteSubscriptionResponse(subscription: RouteSubscription) {
-        view?.showProgress(false)
+        subscriptionProgress.value = false
 
         subscribedRouteIDList?.removeAll { it == subscription.routeID }
 
-        val route: Route? = routeList?.find { it.id == subscription.routeID }
+        val route: Route? = routeList.value?.find { it.id == subscription.routeID }
         route?.let {
-            view?.removeSubscribedRoute(it)
+            removedSubscribedRoute.value = it
         }
     }
 
@@ -128,7 +147,7 @@ class NotificationsPresenter : BasePresenter<NotificationsContract.View>(),
      */
     private fun displaySubscribedRoutes(routeIDList: List<String>, allRoutes: List<Route>) {
         val routes: List<Route> = allRoutes.filter { routeIDList.contains(it.id) }
-        view?.displaySubscriptions(routes)
-        view?.showProgress(false)
+        subscriptions.value = routes
+        subscriptionProgress.value = false
     }
 }

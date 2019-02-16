@@ -7,11 +7,13 @@ package com.ofalvai.bpinfo.util;
  */
 
 import android.content.res.Resources;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
+
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 
 public class RecyclerViewMatcher {

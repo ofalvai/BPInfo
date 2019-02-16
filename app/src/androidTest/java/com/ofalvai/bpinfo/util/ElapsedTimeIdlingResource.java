@@ -1,6 +1,6 @@
 package com.ofalvai.bpinfo.util;
 
-import android.support.test.espresso.IdlingResource;
+import androidx.test.espresso.IdlingResource;
 
 /**
  * From: http://stackoverflow.com/a/30157611/745637

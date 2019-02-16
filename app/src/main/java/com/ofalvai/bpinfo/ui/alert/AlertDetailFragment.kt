@@ -20,29 +20,28 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
-import android.app.Dialog
 import android.graphics.Paint
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.support.design.widget.BottomSheetDialog
-import android.support.design.widget.BottomSheetDialogFragment
-import android.support.v4.view.animation.FastOutSlowInInterpolator
-import android.support.v4.widget.ContentLoadingProgressBar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.os.bundleOf
+import androidx.core.widget.ContentLoadingProgressBar
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.model.Alert
+import com.ofalvai.bpinfo.model.Resource
 import com.ofalvai.bpinfo.model.Route
-import com.ofalvai.bpinfo.ui.alertlist.AlertListContract
+import com.ofalvai.bpinfo.ui.alertlist.AlertListType
 import com.ofalvai.bpinfo.util.*
 import com.wefika.flowlayout.FlowLayout
-import kotterknife.bindView
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.sufficientlysecure.htmltextview.HtmlTextView
 
 class AlertDetailFragment : BottomSheetDialogFragment() {
@@ -52,22 +51,30 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
         const val FRAGMENT_TAG = "alert_detail"
 
         private const val ARG_ALERT_OBJECT = "alert_object"
+        private const val ARG_LIST_TYPE = "alert_list_type"
 
         @JvmStatic
-        fun newInstance(alert: Alert,
-                        presenter: AlertListContract.Presenter): AlertDetailFragment {
+        fun newInstance(alert: Alert, alertListType: AlertListType): AlertDetailFragment {
             val fragment = AlertDetailFragment()
-            fragment.listPresenter = presenter
-            val args = Bundle()
-            args.putSerializable(ARG_ALERT_OBJECT, alert)
+            val args = bundleOf(ARG_ALERT_OBJECT to alert, ARG_LIST_TYPE to alertListType)
             fragment.arguments = args
             return fragment
         }
     }
 
-    private var alert: Alert? = null
+    private val viewModel by viewModel<AlertDetailViewModel>()
 
-    private lateinit var listPresenter: AlertListContract.Presenter
+    private var alertWithDetails: Alert? = null
+
+    private lateinit var alertListType: AlertListType
+
+    private val analytics: Analytics by inject()
+
+    /**
+     * List of currently displayed route icons. This list is needed in order to find visually
+     * duplicate route data, and not to display them twice.
+     */
+    private val displayedRoutes = mutableListOf<Route>()
 
     private val titleTextView: TextView by bindView(R.id.alert_detail_title)
 
@@ -87,28 +94,23 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
 
     private val errorButton: Button by bindView(R.id.error_action_button)
 
-    /**
-     * List of currently displayed route icons. This list is needed in order to find visually
-     * duplicate route data, and not to display them twice.
-     */
-    private val displayedRoutes = mutableListOf<Route>()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         if (arguments != null) {
-            alert = arguments?.getSerializable(ARG_ALERT_OBJECT) as Alert
+            alertWithDetails = arguments?.getSerializable(ARG_ALERT_OBJECT) as Alert
+            alertListType = arguments?.getSerializable(ARG_LIST_TYPE) as AlertListType
         }
 
         if (savedInstanceState != null) {
-            alert = savedInstanceState.getSerializable(ARG_ALERT_OBJECT) as Alert
+             alertWithDetails = savedInstanceState.getSerializable(ARG_ALERT_OBJECT) as Alert
         }
 
-        Analytics.logAlertContentView(requireContext(), alert)
+        analytics.logAlertContentView(alertWithDetails)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putSerializable(ARG_ALERT_OBJECT, alert)
+        outState.putSerializable(ARG_ALERT_OBJECT, alertWithDetails)
         super.onSaveInstanceState(outState)
     }
 
@@ -120,33 +122,29 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        displayAlert(alert)
+        displayAlert(alertWithDetails)
 
-        alert?.let {
+        alertWithDetails?.let {
             if (!it.isPartial) {
                 progressBar.hide()
             }
         }
 
-        errorButton.setOnClickListener { _ ->
-            errorLayout.visibility = View.GONE
-            progressBar.show()
-            alert?.let {
-                listPresenter.fetchAlert(it.id)
+        errorButton.setOnClickListener {
+            alertWithDetails?.id?.let {
+                val alertLiveData = viewModel.reloadAlert(it, alertListType)
+                observe(alertLiveData) { resource ->
+                    when (resource) {
+                        is Resource.Success -> updateAlert(resource.value)
+                        is Resource.Loading -> {
+                            errorLayout.visibility = View.GONE
+                            progressBar.show()
+                        }
+                        is Resource.Error -> onAlertUpdateFailed()
+                    }
+                }
             }
         }
-    }
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        // By default, the BottomSheetDialog changes the statusbar's color to black.
-        // Found this solution here: https://code.google.com/p/android/issues/detail?id=202691
-        val dialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
-        if (dialog.window != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                dialog.window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-            }
-        }
-        return dialog
     }
 
     override fun onStart() {
@@ -159,7 +157,7 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
     }
 
     fun updateAlert(alert: Alert) {
-        this.alert = alert
+        this.alertWithDetails = alert
         displayedRoutes.clear()
         routeIconsLayout.removeAllViews()
 
@@ -227,7 +225,7 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
         // There are alerts without affected routes, eg. announcements
         for (route in alert.affectedRoutes) {
             // Some affected routes are visually identical to others in the list, no need
-            // to diplay them again.
+            // to display them again.
             if (!isRouteVisuallyDuplicate(route, displayedRoutes)) {
                 displayedRoutes.add(route)
                 addRouteIcon(requireContext(), routeIconsLayout, route)
@@ -235,7 +233,7 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
         }
 
         alert.description?.let {
-            descriptionTextView.setHtml(alert.description)
+            descriptionTextView.setHtml(it)
         }
 
         if (alert.url == null) {
@@ -245,7 +243,7 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
             urlTextView.setOnClickListener {
                 val url = Uri.parse(alert.url)
                 openCustomTab(requireActivity(), url)
-                Analytics.logAlertUrlClick(requireContext(), alert)
+                analytics.logAlertUrlClick(alert)
             }
         }
     }

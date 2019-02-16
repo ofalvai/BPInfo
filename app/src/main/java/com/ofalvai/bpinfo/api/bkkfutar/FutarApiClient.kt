@@ -28,31 +28,23 @@ import com.crashlytics.android.Crashlytics
 import com.ofalvai.bpinfo.BuildConfig
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.api.AlertApiClient
-import com.ofalvai.bpinfo.api.AlertListErrorMessage
-import com.ofalvai.bpinfo.api.AlertListMessage
-import com.ofalvai.bpinfo.api.AlertRequestParams
 import com.ofalvai.bpinfo.model.Alert
 import com.ofalvai.bpinfo.model.Route
 import com.ofalvai.bpinfo.model.RouteType
 import com.ofalvai.bpinfo.ui.alertlist.AlertListType
-import com.ofalvai.bpinfo.util.apiTimestampToDateTime
-import com.ofalvai.bpinfo.util.isReplacement
-import com.ofalvai.bpinfo.util.toArray
-import com.ofalvai.bpinfo.util.toStringList
-import org.greenrobot.eventbus.EventBus
+import com.ofalvai.bpinfo.util.*
 import org.json.JSONException
 import org.json.JSONObject
 import org.threeten.bp.Instant
 import org.threeten.bp.ZonedDateTime
 import timber.log.Timber
 import java.util.*
-import javax.inject.Inject
 
-class FutarApiClient
-    @Inject constructor(private val requestQueue: RequestQueue,
-                        private val sharedPreferences: SharedPreferences,
-                        private val context: Context
-    ) : AlertApiClient {
+class FutarApiClient(
+    private val requestQueue: RequestQueue,
+    private val sharedPreferences: SharedPreferences,
+    private val context: Context
+) : AlertApiClient {
 
     companion object {
         private const val TAG = "FutarApiClient"
@@ -88,56 +80,42 @@ class FutarApiClient
     private var alertsFuture: List<Alert> = arrayListOf()
 
     /**
-     * This client performs only one alert list API call, because the API is structured in a way
-     * that both current and future data is returned at the same time, sometimes even mixed together.
-     * If multiple alert list requests are called, only the first will perform the request, and
-     * later notify all of its EventBus subscribers.
-     */
-    private var requestInProgress = false
-
-    /**
      * Map of all parsed routes. This is used to set every alert's affected routes by ID.
      */
     private var routes: Map<String, Route> = mutableMapOf()
 
     private var languageCode: String? = null
 
-    override fun fetchAlertList(params: AlertRequestParams) {
-        // If a request is in progress, we don't proceed. The response callback will notify every subscriber
-        if (requestInProgress) return
-
-        languageCode = params.languageCode
+    override fun fetchAlertList(listener: AlertApiClient.AlertListListener) {
+        languageCode = LocaleManager.getCurrentLanguageCode(sharedPreferences)
 
         val uri = buildUri()
 
         Timber.i("API request: %s", uri.toString())
 
         val request = JsonObjectRequest(
-                uri.toString(), null,
-                Response.Listener { response ->
-                    try {
-                        routes = parseRoutes(response)
-                        alertsToday = parseAlerts(response, AlertListType.ALERTS_TODAY)
-                        alertsFuture = parseAlerts(response, AlertListType.ALERTS_FUTURE)
-                        EventBus.getDefault().post(AlertListMessage(alertsToday, alertsFuture))
-                    } catch (ex: Exception) {
-                        EventBus.getDefault().post(AlertListErrorMessage(ex))
-                    } finally {
-                        requestInProgress = false
-                    }
-                },
-                Response.ErrorListener { error ->
-                    EventBus.getDefault().post(AlertListErrorMessage(error))
+            uri.toString(), null,
+            Response.Listener { response ->
+                try {
+                    routes = parseRoutes(response)
+                    alertsToday = parseAlerts(response, AlertListType.ALERTS_TODAY)
+                    alertsFuture = parseAlerts(response, AlertListType.ALERTS_FUTURE)
+                    listener.onAlertListResponse(alertsToday, alertsFuture)
+                } catch (ex: Exception) {
+                    listener.onError(ex)
                 }
+            },
+            Response.ErrorListener { error ->
+                listener.onError(error)
+            }
         )
 
-        requestInProgress = true
         requestQueue.add(request)
     }
 
-    override fun fetchAlert(id: String, listener: AlertApiClient.AlertDetailListener,
-                            params: AlertRequestParams) {
-        if (params.alertListType == AlertListType.ALERTS_TODAY) {
+    override fun fetchAlert(id: String, alertListType: AlertListType,
+                            listener: AlertApiClient.AlertDetailListener) {
+        if (alertListType == AlertListType.ALERTS_TODAY) {
             alertsToday.find { it.id == id }?.let {
                 listener.onAlertResponse(it)
                 return
@@ -156,15 +134,16 @@ class FutarApiClient
 
     private fun buildUri(): Uri {
         val builder = Uri.parse(AlertSearchContract.BASE_URL).buildUpon()
-                .appendEncodedPath(AlertSearchContract.API_ENDPOINT)
-                .appendQueryParameter("key", QUERY_API_KEY)
-                .appendQueryParameter("version", QUERY_API_VERSION)
-                .appendQueryParameter("appVersion", QUERY_APPVERSION)
-                .appendQueryParameter("includeReferences", QUERY_INCLUDEREFERENCES)
+            .appendEncodedPath(AlertSearchContract.API_ENDPOINT)
+            .appendQueryParameter("key", QUERY_API_KEY)
+            .appendQueryParameter("version", QUERY_API_VERSION)
+            .appendQueryParameter("appVersion", QUERY_APPVERSION)
+            .appendQueryParameter("includeReferences", QUERY_INCLUDEREFERENCES)
 
         // In debug mode, all alerts (even past ones) are retrieved
         val isDebugMode = sharedPreferences.getBoolean(
-                context.getString(R.string.pref_key_debug_mode), false)
+            context.getString(R.string.pref_key_debug_mode), false
+        )
 
         if (!isDebugMode) {
             val startTimestamp: String = Instant.now().epochSecond.toString()
@@ -205,9 +184,13 @@ class FutarApiClient
                 // Time ranges in the API response are messed up. We need to filter out alerts that are
                 // before/after the time range we want.
                 val alertStartTime: ZonedDateTime = apiTimestampToDateTime(alert.start)
-                if (alertListType == AlertListType.ALERTS_TODAY && alertStartTime.isBefore(ZonedDateTime.now())) {
+                if (alertListType == AlertListType.ALERTS_TODAY && alertStartTime.isBefore(
+                        ZonedDateTime.now()
+                    )) {
                     alertList.add(alert)
-                } else if (alertListType == AlertListType.ALERTS_FUTURE && alertStartTime.isAfter(ZonedDateTime.now())) {
+                } else if (alertListType == AlertListType.ALERTS_FUTURE && alertStartTime.isAfter(
+                        ZonedDateTime.now()
+                    )) {
                     alertList.add(alert)
                 }
             } catch (ex: JSONException) {
@@ -299,7 +282,11 @@ class FutarApiClient
                     routeMap[route.id] = route
                 }
             } catch (ex: JSONException) {
-                Crashlytics.log(Log.ERROR, TAG, "Route parse: failed at index " + i + ":\n" + routeNode.toString())
+                Crashlytics.log(
+                    Log.ERROR,
+                    TAG,
+                    "Route parse: failed at index " + i + ":\n" + routeNode.toString()
+                )
             }
         }
 

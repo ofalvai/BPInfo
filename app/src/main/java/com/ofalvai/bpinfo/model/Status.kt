@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Olivér Falvai
+ * Copyright 2019 Olivér Falvai
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package com.ofalvai.bpinfo.api
+package com.ofalvai.bpinfo.model
 
-import com.ofalvai.bpinfo.ui.alertlist.AlertListType
-
-class AlertRequestParams(val alertListType: AlertListType,
-                         val languageCode: String)
+enum class Status {
+    Success,
+    Error,
+    Loading
+}

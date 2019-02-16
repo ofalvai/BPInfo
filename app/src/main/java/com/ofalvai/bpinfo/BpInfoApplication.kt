@@ -25,27 +25,24 @@ import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.os.Build
 import android.preference.PreferenceManager
+import androidx.core.content.getSystemService
 import com.jakewharton.threetenabp.AndroidThreeTen
-import com.ofalvai.bpinfo.injection.ApiModule
-import com.ofalvai.bpinfo.injection.AppComponent
-import com.ofalvai.bpinfo.injection.AppModule
-import com.ofalvai.bpinfo.injection.DaggerAppComponent
+import com.ofalvai.bpinfo.injection.allModules
 import com.ofalvai.bpinfo.util.Analytics
 import com.ofalvai.bpinfo.util.LocaleManager
 import com.squareup.leakcanary.LeakCanary
+import org.koin.android.ext.android.inject
+import org.koin.android.ext.android.startKoin
+import org.koin.android.logger.AndroidLogger
+import org.koin.log.EmptyLogger
+import org.koin.standalone.StandAloneContext
 import timber.log.Timber
-import javax.inject.Inject
 
 class BpInfoApplication : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
 
-    companion object {
+    private val sharedPreferences: SharedPreferences by inject()
 
-        @JvmStatic
-        lateinit var injector: AppComponent
-    }
-
-    @Inject
-    lateinit var sharedPreferences: SharedPreferences
+    private val analytics: Analytics by inject()
 
     override fun onCreate() {
         super.onCreate()
@@ -60,8 +57,7 @@ class BpInfoApplication : Application(), SharedPreferences.OnSharedPreferenceCha
         PreferenceManager.getDefaultSharedPreferences(this)
             .registerOnSharedPreferenceChangeListener(this)
 
-        initDagger()
-        injector.inject(this) // Oh the irony...
+        initKoin()
 
         AndroidThreeTen.init(this)
 
@@ -71,8 +67,8 @@ class BpInfoApplication : Application(), SharedPreferences.OnSharedPreferenceCha
 
         overrideSettingsIfNeeded()
 
-        Analytics.setSystemNotificationState(this)
-        Analytics.setRestrictions(this)
+        analytics.setSystemNotificationState()
+        analytics.setRestrictions()
     }
 
     override fun attachBaseContext(base: Context) {
@@ -98,15 +94,14 @@ class BpInfoApplication : Application(), SharedPreferences.OnSharedPreferenceCha
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         val dataSourceKey = getString(R.string.pref_key_data_source)
         if (key == dataSourceKey) {
-            initDagger()
+            StandAloneContext.stopKoin()
+            initKoin()
         }
     }
 
-    private fun initDagger() {
-        injector = DaggerAppComponent.builder()
-            .appModule(AppModule(this))
-            .apiModule(ApiModule()) //depends on selected build flavor (prod/mock)
-            .build()
+    private fun initKoin() {
+        val logger = if (BuildConfig.DEBUG) AndroidLogger() else EmptyLogger()
+        startKoin(this, allModules, logger = logger)
     }
 
     private fun initTimber() {
@@ -120,15 +115,14 @@ class BpInfoApplication : Application(), SharedPreferences.OnSharedPreferenceCha
             return
         }
 
-        val notificationManager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager = getSystemService<NotificationManager>()
 
         val id = getString(R.string.notif_channel_alerts_id)
         val name = getString(R.string.notif_channel_alerts_title)
         val description = getString(R.string.notif_channel_alerts_desc)
         val channel = NotificationChannel(id, name, NotificationManager.IMPORTANCE_DEFAULT)
         channel.description = description
-        notificationManager.createNotificationChannel(channel)
+        notificationManager?.createNotificationChannel(channel)
     }
 
     @SuppressLint("ApplySharedPref")

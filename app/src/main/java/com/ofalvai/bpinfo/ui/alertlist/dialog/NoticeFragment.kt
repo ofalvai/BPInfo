@@ -18,12 +18,11 @@ package com.ofalvai.bpinfo.ui.alertlist.dialog
 
 import android.app.Dialog
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
-import android.support.v7.app.AlertDialog
 import android.text.Html
+import androidx.appcompat.app.AlertDialog
 import com.ofalvai.bpinfo.R
 
-class NoticeFragment : DialogFragment() {
+class NoticeFragment : androidx.fragment.app.DialogFragment() {
 
     companion object {
 

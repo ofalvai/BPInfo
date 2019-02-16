@@ -24,19 +24,18 @@ import android.os.Build
 import android.os.Bundle
 import android.preference.*
 import android.provider.Settings
-import android.support.v4.app.NavUtils
-import android.support.v7.app.AlertDialog
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.core.app.NavUtils
 import com.jakewharton.processphoenix.ProcessPhoenix
-import com.ofalvai.bpinfo.BpInfoApplication
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.ui.alertlist.AlertListActivity
 import com.ofalvai.bpinfo.util.Analytics
 import com.ofalvai.bpinfo.util.AppCompatPreferenceActivity
 import com.ofalvai.bpinfo.util.LocaleManager
-import javax.inject.Inject
+import org.koin.android.ext.android.inject
 
 /**
  * A [PreferenceActivity] that presents a set of application settings. On
@@ -52,8 +51,9 @@ import javax.inject.Inject
 class SettingsActivity : AppCompatPreferenceActivity(),
     SharedPreferences.OnSharedPreferenceChangeListener {
 
-    @Inject
-    lateinit var mSharedPreferences: SharedPreferences
+    private val mSharedPreferences: SharedPreferences by inject()
+
+    private val analytics: Analytics by inject()
 
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(LocaleManager.setLocale(newBase))
@@ -62,7 +62,9 @@ class SettingsActivity : AppCompatPreferenceActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        BpInfoApplication.injector.inject(this)
+        // Replace splash window background with real
+        // Remove this once SettingsActivity extends BaseActivity
+        window.setBackgroundDrawableResource(R.color.background)
 
         setupActionBar()
 
@@ -89,7 +91,7 @@ class SettingsActivity : AppCompatPreferenceActivity(),
         when (key) {
             getString(R.string.pref_key_language) -> {
                 val languageValue = sharedPreferences.getString(key, "default")
-                Analytics.logLanguageChange(this, languageValue)
+                analytics.logLanguageChange(languageValue)
                 showLanguageRestartDialog()
             }
             getString(R.string.pref_key_debug_mode) -> {
@@ -97,12 +99,12 @@ class SettingsActivity : AppCompatPreferenceActivity(),
                 val text =
                     if (state) getString(R.string.debug_mode_on) else getString(R.string.debog_mode_off)
                 Toast.makeText(this, text, Toast.LENGTH_LONG).show()
-                Analytics.logDebugMode(this, state.toString())
+                analytics.logDebugMode(state.toString())
             }
             getString(R.string.pref_key_data_source) -> {
                 Toast.makeText(this, R.string.data_source_changed_refreshed, Toast.LENGTH_SHORT)
                     .show()
-                Analytics.logDataSourceChange(this)
+                analytics.logDataSourceChange()
 
                 // Recreating AlertListActivity. This relies on BpInfoApplication's preference listener,
                 // which can rebuild the Dagger dependency graph so that the new Activity (and its
@@ -196,14 +198,14 @@ class SettingsActivity : AppCompatPreferenceActivity(),
         } else {
             pref.setOnPreferenceClickListener {
                 launchSystemNotificationPrefs()
-                Analytics.logNotificationChannelsOpened(this)
+                analytics.logNotificationChannelsOpened()
                 true
             }
         }
 
         findPreference(getString(R.string.pref_key_notifications_routes))
             .setOnPreferenceClickListener {
-                Analytics.logNotificationFromSettingsOpened(this)
+                analytics.logNotificationFromSettingsOpened()
                 false // Launch intent is defined in XML
             }
     }

@@ -17,21 +17,16 @@
 package com.ofalvai.bpinfo.ui.notifications.adapter
 
 import android.content.Context
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentPagerAdapter
-import android.util.SparseArray
-import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentPagerAdapter
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.model.RouteType
-import com.ofalvai.bpinfo.ui.notifications.routelist.RouteListContract
 import com.ofalvai.bpinfo.ui.notifications.routelist.RouteListFragment
 
 class RouteListPagerAdapter(fm: FragmentManager,
                             private val context: Context
 ) : FragmentPagerAdapter(fm) {
-
-    private val registeredFragments = SparseArray<Fragment>()
 
     companion object {
         private const val FRAGMENT_COUNT = 7
@@ -41,19 +36,6 @@ class RouteListPagerAdapter(fm: FragmentManager,
          * destroying them during swiping
          */
         const val OFFSCREEN_PAGE_LIMIT = 99
-    }
-
-    fun getView(routeType: RouteType): RouteListContract.View? {
-        return when(routeType) {
-            RouteType.BUS -> registeredFragments[0]
-            RouteType.SUBWAY -> registeredFragments[1]
-            RouteType.TRAM -> registeredFragments[2]
-            RouteType.TROLLEYBUS -> registeredFragments[3]
-            RouteType.RAIL -> registeredFragments[4]
-            RouteType.FERRY -> registeredFragments[5]
-            RouteType._OTHER_ -> registeredFragments[6]
-            else -> null
-        } as? RouteListContract.View
     }
 
     override fun getItem(position: Int): Fragment {
@@ -86,16 +68,5 @@ class RouteListPagerAdapter(fm: FragmentManager,
             6 -> R.string.route_other
             else -> R.string.route_other
         })
-    }
-
-    override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        val fragment = super.instantiateItem(container, position) as Fragment
-        registeredFragments.put(position, fragment)
-        return fragment
-    }
-
-    override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
-        registeredFragments.remove(position)
-        super.destroyItem(container, position, `object`)
     }
 }

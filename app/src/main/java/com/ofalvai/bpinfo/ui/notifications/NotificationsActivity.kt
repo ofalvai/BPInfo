@@ -22,14 +22,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.LightingColorFilter
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.design.widget.TabLayout
-import android.support.v4.app.NavUtils
-import android.support.v4.content.ContextCompat
-import android.support.v4.view.ViewPager
-import android.support.v4.widget.ContentLoadingProgressBar
-import android.support.v7.app.AlertDialog
-import android.support.v7.view.ContextThemeWrapper
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -37,26 +29,34 @@ import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.view.ContextThemeWrapper
+import androidx.core.app.NavUtils
+import androidx.core.content.ContextCompat
+import androidx.core.widget.ContentLoadingProgressBar
+import androidx.viewpager.widget.ViewPager
 import com.google.android.gms.common.GoogleApiAvailability
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.tabs.TabLayout
+import com.google.firebase.iid.FirebaseInstanceId
 import com.ofalvai.bpinfo.Config
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.model.Route
-import com.ofalvai.bpinfo.model.RouteType
 import com.ofalvai.bpinfo.notifications.NotificationMaker
 import com.ofalvai.bpinfo.ui.base.BaseActivity
 import com.ofalvai.bpinfo.ui.notifications.adapter.RouteListPagerAdapter
-import com.ofalvai.bpinfo.ui.notifications.routelist.RouteListContract
 import com.ofalvai.bpinfo.ui.settings.SettingsActivity
-import com.ofalvai.bpinfo.util.Analytics
-import com.ofalvai.bpinfo.util.getContentDescription
-import com.ofalvai.bpinfo.util.hide
-import com.ofalvai.bpinfo.util.show
+import com.ofalvai.bpinfo.util.*
 import com.wefika.flowlayout.FlowLayout
-import kotterknife.bindView
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
 
-class NotificationsActivity : BaseActivity(), NotificationsContract.View {
+class NotificationsActivity : BaseActivity() {
 
-    private lateinit var presenter: NotificationsContract.Presenter
+    private val viewModel by viewModel<NotificationsViewModel>()
+
+    private val analytics: Analytics by inject()
 
     private val tabLayout: TabLayout by bindView(R.id.notifications__tabs)
     private val viewPager: ViewPager by bindView(R.id.notifications__viewpager)
@@ -84,15 +84,25 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
             setTitle(R.string.title_activity_notifications)
         }
 
-        presenter = NotificationsPresenter()
-        presenter.attachView(this)
-
-        presenter.fetchRouteList()
-        presenter.fetchSubscriptions()
-
         setupViewPager()
 
         GoogleApiAvailability.getInstance().makeGooglePlayServicesAvailable(this)
+
+        Timber.i("FCM token: %s", FirebaseInstanceId.getInstance().token)
+
+        observe(viewModel.routeListError, this::showRouteListError)
+
+        observe(viewModel.subscriptions, this::displaySubscriptions)
+
+        observe(viewModel.subscriptionProgress, this::showSubscriptionProgress)
+
+        observe(viewModel.subscriptionError) {
+            showSubscriptionError()
+        }
+
+        observe(viewModel.newSubscribedRoute, this::addSubscribedRoute)
+
+        observe(viewModel.removedSubscribedRoute, this::removeSubscribedRoute)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -118,30 +128,16 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
         return true
     }
 
-    override fun onDestroy() {
-        presenter.detachView()
-        super.onDestroy()
-    }
-
-    override fun displayRouteList(routeList: List<Route>) {
-        val groupedRoutes: Map<RouteType, List<Route>> = routeList.groupBy { it.type }
-        groupedRoutes.forEach { entry ->
-            val view: RouteListContract.View? = pagerAdapter.getView(entry.key)
-            val routes = entry.value.sortedBy { it.id }
-            view?.displayRoutes(routes)
-        }
-    }
-
-    override fun addSubscribedRoute(route: Route) {
-        Analytics.logNotificationSubscribe(this, route.id)
+    private fun addSubscribedRoute(route: Route) {
+        analytics.logNotificationSubscribe(route.id)
 
         subscribedEmptyView.hide()
 
         addSubscribedRouteIcon(route)
     }
 
-    override fun removeSubscribedRoute(route: Route) {
-        Analytics.logNotificationUnsubscribe(this, route.id)
+    private fun removeSubscribedRoute(route: Route) {
+        analytics.logNotificationUnsubscribe(route.id)
 
         removeSubscribedRouteIcon(route)
 
@@ -150,11 +146,11 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
         }
     }
 
-    override fun onRouteClicked(route: Route) {
-        presenter.subscribeTo(route.id)
+    fun onRouteClicked(route: Route) {
+        viewModel.subscribeTo(route.id)
     }
 
-    override fun displaySubscriptions(routeList: List<Route>) {
+    private fun displaySubscriptions(routeList: List<Route>) {
         subscribedRoutesLayout.removeAllViews()
 
         if (routeList.isEmpty()) {
@@ -168,7 +164,7 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
         }
     }
 
-    override fun showProgress(show: Boolean) {
+    private fun showSubscriptionProgress(show: Boolean) {
         if (show) {
             progressBar.show()
         } else {
@@ -176,9 +172,9 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
         }
     }
 
-    override fun showRouteListError(show: Boolean) {
+    private fun showRouteListError(show: Boolean) {
         if (show) {
-            showProgress(false)
+            showSubscriptionProgress(false)
 
             errorView.visibility = View.VISIBLE
             viewPager.visibility = View.GONE
@@ -188,8 +184,8 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
 
             if (!refreshButton.hasOnClickListeners()) {
                 refreshButton.setOnClickListener {
-                    presenter.fetchRouteList()
-                    presenter.fetchSubscriptions()
+                    viewModel.fetchRouteList()
+                    viewModel.fetchSubscriptions()
                 }
             }
             refreshButton.text = getString(R.string.label_retry)
@@ -200,7 +196,7 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
         }
     }
 
-    override fun showSubscriptionError() {
+    private fun showSubscriptionError() {
         val snackbar = Snackbar.make(
             viewPager,
             getString(R.string.error_subscriptions_action),
@@ -270,7 +266,7 @@ class NotificationsActivity : BaseActivity(), NotificationsContract.View {
             .setMessage(R.string.notif_remove_dialog_message)
             .setPositiveButton(R.string.notif_remove_dialog_positive) { dialog, _ ->
                 dialog.dismiss()
-                presenter.removeSubscription(route.id)
+                viewModel.removeSubscription(route.id)
             }
             .setNegativeButton(android.R.string.cancel) { dialog, _ -> dialog.dismiss() }
             .show()

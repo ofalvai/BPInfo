@@ -20,8 +20,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.net.Uri
-import android.support.annotation.ColorInt
 import android.util.Log
+import androidx.annotation.ColorInt
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.RequestQueue
 import com.android.volley.Response
@@ -31,27 +31,24 @@ import com.google.firebase.perf.FirebasePerformance
 import com.google.firebase.perf.metrics.Trace
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.api.AlertApiClient
-import com.ofalvai.bpinfo.api.AlertListErrorMessage
-import com.ofalvai.bpinfo.api.AlertListMessage
-import com.ofalvai.bpinfo.api.AlertRequestParams
 import com.ofalvai.bpinfo.model.Alert
 import com.ofalvai.bpinfo.model.Route
 import com.ofalvai.bpinfo.model.RouteType
+import com.ofalvai.bpinfo.ui.alertlist.AlertListType
+import com.ofalvai.bpinfo.util.LocaleManager
 import com.ofalvai.bpinfo.util.apiTimestampToDateTime
 import com.ofalvai.bpinfo.util.toArray
-import org.greenrobot.eventbus.EventBus
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import org.threeten.bp.ZonedDateTime
 import timber.log.Timber
 import java.util.*
-import javax.inject.Inject
 
-class BkkInfoClient
-@Inject constructor(private val requestQueue: RequestQueue,
-                    private val sharedPreferences: SharedPreferences,
-                    private val context: Context
+class BkkInfoClient(
+    private val requestQueue: RequestQueue,
+    private val sharedPreferences: SharedPreferences,
+    private val context: Context
 ) : AlertApiClient {
 
     companion object {
@@ -83,52 +80,45 @@ class BkkInfoClient
          */
         @JvmStatic
         private val retryPolicy = DefaultRetryPolicy(
-                    TIMEOUT_MS,
-                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-            )
+            TIMEOUT_MS,
+            DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        )
     }
-
-    /**
-     * This client performs only one alert list API call, because the API is structured in a way
-     * that both current and future data is returned at the same time, sometimes even mixed together.
-     * If multiple alert list requests are called, only the first will perform the request, and
-     * later notify all of its EventBus subscribers.
-     */
-    private var requestInProgress = false
 
     private var alertDetailTrace: Trace? = null
 
-    override fun fetchAlertList(params: AlertRequestParams) {
-        // If a request is in progress, we don't proceed. The response callback will notify every subscriber
-        if (requestInProgress) return
+    private val languageCode: String =
+        LocaleManager.getCurrentLanguageCode(sharedPreferences)
 
-        val url = buildAlertListUrl(params)
+    override fun fetchAlertList(listener: AlertApiClient.AlertListListener) {
+        val url = buildAlertListUrl()
 
         Timber.i("API request: %s", url.toString())
 
         val request = JsonObjectRequest(
-                url.toString(),
-                null,
-                Response.Listener { response -> onAlertListResponse(response) },
-                Response.ErrorListener { error -> EventBus.getDefault().post(AlertListErrorMessage(error)) }
+            url.toString(),
+            null,
+            Response.Listener { response -> onAlertListResponse(response, listener) },
+            Response.ErrorListener { error ->
+                listener.onError(error)
+            }
         )
         request.retryPolicy = retryPolicy
 
-        requestInProgress = true
         requestQueue.add(request)
     }
 
-    override fun fetchAlert(id: String, listener: AlertApiClient.AlertDetailListener,
-                            params: AlertRequestParams) {
-        val url = buildAlertDetailUrl(params, id)
+    override fun fetchAlert(id: String, alertListType: AlertListType,
+                            listener: AlertApiClient.AlertDetailListener) {
+        val url = buildAlertDetailUrl(id)
 
         Timber.i("API request: %s", url.toString())
 
         val request = JsonObjectRequest(
-                url.toString(), null,
-                Response.Listener { response -> onAlertDetailResponse(listener, response) },
-                Response.ErrorListener { error -> listener.onError(error) }
+            url.toString(), null,
+            Response.Listener { response -> onAlertDetailResponse(listener, response) },
+            Response.ErrorListener { error -> listener.onError(error) }
         )
         request.retryPolicy = retryPolicy
 
@@ -136,33 +126,35 @@ class BkkInfoClient
         createAndStartTrace("network_alert_detail_bkk")
     }
 
-    private fun buildAlertListUrl(params: AlertRequestParams) = Uri.parse(API_BASE_URL)
+    private fun buildAlertListUrl() = Uri.parse(API_BASE_URL)
             .buildUpon()
-            .appendEncodedPath(if (params.languageCode == "hu") API_ENDPOINT_HU else API_ENDPOINT_EN)
+            .appendEncodedPath(if (languageCode == "hu") API_ENDPOINT_HU else API_ENDPOINT_EN)
             .appendEncodedPath(PARAM_ALERT_LIST)
             .build()
 
-    private fun buildAlertDetailUrl(params: AlertRequestParams, alertId: String) = Uri.parse(API_BASE_URL)
+    private fun buildAlertDetailUrl(alertId: String) =
+        Uri.parse(API_BASE_URL)
             .buildUpon()
-            .appendEncodedPath(if (params.languageCode == "hu") API_ENDPOINT_HU else API_ENDPOINT_EN)
+            .appendEncodedPath(if (languageCode == "hu") API_ENDPOINT_HU else API_ENDPOINT_EN)
             .appendQueryParameter(PARAM_ALERT_DETAIL, alertId)
             .build()
 
-    private fun onAlertListResponse(response: JSONObject) {
+    private fun onAlertListResponse(response: JSONObject, listener: AlertApiClient.AlertListListener) {
         try {
             val alertsToday = parseTodayAlerts(response).toMutableList()
             val alertsFuture = parseFutureAlerts(response)
             fixFutureAlertsInTodayList(alertsToday, alertsFuture)
 
-            EventBus.getDefault().post(AlertListMessage(alertsToday, alertsFuture))
+            listener.onAlertListResponse(alertsToday, alertsFuture)
         } catch (ex: Exception) {
-            EventBus.getDefault().post(AlertListErrorMessage(ex))
-        } finally {
-            requestInProgress = false
+            listener.onError(ex)
         }
     }
 
-    private fun onAlertDetailResponse(listener: AlertApiClient.AlertDetailListener, response: JSONObject) {
+    private fun onAlertDetailResponse(
+        listener: AlertApiClient.AlertDetailListener,
+        response: JSONObject
+    ) {
         alertDetailTrace?.stop()
         try {
             val alert = parseAlertDetail(response)
@@ -177,7 +169,7 @@ class BkkInfoClient
         val alerts = ArrayList<Alert>()
 
         val isDebugMode = sharedPreferences.getBoolean(
-                context.getString(R.string.pref_key_debug_mode), false
+            context.getString(R.string.pref_key_debug_mode), false
         )
 
         val activeAlertsList = response.getJSONArray("active")
@@ -345,12 +337,12 @@ class BkkInfoClient
 
                 // There's no ID returned by the API, using shortName instead
                 val route = Route(
-                        shortName,
-                        shortName, null, null,
-                        type,
-                        colors[0],
-                        colors[1],
-                        false
+                    shortName,
+                    shortName, null, null,
+                    type,
+                    colors[0],
+                    colors[1],
+                    false
                 )
                 routes.add(route)
             }
@@ -366,8 +358,10 @@ class BkkInfoClient
      * @param affectedRouteIds IDs of only the affected routes
      */
     @Throws(JSONException::class)
-    private fun parseDetailedAffectedRoutes(routesNode: JSONObject,
-                                            affectedRouteIds: Iterator<String>): List<Route> {
+    private fun parseDetailedAffectedRoutes(
+        routesNode: JSONObject,
+        affectedRouteIds: Iterator<String>
+    ): List<Route> {
         val routes = ArrayList<Route>()
 
         while (affectedRouteIds.hasNext()) {
@@ -382,14 +376,14 @@ class BkkInfoClient
             val textColor = Color.parseColor("#" + routeNode.getString("betu"))
 
             val route = Route(
-                    id,
-                    shortName,
-                    null,
-                    description,
-                    routeType,
-                    color,
-                    textColor,
-                    false
+                id,
+                shortName,
+                null,
+                description,
+                routeType,
+                color,
+                textColor,
+                false
             )
             routes.add(route)
         }
@@ -554,7 +548,10 @@ class BkkInfoClient
      * Alerts scheduled for the current day (and not yet started) appear in the current alerts list.
      * We need to find them and move to the future alerts list
      */
-    private fun fixFutureAlertsInTodayList(alertsToday: MutableList<Alert>, alertsFuture: MutableList<Alert>) {
+    private fun fixFutureAlertsInTodayList(
+        alertsToday: MutableList<Alert>,
+        alertsFuture: MutableList<Alert>
+    ) {
         // Avoiding ConcurrentModificationException when removing from alertsToday
         val todayIterator = alertsToday.listIterator()
         while (todayIterator.hasNext()) {

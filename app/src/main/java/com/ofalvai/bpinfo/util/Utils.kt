@@ -26,14 +26,19 @@ import android.graphics.LightingColorFilter
 import android.graphics.Paint
 import android.net.ConnectivityManager
 import android.net.Uri
-import android.support.annotation.RequiresPermission
-import android.support.annotation.StringRes
-import android.support.customtabs.CustomTabsIntent
-import android.support.v4.content.ContextCompat
-import android.support.v7.view.ContextThemeWrapper
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.annotation.RequiresPermission
+import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.view.ContextThemeWrapper
+import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.content.ContextCompat
+import androidx.core.content.getSystemService
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import com.android.volley.*
 import com.ofalvai.bpinfo.Config
 import com.ofalvai.bpinfo.R
@@ -46,8 +51,6 @@ import org.json.JSONObject
 import org.threeten.bp.Instant
 import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
-
-val alertStartComparator = compareBy<Alert> { it.start }.thenBy { it.description }
 
 /**
  * Detects if a route seems to be a replacement route from its ID format.
@@ -141,10 +144,10 @@ fun Alert.isRecent(): Boolean {
 
 @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
 fun Context.hasNetworkConnection(): Boolean {
-    val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val cm = getSystemService<ConnectivityManager>()
 
-    val activeNetwork = cm.activeNetworkInfo
-    return activeNetwork != null && activeNetwork.isConnectedOrConnecting
+    val activeNetwork = cm?.activeNetworkInfo
+    return activeNetwork != null && activeNetwork.isConnected
 }
 
 fun Route.getContentDescription(context: Context): String {
@@ -314,4 +317,12 @@ fun apiTimestampToDateTime(seconds: Long): ZonedDateTime {
 
 fun <T> Request<T>.addTo(queue: RequestQueue) {
     queue.add(this)
+}
+
+fun <T> AppCompatActivity.observe(liveData: LiveData<T>, observer: (T) -> Unit) {
+    liveData.observe(this, Observer { observer.invoke(it) })
+}
+
+fun <T> Fragment.observe(liveData: LiveData<T>, observer: (T) -> Unit) {
+    liveData.observe(viewLifecycleOwner, Observer { observer.invoke(it) })
 }

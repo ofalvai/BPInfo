@@ -31,11 +31,9 @@ import com.ofalvai.bpinfo.util.addTo
 import org.json.JSONArray
 import org.json.JSONObject
 import timber.log.Timber
-import javax.inject.Inject
 
-class SubscriptionClient @Inject constructor(
-    private val requestQueue: RequestQueue,
-    private val sharedPreferences: SharedPreferences // TODO: remove from injection
+class SubscriptionClient(
+    private val requestQueue: RequestQueue
 ) {
 
     interface Callback {
@@ -146,10 +144,15 @@ class SubscriptionClient @Inject constructor(
         ).addTo(requestQueue)
     }
 
+    /**
+     * Executes the given action after successfully retrieved the current FCM token
+     * @param callback Used for signaling errors
+     * @param action Lambda to run after the FCM token is ready
+     */
     private fun withToken(callback: Callback, action: (String) -> Unit) {
         FirebaseInstanceId.getInstance().instanceId
-            .addOnSuccessListener { action(it.token) }
-            .addOnFailureListener { callback.onSubscriptionError(it) }
+                .addOnSuccessListener { action(it.token) }
+                .addOnFailureListener { callback.onSubscriptionError(it) }
     }
 
     private fun parseSubscriptionList(array: JSONArray): List<String> {

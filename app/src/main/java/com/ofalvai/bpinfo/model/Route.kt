@@ -16,39 +16,40 @@
 
 package com.ofalvai.bpinfo.model
 
-import android.support.annotation.ColorInt
+import androidx.annotation.ColorInt
 
 import java.io.Serializable
 
-data class Route(val id: String,
+data class Route(
+    val id: String,
 
-                 /**
-                  * Usually the route number (eg. 74, M3, 7E), sometimes its name (eg. Funicular)
-                  */
-                 val shortName: String?,
+    /**
+     * Usually the route number (eg. 74, M3, 7E), sometimes its name (eg. Funicular)
+     */
+    val shortName: String?,
 
-                 /**
-                  * Longer name of the route, when the short name is not obvious (eg. replacement routes)
-                  */
-                 val longName: String?,
+    /**
+     * Longer name of the route, when the short name is not obvious (eg. replacement routes)
+     */
+    val longName: String?,
 
-                 /**
-                  * Currently the terminal stops of the route. Can contain HTML formatting
-                  */
-                 val description: String?,
+    /**
+     * Currently the terminal stops of the route. Can contain HTML formatting
+     */
+    val description: String?,
 
-                 val type: RouteType,
+    val type: RouteType,
 
-                 /**
-                  * Background color of the rectangle around the label
-                  */
-                 @ColorInt
-                 val color: Int,
+    /**
+     * Background color of the rectangle around the label
+     */
+    @ColorInt
+    val color: Int,
 
-                 @ColorInt
-                 val textColor: Int,
+    @ColorInt
+    val textColor: Int,
 
-                 val discontinued: Boolean
+    val discontinued: Boolean
 ) : Serializable, Comparable<Route> {
 
     override fun compareTo(other: Route): Int {

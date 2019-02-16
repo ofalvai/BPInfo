@@ -18,15 +18,17 @@ package com.ofalvai.bpinfo.ui.alertlist
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.TabLayout
-import android.support.v4.view.ViewPager
-import android.support.v7.widget.Toolbar
+import androidx.appcompat.widget.Toolbar
+import androidx.viewpager.widget.ViewPager
+import com.google.android.material.tabs.TabLayout
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.notifications.NotificationMaker
 import com.ofalvai.bpinfo.ui.alertlist.adapter.AlertListPagerAdapter
 import com.ofalvai.bpinfo.ui.base.BaseActivity
 import com.ofalvai.bpinfo.util.Analytics
-import kotterknife.bindView
+import com.ofalvai.bpinfo.util.bindView
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AlertListActivity : BaseActivity() {
 
@@ -36,15 +38,21 @@ class AlertListActivity : BaseActivity() {
      */
     var pendingNavigationAlertId: String? = null
 
+    private val viewModel by viewModel<AlertsViewModel>()
+
     private val viewPager: ViewPager by bindView(R.id.alert_list_pager)
     private val tabLayout: TabLayout by bindView(R.id.tabs)
     private val toolbar: Toolbar by bindView(R.id.toolbar)
 
     private lateinit var pagerAdapter: AlertListPagerAdapter
 
+    private val analytics: Analytics by inject()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_alert_list)
+
+        lifecycle.addObserver(viewModel)
 
         setSupportActionBar(toolbar)
 
@@ -71,7 +79,7 @@ class AlertListActivity : BaseActivity() {
         pendingNavigationAlertId = intent?.getStringExtra(NotificationMaker.INTENT_EXTRA_ALERT_ID)
 
         pendingNavigationAlertId?.let {
-            Analytics.logNotificationOpen(this, it)
+            analytics.logNotificationOpen(it)
 
             // Prevent triggering it again in the future (eg. back navigation from another Activity)
             intent?.removeExtra(NotificationMaker.INTENT_EXTRA_ALERT_ID)
