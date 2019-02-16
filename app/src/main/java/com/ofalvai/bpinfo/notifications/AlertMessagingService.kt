@@ -33,9 +33,9 @@ import timber.log.Timber
 class AlertMessagingService : FirebaseMessagingService() {
 
     companion object {
+        const val PREF_KEY_TOKEN = "fcm_token"
         private const val DATA_KEY_ID = "id"
         private const val DATA_KEY_TITLE = "title"
-        private const val PREF_KEY_TOKEN = "fcm_token"
     }
 
     private val  sharedPreferences: SharedPreferences by inject()

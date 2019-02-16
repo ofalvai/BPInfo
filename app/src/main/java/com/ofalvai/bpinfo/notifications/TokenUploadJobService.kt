@@ -17,6 +17,7 @@
 package com.ofalvai.bpinfo.notifications
 
 import com.android.volley.VolleyError
+import com.crashlytics.android.Crashlytics
 import com.firebase.jobdispatcher.JobParameters
 import com.firebase.jobdispatcher.JobService
 import com.ofalvai.bpinfo.api.subscription.SubscriptionClient
@@ -50,6 +51,7 @@ class TokenUploadJobService : JobService() {
 
                     override fun onTokenReplaceError(error: VolleyError) {
                         Timber.d("New token upload unsuccessful", error)
+                        Crashlytics.logException(error)
                         jobFinished(job, true)
                     }
                 })

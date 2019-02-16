@@ -34,7 +34,7 @@ import timber.log.Timber
 class SubscriptionClient(private val requestQueue: RequestQueue) {
 
     interface Callback {
-        fun onSubscriptionError(error: VolleyError)
+        fun onSubscriptionError(error: Throwable)
         fun onPostSubscriptionResponse(subscription: RouteSubscription)
         fun onGetSubscriptionResponse(routeIDList: List<String>)
         fun onDeleteSubscriptionResponse(subscription: RouteSubscription)
@@ -56,62 +56,66 @@ class SubscriptionClient(private val requestQueue: RequestQueue) {
         private const val KEY_NEW_TOKEN = "new"
     }
 
-    private val token get() = FirebaseInstanceId.getInstance().token
-
     fun postSubscription(routeID: String, callback: Callback) {
-        val url = SUBSCRIPTION_URL
+        withToken(callback) { token ->
+            val url = SUBSCRIPTION_URL
 
-        val body = JSONObject().apply {
-            put("routeId", routeID)
-            put("token", token)
-        }
-
-        JsonObjectRequest(Request.Method.POST, url, body,
-            Response.Listener {
-                val subscription = parseSubscription(it)
-                callback.onPostSubscriptionResponse(subscription)
-            },
-            Response.ErrorListener {
-                Timber.e(it.toString())
-                callback.onSubscriptionError(it)
+            val body = JSONObject().apply {
+                put("routeId", routeID)
+                put("token", token)
             }
-        ).addTo(requestQueue)
+
+            JsonObjectRequest(Request.Method.POST, url, body,
+                    Response.Listener {
+                        val subscription = parseSubscription(it)
+                        callback.onPostSubscriptionResponse(subscription)
+                    },
+                    Response.ErrorListener {
+                        Timber.e(it.toString())
+                        callback.onSubscriptionError(it)
+                    }
+            ).addTo(requestQueue)
+        }
     }
 
     fun getSubscriptions(callback: Callback) {
-        val url = Uri.parse(SUBSCRIPTION_URL)
-            .buildUpon()
-            .appendPath(token)
-            .toString()
+        withToken(callback) { token ->
+            val url = Uri.parse(SUBSCRIPTION_URL)
+                    .buildUpon()
+                    .appendPath(token)
+                    .toString()
 
-        JsonArrayRequest(Request.Method.GET, url, null,
-            Response.Listener {
-                callback.onGetSubscriptionResponse(parseSubscriptionList(it))
-            },
-            Response.ErrorListener {
-                Timber.e(it.toString())
-                callback.onSubscriptionError(it)
-            }
-        ).addTo(requestQueue)
+            JsonArrayRequest(Request.Method.GET, url, null,
+                    Response.Listener {
+                        callback.onGetSubscriptionResponse(parseSubscriptionList(it))
+                    },
+                    Response.ErrorListener {
+                        Timber.e(it.toString())
+                        callback.onSubscriptionError(it)
+                    }
+            ).addTo(requestQueue)
+        }
     }
 
     fun deleteSubscription(routeID: String, callback: Callback) {
-        val url = Uri.parse(SUBSCRIPTION_URL)
-            .buildUpon()
-            .appendPath(token)
-            .appendPath(routeID)
-            .toString()
+        withToken(callback) { token ->
+            val url = Uri.parse(SUBSCRIPTION_URL)
+                    .buildUpon()
+                    .appendPath(token)
+                    .appendPath(routeID)
+                    .toString()
 
-        JsonObjectRequest(Request.Method.DELETE, url, null,
-            Response.Listener {
-                val subscription = parseSubscription(it)
-                callback.onDeleteSubscriptionResponse(subscription)
-            },
-            Response.ErrorListener {
-                Timber.e(it.toString())
-                callback.onSubscriptionError(it)
-            }
-        ).addTo(requestQueue)
+            JsonObjectRequest(Request.Method.DELETE, url, null,
+                    Response.Listener {
+                        val subscription = parseSubscription(it)
+                        callback.onDeleteSubscriptionResponse(subscription)
+                    },
+                    Response.ErrorListener {
+                        Timber.e(it.toString())
+                        callback.onSubscriptionError(it)
+                    }
+            ).addTo(requestQueue)
+        }
     }
 
     fun replaceToken(old: String, new: String, callback: TokenReplaceCallback) {
@@ -135,6 +139,17 @@ class SubscriptionClient(private val requestQueue: RequestQueue) {
                 callback.onTokenReplaceError(it)
             }
         ).addTo(requestQueue)
+    }
+
+    /**
+     * Executes the given action after successfully retrieved the current FCM token
+     * @param callback Used for signaling errors
+     * @param action Lambda to run after the FCM token is ready
+     */
+    private fun withToken(callback: Callback, action: (String) -> Unit) {
+        FirebaseInstanceId.getInstance().instanceId
+                .addOnSuccessListener { action(it.token) }
+                .addOnFailureListener { callback.onSubscriptionError(it) }
     }
 
     private fun parseSubscriptionList(array: JSONArray): List<String> {

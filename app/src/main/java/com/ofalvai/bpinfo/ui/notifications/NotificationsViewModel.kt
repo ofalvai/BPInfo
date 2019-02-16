@@ -18,7 +18,7 @@ package com.ofalvai.bpinfo.ui.notifications
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.android.volley.VolleyError
+import com.crashlytics.android.Crashlytics
 import com.ofalvai.bpinfo.api.bkkinfo.RouteListClient
 import com.ofalvai.bpinfo.api.subscription.SubscriptionClient
 import com.ofalvai.bpinfo.model.Route
@@ -98,8 +98,9 @@ class NotificationsViewModel(
         routeListError.value = true
     }
 
-    override fun onSubscriptionError(error: VolleyError) {
+    override fun onSubscriptionError(error: Throwable) {
         Timber.e(error)
+        Crashlytics.logException(error)
         subscriptionProgress.value = false
         subscriptionError.call()
     }
