@@ -1,11 +1,10 @@
-package com.example.bkkinfoplus;
+package com.ofalvai.bpinfo;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 
-import com.ofalvai.bpinfo.R;
 import com.ofalvai.bpinfo.notifications.DescriptionMaker;
 
 import org.junit.Before;

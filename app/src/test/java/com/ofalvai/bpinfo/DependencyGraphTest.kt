@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.bkkinfoplus
+package com.ofalvai.bpinfo
 
 import android.app.Application
 import android.content.Context
