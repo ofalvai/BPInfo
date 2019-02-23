@@ -53,10 +53,12 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
         private const val ARG_ALERT_OBJECT = "alert_object"
         private const val ARG_LIST_TYPE = "alert_list_type"
 
-        @JvmStatic
         fun newInstance(alert: Alert, alertListType: AlertListType): AlertDetailFragment {
             val fragment = AlertDetailFragment()
-            val args = bundleOf(ARG_ALERT_OBJECT to alert, ARG_LIST_TYPE to alertListType)
+            val args = bundleOf(
+                ARG_ALERT_OBJECT to alert,
+                ARG_LIST_TYPE to alertListType
+            )
             fragment.arguments = args
             return fragment
         }

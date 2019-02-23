@@ -89,6 +89,7 @@ class NotificationsActivity : BaseActivity() {
 
         GoogleApiAvailability.getInstance().makeGooglePlayServicesAvailable(this)
 
+        @Suppress("DEPRECATION")
         Timber.i("FCM token: %s", FirebaseInstanceId.getInstance().token)
 
         observe(viewModel.routeListError, this::showRouteListError)

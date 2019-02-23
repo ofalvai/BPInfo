@@ -20,8 +20,6 @@ interface NoticeContract {
 
     companion object {
 
-        const val ID = "id"
-
         const val TEXT_HU = "text_hu"
 
         const val TEXT_EN = "text_en"

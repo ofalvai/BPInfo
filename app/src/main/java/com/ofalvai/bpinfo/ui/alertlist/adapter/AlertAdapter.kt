@@ -47,7 +47,6 @@ class AlertAdapter(
             val alert = getItem(holder.adapterPosition)
             clickListener.invoke(alert)
         }
-
         return holder
     }
 

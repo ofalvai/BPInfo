@@ -34,6 +34,10 @@ import org.threeten.bp.Duration
 import org.threeten.bp.LocalDateTime
 import timber.log.Timber
 
+/**
+ * Repository that is responsible for loading the 2 kinds of alert lists. It calls the currently
+ * selected implementation of [AlertApiClient], handles caching, error handling, network detection.
+ */
 class AlertsRepository(
     private val alertApiClient: AlertApiClient,
     private val appContext: Context
@@ -67,7 +71,7 @@ class AlertsRepository(
             return
         }
 
-        if (appContext.hasNetworkConnection().not()) {
+        if (!appContext.hasNetworkConnection()) {
             status.value = Status.Error
             error.value = Error.NetworkError(NoConnectionError())
             return
