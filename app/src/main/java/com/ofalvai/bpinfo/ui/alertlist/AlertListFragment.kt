@@ -51,14 +51,10 @@ import timber.log.Timber
 class AlertListFragment : Fragment(), AlertFilterFragment.AlertFilterListener {
 
     companion object {
-
         const val KEY_ALERT_LIST_TYPE = "alert_list_type"
-
         const val FILTER_DIALOG_TAG = "filter_dialog"
-
         const val NOTICE_DIALOG_TAG = "notice_dialog"
 
-        @JvmStatic
         fun newInstance(type: AlertListType): AlertListFragment {
             val fragment = AlertListFragment()
             fragment.alertListType = type
@@ -66,13 +62,13 @@ class AlertListFragment : Fragment(), AlertFilterFragment.AlertFilterListener {
         }
     }
 
-    private val viewModel by viewModel<AlertListViewModel>{ parametersOf(alertListType) }
+    private val viewModel by viewModel<AlertListViewModel> { parametersOf(alertListType) }
 
     private val parentViewModel by sharedViewModel<AlertsViewModel>()
 
     private val analytics: Analytics by inject()
 
-    private val alertAdapter = AlertAdapter(this)
+    private lateinit var alertAdapter: AlertAdapter
 
     private lateinit var alertListType: AlertListType
 
@@ -85,37 +81,35 @@ class AlertListFragment : Fragment(), AlertFilterFragment.AlertFilterListener {
     private val emptyView: TextView by bindView(R.id.empty_view)
     private val noticeView: TextView by bindView(R.id.alert_list_notice)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_alert_list, container, false)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
 
         if (savedInstanceState != null) {
             alertListType = savedInstanceState.getSerializable(KEY_ALERT_LIST_TYPE) as AlertListType
         }
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_alert_list, container, false)
-        setHasOptionsMenu(true)
 
         // If this fragment got recreated while the filter dialog was open, we need to update
-        // the listener reference
+        // the listener reference and the current filter
         if (savedInstanceState != null) {
-            val filterFragment = requireFragmentManager().findFragmentByTag(FILTER_DIALOG_TAG) as AlertFilterFragment?
+            val filterFragment =
+                requireFragmentManager().findFragmentByTag(FILTER_DIALOG_TAG) as AlertFilterFragment?
 
             // Only attach to the filter fragment if it filters our type of list
             if (filterFragment != null && alertListType == filterFragment.alertListType) {
                 filterFragment.filterListener = this
+                filterFragment.selectedRouteTypes = viewModel.activeFilter
             }
         }
 
-        return view
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
         setupRecyclerView()
+
+        setHasOptionsMenu(true)
 
         refreshLayout.setOnRefreshListener {
             initRefresh()
@@ -123,11 +117,48 @@ class AlertListFragment : Fragment(), AlertFilterFragment.AlertFilterListener {
         }
 
         updateFilterWarning()
+
+        observeEvents()
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putSerializable(KEY_ALERT_LIST_TYPE, alertListType)
+    }
 
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_main, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_item_filter_alerts -> displayFilterDialog()
+            R.id.menu_item_settings -> startActivity(SettingsActivity.newIntent(requireContext()))
+            R.id.menu_item_notifications -> startActivity(
+                NotificationsActivity.newIntent(requireContext())
+            )
+        }
+        return true
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (activity is AlertListActivity && alertListType == AlertListType.Today) {
+            pendingNavigationAlertId = (activity!! as AlertListActivity).pendingNavigationAlertId
+        }
+    }
+
+    fun updateSubtitle() {
+        updateSubtitle(alertAdapter.itemCount)
+    }
+
+    override fun onFilterChanged(selectedTypes: MutableSet<RouteType>) {
+        viewModel.activeFilter = selectedTypes
+
+        updateFilterWarning()
+    }
+
+    private fun observeEvents() {
         observe(viewModel.alerts, this::displayAlerts)
 
         observe(viewModel.alertError) {
@@ -152,52 +183,13 @@ class AlertListFragment : Fragment(), AlertFilterFragment.AlertFilterListener {
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putSerializable(KEY_ALERT_LIST_TYPE, alertListType)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_main, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.menu_item_filter_alerts -> displayFilterDialog()
-            R.id.menu_item_settings -> startActivity(SettingsActivity.newIntent(requireContext()))
-            R.id.menu_item_notifications -> startActivity(NotificationsActivity.newIntent(requireContext()))
-        }
-        return true
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-        if (activity is AlertListActivity && alertListType == AlertListType.Today) {
-            pendingNavigationAlertId = (activity!! as AlertListActivity).pendingNavigationAlertId
-        }
-    }
-
-    fun updateSubtitle() {
-        updateSubtitle(alertAdapter.itemCount)
-    }
-
-    override fun onFilterChanged(selectedTypes: MutableSet<RouteType>) {
-        viewModel.activeFilter = selectedTypes
-
-        updateFilterWarning()
-    }
-
-    // TODO
-    override fun onFilterDismissed() {}
-
-    fun launchAlertDetail(alert: Alert) {
+    private fun launchAlertDetail(alert: Alert) {
         displayAlertDetail(alert)
 
         val alertLiveData = viewModel.fetchAlert(alert.id)
-        observe(alertLiveData) { resource ->
-            when (resource) {
-                is Resource.Success -> updateAlertDetail(resource.value)
+        observe(alertLiveData) {
+            when (it) {
+                is Resource.Success -> updateAlertDetail(it.value)
                 is Resource.Error -> displayAlertDetailError()
                 // is Resource.Loading -> AlertDetailFragment handles its loading state
             }
@@ -205,65 +197,50 @@ class AlertListFragment : Fragment(), AlertFilterFragment.AlertFilterListener {
     }
 
     private fun displayAlerts(alerts: List<Alert>) {
-        // It's possible that the network response callback thread executes this faster than
-        // the UI thread attaching the fragment to the activity. In that case getResources() or
-        // getString() would throw an exception.
-        if (isAdded) {
-            setErrorView(false, null)
+        setErrorView(false, null)
 
-            alertAdapter.submitList(alerts)
+        alertAdapter.submitList(alerts)
 
-            // Only update the toolbar if this fragment is currently selected in the ViewPager
-            if (userVisibleHint) {
-                updateSubtitle(alerts.size)
-            }
-            alertRecyclerView.smoothScrollToPosition(0)
+        // Only update the toolbar if this fragment is currently selected in the ViewPager
+        if (userVisibleHint) {
+            updateSubtitle(alerts.size)
+        }
+        alertRecyclerView.smoothScrollToPosition(0)
 
-            pendingNavigationAlertId?.let { id ->
-                val alert: Alert? = alerts.find { it.id == id }
-                if (alert != null) {
-                    launchAlertDetail(alert)
-                } else {
-                    Timber.w("Pending alert navigation: no alert found for ID %s", id)
-                }
+        pendingNavigationAlertId?.let { id ->
+            val alert: Alert? = alerts.find { it.id == id }
+            if (alert != null) {
+                launchAlertDetail(alert)
+            } else {
+                Timber.w("Pending alert navigation: no alert found for ID %s", id)
             }
-            pendingNavigationAlertId = null
-            if (activity is AlertListActivity && alertListType == AlertListType.Today) {
-                (activity!! as AlertListActivity).pendingNavigationAlertId = null
-            }
+        }
+        pendingNavigationAlertId = null
+        if (activity is AlertListActivity && alertListType == AlertListType.Today) {
+            (activity!! as AlertListActivity).pendingNavigationAlertId = null
         }
     }
 
     private fun displayNetworkError(error: VolleyError) {
-        // It's possible that the network response callback thread executes this faster than
-        // the UI thread attaching the fragment to the activity. In that case getResources() would
-        // throw an exception.
-        if (isAdded) {
-            val errorMessage = resources.getString(error.toStringRes())
-            setErrorView(true, errorMessage)
-        }
+        val errorMessage = resources.getString(error.toStringRes())
+        setErrorView(true, errorMessage)
     }
 
     private fun displayDataError() {
-        if (isAdded) {
-            setErrorView(true, getString(R.string.error_list_display))
-        }
+        setErrorView(true, getString(R.string.error_list_display))
     }
 
     private fun displayGeneralError() {
-        if (isAdded) {
-            setErrorView(true, getString(R.string.error_list_display))
-        }
+        setErrorView(true, getString(R.string.error_list_display))
     }
 
     private fun displayNoNetworkWarning() {
-        if (isAdded) {
-            setUpdating(false)
+        setUpdating(false)
 
-            val snackbar = Snackbar.make(refreshLayout, R.string.error_no_connection, Snackbar.LENGTH_LONG)
-            snackbar.setAction(R.string.label_retry) { initRefresh() }
-            snackbar.show()
-        }
+        val snackbar = Snackbar
+            .make(refreshLayout, R.string.error_no_connection, Snackbar.LENGTH_LONG)
+        snackbar.setAction(R.string.label_retry) { initRefresh() }
+        snackbar.show()
     }
 
     private fun displayNotice(noticeText: String?) {
@@ -276,7 +253,7 @@ class AlertListFragment : Fragment(), AlertFilterFragment.AlertFilterListener {
                 setOnClickListener {
                     val fragment = NoticeFragment.newInstance(noticeText)
                     val transaction = requireActivity().supportFragmentManager
-                            .beginTransaction()
+                        .beginTransaction()
                     fragment.show(transaction, NOTICE_DIALOG_TAG)
 
                     analytics.logNoticeDialogView()
@@ -301,26 +278,22 @@ class AlertListFragment : Fragment(), AlertFilterFragment.AlertFilterListener {
      * @param alert data coming from the alert detail API call
      */
     private fun updateAlertDetail(alert: Alert) {
-        val manager = requireFragmentManager()
-        val fragment = manager.findFragmentByTag(AlertDetailFragment.FRAGMENT_TAG) as AlertDetailFragment?
+        val fragment = requireFragmentManager()
+            .findFragmentByTag(AlertDetailFragment.FRAGMENT_TAG) as AlertDetailFragment?
 
-        // It's possible that the presenter calls this method instantly, when the fragment is not
-        // yet attached.
         fragment?.updateAlert(alert)
     }
 
     private fun displayAlertDetailError() {
-        val manager = requireFragmentManager()
-        val fragment = manager.findFragmentByTag(AlertDetailFragment.FRAGMENT_TAG) as AlertDetailFragment?
+        val fragment = requireFragmentManager()
+            .findFragmentByTag(AlertDetailFragment.FRAGMENT_TAG) as AlertDetailFragment?
 
-        // It's possible that the presenter calls this method instantly, when the fragment is not
-        // yet attached.
         fragment?.onAlertUpdateFailed()
     }
 
-    fun getAlertListType() = alertListType // TODO: pass the private property to the Adapter (then pass to ViewHolder)
-
     private fun setupRecyclerView() {
+        alertAdapter = AlertAdapter(alertListType) { launchAlertDetail(it) }
+
         alertRecyclerView.adapter = alertAdapter
 
         val layoutManager = LinearLayoutManager(activity)
@@ -398,7 +371,8 @@ class AlertListFragment : Fragment(), AlertFilterFragment.AlertFilterListener {
         // Update subtitle only if the fragment is attached and visible to the user (not preloaded
         // by ViewPager)
         if (isAdded) {
-            val subtitle = resources.getQuantityString(R.plurals.actionbar_subtitle_alert_count, count, count)
+            val subtitle =
+                resources.getQuantityString(R.plurals.actionbar_subtitle_alert_count, count, count)
             val activity = activity as AppCompatActivity
             activity.supportActionBar?.let {
                 it.subtitle = subtitle

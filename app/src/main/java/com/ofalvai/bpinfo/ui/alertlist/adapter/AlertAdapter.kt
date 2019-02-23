@@ -22,11 +22,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.model.Alert
-import com.ofalvai.bpinfo.ui.alertlist.AlertListFragment
+import com.ofalvai.bpinfo.ui.alertlist.AlertListType
 import com.ofalvai.bpinfo.ui.alertlist.viewholder.AlertHolder
 
 class AlertAdapter(
-    private val view: AlertListFragment // TODO: rewrite to lambda
+    private val alertListType: AlertListType,
+    private val clickListener: (Alert) -> Unit
 ) : ListAdapter<Alert, AlertHolder>(DIFF_CALLBACK) {
 
     companion object {
@@ -41,10 +42,10 @@ class AlertAdapter(
         val layoutInflater = LayoutInflater.from(parent.context)
         val view = layoutInflater.inflate(R.layout.list_item_alert, parent, false)
 
-        val holder = AlertHolder(view, this.view.getAlertListType())
+        val holder = AlertHolder(view, alertListType)
         holder.itemView.setOnClickListener {
             val alert = getItem(holder.adapterPosition)
-            this.view.launchAlertDetail(alert)
+            clickListener.invoke(alert)
         }
 
         return holder
@@ -53,6 +54,4 @@ class AlertAdapter(
     override fun onBindViewHolder(holder: AlertHolder, position: Int) {
         holder.bindAlert(getItem(position))
     }
-
-
 }

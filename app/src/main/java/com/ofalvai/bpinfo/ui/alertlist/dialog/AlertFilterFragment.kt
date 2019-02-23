@@ -17,7 +17,6 @@
 package com.ofalvai.bpinfo.ui.alertlist.dialog
 
 import android.app.Dialog
-import android.content.DialogInterface
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
@@ -34,13 +33,16 @@ import timber.log.Timber
  */
 class AlertFilterFragment : DialogFragment() {
 
-    companion object {
+    interface AlertFilterListener {
+        fun onFilterChanged(selectedTypes: MutableSet<RouteType>)
+    }
 
+    companion object {
         const val KEY_ALERT_LIST_TYPE = "alert_list_type"
 
-        @JvmStatic
         fun newInstance(listener: AlertFilterListener, initialFilter: MutableSet<RouteType>,
-                        alertListType: AlertListType): AlertFilterFragment {
+                        alertListType: AlertListType
+        ): AlertFilterFragment {
             return AlertFilterFragment().apply {
                 filterListener = listener
                 selectedRouteTypes = initialFilter
@@ -49,57 +51,49 @@ class AlertFilterFragment : DialogFragment() {
         }
     }
 
-    private val analytics: Analytics by inject()
+    /**
+     * Initialized either from newInstance() or AlertListFragment.onActivityCreated() after a
+     * configuration change
+     */
+    lateinit var filterListener: AlertFilterListener
 
-    var selectedRouteTypes: MutableSet<RouteType>? = HashSet()
-
-    var filterListener: AlertFilterListener? = null
+    /**
+     * Initialized either from newInstance() or AlertListFragment.onActivityCreated() after a
+     * configuration change
+     */
+    lateinit var selectedRouteTypes: MutableSet<RouteType>
 
     /**
      * Type of alert list the dialog filters. This is needed because there are two AlertListFragments
      * in the ViewPager, and we need to remember which one was visible when the user opened the
      * filter dialog. Otherwise the dialog might filter the wrong alert list after state restore.
      */
-    var alertListType: AlertListType? = null
-        private set
+    lateinit var alertListType: AlertListType
 
-    interface AlertFilterListener {
+    private val analytics: Analytics by inject()
 
-        fun onFilterChanged(selectedTypes: MutableSet<RouteType>)
-
-        /**
-         * If the listener keeps a reference to this Fragment, it needs to know when to release
-         * that reference.
-         */
-        fun onFilterDismissed()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        savedInstanceState?.run {
+            alertListType = getSerializable(KEY_ALERT_LIST_TYPE) as AlertListType
+        }
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return AlertDialog.Builder(requireContext())
                 .setTitle(R.string.filter_title)
-                .setMultiChoiceItems(R.array.route_types, defaultCheckedItems(), this::onItemClick)
-                .setPositiveButton(R.string.filter_positive_button, this::onApplyClick)
+                .setMultiChoiceItems(R.array.route_types, makeSelection()) { _, which, isChecked ->
+                    onItemClick(which, isChecked)
+                }
+                .setPositiveButton(R.string.filter_positive_button) { _, _ -> onApplyClick() }
                 .setNegativeButton(R.string.filter_negative_button) { _, _ -> dismiss() }
                 .create()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putSerializable(KEY_ALERT_LIST_TYPE, alertListType)
-        // Note: The selected filters are stored in the fragment and restored here with setFilter()
+        // Note: The selected filters are stored in AlertListViewModel
         super.onSaveInstanceState(outState)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        savedInstanceState?.run {
-            alertListType = getSerializable(KEY_ALERT_LIST_TYPE) as AlertListType
-        }
-    }
-
-    override fun onDestroyView() {
-        filterListener?.onFilterDismissed()
-        super.onDestroyView()
     }
 
     /**
@@ -118,46 +112,38 @@ class AlertFilterFragment : DialogFragment() {
         }
     }
 
-    private fun onItemClick(dialogInterface: DialogInterface, which: Int, isChecked: Boolean) {
+    private fun onItemClick(which: Int, isChecked: Boolean) {
         val type = indexToRouteType(which)
 
         if (type != null) {
             if (isChecked) {
-                selectedRouteTypes?.add(type)
+                selectedRouteTypes.add(type)
             } else {
-                selectedRouteTypes?.remove(type)
+                selectedRouteTypes.remove(type)
             }
         } else {
             Timber.d("Unable to find a RouteType to index %s", which)
         }
     }
 
-    private fun onApplyClick(dialogInterface: DialogInterface, which: Int) {
-        if (filterListener != null && selectedRouteTypes != null) {
-            filterListener!!.onFilterChanged(selectedRouteTypes!!)
+    private fun onApplyClick() {
+        filterListener.onFilterChanged(selectedRouteTypes)
 
-            analytics.logFilterApplied(selectedRouteTypes!!)
-        }
+        analytics.logFilterApplied(selectedRouteTypes)
     }
 
     /**
      * Returns a boolean[] based on the selected route types. This is used to indicate already
      * checked items
      */
-    private fun defaultCheckedItems(): BooleanArray {
+    private fun makeSelection(): BooleanArray {
         val routeTypeArray = resources.getTextArray(R.array.route_types)
-        val checkedItems = BooleanArray(routeTypeArray.size)
 
-        for (i in routeTypeArray.indices) {
-            val type = indexToRouteType(i)
-
-            if (type != null) {
-                checkedItems[i] = selectedRouteTypes != null && selectedRouteTypes!!.contains(type)
-            } else {
-                Timber.d("Unable to find a RouteType to index %s", i)
-            }
+        val checkedItems: List<Boolean> = routeTypeArray.mapIndexed { index, _ ->
+            val type = indexToRouteType(index)
+            selectedRouteTypes.contains(type)
         }
 
-        return checkedItems
+        return checkedItems.toBooleanArray()
     }
 }
