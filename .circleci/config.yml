@@ -14,6 +14,12 @@ jobs:
           name: Chmod permissions #if permission for Gradlew Dependencies fail, use this.
           command: sudo chmod +x ./gradlew
       - run:
+          name: Decode Android keystore
+          command: echo RELEASE_KEYSTORE_BASE64 | base64 -di | tee keystore.jks >/dev/null
+      - run:
+          name: Create keystore.properties
+          command: 'printf "storePassword=`echo $RELEASE_KEYSTORE_PASSWORD`\nkeyPassword=`echo $RELEASE_KEY_PASSWORD`\nkeyAlias=BPInfo\nstoreFile=./keystore.jks\n"'
+      - run:
           name: Download Dependencies
           command: ./gradlew androidDependencies
       - save_cache:
