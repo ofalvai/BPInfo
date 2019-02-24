@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 
 defaults: &defaults
   working_directory: ~/code
@@ -8,9 +8,9 @@ defaults: &defaults
     JVM_OPTS: -Xmx3200m
     TERM: dumb # avoid weird output from Gradle
 
-jobs:
+commands:
   prepare:
-    <<: *defaults
+    description: "Prepares Android project-specific things"
     steps:
       - checkout
       - restore_cache:
@@ -35,6 +35,7 @@ jobs:
           - ~/.gradle
           key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
 
+jobs:
   test:
     <<: *defaults
     steps:
@@ -71,16 +72,9 @@ jobs:
           destination: bundle
 
 workflows:
-  version: 2
+  version: 2.1
   build_and_test:
     jobs:
-      - prepare
-      - lint:
-          requires:
-            - prepare
-      - test:
-          requires:
-            - prepare
-      - build:
-          requires:
-            - prepare
+      - lint
+      - test
+      - build
