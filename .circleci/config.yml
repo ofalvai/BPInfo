@@ -18,7 +18,7 @@ jobs:
           command: echo $RELEASE_KEYSTORE_BASE64 | base64 -di | tee keystore.jks >/dev/null
       - run:
           name: Create keystore.properties
-          command: 'printf "storePassword=`echo $RELEASE_KEYSTORE_PASSWORD`\nkeyPassword=`echo $RELEASE_KEY_PASSWORD`\nkeyAlias=BPInfo\nstoreFile=./keystore.jks\n"'
+          command: 'printf "storePassword=`echo $RELEASE_KEYSTORE_PASSWORD`\nkeyPassword=`echo $RELEASE_KEY_PASSWORD`\nkeyAlias=BPInfo\nstoreFile=./keystore.jks\n" | tee keystore.properties >/dev/null '
       - run:
           name: Download Dependencies
           command: ./gradlew androidDependencies
