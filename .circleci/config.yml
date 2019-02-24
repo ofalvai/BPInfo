@@ -42,5 +42,8 @@ jobs:
       - store_artifacts:
           path: app/build/outputs/apk
           destination: apk
+      - store_artifacts:
+          path: app/build/outputs/bundle
+          destination: bundle
       - store_test_results: # for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
           path: app/build/test-results
