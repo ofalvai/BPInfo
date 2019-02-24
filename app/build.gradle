@@ -100,6 +100,14 @@ android {
         }
     }
 
+    // Removing the combination of release buildType and the mock flavor
+    variantFilter { variant ->
+        if (variant.buildType.name == 'release'
+                && variant.getFlavors().get(0).name == 'mock') {
+            variant.setIgnore(true)
+        }
+    }
+
     lintOptions {
         fatal 'StopShip', 'NewApi'
         warning 'ConvertToWebp'
