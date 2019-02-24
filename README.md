@@ -1,5 +1,7 @@
 # BPInfo
 
+[![CircleCI](https://circleci.com/gh/ofalvai/BPInfo.svg?style=svg)](https://circleci.com/gh/ofalvai/BPInfo)
+
 Budapest public transport info app based on public transport APIs.
 
 [__Get It On Google Play__](play.google.com/store/apps/details?id=com.ofalvai.bpinfo)
