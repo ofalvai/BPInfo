@@ -6,6 +6,7 @@ import android.os.Handler;
 import com.ofalvai.bpinfo.model.Alert;
 import com.ofalvai.bpinfo.model.Route;
 import com.ofalvai.bpinfo.model.RouteType;
+import com.ofalvai.bpinfo.ui.alertlist.AlertListType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,7 +38,7 @@ public class MockApiClient implements AlertApiClient {
     }
 
     @Override
-    public void fetchAlertList(@NonNull final AlertApiClient.AlertListListener listener) {
+    public void fetchAlertList(@NonNull final AlertApiClient.AlertListCallback callback) {
 
         if (SIMULATE_CHANGES) {
             changeState();
@@ -47,16 +48,17 @@ public class MockApiClient implements AlertApiClient {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                listener.onAlertListResponse(TEST_ALERTS, TEST_ALERTS);
+                callback.onAlertListResponse(TEST_ALERTS, TEST_ALERTS);
             }
         }, SIMULATE_DELAY_MS);
     }
 
     @Override
-    public void fetchAlert(@NonNull String id, @NonNull AlertDetailListener listener, @NonNull AlertRequestParams params) {
+    public void fetchAlert(@NonNull String id, @NonNull AlertListType alertListType,
+                           @NonNull AlertDetailCallback callback) {
         for (Alert alert : TEST_ALERTS) {
             if (alert.getId().equals(id)) {
-                listener.onAlertResponse(alert);
+                callback.onAlertResponse(alert);
                 break;
             }
         }
@@ -145,7 +147,7 @@ public class MockApiClient implements AlertApiClient {
                 "\uD83D\uDE03",
                 "X",
                 "???",
-                RouteType._OTHER_,
+                RouteType.OTHER,
                 Color.parseColor("#EC1C5A"),
                 Color.parseColor("#FFFFFF"),
                 false
@@ -156,7 +158,7 @@ public class MockApiClient implements AlertApiClient {
                 "\uD83D\uDE0A",
                 "X",
                 "???",
-                RouteType._OTHER_,
+                RouteType.OTHER,
                 Color.parseColor("#F58023"),
                 Color.parseColor("#FFFFFF"),
                 false
@@ -167,7 +169,7 @@ public class MockApiClient implements AlertApiClient {
                 "\uD83D\uDE42",
                 "X",
                 "???",
-                RouteType._OTHER_,
+                RouteType.OTHER,
                 Color.parseColor("#FAE83E"),
                 Color.parseColor("#FFFFFF"),
                 false
@@ -178,7 +180,7 @@ public class MockApiClient implements AlertApiClient {
                 "\uD83D\uDE10",
                 "X",
                 "???",
-                RouteType._OTHER_,
+                RouteType.OTHER,
                 Color.parseColor("#9CC841"),
                 Color.parseColor("#FFFFFF"),
                 false
@@ -189,7 +191,7 @@ public class MockApiClient implements AlertApiClient {
                 "\uD83D\uDE15",
                 "X",
                 "???",
-                RouteType._OTHER_,
+                RouteType.OTHER,
                 Color.parseColor("#46BEA2"),
                 Color.parseColor("#FFFFFF"),
                 false
@@ -200,7 +202,7 @@ public class MockApiClient implements AlertApiClient {
                 "\uD83D\uDE41",
                 "X",
                 "???",
-                RouteType._OTHER_,
+                RouteType.OTHER,
                 Color.parseColor("#3D81C2"),
                 Color.parseColor("#FFFFFF"),
                 false
@@ -211,7 +213,7 @@ public class MockApiClient implements AlertApiClient {
                 "\uD83D\uDE43",
                 "X",
                 "???",
-                RouteType._OTHER_,
+                RouteType.OTHER,
                 Color.parseColor("#644B9E"),
                 Color.parseColor("#FFFFFF"),
                 false
