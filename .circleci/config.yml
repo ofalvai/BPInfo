@@ -39,6 +39,7 @@ jobs:
   test:
     <<: *defaults
     steps:
+      - prepare
       - run:
           name: Run Tests
           command: ./gradlew test
@@ -51,6 +52,7 @@ jobs:
   lint:
     <<: *defaults
     steps:
+      - prepare
       - run:
           name: Run Tests
           command: ./gradlew lint
@@ -61,6 +63,7 @@ jobs:
   build:
     <<: *defaults
     steps:
+      - prepare
       - run:
           name: Build APKs and Bundles
           command: ./gradlew assembleLiveProdRelease assembleLiveStagingRelease bundleLiveProdRelease
