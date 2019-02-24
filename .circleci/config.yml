@@ -20,6 +20,9 @@ jobs:
           name: Create keystore.properties
           command: 'printf "storePassword=`echo $RELEASE_KEYSTORE_PASSWORD`\nkeyPassword=`echo $RELEASE_KEY_PASSWORD`\nkeyAlias=BPInfo\nstoreFile=./keystore.jks\n" | tee keystore.properties >/dev/null '
       - run:
+          name: Decode google-services.json
+          command: echo $GOOGLE_SERVICES_JSON | base64 -di | tee app/google-services.json >/dev/null
+      - run:
           name: Download Dependencies
           command: ./gradlew androidDependencies
       - save_cache:
