@@ -143,7 +143,7 @@ class AlertsRepositoryTest {
 
         alertsRepository.fetchAlerts()
         val sleepTime = Duration.ofSeconds(Config.Behavior.REFRESH_THRESHOLD_SEC.toLong())
-        Thread.sleep(sleepTime.toMillis())
+        Thread.sleep(sleepTime.toMillis() + 100)
         alertsRepository.fetchAlerts()
 
         verify<Observer<List<Alert>>>(todayAlertsObserver, times(2)).onChanged(testTodayAlerts)
