@@ -18,10 +18,10 @@ package com.ofalvai.bpinfo.injection
 
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
+import com.ofalvai.bpinfo.repository.AlertsRepository
 import com.ofalvai.bpinfo.ui.alertdetail.AlertDetailViewModel
 import com.ofalvai.bpinfo.ui.alertlist.AlertListType
 import com.ofalvai.bpinfo.ui.alertlist.AlertListViewModel
-import com.ofalvai.bpinfo.repository.AlertsRepository
 import com.ofalvai.bpinfo.ui.alertlist.AlertsViewModel
 import com.ofalvai.bpinfo.ui.notifications.NotificationsViewModel
 import com.ofalvai.bpinfo.util.Analytics
@@ -37,12 +37,12 @@ val appModule = module {
 
     single { Analytics(androidContext()) }
 
-    single { AlertsRepository(get(), androidContext()) }
+    single { AlertsRepository(get(), androidContext(), get()) }
 }
 
 val screenModule = module {
 
-    viewModel { NotificationsViewModel(get(), get()) }
+    viewModel { NotificationsViewModel(get(), get(), get()) }
 
     viewModel { AlertsViewModel(get(), get(), get()) }
 

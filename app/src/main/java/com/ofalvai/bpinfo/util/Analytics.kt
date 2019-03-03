@@ -23,6 +23,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.getSystemService
+import com.crashlytics.android.Crashlytics
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.ofalvai.bpinfo.model.Alert
 import com.ofalvai.bpinfo.model.RouteType
@@ -148,5 +149,9 @@ class Analytics(private val context: Context) {
         val bundle = Bundle()
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, newToken)
         FirebaseAnalytics.getInstance(context).logEvent("notif_token_update", bundle)
+    }
+
+    fun logException(exception: Throwable) {
+        Crashlytics.logException(exception)
     }
 }
