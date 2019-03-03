@@ -17,10 +17,10 @@
 package com.ofalvai.bpinfo.notifications
 
 import com.android.volley.VolleyError
-import com.crashlytics.android.Crashlytics
 import com.firebase.jobdispatcher.JobParameters
 import com.firebase.jobdispatcher.JobService
 import com.ofalvai.bpinfo.api.subscription.SubscriptionClient
+import com.ofalvai.bpinfo.util.Analytics
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -33,6 +33,7 @@ class TokenUploadJobService : JobService() {
     }
 
     private val subscriptionClient: SubscriptionClient by inject()
+    private val analytics: Analytics by inject()
 
     override fun onStartJob(job: JobParameters?): Boolean {
         val newToken: String? = job?.extras?.getString(KEY_NEW_TOKEN)
@@ -51,7 +52,7 @@ class TokenUploadJobService : JobService() {
 
                     override fun onTokenReplaceError(error: VolleyError) {
                         Timber.d("New token upload unsuccessful", error)
-                        Crashlytics.logException(error)
+                        analytics.logException(error)
                         jobFinished(job, true)
                     }
                 })

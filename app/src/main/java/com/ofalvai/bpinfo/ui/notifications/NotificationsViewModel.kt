@@ -18,17 +18,18 @@ package com.ofalvai.bpinfo.ui.notifications
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.crashlytics.android.Crashlytics
 import com.ofalvai.bpinfo.api.bkkinfo.RouteListClient
 import com.ofalvai.bpinfo.api.subscription.SubscriptionClient
 import com.ofalvai.bpinfo.model.Route
 import com.ofalvai.bpinfo.model.RouteSubscription
+import com.ofalvai.bpinfo.util.Analytics
 import com.ofalvai.bpinfo.util.SingleLiveEvent
 import timber.log.Timber
 
 class NotificationsViewModel(
     private val routeListClient: RouteListClient,
-    private val subscriptionClient: SubscriptionClient
+    private val subscriptionClient: SubscriptionClient,
+    private val analytics: Analytics
 ) : ViewModel(), RouteListClient.RouteListListener,
     SubscriptionClient.Callback {
 
@@ -100,7 +101,7 @@ class NotificationsViewModel(
 
     override fun onSubscriptionError(error: Throwable) {
         Timber.e(error)
-        Crashlytics.logException(error)
+        analytics.logException(error)
         subscriptionProgress.value = false
         subscriptionError.call()
     }

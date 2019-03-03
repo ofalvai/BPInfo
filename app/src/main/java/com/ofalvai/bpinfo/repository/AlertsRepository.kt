@@ -21,13 +21,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.android.volley.NoConnectionError
 import com.android.volley.VolleyError
-import com.crashlytics.android.Crashlytics
 import com.ofalvai.bpinfo.Config
 import com.ofalvai.bpinfo.api.AlertApiClient
 import com.ofalvai.bpinfo.model.Alert
 import com.ofalvai.bpinfo.model.Resource
 import com.ofalvai.bpinfo.model.Status
 import com.ofalvai.bpinfo.ui.alertlist.AlertListType
+import com.ofalvai.bpinfo.util.Analytics
 import com.ofalvai.bpinfo.util.hasNetworkConnection
 import org.json.JSONException
 import org.threeten.bp.Duration
@@ -40,7 +40,8 @@ import timber.log.Timber
  */
 class AlertsRepository(
     private val alertApiClient: AlertApiClient,
-    private val appContext: Context
+    private val appContext: Context,
+    private val analytics: Analytics
 ) {
 
     sealed class Error {
@@ -58,10 +59,6 @@ class AlertsRepository(
 
     private var lastUpdate: LocalDateTime? = null
     private val refreshThreshold = Duration.ofSeconds(Config.Behavior.REFRESH_THRESHOLD_SEC.toLong())
-
-    init {
-        fetchAlerts()
-    }
 
     fun fetchAlerts() {
         if (shouldUpdate().not()) {
@@ -95,11 +92,11 @@ class AlertsRepository(
                     is VolleyError -> this@AlertsRepository.error.value = Error.NetworkError(ex)
                     is JSONException -> {
                         this@AlertsRepository.error.value = Error.DataError
-                        Crashlytics.logException(ex)
+                        analytics.logException(ex)
                     }
                     else -> {
                         this@AlertsRepository.error.value = Error.GeneralError
-                        Crashlytics.logException(ex)
+                        analytics.logException(ex)
                     }
                 }
             }
@@ -117,7 +114,7 @@ class AlertsRepository(
 
             override fun onError(ex: Exception) {
                 Timber.e(ex)
-                Crashlytics.logException(ex)
+                analytics.logException(ex)
                 liveData.value = Resource.Error(ex)
             }
         })
