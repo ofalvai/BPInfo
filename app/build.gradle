@@ -169,7 +169,7 @@ dependencies {
     implementation 'com.android.volley:volley:1.1.0'
 
     // FlowLayout
-    implementation ('com.wefika:flowlayout:0.4.1') {
+    implementation('com.wefika:flowlayout:0.4.1') {
         exclude group: 'com.intellij', module: 'annotations'
     }
 
@@ -212,6 +212,11 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     testImplementation "org.mockito:mockito-core:2.23.0"
     testImplementation "androidx.arch.core:core-testing:2.0.0"
+    testImplementation('org.threeten:threetenbp:1.3.7') {
+        because '''
+            Replacing com.jakewharton.threetenabp:threetenabp in unit tests because timezone 
+            database was missing'''
+    }
     androidTestImplementation 'org.hamcrest:hamcrest-library:1.3'
 
     // Koin testing tools
