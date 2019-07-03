@@ -20,7 +20,7 @@ interface AlertSearchContract {
 
     companion object {
 
-        const val BASE_URL = "http://futar.bkk.hu/bkk-utvonaltervezo-api/ws/otp/api/where/"
+        const val BASE_URL = "https://futar.bkk.hu/api/query/v1/ws/otp/api/where/"
 
         const val API_ENDPOINT = "alert-search.json"
 
