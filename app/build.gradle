@@ -29,8 +29,8 @@ def keystorePropertiesFile = rootProject.file("keystore.properties")
 def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
-def appVersionCode = 19
-def appVersionName = "2.0.4"
+def appVersionCode = 20
+def appVersionName = "2.0.5"
 android {
     signingConfigs {
         config {
