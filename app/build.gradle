@@ -17,10 +17,10 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'com.github.gfx.ribbonizer'
-apply plugin: 'io.fabric'
 if (getGradle().getStartParameter().getTaskRequests().toString().contains("Release")) {
     // Firebase Performance slows down the build
     apply plugin: 'com.google.firebase.firebase-perf'
+    apply plugin: 'io.fabric'
 }
 
 // Create a variable called keystorePropertiesFile, and initialize it to your
@@ -181,7 +181,7 @@ dependencies {
     implementation 'org.sufficientlysecure:html-textview:3.6'
 
     // ThreetenABP
-    implementation 'com.jakewharton.threetenabp:threetenabp:1.1.1'
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.1.2'
 
     // Process-Phoenix
     implementation 'com.jakewharton:process-phoenix:2.0.0'
