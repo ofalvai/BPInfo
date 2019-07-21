@@ -17,6 +17,7 @@
 package com.ofalvai.bpinfo.notifications
 
 import android.content.Context
+import androidx.core.os.ConfigurationCompat
 import com.ofalvai.bpinfo.R
 
 object DescriptionMaker {
@@ -71,7 +72,7 @@ object DescriptionMaker {
     }
 
     private fun makeRouteList(routeData: String?, context: Context, routeType: String): String {
-        val langCode = context.resources.configuration.locale.language
+        val langCode = ConfigurationCompat.getLocales(context.resources.configuration)[0].language
         return if (langCode == "hu") {
             makeRouteLineHu(routeData, context, routeType)
         } else {

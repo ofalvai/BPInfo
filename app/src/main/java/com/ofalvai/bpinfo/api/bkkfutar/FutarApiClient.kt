@@ -16,6 +16,7 @@
 
 package com.ofalvai.bpinfo.api.bkkfutar
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
@@ -201,6 +202,7 @@ class FutarApiClient(
         return alertList
     }
 
+    @SuppressLint("DefaultLocale")
     @Throws(JSONException::class)
     private fun parseAlert(alertNode: JSONObject): Alert {
 
@@ -222,13 +224,15 @@ class FutarApiClient(
             url = urlNode.getString(AlertSearchContract.LANG_SOME) + LANG_PARAM + languageCode
         }
 
-        var header: String?
+        var header: String? = null
         val headerNode = alertNode.getJSONObject(AlertContract.ALERT_HEADER)
         val translationsNode = headerNode.getJSONObject(AlertContract.ALERT_HEADER_TRANSLATIONS)
         try {
             // Trying to get the specific language's translation
             // It might be null or completely missing from the response
-            header = translationsNode.getString(languageCode)
+            languageCode?.let {
+                header = translationsNode.getString(it)
+            }
 
             if (header == null || header == "null") {
                 throw JSONException("header field is null")
@@ -247,7 +251,7 @@ class FutarApiClient(
         if (!translationsNode2.isNull(languageCode)) {
             // Trying to get the specific language's translation
             // It might be null or completely missing from the response
-            description = translationsNode2.getString(languageCode)
+            description = translationsNode2.getString(languageCode!!)
         } else {
             // Falling back to the "someTranslation" field
             description = descriptionNode.getString(AlertSearchContract.LANG_SOME)

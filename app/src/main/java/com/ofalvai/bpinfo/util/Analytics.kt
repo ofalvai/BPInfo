@@ -84,10 +84,12 @@ class Analytics(private val context: Context) {
         }
     }
 
-    fun logLanguageChange(newValue: String) {
-        val bundle = Bundle()
-        bundle.putString("settings_new_language", newValue)
-        FirebaseAnalytics.getInstance(context).logEvent("settings_changed_language", bundle)
+    fun logLanguageChange(newValue: String?) {
+        newValue?.let {
+            val bundle = Bundle()
+            bundle.putString("settings_new_language", newValue)
+            FirebaseAnalytics.getInstance(context).logEvent("settings_changed_language", bundle)
+        }
     }
 
     fun logDebugMode(newState: String) {

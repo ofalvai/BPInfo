@@ -16,10 +16,10 @@
 
 package com.ofalvai.bpinfo.ui.notifications.routelist.viewholder
 
-import android.text.Html
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.model.Route
@@ -36,6 +36,8 @@ class RouteViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         iconWrapperLayout.removeAllViews()
         addRouteIcon(itemView.context, iconWrapperLayout, route)
 
-        descriptionTextView.text = Html.fromHtml(route.description)
+        route.description?.let {
+            descriptionTextView.text = HtmlCompat.fromHtml(it, HtmlCompat.FROM_HTML_MODE_LEGACY)
+        }
     }
 }

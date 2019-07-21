@@ -18,8 +18,8 @@ package com.ofalvai.bpinfo.ui.alertlist.dialog
 
 import android.app.Dialog
 import android.os.Bundle
-import android.text.Html
 import androidx.appcompat.app.AlertDialog
+import androidx.core.text.HtmlCompat
 import com.ofalvai.bpinfo.R
 
 class NoticeFragment : androidx.fragment.app.DialogFragment() {
@@ -51,7 +51,7 @@ class NoticeFragment : androidx.fragment.app.DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return AlertDialog.Builder(requireContext())
                 .setTitle(R.string.dialog_notice_title)
-                .setMessage(Html.fromHtml(noticeText))
+                .setMessage(HtmlCompat.fromHtml(noticeText, HtmlCompat.FROM_HTML_MODE_LEGACY))
                 .setPositiveButton(R.string.dialog_notice_positive_button) { _, _ -> dismiss() }
                 .create()
     }
