@@ -90,7 +90,7 @@ android {
         }
         staging {
             dimension "backend"
-            buildConfigField "String", "BACKEND_URL", '"https://bpinfo-backend-api.herokuapp.com/api/v1/"'
+            buildConfigField "String", "BACKEND_URL", '"https://bpinfo-backend-api-staging.herokuapp.com/api/v1/"'
         }
     }
 
