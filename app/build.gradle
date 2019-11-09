@@ -137,6 +137,8 @@ ribbonizer {
             return yellowRibbonFilter(variant, iconFile)
         } else if (variant.buildType.name == "debug") {
             return grayRibbonFilter(variant, iconFile)
+        } else {
+            return null
         }
     }
 }
