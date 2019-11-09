@@ -54,8 +54,8 @@ jobs:
     steps:
       - prepare
       - run:
-          name: Run Tests
-          command: ./gradlew lintLiveProdDebug --stacktrace
+          name: Run Lint
+          command: ./gradlew lintLiveProdRelease
       - store_artifacts:
           path: app/build/reports
           destination: reports
