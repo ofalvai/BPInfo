@@ -80,8 +80,6 @@
     <string name="pref_language_dialog_message">Az új nyelv érvénybe lépéséhez újra kell indítani az appot.</string>
     <string name="pref_language_dialog_positive_button">Újraindítás</string>
     <string name="pref_language_dialog_negative_button">Később</string>
-    <string name="debog_mode_off">Debug mód kikapcsolva</string>
-    <string name="debug_mode_on">Debug mód bekapcsolva</string>
     <string name="email_developer_subject">BPInfo visszajelzés</string>
     <string name="title_activity_licences">Licencek</string>
     <string name="alert_label_recent">FRISS</string>

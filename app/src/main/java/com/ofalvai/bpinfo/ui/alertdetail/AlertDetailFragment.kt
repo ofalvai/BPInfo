@@ -155,7 +155,7 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
         // Bottom sheets on tablets should have a smaller width than the screen width.
         val width = requireContext().resources.getDimensionPixelSize(R.dimen.bottom_sheet_width)
         val actualWidth = if (width > 0) width else ViewGroup.LayoutParams.MATCH_PARENT
-        dialog.window?.setLayout(actualWidth, ViewGroup.LayoutParams.MATCH_PARENT)
+        dialog?.window?.setLayout(actualWidth, ViewGroup.LayoutParams.MATCH_PARENT)
     }
 
     fun updateAlert(alert: Alert) {

@@ -17,11 +17,11 @@
 package com.ofalvai.bpinfo.util
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.ofalvai.bpinfo.R
+import com.ofalvai.bpinfo.ui.base.BaseActivity
 
-abstract class SingleFragmentActivity : AppCompatActivity() {
+abstract class SingleFragmentActivity : BaseActivity() {
 
     protected abstract fun createFragment(): Fragment
 

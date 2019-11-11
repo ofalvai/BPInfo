@@ -132,8 +132,6 @@
     <string name="pref_title_notifications">Notification settings</string>
     <string name="pref_summary_notifications">Priority, vibration, sound</string>
     <string name="pref_title_notifications_routes">Select routes</string>
-    <string name="debug_mode_on">Debug mode enabled</string>
-    <string name="debog_mode_off">Debug mode disabled</string>
     <string name="email_developer_mailto" translatable="false">mailto:oliver.falvai@gmail.com</string>
     <string name="email_developer_subject">BPInfo feedback</string>
     <string name="title_activity_licences">Licenses</string>

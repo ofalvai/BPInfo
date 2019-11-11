@@ -45,7 +45,7 @@ import com.ofalvai.bpinfo.model.Route
 import com.ofalvai.bpinfo.notifications.NotificationMaker
 import com.ofalvai.bpinfo.ui.base.BaseActivity
 import com.ofalvai.bpinfo.ui.notifications.adapter.RouteListPagerAdapter
-import com.ofalvai.bpinfo.ui.settings.SettingsActivity
+import com.ofalvai.bpinfo.ui.settings.PreferencesActivity
 import com.ofalvai.bpinfo.util.*
 import com.wefika.flowlayout.FlowLayout
 import org.koin.android.ext.android.inject
@@ -115,7 +115,7 @@ class NotificationsActivity : BaseActivity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.menu_item_settings -> {
-                startActivity(Intent(this, SettingsActivity::class.java))
+                startActivity(Intent(this, PreferencesActivity::class.java))
             }
             R.id.menu_item_test_notification -> {
                 NotificationMaker.make(

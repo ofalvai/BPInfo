@@ -16,6 +16,7 @@
 
 package com.ofalvai.bpinfo.ui.alertlist
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.Button
@@ -40,7 +41,7 @@ import com.ofalvai.bpinfo.ui.alertlist.adapter.AlertAdapter
 import com.ofalvai.bpinfo.ui.alertlist.dialog.AlertFilterFragment
 import com.ofalvai.bpinfo.ui.alertlist.dialog.NoticeFragment
 import com.ofalvai.bpinfo.ui.notifications.NotificationsActivity
-import com.ofalvai.bpinfo.ui.settings.SettingsActivity
+import com.ofalvai.bpinfo.ui.settings.PreferencesActivity
 import com.ofalvai.bpinfo.util.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -126,14 +127,14 @@ class AlertListFragment : Fragment(), AlertFilterFragment.AlertFilterListener {
         outState.putSerializable(KEY_ALERT_LIST_TYPE, alertListType)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_main, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_item_filter_alerts -> displayFilterDialog()
-            R.id.menu_item_settings -> startActivity(SettingsActivity.newIntent(requireContext()))
+            R.id.menu_item_settings -> startActivity(Intent(context, PreferencesActivity::class.java))
             R.id.menu_item_notifications -> startActivity(
                 NotificationsActivity.newIntent(requireContext())
             )

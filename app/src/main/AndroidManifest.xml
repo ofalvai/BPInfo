@@ -56,8 +56,7 @@
 
         <!-- Settings -->
         <activity
-            android:name=".ui.settings.SettingsActivity"
-            android:exported="false"
+            android:name=".ui.settings.PreferencesActivity"
             android:label="@string/title_activity_settings"
             android:parentActivityName=".ui.alertlist.AlertListActivity">
             <meta-data
@@ -73,10 +72,10 @@
         <activity
             android:name=".ui.settings.AboutActivity"
             android:label="@string/title_activity_about"
-            android:parentActivityName=".ui.settings.SettingsActivity">
+            android:parentActivityName=".ui.settings.PreferencesActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.settings.SettingsActivity" />
+                android:value=".ui.settings.PreferencesActivity" />
         </activity>
 
         <!-- Licences -->

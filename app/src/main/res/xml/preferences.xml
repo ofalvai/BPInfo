@@ -1,0 +1,104 @@
+<!--
+  ~ Copyright 2019 Olivér Falvai
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        app:key="@string/pref_key_category_general"
+        app:title="@string/pref_category_general">
+
+        <ListPreference
+            app:defaultValue="@string/pref_key_data_source_default"
+            app:entries="@array/pref_data_source_list_titles"
+            app:entryValues="@array/pref_data_source_list_values"
+            app:key="@string/pref_key_data_source"
+            app:title="@string/pref_title_data_source"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:defaultValue="@string/pref_key_language_auto"
+            app:entries="@array/pref_language_list_titles"
+            app:entryValues="@array/pref_language_list_values"
+            app:key="@string/pref_key_language"
+            app:title="@string/pref_title_language"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="@string/pref_key_category_notifications"
+        app:title="@string/pref_category_notifications">
+
+        <Preference
+            app:key="@string/pref_key_notifications"
+            app:summary="@string/pref_summary_notifications"
+            app:title="@string/pref_title_notifications" />
+
+        <Preference
+            app:key="@string/pref_key_notifications_routes"
+            app:title="@string/pref_title_notifications_routes">
+
+            <intent
+                android:targetClass="com.ofalvai.bpinfo.ui.notifications.NotificationsActivity"
+                android:targetPackage="@string/PACKAGE_NAME_REAL" />
+
+        </Preference>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="@string/pref_key_category_other"
+        app:title="@string/pref_category_other">
+
+        <Preference
+            app:summary="@string/pref_description_about"
+            app:title="@string/pref_title_about">
+
+            <intent
+                android:targetClass="com.ofalvai.bpinfo.ui.settings.AboutActivity"
+                android:targetPackage="@string/PACKAGE_NAME_REAL" />
+        </Preference>
+
+        <Preference
+            app:key="@string/pref_key_send_bugreport"
+            app:summary="@string/pref_description_send_bugreport"
+            app:title="@string/pref_title_send_bugreport">
+
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="@string/email_developer_mailto">
+
+                <!--suppress AndroidElementNotAllowed -->
+                <extra
+                    android:name="android.intent.extra.SUBJECT"
+                    android:value="@string/email_developer_subject" />
+            </intent>
+
+        </Preference>
+
+        <Preference
+            app:key="pref_key_rate"
+            app:summary="@string/pref_description_rate"
+            app:title="@string/pref_title_rate">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="market://details?id=com.ofalvai.bpinfo" />
+        </Preference>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

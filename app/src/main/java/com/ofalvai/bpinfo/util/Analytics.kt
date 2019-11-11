@@ -92,12 +92,6 @@ class Analytics(private val context: Context) {
         }
     }
 
-    fun logDebugMode(newState: String) {
-        val bundle = Bundle()
-        bundle.putString("settings_new_debug_state", newState)
-        FirebaseAnalytics.getInstance(context).logEvent("settings_changed_debug_mode", bundle)
-    }
-
     fun logManualRefresh() {
         FirebaseAnalytics.getInstance(context).logEvent("alert_list_manual_refresh", null)
     }
