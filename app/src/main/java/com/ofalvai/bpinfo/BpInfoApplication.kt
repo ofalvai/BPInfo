@@ -30,7 +30,6 @@ import com.jakewharton.threetenabp.AndroidThreeTen
 import com.ofalvai.bpinfo.injection.allModules
 import com.ofalvai.bpinfo.util.Analytics
 import com.ofalvai.bpinfo.util.LocaleManager
-import com.squareup.leakcanary.LeakCanary
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.android.startKoin
 import org.koin.android.logger.AndroidLogger
@@ -46,13 +45,6 @@ class BpInfoApplication : Application(), SharedPreferences.OnSharedPreferenceCha
 
     override fun onCreate() {
         super.onCreate()
-
-        if (LeakCanary.isInAnalyzerProcess(this)) {
-            // This process is dedicated to LeakCanary for heap analysis.
-            // You should not init your app in this process.
-            return
-        }
-        LeakCanary.install(this)
 
         PreferenceManager.getDefaultSharedPreferences(this)
             .registerOnSharedPreferenceChangeListener(this)
