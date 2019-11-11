@@ -16,7 +16,9 @@
 
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@color/gallery" />
-    <item
-        android:drawable="@drawable/ic_launcher_big"
-        android:gravity="center" />
+    <item>
+        <bitmap
+            android:gravity="center"
+            android:src="@drawable/ic_launcher_big" />
+    </item>
 </layer-list>
