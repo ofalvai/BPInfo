@@ -44,7 +44,7 @@ class AlertAdapter(
 
         val holder = AlertHolder(view, alertListType)
         holder.itemView.setOnClickListener {
-            val alert = getItem(holder.adapterPosition)
+            val alert = getItem(holder.layoutPosition)
             clickListener.invoke(alert)
         }
         return holder
