@@ -58,7 +58,9 @@ class AlertListViewModel(
     fun fetchAlert(id: String): LiveData<Resource<Alert>> =
             alertsRepository.fetchAlert(id, alertListType)
 
-    private fun sortAndFilter(alertList: List<Alert>): List<Alert> {
+    private fun sortAndFilter(alertList: List<Alert>?): List<Alert> {
+        if (alertList == null) return emptyList()
+
         val filteredList = if (activeFilter.isEmpty()) alertList else {
             alertList.filter { alert ->
                 alert.affectedRoutes.any { activeFilter.contains(it.type) }
