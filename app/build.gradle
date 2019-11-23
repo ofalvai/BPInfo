@@ -16,7 +16,6 @@
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'com.github.gfx.ribbonizer'
 apply plugin: 'io.fabric'
 if (getGradle().getStartParameter().getTaskRequests().toString().contains("Release")) {
     // Firebase Performance slows down the build
@@ -128,18 +127,6 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile.class).all {
         freeCompilerArgs = [
                 '-progressive'
         ]
-    }
-}
-
-ribbonizer {
-    builder { variant, iconFile ->
-        if (variant.flavorName == "mock") {
-            return yellowRibbonFilter(variant, iconFile)
-        } else if (variant.buildType.name == "debug") {
-            return grayRibbonFilter(variant, iconFile)
-        } else {
-            return null
-        }
     }
 }
 
