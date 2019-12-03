@@ -60,6 +60,7 @@ android {
     }
     buildTypes {
         debug {
+            multiDexEnabled true
             applicationIdSuffix ".debug"
             resValue "string", "PACKAGE_NAME_REAL", "com.ofalvai.bpinfo.debug"
         }
@@ -143,6 +144,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha2'
     implementation 'androidx.core:core-ktx:1.0.0'
     implementation 'androidx.preference:preference:1.1.0'
+    implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'com.google.android.material:material:1.0.0'
 
     // Firebase

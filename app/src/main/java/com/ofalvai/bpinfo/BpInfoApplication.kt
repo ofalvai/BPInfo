@@ -26,6 +26,7 @@ import android.content.res.Configuration
 import android.os.Build
 import android.preference.PreferenceManager
 import androidx.core.content.getSystemService
+import androidx.multidex.MultiDex
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.ofalvai.bpinfo.injection.allModules
 import com.ofalvai.bpinfo.util.Analytics
@@ -64,8 +65,12 @@ class BpInfoApplication : Application(), SharedPreferences.OnSharedPreferenceCha
     }
 
     override fun attachBaseContext(base: Context) {
-        // Updating locale
-        super.attachBaseContext(LocaleManager.setLocale(base))
+        val newBaseContext = LocaleManager.setLocale(base)
+        super.attachBaseContext(newBaseContext)
+
+        if (BuildConfig.DEBUG) {
+            MultiDex.install(this)
+        }
     }
 
     /**
