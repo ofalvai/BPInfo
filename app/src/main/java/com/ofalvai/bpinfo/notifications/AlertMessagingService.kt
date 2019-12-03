@@ -47,9 +47,7 @@ class AlertMessagingService : FirebaseMessagingService() {
         super.attachBaseContext(LocaleManager.setLocale(base))
     }
 
-    override fun onMessageReceived(remoteMessage: RemoteMessage?) {
-        if (remoteMessage == null) return
-
+    override fun onMessageReceived(remoteMessage: RemoteMessage) {
         Timber.d("Message from: ${remoteMessage.from}")
 
         val data = remoteMessage.data
@@ -76,17 +74,12 @@ class AlertMessagingService : FirebaseMessagingService() {
         }
     }
 
-    override fun onNewToken(token: String?) {
+    override fun onNewToken(token: String) {
         super.onNewToken(token)
 
         val oldToken: String? = getOldToken()
         Timber.i("New Firebase token: $token")
-        analytics.logDeviceTokenUpdate(token ?: "")
-
-        if (token == null) {
-            // It should never happen
-            return
-        }
+        analytics.logDeviceTokenUpdate(token)
 
         if (oldToken != null) {
             Timber.i("Previous token was found, scheduling upload")
