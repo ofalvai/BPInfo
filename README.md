@@ -40,11 +40,10 @@ Technologies and libraries used:
 Libraries intentionally not used:
 
 - [RxJava](https://github.com/ReactiveX/RxJava): would be overkill for such simple use cases
-- [GSON](https://github.com/google/gson): the API responses require a lot of custom parsing and mapping
+- [GSON](https://github.com/google/gson): the API responses require a lot of custom parsing and mapping that I decided to parse with custom code
 
 Future plans:
 
 - Kotlin coroutines
 - Jetpack Navigation
 - More tests
-- Configure CI for project
