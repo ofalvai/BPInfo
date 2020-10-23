@@ -51,7 +51,7 @@ class TokenUploadJobService : JobService() {
                     }
 
                     override fun onTokenReplaceError(error: VolleyError) {
-                        Timber.d("New token upload unsuccessful", error)
+                        Timber.d(error, "New token upload unsuccessful")
                         analytics.logException(error)
                         jobFinished(job, true)
                     }
