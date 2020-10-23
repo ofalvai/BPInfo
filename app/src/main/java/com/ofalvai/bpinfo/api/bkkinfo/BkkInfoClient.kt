@@ -20,13 +20,12 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.net.Uri
-import android.util.Log
 import androidx.annotation.ColorInt
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.perf.FirebasePerformance
 import com.google.firebase.perf.metrics.Trace
 import com.ofalvai.bpinfo.R
@@ -52,8 +51,6 @@ class BkkInfoClient(
 ) : AlertApiClient {
 
     companion object {
-
-        const val TAG = "BkkInfoClient"
 
         /**
          * The API is so slow we have to increase the default Volley timeout.
@@ -185,7 +182,7 @@ class BkkInfoClient(
                     alerts.add(alert)
                 }
             } catch (ex: JSONException) {
-                Crashlytics.log(Log.WARN, TAG, "Alert parse: failed to parse:\n$ex")
+                FirebaseCrashlytics.getInstance().log("Alert parse: failed to parse:\n$ex")
             }
         }
 
@@ -203,7 +200,7 @@ class BkkInfoClient(
                 val alertNode = soonAlertList.getJSONObject(i)
                 alerts.add(parseAlert(alertNode))
             } catch (ex: JSONException) {
-                Crashlytics.log(Log.WARN, TAG, "Alert parse: failed to parse:\n$ex")
+                FirebaseCrashlytics.getInstance().log("Alert parse: failed to parse:\n$ex")
             }
         }
 
@@ -213,7 +210,7 @@ class BkkInfoClient(
                 val alertNode = futureAlertList.getJSONObject(i)
                 alerts.add(parseAlert(alertNode))
             } catch (ex: JSONException) {
-                Crashlytics.log(Log.WARN, TAG, "Alert parse: failed to parse:\n$ex")
+                FirebaseCrashlytics.getInstance().log("Alert parse: failed to parse:\n$ex")
             }
         }
 

@@ -23,8 +23,8 @@ import android.os.Build
 import android.os.Bundle
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.getSystemService
-import com.crashlytics.android.Crashlytics
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.ofalvai.bpinfo.model.Alert
 import com.ofalvai.bpinfo.model.RouteType
 
@@ -148,6 +148,6 @@ class Analytics(private val context: Context) {
     }
 
     fun logException(exception: Throwable) {
-        Crashlytics.logException(exception)
+        FirebaseCrashlytics.getInstance().recordException(exception)
     }
 }

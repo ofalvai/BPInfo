@@ -21,11 +21,10 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.net.Uri
-import android.util.Log
 import com.android.volley.RequestQueue
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.ofalvai.bpinfo.BuildConfig
 import com.ofalvai.bpinfo.R
 import com.ofalvai.bpinfo.api.AlertApiClient
@@ -48,7 +47,6 @@ class FutarApiClient(
 ) : AlertApiClient {
 
     companion object {
-        private const val TAG = "FutarApiClient"
 
         private const val QUERY_API_KEY = BuildConfig.APPLICATION_ID
 
@@ -195,7 +193,7 @@ class FutarApiClient(
                     alertList.add(alert)
                 }
             } catch (ex: JSONException) {
-                Crashlytics.log(Log.WARN, TAG, "Alert parse: failed to parse:\n$ex")
+                FirebaseCrashlytics.getInstance().log("Alert parse: failed to parse:\n$ex")
             }
         }
 
@@ -240,7 +238,7 @@ class FutarApiClient(
         } catch (ex: JSONException) {
             // Falling back to the "someTranslation" field
             header = headerNode.getString(AlertSearchContract.LANG_SOME)
-            Crashlytics.log(Log.WARN, TAG, "Alert parse: header translation missing")
+            FirebaseCrashlytics.getInstance().log("Alert parse: header translation missing")
         }
 
         header = header?.capitalize() ?: ""
@@ -256,7 +254,7 @@ class FutarApiClient(
             // Falling back to the "someTranslation" field
             description = descriptionNode.getString(AlertSearchContract.LANG_SOME)
 
-            Crashlytics.log(Log.WARN, TAG, "Alert parse: description translation missing")
+            FirebaseCrashlytics.getInstance().log("Alert parse: description translation missing")
         }
 
         val routeIdsNode = alertNode.getJSONArray(AlertContract.ALERT_ROUTE_IDS)
@@ -286,8 +284,8 @@ class FutarApiClient(
                     routeMap[route.id] = route
                 }
             } catch (ex: JSONException) {
-                Crashlytics.log(
-                    Log.ERROR, TAG, "Route parse: failed at index $i:\n$routeNode"
+                FirebaseCrashlytics.getInstance().log(
+                    "Route parse: failed at index $i:\n$routeNode"
                 )
             }
         }
@@ -325,7 +323,9 @@ class FutarApiClient(
         try {
             return RouteType.valueOf(type)
         } catch (ex: IllegalArgumentException) {
-            Crashlytics.log(Log.WARN, TAG, "Route parse: failed to parse route type to enum: $type")
+            FirebaseCrashlytics.getInstance().log(
+                    "Route parse: failed to parse route type to enum: $type"
+            )
         }
 
         return RouteType.OTHER

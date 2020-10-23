@@ -16,7 +16,8 @@
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'io.fabric'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
 if (getGradle().getStartParameter().getTaskRequests().toString().contains("Release")) {
     // Firebase Performance slows down the build
     apply plugin: 'com.google.firebase.firebase-perf'
@@ -152,7 +153,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-perf:19.0.2'
     implementation 'com.google.firebase:firebase-messaging:20.0.1'
     implementation 'com.firebase:firebase-jobdispatcher:0.8.5'
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
+    implementation 'com.google.firebase:firebase-crashlytics:17.2.2'
 
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
@@ -220,5 +221,3 @@ dependencies {
         """
     }
 }
-
-apply plugin: 'com.google.gms.google-services'
