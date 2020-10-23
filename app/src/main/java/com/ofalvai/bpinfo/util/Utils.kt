@@ -38,7 +38,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import com.android.volley.*
 import com.ofalvai.bpinfo.Config
 import com.ofalvai.bpinfo.R
@@ -320,9 +319,9 @@ fun <T> Request<T>.addTo(queue: RequestQueue) {
 }
 
 fun <T> AppCompatActivity.observe(liveData: LiveData<T>, observer: (T) -> Unit) {
-    liveData.observe(this, Observer { observer.invoke(it) })
+    liveData.observe(this, { observer.invoke(it) })
 }
 
 fun <T> Fragment.observe(liveData: LiveData<T>, observer: (T) -> Unit) {
-    liveData.observe(viewLifecycleOwner, Observer { observer.invoke(it) })
+    liveData.observe(viewLifecycleOwner, { observer.invoke(it) })
 }

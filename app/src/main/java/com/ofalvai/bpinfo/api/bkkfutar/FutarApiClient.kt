@@ -22,7 +22,6 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.net.Uri
 import com.android.volley.RequestQueue
-import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.ofalvai.bpinfo.BuildConfig
@@ -94,7 +93,7 @@ class FutarApiClient(
 
         val request = JsonObjectRequest(
             uri.toString(), null,
-            Response.Listener { response ->
+            { response ->
                 try {
                     routes = parseRoutes(response)
                     alertsToday = parseAlerts(response, AlertListType.Today)
@@ -104,7 +103,7 @@ class FutarApiClient(
                     callback.onError(ex)
                 }
             },
-            Response.ErrorListener { error ->
+            { error ->
                 callback.onError(error)
             }
         )

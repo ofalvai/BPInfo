@@ -19,7 +19,6 @@ package com.ofalvai.bpinfo.api.subscription
 import android.net.Uri
 import com.android.volley.Request
 import com.android.volley.RequestQueue
-import com.android.volley.Response
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
@@ -68,11 +67,11 @@ class SubscriptionClient(
             }
 
             JsonObjectRequest(Request.Method.POST, url, body,
-                Response.Listener {
+                {
                     val subscription = parseSubscription(it)
                     callback.onPostSubscriptionResponse(subscription)
                 },
-                Response.ErrorListener {
+                {
                     Timber.e(it.toString())
                     callback.onSubscriptionError(it)
                 }
@@ -88,10 +87,10 @@ class SubscriptionClient(
                 .toString()
 
             JsonArrayRequest(Request.Method.GET, url, null,
-                Response.Listener {
+                {
                     callback.onGetSubscriptionResponse(parseSubscriptionList(it))
                 },
-                Response.ErrorListener {
+                {
                     Timber.e(it.toString())
                     callback.onSubscriptionError(it)
                 }
@@ -108,11 +107,11 @@ class SubscriptionClient(
                 .toString()
 
             JsonObjectRequest(Request.Method.DELETE, url, null,
-                Response.Listener {
+                {
                     val subscription = parseSubscription(it)
                     callback.onDeleteSubscriptionResponse(subscription)
                 },
-                Response.ErrorListener {
+                {
                     Timber.e(it.toString())
                     callback.onSubscriptionError(it)
                 }
@@ -132,11 +131,11 @@ class SubscriptionClient(
         }
 
         JsonObjectRequest(Request.Method.POST, url, body,
-            Response.Listener {
+            {
                 Timber.i("Token replace success: %s", it.toString())
                 callback.onTokenReplaceSuccess()
             },
-            Response.ErrorListener {
+            {
                 Timber.e(it)
                 callback.onTokenReplaceError(it)
             }

@@ -21,6 +21,9 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+    <!--  Required by Firebase Analytics  -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
     <application
         android:name=".BpInfoApplication"
         android:allowBackup="true"

@@ -23,7 +23,6 @@ import android.net.Uri
 import androidx.annotation.ColorInt
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.RequestQueue
-import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.perf.FirebasePerformance
@@ -96,8 +95,8 @@ class BkkInfoClient(
         val request = JsonObjectRequest(
             url.toString(),
             null,
-            Response.Listener { response -> onAlertListResponse(response, callback) },
-            Response.ErrorListener { error ->
+            { response -> onAlertListResponse(response, callback) },
+            { error ->
                 callback.onError(error)
             }
         )
@@ -114,8 +113,8 @@ class BkkInfoClient(
 
         val request = JsonObjectRequest(
             url.toString(), null,
-            Response.Listener { response -> onAlertDetailResponse(callback, response) },
-            Response.ErrorListener { error -> callback.onError(error) }
+            { response -> onAlertDetailResponse(callback, response) },
+            { error -> callback.onError(error) }
         )
         request.retryPolicy = retryPolicy
 
@@ -243,7 +242,7 @@ class BkkInfoClient(
 
         val url = getUrl(id)
 
-        val header = alertNode.getString("elnevezes").capitalize()
+        val header = alertNode.getString("elnevezes").capitalize(Locale.getDefault())
 
         val routesArray = alertNode.getJSONArray("jaratokByFajta")
         val affectedRoutes = parseAffectedRoutes(routesArray)
@@ -279,7 +278,7 @@ class BkkInfoClient(
         val header: String
         // The API returns a header of 3 parts separated by "|" characters. We need the last part.
         val rawHeader = response.getString("targy")
-        header = rawHeader.split("|")[2].trim().capitalize()
+        header = rawHeader.split("|")[2].trim().capitalize(Locale.getDefault())
 
         val description: String
         val descriptionBuilder = StringBuilder()

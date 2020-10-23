@@ -117,8 +117,8 @@ class AlertsRepositoryTest {
         Thread.sleep(3000)
         alertsRepository.fetchAlerts()
 
-        verify<Observer<List<Alert>>>(todayAlertsObserver, times(1)).onChanged(testTodayAlerts)
-        verify<Observer<List<Alert>>>(futureAlertsObserver, times(1)).onChanged(testFutureAlerts)
+        verify(todayAlertsObserver, times(1)).onChanged(testTodayAlerts)
+        verify(futureAlertsObserver, times(1)).onChanged(testFutureAlerts)
         assertEquals(Status.Success, alertsRepository.status.value)
         assertNull(alertsRepository.error.value)
 
@@ -146,8 +146,8 @@ class AlertsRepositoryTest {
         Thread.sleep(sleepTime.toMillis() + 100)
         alertsRepository.fetchAlerts()
 
-        verify<Observer<List<Alert>>>(todayAlertsObserver, times(2)).onChanged(testTodayAlerts)
-        verify<Observer<List<Alert>>>(futureAlertsObserver, times(2)).onChanged(testFutureAlerts)
+        verify(todayAlertsObserver, times(2)).onChanged(testTodayAlerts)
+        verify(futureAlertsObserver, times(2)).onChanged(testFutureAlerts)
         assertEquals(Status.Success, alertsRepository.status.value)
         assertNull(alertsRepository.error.value)
 

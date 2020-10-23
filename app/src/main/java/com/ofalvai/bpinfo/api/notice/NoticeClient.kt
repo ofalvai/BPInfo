@@ -57,7 +57,7 @@ class NoticeClient(
 
         val request = JsonArrayRequest(
             url,
-            Response.Listener { response ->
+            { response ->
                 onResponseCallback(response, noticeListener, languageCode)
             },
             this

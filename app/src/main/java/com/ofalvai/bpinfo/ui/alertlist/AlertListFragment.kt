@@ -99,7 +99,7 @@ class AlertListFragment : Fragment(), AlertFilterFragment.AlertFilterListener {
         // the listener reference and the current filter
         if (savedInstanceState != null) {
             val filterFragment =
-                requireFragmentManager().findFragmentByTag(FILTER_DIALOG_TAG) as AlertFilterFragment?
+                parentFragmentManager.findFragmentByTag(FILTER_DIALOG_TAG) as AlertFilterFragment?
 
             // Only attach to the filter fragment if it filters our type of list
             if (filterFragment != null && alertListType == filterFragment.alertListType) {
@@ -145,7 +145,7 @@ class AlertListFragment : Fragment(), AlertFilterFragment.AlertFilterListener {
     override fun onStart() {
         super.onStart()
         if (activity is AlertListActivity && alertListType == AlertListType.Today) {
-            pendingNavigationAlertId = (activity!! as AlertListActivity).pendingNavigationAlertId
+            pendingNavigationAlertId = (requireActivity() as AlertListActivity).pendingNavigationAlertId
         }
     }
 
@@ -192,7 +192,7 @@ class AlertListFragment : Fragment(), AlertFilterFragment.AlertFilterListener {
             when (it) {
                 is Resource.Success -> updateAlertDetail(it.value)
                 is Resource.Error -> displayAlertDetailError()
-                // is Resource.Loading -> AlertDetailFragment handles its loading state
+                is Resource.Loading -> { } // AlertDetailFragment handles its loading state
             }
         }
     }
@@ -218,7 +218,7 @@ class AlertListFragment : Fragment(), AlertFilterFragment.AlertFilterListener {
         }
         pendingNavigationAlertId = null
         if (activity is AlertListActivity && alertListType == AlertListType.Today) {
-            (activity!! as AlertListActivity).pendingNavigationAlertId = null
+            (requireActivity() as AlertListActivity).pendingNavigationAlertId = null
         }
     }
 
@@ -271,7 +271,7 @@ class AlertListFragment : Fragment(), AlertFilterFragment.AlertFilterListener {
      */
     private fun displayAlertDetail(alert: Alert) {
         val alertDetailFragment = AlertDetailFragment.newInstance(alert, alertListType)
-        alertDetailFragment.show(requireFragmentManager(), AlertDetailFragment.FRAGMENT_TAG)
+        alertDetailFragment.show(parentFragmentManager, AlertDetailFragment.FRAGMENT_TAG)
     }
 
     /**
@@ -279,14 +279,14 @@ class AlertListFragment : Fragment(), AlertFilterFragment.AlertFilterListener {
      * @param alert data coming from the alert detail API call
      */
     private fun updateAlertDetail(alert: Alert) {
-        val fragment = requireFragmentManager()
+        val fragment = parentFragmentManager
             .findFragmentByTag(AlertDetailFragment.FRAGMENT_TAG) as AlertDetailFragment?
 
         fragment?.updateAlert(alert)
     }
 
     private fun displayAlertDetailError() {
-        val fragment = requireFragmentManager()
+        val fragment = parentFragmentManager
             .findFragmentByTag(AlertDetailFragment.FRAGMENT_TAG) as AlertDetailFragment?
 
         fragment?.onAlertUpdateFailed()
@@ -320,7 +320,7 @@ class AlertListFragment : Fragment(), AlertFilterFragment.AlertFilterListener {
         val filterFragment = AlertFilterFragment.newInstance(
             this, viewModel.activeFilter, alertListType
         )
-        val transaction = requireFragmentManager().beginTransaction()
+        val transaction = parentFragmentManager.beginTransaction()
         filterFragment.show(transaction, FILTER_DIALOG_TAG)
 
         analytics.logFilterDialogOpened()

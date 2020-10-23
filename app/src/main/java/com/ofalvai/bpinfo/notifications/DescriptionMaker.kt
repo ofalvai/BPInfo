@@ -19,6 +19,7 @@ package com.ofalvai.bpinfo.notifications
 import android.content.Context
 import androidx.core.os.ConfigurationCompat
 import com.ofalvai.bpinfo.R
+import java.util.*
 
 object DescriptionMaker {
 
@@ -135,7 +136,7 @@ object DescriptionMaker {
                 .joinToString(separator = ", ") { it.trim() }
             sb.append(routeList)
         }
-        return sb.toString().capitalize()
+        return sb.toString().capitalize(Locale.getDefault())
     }
 
     private fun numberPostfixHu(name: String): String {
