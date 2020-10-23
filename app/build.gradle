@@ -40,14 +40,14 @@ android {
             storePassword keystoreProperties['storePassword']
         }
     }
-    compileSdkVersion 29
+    compileSdkVersion 30
 
     defaultConfig {
         applicationId "com.ofalvai.bpinfo"
         signingConfig signingConfigs.config
 
         minSdkVersion 16
-        targetSdkVersion 29
+        targetSdkVersion 30
 
         versionCode appVersionCode
         versionName appVersionName

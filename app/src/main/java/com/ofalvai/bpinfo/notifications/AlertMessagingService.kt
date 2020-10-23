@@ -105,7 +105,7 @@ class AlertMessagingService : FirebaseMessagingService() {
             .setConstraints(constraints)
             .build()
 
-        WorkManager.getInstance(this).enqueueUniqueWork(
+        WorkManager.getInstance(applicationContext).enqueueUniqueWork(
             TokenUploadWorker.TAG,
             ExistingWorkPolicy.REPLACE,
             request

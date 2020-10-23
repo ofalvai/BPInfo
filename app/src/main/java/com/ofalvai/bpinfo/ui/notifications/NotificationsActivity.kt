@@ -112,8 +112,8 @@ class NotificationsActivity : BaseActivity() {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             R.id.menu_item_settings -> {
                 startActivity(Intent(this, PreferencesActivity::class.java))
             }

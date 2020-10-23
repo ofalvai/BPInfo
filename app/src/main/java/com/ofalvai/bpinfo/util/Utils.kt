@@ -20,7 +20,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.LightingColorFilter
 import android.graphics.Paint
@@ -276,23 +275,11 @@ fun addRouteIcon(context: Context, root: ViewGroup, route: Route): TextView {
  * @param url   URL to open
  */
 fun openCustomTab(activity: Activity, url: Uri) {
-    val packageName = CustomTabsHelper.getPackageNameToUse(activity)
-
-    if (packageName == null) {
-        val intent = Intent(Intent.ACTION_VIEW)
-        intent.data = url
-
-        if (intent.resolveActivity(activity.packageManager!!) != null) {
-            activity.startActivity(intent)
-        }
-    } else {
-        val color = ContextCompat.getColor(activity, R.color.primary)
-        val customTabsIntent = CustomTabsIntent.Builder()
-                .setToolbarColor(color)
-                .build()
-        customTabsIntent.intent.`package` = packageName
-        customTabsIntent.launchUrl(activity, url)
-    }
+    val color = ContextCompat.getColor(activity, R.color.primary)
+    val customTabsIntent = CustomTabsIntent.Builder()
+            .setToolbarColor(color)
+            .build()
+    customTabsIntent.launchUrl(activity, url)
 }
 
 fun TextView.underline() {
