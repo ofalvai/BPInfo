@@ -18,11 +18,7 @@ package com.ofalvai.bpinfo.notifications
 
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.core.os.bundleOf
-import com.firebase.jobdispatcher.Constraint
-import com.firebase.jobdispatcher.FirebaseJobDispatcher
-import com.firebase.jobdispatcher.GooglePlayDriver
-import com.firebase.jobdispatcher.Lifetime
+import androidx.work.*
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.ofalvai.bpinfo.util.Analytics
@@ -95,26 +91,25 @@ class AlertMessagingService : FirebaseMessagingService() {
     }
 
     private fun scheduleTokenUpload(oldToken: String, newToken: String) {
-        val extras = bundleOf(
-            TokenUploadJobService.KEY_NEW_TOKEN to newToken,
-            TokenUploadJobService.KEY_OLD_TOKEN to oldToken
+        val inputData = workDataOf(
+            TokenUploadWorker.KEY_NEW_TOKEN to newToken,
+            TokenUploadWorker.KEY_OLD_TOKEN to oldToken
         )
 
-        val jobDispatcher = FirebaseJobDispatcher(GooglePlayDriver(this))
-        val job = jobDispatcher.newJobBuilder()
-            .setService(TokenUploadJobService::class.java)
-            .setTag(TokenUploadJobService.TAG)
-            .addConstraint(Constraint.ON_ANY_NETWORK)
-            .setLifetime(Lifetime.FOREVER)
-            .setReplaceCurrent(false)
-            .setExtras(extras)
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
 
-        jobDispatcher.schedule(job).let {
-            if (it != FirebaseJobDispatcher.SCHEDULE_RESULT_SUCCESS) {
-                Timber.e("Unsuccessful job schedule, result code: %d", it)
-            }
-        }
+        val request = OneTimeWorkRequestBuilder<TokenUploadWorker>()
+            .setInputData(inputData)
+            .setConstraints(constraints)
+            .build()
+
+        WorkManager.getInstance(this).enqueueUniqueWork(
+            TokenUploadWorker.TAG,
+            ExistingWorkPolicy.REPLACE,
+            request
+        )
     }
 
     private fun persistNewToken(newToken: String) {

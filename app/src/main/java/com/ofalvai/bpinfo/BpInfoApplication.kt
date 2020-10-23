@@ -28,7 +28,9 @@ import android.preference.PreferenceManager
 import androidx.core.content.getSystemService
 import androidx.multidex.MultiDex
 import com.jakewharton.threetenabp.AndroidThreeTen
+import com.ofalvai.bpinfo.api.subscription.SubscriptionClient
 import com.ofalvai.bpinfo.injection.allModules
+import com.ofalvai.bpinfo.notifications.TokenUploadWorker
 import com.ofalvai.bpinfo.util.Analytics
 import com.ofalvai.bpinfo.util.LocaleManager
 import org.koin.android.ext.android.inject
@@ -38,11 +40,14 @@ import org.koin.log.EmptyLogger
 import org.koin.standalone.StandAloneContext
 import timber.log.Timber
 
-class BpInfoApplication : Application(), SharedPreferences.OnSharedPreferenceChangeListener {
+class BpInfoApplication :
+    Application(),
+    SharedPreferences.OnSharedPreferenceChangeListener,
+    androidx.work.Configuration.Provider {
 
     private val sharedPreferences: SharedPreferences by inject()
-
     private val analytics: Analytics by inject()
+    private val subscriptionClient: SubscriptionClient by inject()
 
     override fun onCreate() {
         super.onCreate()
@@ -95,6 +100,10 @@ class BpInfoApplication : Application(), SharedPreferences.OnSharedPreferenceCha
             initKoin()
         }
     }
+
+    override fun getWorkManagerConfiguration() = androidx.work.Configuration.Builder()
+        .setWorkerFactory(TokenUploadWorker.Factory(subscriptionClient, analytics))
+        .build()
 
     private fun initKoin() {
         val logger = if (BuildConfig.DEBUG) AndroidLogger() else EmptyLogger()

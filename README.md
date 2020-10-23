@@ -32,7 +32,7 @@ Technologies and libraries used:
     - [Cloud Messaging](https://firebase.google.com/docs/cloud-messaging/)
     - [Crashlytics](https://firebase.google.com/docs/crashlytics/)
     - [Performance](https://firebase.google.com/docs/perf-mon/)
-    - [JobDispatcher](https://github.com/firebase/firebase-jobdispatcher-android)
+- [WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager)
 - [ThreeTenABP](https://github.com/JakeWharton/ThreeTenABP)
 - [LeakCanary](https://github.com/square/leakcanary)
 - [Android App Bundle](https://developer.android.com/platform/technology/app-bundle/)

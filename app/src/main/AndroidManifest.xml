@@ -109,13 +109,12 @@
             </intent-filter>
         </service>
 
-        <service
-            android:name=".notifications.TokenUploadJobService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
-            </intent-filter>
-        </service>
+        <provider
+            android:name="androidx.work.impl.WorkManagerInitializer"
+            android:authorities="${applicationId}.workmanager-init"
+            tools:node="remove"
+            tools:ignore="ExportedContentProvider" />
+
     </application>
 
 </manifest>
