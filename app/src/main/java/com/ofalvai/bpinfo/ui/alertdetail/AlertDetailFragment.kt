@@ -43,6 +43,7 @@ import com.wefika.flowlayout.FlowLayout
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.sufficientlysecure.htmltextview.HtmlTextView
+import timber.log.Timber
 
 class AlertDetailFragment : BottomSheetDialogFragment() {
 
@@ -235,7 +236,12 @@ class AlertDetailFragment : BottomSheetDialogFragment() {
         }
 
         alert.description?.let {
-            descriptionTextView.setHtml(it)
+            try {
+                descriptionTextView.setHtml(it)
+            } catch (t: Throwable) {
+                analytics.logException(t)
+                Timber.e(t, "Failed to parse alert description HTML")
+            }
         }
 
         if (alert.url == null) {
