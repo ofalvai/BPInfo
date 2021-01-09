@@ -1,6 +1,7 @@
 # BPInfo
 
 [![CircleCI](https://circleci.com/gh/ofalvai/BPInfo.svg?style=svg)](https://circleci.com/gh/ofalvai/BPInfo)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fofalvai%2FBPInfo.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fofalvai%2FBPInfo?ref=badge_shield)
 
 Budapest public transport info app based on public transport APIs.
 
@@ -47,3 +48,7 @@ Future plans:
 - Kotlin coroutines
 - Jetpack Navigation
 - More tests
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fofalvai%2FBPInfo.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fofalvai%2FBPInfo?ref=badge_large)
