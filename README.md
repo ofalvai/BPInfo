@@ -4,7 +4,7 @@
 
 Budapest public transport info app based on public transport APIs.
 
-[__Get It On Google Play__](play.google.com/store/apps/details?id=com.ofalvai.bpinfo)
+[<img src="https://user-images.githubusercontent.com/1694986/111364968-24a0fa00-864f-11eb-88aa-4b4127d8e012.png?width=100" width="200"></img>](https://play.google.com/store/apps/details?id=com.ofalvai.bpinfo)
 
 ![Screenshot](/screenshots.png?raw=true)
 
@@ -41,6 +41,7 @@ Libraries intentionally not used:
 
 - [RxJava](https://github.com/ReactiveX/RxJava): would be overkill for such simple use cases
 - [GSON](https://github.com/google/gson): the API responses require a lot of custom parsing and mapping that I decided to parse with custom code
+
 
 Future plans:
 
